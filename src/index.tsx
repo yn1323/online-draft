@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import store from 'src/store'
-import { Router } from 'react-router-dom'
-import { createHashHistory } from 'history'
+// import {  } from 'react-router'
+import { BrowserRouter } from 'react-router-dom'
 import Index from 'src/page/Index'
 import registerServiceWorker from 'src/reagisterServiceWorker'
 import 'src/asset/scss/index.scss'
@@ -34,9 +34,9 @@ const run = (isEmulator = true) => {
       <I18nextProvider i18n={i18n}>
         <MuiThemeProvider theme={theme}>
           <Provider store={store}>
-            <Router history={createHashHistory()}>
+            <BrowserRouter>
               <Index />
-            </Router>
+            </BrowserRouter>
           </Provider>
         </MuiThemeProvider>
       </I18nextProvider>

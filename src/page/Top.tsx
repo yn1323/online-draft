@@ -10,7 +10,7 @@ export const Top = () => {
     <div>
       TOPPPP
       <span>{t('テスト')}</span>
-      <EditTextarea title="手順" inputRef={title} />
+      <EditTextarea title="手順あああ" inputRef={title} />
     </div>
   )
 }
