@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "start": "react-scripts start",
-    "build": "ionic build --mode production",
+    "build": "npx ionic build --mode production",
     "start--en": "REACT_APP_LANG=en react-scripts start",
     "build--en": "REACT_APP_LANG=en ionic build --mode production",
     "test": "react-scripts test",
