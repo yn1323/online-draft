@@ -1,22 +1,20 @@
-import React, { lazy } from 'react'
-import { Route, Switch } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
+import { IonRouterOutlet } from '@ionic/react'
 
 import { routes } from 'src/constant'
-
-const NotFound = lazy(() => import('src/page/404'))
+// import NotFound from 'src/page/404'
 
 const Router = () => {
   return (
-    <Switch>
+    <IonRouterOutlet>
       {routes.map(({ component, path }) => (
         <Route key={path} exact path={path} component={component} />
       ))}
-
-      {/* {process.env.NODE_ENV === 'development' && (
-        <Route exact path="/gallery" component={Gallery} />
-      )} */}
-      <Route component={NotFound} status={404} />
-    </Switch>
+      <Route exact path="/">
+        <Redirect to="/home" />
+      </Route>
+      {/* <Route component={NotFound} /> */}
+    </IonRouterOutlet>
   )
 }
 

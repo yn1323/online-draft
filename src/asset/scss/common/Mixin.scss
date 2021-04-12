@@ -1,0 +1,25 @@
+@mixin align {
+  display: flex;
+  width: 100%;
+}
+
+@mixin centering($horizontal: true, $vertical: true) {
+  display: flex;
+  @if ($horizontal) {
+    justify-content: center;
+  }
+  @if ($vertical) {
+    align-items: center;
+  }
+}
+
+@mixin boxShadow($size: 4px, $opacity: 0.1) {
+  box-shadow: $size $size $size rgba(0, 0, 0, $opacity);
+}
+
+@mixin absoluteCenter() {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

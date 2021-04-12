@@ -1,29 +1,57 @@
-# React Template
+# Ionic x React
 
-## Service Worker
-1. Cordova使用時は、 ２４，２５,26行目を修正すること
-## Stateを追加するときは。。。
-1. src/store内に新規ファイルを作成
-1. src/store/index.tsを修正
-1. src/type/state.d.tsを修正
+## Required
+`npm install -g ionic cordova`
+`npm install -g @ionic/cli native-run cordova-res`
 
-## おすすめルール
-1. Prop Drillingの回避
-   - src/component/organismでデータを管理
-   - src/component/organism以下にはsetterを指定
-   - src/component/organism -> molecule -> atomのデータやり取りは、Render Propを使用
-   1. 以下のようなイメージでやるとうまくいくかも
-      - atom・・・最小単位の部品(ボタン、テキストボックスとか)
-      - molecules・・・atomの集合体、レイアウト調整
-      - organisms・・・Render Propでmolecule, atomを描画+データ管理
-      - template・・・お好きにどうぞ
-      - page・・・router指定先
+## Start Guide
 
-## QA
-1. ts6142が発生
-   - https://github.com/facebook/create-react-app/issues/10144
-1. Fast Refreshでブラウザが更新されない
-   - Fast Refreshをoffにする
-   - https://github.com/facebook/create-react-app/issues/10078
-1. 構文エラーチェックが遅い
-   - VSCodeのワークスペースに保存して使うと早くなるかも
+## initialize
+```sh
+npm i
+npm run chmod
+npm run createkey <Alias>
+```
+
+## Application setting
+1. app.json  
+- Enter ja and en application name
+- Enter extra permission required in capacitor
+
+2. capacitor.config.json  
+Enter AppId
+
+## Debug
+`ionic serve`
+
+## Publish
+1. Command
+```sh
+# ja
+npm run release--android
+# en
+npm run release--android--en
+```
+
+## Once Required
+```sh
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore .keystore android/app/build/outputs/apk/release/app-release-unsigned.apk test
+./zipalign -f -v 4 android/app/build/outputs/apk/release/app-release-unsigned.apk android/app/build/outputs/apk/release/app-release.apk
+ionic capacitor add android
+```
+
+## .env sample
+```
+REACT_APP_FIREBASE_API_KEY =
+REACT_APP_FIREBASE_AUTH_DOMAIN =
+REACT_APP_FIREBASE_PROJECT_ID =
+REACT_APP_FIREBASE_STORAGE_BUCKET =
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID =
+REACT_APP_FIREBASE_APP_ID =
+
+REACT_APP_ADMOB_BANNER_ANDROID =
+REACT_APP_ADMOB_INTERSTITIAL_ANDROID =
+REACT_APP_ADMOB_REWARDVIDEO_ANDROID =
+
+```
+

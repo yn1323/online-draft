@@ -7,11 +7,13 @@ export const lang = process.env.REACT_APP_LANG || 'ja'
 
 export const LS_USER_ID = 'userId'
 
-export const APP_NAME = 'reacttemplate'
+export const APP_NAME = 'moneymanage'
 
-export const DATE_FORMAT = {
+export const DATE_FORMAT: { [key: string]: string } = {
   ja: 'YYYY年M月D日',
-  en: 'M-D-YYYY',
+  en: 'D-M-YYYY',
 }
-
-export const DEV_COLLECTION = 'yn1323test'
+export const DATE_FORMAT_SHORT: { [key: string]: string } = {
+  ja: 'M/D',
+  en: 'D/M',
+}

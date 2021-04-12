@@ -1,57 +1,31 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
-import store from 'src/store'
-// import {  } from 'react-router'
-import { BrowserRouter } from 'react-router-dom'
+import ReactDOM from 'react-dom'
 import Index from 'src/page/Index'
-import registerServiceWorker from 'src/reagisterServiceWorker'
-import 'src/asset/scss/index.scss'
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core'
-import i18n from 'src/locales'
 import { I18nextProvider } from 'react-i18next'
-import { initAd } from 'src/helper'
 
-const run = (isEmulator = true) => {
-  const theme = createMuiTheme({
-    palette: {
-      primary: {
-        main: '#208DC3',
-        contrastText: '#eee',
-        dark: '#166187',
-        light: '#CBE6F3',
-      },
-      secondary: {
-        main: '#E38692',
-        contrastText: '#888',
-        dark: '#BB3B4C',
-        light: '#F6D4D8',
-      },
-    },
-  })
-  ReactDOM.render(
-    <React.StrictMode>
-      <I18nextProvider i18n={i18n}>
-        <MuiThemeProvider theme={theme}>
-          <Provider store={store}>
-            <BrowserRouter>
-              <Index />
-            </BrowserRouter>
-          </Provider>
-        </MuiThemeProvider>
-      </I18nextProvider>
-    </React.StrictMode>,
-    document.getElementById('root')
-  )
-  registerServiceWorker()
-  if (isEmulator) {
-    initAd()
-  }
-}
+import * as serviceWorkerRegistration from 'src/serviceWorkerRegistration'
+import reportWebVitals from 'src/reportWebVitals'
+import i18n from 'src/locales'
+import store from 'src/store'
 
-// eslint-disable-next-line no-prototype-builtins
-if (window.hasOwnProperty('cordova')) {
-  document.addEventListener('deviceready', () => run(true), false)
-} else {
-  run(false)
-}
+ReactDOM.render(
+  <React.StrictMode>
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>
+        <Index />
+      </Provider>
+    </I18nextProvider>
+  </React.StrictMode>,
+  document.getElementById('root')
+)
+
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://cra.link/PWA
+serviceWorkerRegistration.unregister()
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals()

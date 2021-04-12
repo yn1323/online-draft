@@ -1,12 +1,9 @@
-import { lazy } from 'react'
-
-const Top = lazy(() => import('src/page/Top'))
+import Home from 'src/page/Home'
 
 export const routes = [
   {
     path: '/',
-    title: 'TOP',
-    component: Top,
-    showBtmNav: true,
+    title: 'Home',
+    component: Home,
   },
 ]

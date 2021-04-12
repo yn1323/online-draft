@@ -4,18 +4,17 @@ import { Component as StateType } from 'Store'
 const STORE_NAME = 'component'
 
 export const defaultVal: StateType = {
-  isDrawerOpen: false,
-  isDialogOpen: false,
-  dialog: {
+  nav: {
+    show: false,
     title: '',
-    menu: [],
     component: '',
   },
-  loading: false,
-  snackbar: {
-    isOpen: false,
-    msg: '',
-    type: 'success',
+  toast: {
+    show: false,
+    message: '',
+    duration: 1500,
+    position: 'top',
+    color: 'success',
   },
 }
 
@@ -27,37 +26,53 @@ const State = createSlice({
   name: STORE_NAME,
   initialState,
   reducers: {
-    toggleDrawer: (state: StateType) => ({
+    setNavComponent: (state: StateType, { payload: { title, component } }) => ({
       ...state,
-      isDrawerOpen: !state.isDrawerOpen,
-    }),
-    setDialog: (state: StateType, { payload }) => ({
-      ...state,
-      ...payload,
-    }),
-    showDialog: (state: StateType, { payload }) => ({
-      ...state,
-      ...payload,
-    }),
-    showLoading: (state: StateType) => ({
-      ...state,
-      loading: true,
-    }),
-    hideLoading: (state: StateType) => ({
-      ...state,
-      loading: false,
-    }),
-    showSnackbar: (state: StateType, { payload }) => ({
-      ...state,
-      snackbar: {
-        isOpen: true,
-        ...payload,
+      nav: {
+        show: state.nav.show,
+        title,
+        component,
       },
     }),
-    hideSnackbar: (state: StateType) => ({
+    hideNavComponent: (state: StateType) => ({
       ...state,
-      snackbar: {
-        ...initialState.snackbar,
+      nav: {
+        ...state.nav,
+        show: false,
+      },
+    }),
+    showNavComponent: (state: StateType) => ({
+      ...state,
+      nav: {
+        ...state.nav,
+        show: true,
+      },
+    }),
+    setToast: (
+      state: StateType,
+      { payload: { message, duration, position, color } }
+    ) => ({
+      ...state,
+      toast: {
+        show: state.nav.show,
+        message: message,
+        duration: duration ? duration : state.toast.duration,
+        position: position ? position : position.toast.duration,
+        color: color ? color : color.toast.duration,
+      },
+    }),
+    hideToast: (state: StateType) => ({
+      ...state,
+      toast: {
+        ...state.toast,
+        show: false,
+      },
+    }),
+    showToast: (state: StateType) => ({
+      ...state,
+      toast: {
+        ...state.toast,
+        show: true,
       },
     }),
   },
@@ -66,11 +81,10 @@ const State = createSlice({
 export default State.reducer
 
 export const {
-  toggleDrawer,
-  setDialog,
-  showDialog,
-  showLoading,
-  hideLoading,
-  showSnackbar,
-  hideSnackbar,
+  setNavComponent,
+  hideNavComponent,
+  showNavComponent,
+  setToast,
+  hideToast,
+  showToast,
 } = State.actions
