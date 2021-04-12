@@ -1,4 +1,4 @@
-import moment from 'moment-timezone'
+import moment from 'moment'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))

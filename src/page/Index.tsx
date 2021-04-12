@@ -1,36 +1,35 @@
-import React, { Suspense } from 'react'
-import Route from 'src/route'
+import { IonApp } from '@ionic/react'
 
-import { Box } from '@material-ui/core'
+/* Core CSS required for Ionic components to work properly */
+import '@ionic/react/css/core.css'
 
-import Spinner from 'src/component/molecule/CenterSpinner'
-import NavigationTop from 'src/component/template/NavigationTop'
-import NavigationBottom from 'src/component/template/NavigationBottom'
-import DialogTemplate from 'src/component/template/Dialog'
-import LoadingOverlay from 'src/component/organism/Backdrop'
-import Snackbar from 'src/component/organism/Snackbar'
+/* Basic CSS for apps built with Ionic */
+import '@ionic/react/css/normalize.css'
+import '@ionic/react/css/structure.css'
+import '@ionic/react/css/typography.css'
 
-// export default () => JSX では、fast refreshが効かないことがある
+/* Optional CSS utils that can be commented out */
+import '@ionic/react/css/padding.css'
+import '@ionic/react/css/float-elements.css'
+import '@ionic/react/css/text-alignment.css'
+import '@ionic/react/css/text-transformation.css'
+import '@ionic/react/css/flex-utils.css'
+import '@ionic/react/css/display.css'
 
-export const Index = () => {
-  // buildすると、なぜかRoute内にpyが付与されるので、分岐を追加
-  // アプリケーションに応じて要調整
-  const padding = 7
+/* Theme variables */
+import 'src/asset/scss/theme/variables.scss'
 
-  return (
-    <>
-      <NavigationTop />
-      <Box m={1} py={padding}>
-        <Suspense fallback={<Spinner />}>
-          <Route />
-        </Suspense>
-      </Box>
-      <NavigationBottom />
-      <DialogTemplate />
-      <LoadingOverlay />
-      <Snackbar />
-    </>
-  )
-}
+import Tabs from 'src/component/template/Tabs'
+import Router from 'src/route'
+import Nav from 'src/component/template/Nav'
+import Toast from 'src/component/template/Toast'
+
+const Index = () => (
+  <IonApp>
+    <Tabs router={<Router />} />
+    <Nav />
+    <Toast />
+  </IonApp>
+)
 
 export default Index
