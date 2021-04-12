@@ -1,20 +1,20 @@
 import { Route, Redirect } from 'react-router-dom'
 import { IonRouterOutlet } from '@ionic/react'
+import { IonReactRouter } from '@ionic/react-router'
 
 import { routes } from 'src/constant'
-// import NotFound from 'src/page/404'
+import NotFound from 'src/page/404'
 
 const Router = () => {
   return (
-    <IonRouterOutlet>
-      {routes.map(({ component, path }) => (
-        <Route key={path} exact path={path} component={component} />
-      ))}
-      <Route exact path="/">
-        <Redirect to="/home" />
-      </Route>
-      {/* <Route component={NotFound} /> */}
-    </IonRouterOutlet>
+    <IonReactRouter>
+      <IonRouterOutlet>
+        {routes.map(({ component, path }) => (
+          <Route key={path} exact path={path} component={component} />
+        ))}
+        <Route component={NotFound} />
+      </IonRouterOutlet>
+    </IonReactRouter>
   )
 }
 
