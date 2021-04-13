@@ -27,3 +27,17 @@
     border-bottom: 1px solid #ddd;
   }
 }
+
+.createGroupWrapper {
+  @include align;
+
+  flex-direction: column;
+
+  ion-input {
+    border: solid 1px #aaa;
+    border-radius: 5px;
+  }
+  .groupname {
+    margin: 15px 0;
+  }
+}

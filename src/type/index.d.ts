@@ -7,6 +7,7 @@ declare module 'Store' {
   export interface Component {
     nav: Nav
     toast: Toast
+    loading: Loading
   }
 
   interface Nav {
@@ -29,5 +30,8 @@ declare module 'Store' {
       | 'light'
       | 'medium'
       | dark
+  }
+  interface Loading {
+    show: boolean
   }
 }

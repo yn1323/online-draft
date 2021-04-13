@@ -22,12 +22,14 @@ import 'src/asset/scss/theme/variables.scss'
 import Router from 'src/route'
 import Nav from 'src/component/template/Nav'
 import Toast from 'src/component/template/Toast'
+import Loading from 'src/component/template/Loading'
 
 const Index = () => (
   <IonApp>
     <Router />
     <Nav />
     <Toast />
+    <Loading />
   </IonApp>
 )
 

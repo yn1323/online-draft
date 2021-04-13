@@ -1,10 +1,13 @@
-import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react'
+import { IonContent, IonGrid, IonPage, IonRow } from '@ionic/react'
 
 import 'src/asset/scss/page/Entry.scss'
+import Header from 'src/component/template/Header'
 
 const Entry = () => {
   return (
     <IonPage>
+      <Header />
+
       <IonContent className="height-100 background" scrollY={false}>
         <IonGrid className="height-100 backgroundoo">
           <IonRow className="height-25"></IonRow>

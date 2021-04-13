@@ -37,6 +37,7 @@
     "@types/react-router": "^5.1.11",
     "@types/react-router-dom": "^5.1.7",
     "axios": "^0.21.0",
+    "firebase": "^8.4.1",
     "i18next": "^19.8.7",
     "ionicons": "^5.4.0",
     "moment": "^2.29.1",
