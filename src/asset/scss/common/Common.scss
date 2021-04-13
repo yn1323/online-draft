@@ -49,3 +49,16 @@ body {
     height: 25%;
   }
 }
+
+.outline {
+  outline: 1px solid #ccc;
+}
+
+hr {
+  width: 100%;
+  border-bottom: 1px solid #ddd;
+
+  &.bold {
+    border-bottom: 1px solid #999;
+  }
+}
