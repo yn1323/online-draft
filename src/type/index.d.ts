@@ -5,6 +5,7 @@ declare module 'Store' {
     component: Component
     draft: Draft
     chat: Chat
+    user: User
   }
   export interface Component {
     nav: Nav
@@ -54,5 +55,13 @@ declare module 'Store' {
     turn: number
     isDecided: boolean
     enteredName: string
+  }
+  interface User {
+    groupId: string
+    users: Users[]
+  }
+  interface Users {
+    userId: string
+    isOnlin: boolean
   }
 }
