@@ -54,7 +54,7 @@ const AnonymousAuthAuth = ({ children }: any) => {
     } else {
       showLoading()
     }
-  }, [isSignIn])
+  }, [isSignIn, groupExist])
 
   return isSignIn && groupExist ? children : <AuthLoading />
 }

@@ -3,6 +3,8 @@ declare module 'Common' {}
 declare module 'Store' {
   export interface State {
     component: Component
+    draft: Draft
+    chat: Chat
   }
   export interface Component {
     nav: Nav
@@ -33,5 +35,24 @@ declare module 'Store' {
   }
   interface Loading {
     show: boolean
+  }
+  interface Draft {
+    groupId: string
+    historyData: HistoryData[]
+    onTable: OnTable[]
+  }
+  interface Chat {
+    groupId: string
+    context: { date: any; userId: string; text: string }[]
+  }
+  interface HistoryData {
+    userId: string
+    selected: string[]
+  }
+  interface OnTable {
+    userId: string
+    turn: number
+    isDecided: boolean
+    enteredName: string
   }
 }

@@ -4,9 +4,13 @@ import logger from 'redux-logger'
 
 import { isProduction } from 'src/constant'
 import component from 'src/store/component'
+import chat from 'src/store/chat'
+import draft from 'src/store/draft'
 
 const reducer = combineReducers({
   component,
+  chat,
+  draft,
 })
 
 // getDefaultMiddleware: serializeエラーがスマホで発生するため
