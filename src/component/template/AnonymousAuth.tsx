@@ -47,7 +47,7 @@ const AnonymousAuthAuth = ({ children }: any) => {
   }, [])
 
   useEffect(() => {
-    if (isSignIn) {
+    if (isSignIn && groupExist) {
       hideLoading()
     } else {
       showLoading()
