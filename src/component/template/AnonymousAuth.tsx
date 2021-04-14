@@ -26,6 +26,8 @@ const AnonymousAuthAuth = ({ children }: any) => {
         setGroupExist(true)
       },
       failed: () => {
+        hideLoading()
+
         history.push('/')
       },
     })
