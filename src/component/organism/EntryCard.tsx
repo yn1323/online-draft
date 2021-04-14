@@ -6,9 +6,9 @@ import CardBackground from 'src/component/template/ CardBackground'
 import DraftHistoryList from 'src/component/organism/DraftHistoryList'
 import CreateGroup from 'src/component/organism/CreateGroup'
 
-const HomeCard = () => {
+const EntryCard = () => {
   const { t } = useTranslation()
-  const [cardIndex, setCardIndex] = useState(0)
+  const [cardIndex, setCardIndex] = useState(1)
 
   const history = true
   return (
@@ -40,4 +40,4 @@ const HomeCard = () => {
   )
 }
 
-export default HomeCard
+export default EntryCard

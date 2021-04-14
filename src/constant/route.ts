@@ -19,6 +19,6 @@ export const routes = [
     path: '/entry/:draftId',
     title: 'Entry',
     component: Entry,
-    reqAuth: false,
+    reqAuth: true,
   },
 ]

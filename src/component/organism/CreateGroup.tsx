@@ -1,7 +1,9 @@
 import { useRef } from 'react'
+import { useHistory } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import { IonButton, IonIcon, IonInput } from '@ionic/react'
 import { chevronBackOutline } from 'ionicons/icons'
+import { createGroup, isSignIn, signIn } from 'src/helper'
 
 interface Props {
   goBack: () => void
@@ -10,9 +12,28 @@ interface Props {
 const CreateGroup = ({ goBack }: Props) => {
   const { t } = useTranslation()
   const groupName = useRef<HTMLIonInputElement>(null)
+  const history = useHistory()
 
-  const createGroup = () => {
-    console.log(groupName.current?.value)
+  const createGroupInFB = async (groupName: any) => {
+    const id = await createGroup(groupName)
+    history.push(`/entry/${id}`)
+  }
+
+  const makeGroup = async () => {
+    const name: any = groupName.current?.value
+    console.log(isSignIn())
+    if (!isSignIn()) {
+      signIn({
+        succeeded: () => {
+          createGroupInFB(name)
+        },
+        failed: () => {
+          alert(t('認証に失敗しました。再度試してください。'))
+        },
+      })
+    } else {
+      createGroupInFB(name)
+    }
   }
   return (
     <div className="createGroupWrapper">
@@ -35,7 +56,7 @@ const CreateGroup = ({ goBack }: Props) => {
           ></IonInput>
         </div>
         <div className="align-centerVH">
-          <IonButton type="submit" onClick={createGroup}>
+          <IonButton type="button" onClick={makeGroup}>
             {t('作成する')}
           </IonButton>
         </div>

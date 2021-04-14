@@ -6,6 +6,8 @@ import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
 // import { Post, State, User } from 'Store'
 // import { FetchList } from 'Request'
 
+const isErrorDebug = false
+
 export const generateFirebaseId = () => {
   return db.collection('_').doc().id
 }
@@ -25,6 +27,13 @@ export const generateFirebaseId = () => {
 //   return id
 // }
 
+const findDoc = (collection: string) =>
+  db.collection('app').doc(APP_NAME).collection(collection)
+
+const collections = {
+  group: findDoc('group'),
+}
+
 export const signIn = ({ succeeded, failed }: any) => {
   auth
     .signInAnonymously()
@@ -41,6 +50,48 @@ export const isSignIn = () => {
   let userId: any
   auth.onAuthStateChanged(user => (userId = user))
   return !!userId
+}
+
+export const createGroup = async (groupName: string) => {
+  const groupId = generateFirebaseId()
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.group.doc(groupId).set(
+      {
+        groupName,
+        id: groupId,
+        deleteFlg: false,
+      },
+      // Create doc if not exist
+      { merge: true }
+    )
+    return groupId
+  } catch (e) {
+    console.log(e)
+    return Promise.reject()
+  }
+}
+
+export const isGroupExist = async (
+  groupId: string,
+  { succeeded, failed }: { succeeded: () => void; failed: () => void }
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    const ref = await collections.group.doc(groupId).get()
+    if (ref.exists) {
+      succeeded()
+    } else {
+      failed()
+    }
+  } catch (e) {
+    console.log(e)
+    return Promise.reject()
+  }
 }
 
 // export const getList = async (searchObj: FetchList) => {

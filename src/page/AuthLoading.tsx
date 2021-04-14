@@ -1,4 +1,4 @@
-import { IonContent, IonLoading, IonPage } from '@ionic/react'
+import { IonContent, IonPage } from '@ionic/react'
 import Header from 'src/component/template/Header'
 
 import 'src/asset/scss/page/Loading.scss'
