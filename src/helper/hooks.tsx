@@ -11,6 +11,7 @@ import {
   showLoading,
   hideLoading,
 } from 'src/store/component'
+import { setGroupId, setUserId } from 'src/store/userInfo'
 
 import { State } from 'Store'
 
@@ -66,5 +67,19 @@ export const useLoading = () => {
     isLoadingShow: loading.show,
     showLoading: () => dispatch(showLoading()),
     hideLoading: () => dispatch(hideLoading()),
+  }
+}
+
+export const useInfo = () => {
+  const dispatch = useDispatch()
+  const groupIdProcess = (groupId: string) => {
+    dispatch(setGroupId({ groupId }))
+  }
+  const userIdProcess = (userId: string) => {
+    dispatch(setUserId(userId))
+  }
+  return {
+    addGroupId: (groupId: string) => groupIdProcess(groupId),
+    addUserId: (userId: string) => userIdProcess(userId),
   }
 }

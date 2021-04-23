@@ -5,7 +5,7 @@ declare module 'Store' {
     component: Component
     draft: Draft
     chat: Chat
-    user: User
+    userInfo: UserInfo
   }
   export interface Component {
     nav: Nav
@@ -38,12 +38,12 @@ declare module 'Store' {
     show: boolean
   }
   interface Draft {
-    groupId: string
     historyData: HistoryData[]
     onTable: OnTable[]
   }
   interface Chat {
-    groupId: string
+    // groupId: string
+    // userId: string
     context: { date: any; userId: string; text: string }[]
   }
   interface HistoryData {
@@ -56,12 +56,22 @@ declare module 'Store' {
     isDecided: boolean
     enteredName: string
   }
-  interface User {
+  interface UserInfo {
     groupId: string
+    userId: string
     users: Users[]
   }
   interface Users {
     userId: string
-    isOnlin: boolean
+    isOnline: boolean
+    userName: string
+  }
+}
+
+declare module 'RequestPayload' {
+  interface CrateUserRequestPayload {
+    groupId: string
+    userId: string
+    userName: string
   }
 }

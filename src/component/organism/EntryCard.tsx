@@ -1,41 +1,39 @@
 import { useState } from 'react'
-import { IonButton, IonText } from '@ionic/react'
+import {
+  IonAvatar,
+  IonButton,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
+  IonText,
+} from '@ionic/react'
 import { useTranslation } from 'react-i18next'
 
 import CardBackground from 'src/component/template/ CardBackground'
-import DraftHistoryList from 'src/component/organism/DraftHistoryList'
-import CreateGroup from 'src/component/organism/CreateGroup'
+import CreateUser from 'src/component/organism/CreateUser'
+import UserList from '../molecule/UserList'
+import { assetImages } from 'src/constant'
 
 const EntryCard = () => {
   const { t } = useTranslation()
   const [cardIndex, setCardIndex] = useState(1)
+  const img = assetImages
+  const users = [{ name: 'test', avatar: img[0].path }]
 
-  const history = true
   return (
     <CardBackground customClass="login" index={cardIndex}>
       <div className="draftselectionWrapper height-100">
-        <IonText className="align-centerVH">
-          <h5>{t('新しく作成する')}</h5>
-        </IonText>
+        <UserList users={users} title={t('登録ユーザー')} />
+        <hr />
+
         <div className="align-centerVH">
-          <IonButton className="createNew" onClick={() => setCardIndex(1)}>
-            {t('グループを作成')}
+          <IonButton onClick={() => setCardIndex(1)}>
+            {t('新規ユーザー登録')}
           </IonButton>
         </div>
-
-        {history && (
-          <>
-            <hr className="bold" />
-            <IonText className="align-centerVH">
-              <h5>{t('履歴')}</h5>
-            </IonText>
-            <div className="align-centerVH">
-              <DraftHistoryList />
-            </div>
-          </>
-        )}
       </div>
-      <CreateGroup goBack={() => setCardIndex(0)} />
+      <CreateUser goBack={() => setCardIndex(0)} />
     </CardBackground>
   )
 }

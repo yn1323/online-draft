@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { CrateUserRequestPayload } from 'RequestPayload'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
@@ -32,6 +33,7 @@ const findDoc = (collection: string) =>
 
 const collections = {
   group: findDoc('group'),
+  user: findDoc('user'),
 }
 
 export const signIn = ({ succeeded, failed }: any) => {
@@ -62,6 +64,32 @@ export const createGroup = async (groupName: string) => {
       {
         groupName,
         id: groupId,
+        deleteFlg: false,
+      },
+      // Create doc if not exist
+      { merge: true }
+    )
+    return groupId
+  } catch (e) {
+    console.error('CREATEGROUP:', e)
+    return Promise.reject()
+  }
+}
+
+export const createUser = async ({
+  groupId,
+  userId,
+  userName,
+}: CrateUserRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.user.doc(userId).set(
+      {
+        id: userId,
+        groupId,
+        userName,
         deleteFlg: false,
       },
       // Create doc if not exist

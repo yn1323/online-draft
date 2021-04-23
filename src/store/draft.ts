@@ -4,7 +4,6 @@ import { Draft as StateType } from 'Store'
 const STORE_NAME = 'draft'
 
 export const defaultVal: StateType = {
-  groupId: '',
   historyData: [],
   onTable: [],
 }

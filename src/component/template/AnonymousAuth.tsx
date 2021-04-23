@@ -8,6 +8,7 @@ import {
   useLoading,
   usePath,
   isGroupExist,
+  useInfo,
 } from 'src/helper'
 import AuthLoading from 'src/page/AuthLoading'
 
@@ -18,13 +19,15 @@ const AnonymousAuthAuth = ({ children }: any) => {
   const [groupExist, setGroupExist] = useState(false)
   const { windowPath } = usePath()
   const { showLoading, hideLoading } = useLoading()
+  const { addGroupId } = useInfo()
 
   const checkGroupExist = () => {
     // 同ドメインから遷移時にuseLocationで正しくpathnameが取得できない
-    const id = windowPath.replace('/entry', '').replace('/draft', '')
+    const id = windowPath.replace('/entry/', '').replace('/draft/', '')
     isGroupExist(id, {
       succeeded: () => {
         setGroupExist(true)
+        addGroupId(id)
       },
       failed: () => {
         hideLoading()

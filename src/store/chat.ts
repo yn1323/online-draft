@@ -4,7 +4,6 @@ import { Chat as StateType } from 'Store'
 const STORE_NAME = 'chat'
 
 export const defaultVal: StateType = {
-  groupId: '',
   context: [],
 }
 
