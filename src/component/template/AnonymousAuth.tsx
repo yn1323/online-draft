@@ -16,11 +16,12 @@ const AnonymousAuthAuth = ({ children }: any) => {
   const history = useHistory()
   const [isSignIn, setInSignIn] = useState(isSign())
   const [groupExist, setGroupExist] = useState(false)
-  const { pathname } = usePath()
+  const { windowPath } = usePath()
   const { showLoading, hideLoading } = useLoading()
 
   const checkGroupExist = () => {
-    const id = pathname.replace('/entry', '').replace('/draft', '')
+    // 同ドメインから遷移時にuseLocationで正しくpathnameが取得できない
+    const id = windowPath.replace('/entry', '').replace('/draft', '')
     isGroupExist(id, {
       succeeded: () => {
         setGroupExist(true)

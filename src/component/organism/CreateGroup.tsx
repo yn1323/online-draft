@@ -21,7 +21,6 @@ const CreateGroup = ({ goBack }: Props) => {
 
   const makeGroup = async () => {
     const name: any = groupName.current?.value
-    console.log(isSignIn())
     if (!isSignIn()) {
       signIn({
         succeeded: () => {

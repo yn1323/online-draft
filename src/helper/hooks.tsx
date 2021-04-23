@@ -44,6 +44,7 @@ export const usePath = () => {
   return {
     query: useParams(),
     ...useLocation(),
+    windowPath: window.location.pathname,
   }
 }
 

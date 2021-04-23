@@ -69,7 +69,7 @@ export const createGroup = async (groupName: string) => {
     )
     return groupId
   } catch (e) {
-    console.log(e)
+    console.error('CREATEGROUP:', e)
     return Promise.reject()
   }
 }
@@ -89,7 +89,7 @@ export const isGroupExist = async (
       failed()
     }
   } catch (e) {
-    console.log(e)
+    console.error('ISGROUPEXIST:', e)
     return Promise.reject()
   }
 }
