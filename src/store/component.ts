@@ -16,6 +16,9 @@ export const defaultVal: StateType = {
     position: 'top',
     color: 'success',
   },
+  loading: {
+    show: false,
+  },
 }
 
 const initialState: StateType = {
@@ -75,6 +78,12 @@ const State = createSlice({
         show: true,
       },
     }),
+    showLoading: (state: StateType) => {
+      return { ...state, loading: { show: true } }
+    },
+    hideLoading: (state: StateType) => {
+      return { ...state, loading: { show: false } }
+    },
   },
 })
 
@@ -87,4 +96,6 @@ export const {
   setToast,
   hideToast,
   showToast,
+  showLoading,
+  hideLoading,
 } = State.actions

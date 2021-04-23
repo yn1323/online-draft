@@ -1,4 +1,4 @@
-import { IonApp } from '@ionic/react'
+import { IonApp, IonPage } from '@ionic/react'
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css'
@@ -19,16 +19,17 @@ import '@ionic/react/css/display.css'
 /* Theme variables */
 import 'src/asset/scss/theme/variables.scss'
 
-import Tabs from 'src/component/template/Tabs'
 import Router from 'src/route'
 import Nav from 'src/component/template/Nav'
 import Toast from 'src/component/template/Toast'
+import Loading from 'src/component/template/Loading'
 
 const Index = () => (
   <IonApp>
-    <Tabs router={<Router />} />
+    <Router />
     <Nav />
     <Toast />
+    <Loading />
   </IonApp>
 )
 
