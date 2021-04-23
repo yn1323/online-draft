@@ -5,27 +5,26 @@ import {
   IonList,
   IonListHeader,
 } from '@ionic/react'
+import { Users } from 'Store'
 
 interface Props {
   title?: string
-  users: {
-    avatar: any
-    name: string
-  }[]
-  // callback?: () => void
+  users: Users[]
+  callback: (id: string) => void
 }
 
-const UserList = ({ title = '', users }: Props) => {
+const UserList = ({ title = '', users, callback }: Props) => {
+  console.log(users)
   return (
     <IonList>
       <IonListHeader>{title}</IonListHeader>
-      {users.map(({ avatar, name }, index) => (
-        <IonItem key={index} button>
+      {users.map(({ avatar, userName, userId }, index) => (
+        <IonItem key={index} button onClick={() => callback(userId)}>
           <IonAvatar slot="start">
             <img src={avatar} />
           </IonAvatar>
           <IonLabel>
-            <h2>{name}</h2>
+            <h2>{userName}</h2>
           </IonLabel>
         </IonItem>
       ))}

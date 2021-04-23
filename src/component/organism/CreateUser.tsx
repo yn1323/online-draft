@@ -5,13 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { IonButton, IonIcon, IonInput, IonText } from '@ionic/react'
 import { chevronBackOutline } from 'ionicons/icons'
 
-import {
-  createGroup,
-  createUser,
-  generateFirebaseId,
-  useInfo,
-  useToast,
-} from 'src/helper'
+import { createUser, generateFirebaseId, useInfo, useToast } from 'src/helper'
 
 import AnimalList from 'src/component/molecule/AnimalList'
 import { State } from 'Store'
@@ -45,6 +39,7 @@ const CreateUser = ({ goBack }: Props) => {
       groupId: userInfo.groupId,
       userId,
       userName: userName.current?.value as any,
+      avatar,
     })
     addUserId(userId)
     history.push(`/draft/${userInfo.groupId}`)

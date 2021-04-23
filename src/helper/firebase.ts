@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { CrateUserRequestPayload } from 'RequestPayload'
+import { CrateUserRequestPayload, GetUsersRequestPayload } from 'RequestPayload'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
@@ -80,6 +80,7 @@ export const createUser = async ({
   groupId,
   userId,
   userName,
+  avatar,
 }: CrateUserRequestPayload) => {
   try {
     if (isErrorDebug) {
@@ -90,6 +91,7 @@ export const createUser = async ({
         id: userId,
         groupId,
         userName,
+        avatar,
         deleteFlg: false,
       },
       // Create doc if not exist
@@ -97,7 +99,28 @@ export const createUser = async ({
     )
     return groupId
   } catch (e) {
-    console.error('CREATEGROUP:', e)
+    console.error('CREATEUSER:', e)
+    return Promise.reject()
+  }
+}
+
+export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    const snapshot = await collections.user
+      .where('groupId', '==', groupId)
+      .get()
+    const users = snapshot.docs.map(doc => ({
+      userId: doc.data().id,
+      userName: doc.data().userName,
+      avatar: doc.data().avatar,
+    }))
+    return users
+  } catch (e) {
+    console.error('GETUSERS:', e)
     return Promise.reject()
   }
 }

@@ -1,30 +1,39 @@
 import { useState } from 'react'
-import {
-  IonAvatar,
-  IonButton,
-  IonItem,
-  IonLabel,
-  IonList,
-  IonListHeader,
-  IonText,
-} from '@ionic/react'
+import { useSelector } from 'react-redux'
+import { useHistory } from 'react-router'
+import { IonButton } from '@ionic/react'
 import { useTranslation } from 'react-i18next'
+
+import { useInfo } from 'src/helper'
 
 import CardBackground from 'src/component/template/ CardBackground'
 import CreateUser from 'src/component/organism/CreateUser'
-import UserList from '../molecule/UserList'
-import { assetImages } from 'src/constant'
+import UserList from 'src/component/molecule/UserList'
+
+import { State } from 'Store'
 
 const EntryCard = () => {
   const { t } = useTranslation()
-  const [cardIndex, setCardIndex] = useState(1)
-  const img = assetImages
-  const users = [{ name: 'test', avatar: img[0].path }]
+  const {
+    userInfo: { users, groupId },
+  } = useSelector((state: State) => state)
+  const history = useHistory()
+  const [cardIndex, setCardIndex] = useState(0)
+  const { addUserId } = useInfo()
+
+  const loginWithExistUser = (userId: string) => {
+    addUserId(userId)
+    history.push(`/draft/${groupId}`)
+  }
 
   return (
     <CardBackground customClass="login" index={cardIndex}>
       <div className="draftselectionWrapper height-100">
-        <UserList users={users} title={t('登録ユーザー')} />
+        <UserList
+          users={users}
+          title={t('登録ユーザー')}
+          callback={(userId: string) => loginWithExistUser(userId)}
+        />
         <hr />
 
         <div className="align-centerVH">

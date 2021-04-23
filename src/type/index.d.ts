@@ -56,15 +56,21 @@ declare module 'Store' {
     isDecided: boolean
     enteredName: string
   }
-  interface UserInfo {
+  interface UserInfo extends ApiLoading {
     groupId: string
     userId: string
     users: Users[]
   }
-  interface Users {
+  export interface Users {
     userId: string
-    isOnline: boolean
+    // isOnline?: boolean
     userName: string
+    avatar: string
+  }
+
+  interface ApiLoading {
+    isLoading: boolean
+    isSucceeded: boolean
   }
 }
 
@@ -73,5 +79,20 @@ declare module 'RequestPayload' {
     groupId: string
     userId: string
     userName: string
+    avatar: string
+  }
+
+  interface GetUsersRequestPayload {
+    groupId: string
+  }
+}
+
+declare module 'ResponsePayload' {
+  interface GetUsersResponsePayload {
+    payload: {
+      userId: string
+      userName: string
+      avatar: string
+    }[]
   }
 }
