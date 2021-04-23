@@ -1,16 +1,17 @@
-import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react'
-
+import { IonContent, IonPage } from '@ionic/react'
 import 'src/asset/scss/page/Home.scss'
+
+import Header from 'src/component/template/Header'
+import HomeCard from 'src/component/organism/HomeCard'
 
 const Home = () => {
   return (
     <IonPage>
-      <IonContent className="height-100 background" scrollY={false}>
-        <IonGrid className="height-100 backgroundoo">
-          <IonRow className="height-25"></IonRow>
-          <IonRow className="height-50"></IonRow>
-          <IonRow className="height-25"></IonRow>
-        </IonGrid>
+      <Header />
+      <IonContent className="height-100" scrollY={false}>
+        <div className="height-100 align-centerVH">
+          <HomeCard />
+        </div>
       </IonContent>
     </IonPage>
   )

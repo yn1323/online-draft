@@ -1,4 +1,5 @@
 import moment from 'moment'
+import { assetImages } from 'src/constant'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
@@ -78,3 +79,7 @@ export const sortObjectedArray = (obj: any[], sortKey: string) => {
 
 export const addComma = (x: number) =>
   x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+
+export const findAvatarPath = (i: string) => {
+  return assetImages.find(({ index, path }) => i === index)?.path || ''
+}

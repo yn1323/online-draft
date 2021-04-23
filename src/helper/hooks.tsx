@@ -1,4 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
+import { useLocation, useParams } from 'react-router'
 import {
   defaultVal as componentDefault,
   hideNavComponent,
@@ -7,7 +8,11 @@ import {
   setToast,
   showNavComponent,
   showToast,
+  showLoading,
+  hideLoading,
 } from 'src/store/component'
+import { setGroupId, setUserId } from 'src/store/userInfo'
+
 import { State } from 'Store'
 
 export const useNav = () => {
@@ -33,5 +38,48 @@ export const useToast = () => {
     }) => dispatch(setToast({ message, position, duration, color })),
     showToast: () => dispatch(showToast()),
     hideToast: () => dispatch(hideToast()),
+  }
+}
+
+export const usePath = () => {
+  return {
+    query: useParams(),
+    ...useLocation(),
+    windowPath: window.location.pathname,
+  }
+}
+
+export const useIsLocation = (target: string[], { exact = false } = {}) => {
+  const { pathname } = useLocation()
+  if (exact) {
+    return target.some(path => pathname === path)
+  } else {
+    return target.some(path => pathname.includes(path))
+  }
+}
+
+export const useLoading = () => {
+  const dispatch = useDispatch()
+  const {
+    component: { loading },
+  } = useSelector((state: State) => state)
+  return {
+    isLoadingShow: loading.show,
+    showLoading: () => dispatch(showLoading()),
+    hideLoading: () => dispatch(hideLoading()),
+  }
+}
+
+export const useInfo = () => {
+  const dispatch = useDispatch()
+  const groupIdProcess = (groupId: string) => {
+    dispatch(setGroupId({ groupId }))
+  }
+  const userIdProcess = (userId: string) => {
+    dispatch(setUserId(userId))
+  }
+  return {
+    addGroupId: (groupId: string) => groupIdProcess(groupId),
+    addUserId: (userId: string) => userIdProcess(userId),
   }
 }
