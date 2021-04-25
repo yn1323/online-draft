@@ -14,7 +14,6 @@ interface Props {
 }
 
 const UserList = ({ title = '', users, callback }: Props) => {
-  console.log(users)
   return (
     <IonList>
       <IonListHeader>{title}</IonListHeader>

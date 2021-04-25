@@ -1,1 +1,42 @@
 @import '../common/Common.scss';
+
+.dashboard {
+  display: flex;
+  flex-direction: row;
+
+  &-left {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 5;
+    &-name {
+      position: relative;
+      flex-grow: 1;
+    }
+    &-table {
+      position: relative;
+      flex-grow: 8;
+    }
+  }
+  &-right {
+    flex-grow: 2;
+    &-log {
+      position: relative;
+    }
+  }
+}
+
+.userListCard {
+  width: calc(100% - 10px);
+  height: calc(100% - 5px);
+}
+
+.logCard {
+  width: 100%;
+  height: 100%;
+}
+.tableCard {
+  position: absolute;
+  top: 5px;
+  width: calc(100% - 10px);
+  height: calc(100% - 5px);
+}

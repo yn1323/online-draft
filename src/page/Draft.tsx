@@ -15,6 +15,10 @@ import { State, Users } from 'Store'
 import Header from 'src/component/template/Header'
 import { setAllUserInfo } from 'src/store/userInfo'
 
+import UserListCard from 'src/component/organism/UserListCard'
+import LogCard from 'src/component/organism/LogCard'
+import TableCard from 'src/component/organism/TableCard'
+
 const Draft = () => {
   const history = useHistory()
   const dispatch = useDispatch()
@@ -68,12 +72,22 @@ const Draft = () => {
   return isLoaded ? (
     <IonPage>
       <Header />
-      <IonContent className="height-100 background" scrollY={false}>
-        <IonGrid className="height-100 backgroundoo">
-          <IonRow className="height-25"></IonRow>
-          <IonRow className="height-50"></IonRow>
-          <IonRow className="height-25"></IonRow>
-        </IonGrid>
+      <IonContent className="height-100" scrollY={false}>
+        <div className="height-100 dashboard">
+          <div className="dashboard-left">
+            <div className="dashboard-left-name">
+              <UserListCard />
+            </div>
+            <div className="dashboard-left-table">
+              <TableCard />
+            </div>
+          </div>
+          <div className="dashboard-right">
+            <div className="height-100 dashboard-right-log">
+              <LogCard />
+            </div>
+          </div>
+        </div>
       </IonContent>
     </IonPage>
   ) : (
