@@ -11,6 +11,7 @@ import {
   usePath,
 } from 'src/helper'
 import { State } from 'Store'
+import Header from 'src/component/template/Header'
 
 const Draft = () => {
   const history = useHistory()
@@ -47,6 +48,7 @@ const Draft = () => {
 
   return isLoaded ? (
     <IonPage>
+      <Header />
       <IonContent className="height-100 background" scrollY={false}>
         <IonGrid className="height-100 backgroundoo">
           <IonRow className="height-25"></IonRow>

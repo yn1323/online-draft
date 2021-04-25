@@ -1,5 +1,9 @@
 import moment from 'moment'
-import { CrateUserRequestPayload, GetUsersRequestPayload } from 'RequestPayload'
+import {
+  CrateUserRequestPayload,
+  GetGroupNameRequestPayload,
+  GetUsersRequestPayload,
+} from 'RequestPayload'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
@@ -125,6 +129,20 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
   }
 }
 
+export const getGroupName = async ({ groupId }: GetGroupNameRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    const ref = await collections.group.doc(groupId).get()
+    return ref.data()?.groupName || ''
+  } catch (e) {
+    console.error('GETGROUPNAME:', e)
+    return Promise.reject()
+  }
+}
+
 export const isGroupExist = async (
   groupId: string,
   { succeeded, failed }: { succeeded: () => void; failed: () => void }
@@ -162,7 +180,7 @@ export const isUserExistInGroup = async (
       failed()
     }
   } catch (e) {
-    console.error('ISGROUPEXIST:', e)
+    console.error('ISUSEREXISTINGROUP:', e)
     return Promise.reject()
   }
 }

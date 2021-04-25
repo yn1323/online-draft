@@ -60,6 +60,7 @@ declare module 'Store' {
     groupId: string
     userId: string
     users: Users[]
+    groupName: string
   }
   export interface Users {
     userId: string
@@ -83,6 +84,9 @@ declare module 'RequestPayload' {
   }
 
   interface GetUsersRequestPayload {
+    groupId: string
+  }
+  interface GetGroupNameRequestPayload {
     groupId: string
   }
 }

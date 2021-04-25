@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { GetUsersRequestPayload } from 'RequestPayload'
-import { findAvatarPath, getUsers } from 'src/helper'
+import {
+  GetGroupNameRequestPayload,
+  GetUsersRequestPayload,
+} from 'RequestPayload'
+import { findAvatarPath, getGroupName, getUsers } from 'src/helper'
 import { UserInfo as StateType } from 'Store'
 
 const STORE_NAME = 'userInfo'
@@ -11,6 +14,7 @@ export const defaultVal: StateType = {
   groupId: '',
   userId: '',
   users: [],
+  groupName: '',
 }
 
 const initialState: StateType = {
@@ -20,6 +24,10 @@ const initialState: StateType = {
 export const getUserInfoOnce = createAsyncThunk(
   `${STORE_NAME}/getUserInfo`,
   async (params: GetUsersRequestPayload) => getUsers(params)
+)
+export const getGroupNameOnce = createAsyncThunk(
+  `${STORE_NAME}/getGroupName`,
+  async (params: GetGroupNameRequestPayload) => getGroupName(params)
 )
 
 const State = createSlice({
@@ -60,6 +68,13 @@ const State = createSlice({
         isLoading: false,
         isSucceeded: false,
       }))
+      .addCase(
+        getGroupNameOnce.fulfilled,
+        (state: StateType, { payload }: any) => ({
+          ...state,
+          groupName: payload,
+        })
+      )
   },
 })
 
