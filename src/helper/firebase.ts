@@ -3,34 +3,20 @@ import {
   CrateUserRequestPayload,
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
+  SubscribeUsersRequestPayload,
 } from 'RequestPayload'
+import { SubscribeUsersRequestResponse } from 'Response'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
-
-// import { Post, State, User } from 'Store'
-// import { FetchList } from 'Request'
+import { Users } from 'Store'
+import { formatUserInfoToStateObj } from './firebaseHelper'
 
 const isErrorDebug = false
 
 export const generateFirebaseId = () => {
   return db.collection('_').doc().id
 }
-
-// export const getId = () => {
-//   const returnId = window.localStorage.getItem(LS_USER_ID) || ''
-//   return returnId
-// }
-
-// export const updateLSUserId = (id: string) => {
-//   window.localStorage.setItem(LS_USER_ID, id)
-// }
-
-// export const initializeUserId = () => {
-//   const id = isProduction ? getId() || generateFirebaseId() : DEV_COLLECTION
-//   updateLSUserId(id)
-//   return id
-// }
 
 const findDoc = (collection: string) =>
   db.collection('app').doc(APP_NAME).collection(collection)
@@ -126,6 +112,28 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
   } catch (e) {
     console.error('GETUSERS:', e)
     return Promise.reject()
+  }
+}
+
+export const subscribeUsers = (
+  { groupId }: SubscribeUsersRequestPayload,
+  dispatcher: (obj: Users[]) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    collections.user.where('groupId', '==', groupId).onSnapshot(snapshot => {
+      const all: SubscribeUsersRequestResponse[] = []
+      snapshot.forEach((d: any) => all.push(d.data()))
+      const format = formatUserInfoToStateObj(all)
+      dispatcher(format)
+    })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEUSERS:', e)
+    return false
   }
 }
 

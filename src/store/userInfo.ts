@@ -43,6 +43,9 @@ const State = createSlice({
     setUserId: (state: StateType, { payload: { userId } }) => {
       return { ...state, userId }
     },
+    setAllUserInfo: (state: StateType, { payload }) => {
+      return { ...state, users: payload }
+    },
   },
   extraReducers: ({ addCase }) => {
     addCase(getUserInfoOnce.pending, (state: StateType) => ({
@@ -80,4 +83,9 @@ const State = createSlice({
 
 export default State.reducer
 
-export const { initializeUser, setGroupId, setUserId } = State.actions
+export const {
+  initializeUser,
+  setGroupId,
+  setUserId,
+  setAllUserInfo,
+} = State.actions

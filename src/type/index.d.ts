@@ -86,8 +86,21 @@ declare module 'RequestPayload' {
   interface GetUsersRequestPayload {
     groupId: string
   }
+  interface SubscribeUsersRequestPayload {
+    groupId: string
+  }
   interface GetGroupNameRequestPayload {
     groupId: string
+  }
+}
+
+declare module 'Response' {
+  interface SubscribeUsersRequestResponse {
+    avatar: string
+    deleteFlg: boolean
+    groupId: string
+    id: string
+    userName: string
   }
 }
 
