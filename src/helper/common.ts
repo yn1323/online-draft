@@ -83,3 +83,17 @@ export const addComma = (x: number) =>
 export const findAvatarPath = (i: string) => {
   return assetImages.find(({ index, path }) => i === index)?.path || ''
 }
+
+export const sessionStorageInfo = () => {
+  const setUserIdToSessionStoragePrccess = (userId: string) => {
+    sessionStorage.setItem('userId', userId)
+  }
+  const getUserIdToSessionStoragePrccess = () => {
+    return sessionStorage.getItem('userId') || ''
+  }
+  return {
+    setUserIdToSessionStorage: (userId: string) =>
+      setUserIdToSessionStoragePrccess(userId),
+    getUserIdToSessionStorage: () => getUserIdToSessionStoragePrccess(),
+  }
+}

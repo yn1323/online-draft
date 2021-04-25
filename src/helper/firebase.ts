@@ -145,6 +145,28 @@ export const isGroupExist = async (
   }
 }
 
+export const isUserExistInGroup = async (
+  groupId: string,
+  userId: string,
+  { succeeded, failed }: { succeeded: () => void; failed: () => void }
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    const ref = await collections.user.doc(userId).get()
+    const data = ref.data()
+    if (data?.groupId === groupId) {
+      succeeded()
+    } else {
+      failed()
+    }
+  } catch (e) {
+    console.error('ISGROUPEXIST:', e)
+    return Promise.reject()
+  }
+}
+
 // export const getList = async (searchObj: FetchList) => {
 //   // const hasCondition = !!Object.keys(searchObj).length
 //   // const conditions = Object.keys(searchObj).map((key: string) => ({key, val: searchObj[key]}))

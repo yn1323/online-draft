@@ -14,6 +14,7 @@ import {
 import { setGroupId, setUserId } from 'src/store/userInfo'
 
 import { State } from 'Store'
+import { sessionStorageInfo } from 'src/helper'
 
 export const useNav = () => {
   const dispatch = useDispatch()
@@ -46,6 +47,9 @@ export const usePath = () => {
     query: useParams(),
     ...useLocation(),
     windowPath: window.location.pathname,
+    groupIdFromPath: window.location.pathname
+      .replace('/entry/', '')
+      .replace('/draft/', ''),
   }
 }
 
@@ -72,10 +76,12 @@ export const useLoading = () => {
 
 export const useInfo = () => {
   const dispatch = useDispatch()
+  const { setUserIdToSessionStorage } = sessionStorageInfo()
   const groupIdProcess = (groupId: string) => {
     dispatch(setGroupId({ groupId }))
   }
   const userIdProcess = (userId: string) => {
+    setUserIdToSessionStorage(userId)
     dispatch(setUserId(userId))
   }
   return {

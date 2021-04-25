@@ -21,6 +21,7 @@ const EntryCard = () => {
   const [cardIndex, setCardIndex] = useState(0)
   const { addUserId } = useInfo()
 
+  const hasUser = !!users.length
   const loginWithExistUser = (userId: string) => {
     addUserId(userId)
     history.push(`/draft/${groupId}`)
@@ -29,12 +30,16 @@ const EntryCard = () => {
   return (
     <CardBackground customClass="login" index={cardIndex}>
       <div className="draftselectionWrapper height-100">
-        <UserList
-          users={users}
-          title={t('登録ユーザー')}
-          callback={(userId: string) => loginWithExistUser(userId)}
-        />
-        <hr />
+        {hasUser && (
+          <>
+            <UserList
+              users={users}
+              title={t('登録ユーザー')}
+              callback={(userId: string) => loginWithExistUser(userId)}
+            />
+            <hr />
+          </>
+        )}
 
         <div className="align-centerVH">
           <IonButton onClick={() => setCardIndex(1)}>
