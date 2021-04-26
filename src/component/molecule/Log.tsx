@@ -2,22 +2,30 @@ import 'src/asset/scss/component/Log.scss'
 
 interface Props {
   isMyLog?: boolean
-  text: string
+  message: string
   avatar: string
   name: string
-  // time: string
+  date: string
+  time: string
 }
-const Log = ({ isMyLog = false, text = '', avatar = '', name = '' }: Props) => {
+const Log = ({
+  isMyLog = false,
+  message = '',
+  avatar = '',
+  name = '',
+  date = '',
+  time = '',
+}: Props) => {
   const LogTime = (
     <div className="logtime">
-      <div className="date">4/12</div>
-      <div className="time">10:00</div>
+      <div className="date">{date}</div>
+      <div className="time">{time}</div>
     </div>
   )
   const LogInfo = (
     <div className="loginfo">
       <div className="loginfo-name">{name}</div>
-      <div className="loginfo-text">{text}</div>
+      <div className="loginfo-text">{message}</div>
     </div>
   )
   const Avatar = <img src={avatar} />

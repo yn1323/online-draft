@@ -42,9 +42,13 @@ declare module 'Store' {
     onTable: OnTable[]
   }
   interface Chat {
-    // groupId: string
-    // userId: string
-    context: { date: any; userId: string; text: string }[]
+    context: Context[]
+  }
+  export interface Context {
+    date: any
+    groupId: string
+    userId: string
+    message: string
   }
   interface HistoryData {
     userId: string
@@ -92,6 +96,14 @@ declare module 'RequestPayload' {
   interface GetGroupNameRequestPayload {
     groupId: string
   }
+  interface AddLogMessageRequestPayload {
+    groupId: string
+    userId: string
+    message: string
+  }
+  interface SubscribeLogMessageRequestPayload {
+    groupId: string
+  }
 }
 
 declare module 'Response' {
@@ -101,6 +113,13 @@ declare module 'Response' {
     groupId: string
     id: string
     userName: string
+  }
+  interface SubscribeLogMessageRequestResponse {
+    date: Date
+    deleteFlg: boolean
+    groupId: string
+    userId: string
+    message: string
   }
 }
 

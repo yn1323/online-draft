@@ -1,16 +1,24 @@
 import moment from 'moment'
 import {
+  AddLogMessageRequestPayload,
   CrateUserRequestPayload,
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
+  SubscribeLogMessageRequestPayload,
   SubscribeUsersRequestPayload,
 } from 'RequestPayload'
-import { SubscribeUsersRequestResponse } from 'Response'
+import {
+  SubscribeLogMessageRequestResponse,
+  SubscribeUsersRequestResponse,
+} from 'Response'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
-import { Users } from 'Store'
-import { formatUserInfoToStateObj } from './firebaseHelper'
+import { Context, Users } from 'Store'
+import {
+  formatLogMessageToStateObj,
+  formatUserInfoToStateObj,
+} from './firebaseHelper'
 
 const isErrorDebug = false
 
@@ -24,6 +32,7 @@ const findDoc = (collection: string) =>
 const collections = {
   group: findDoc('group'),
   user: findDoc('user'),
+  log: findDoc('log'),
 }
 
 export const signIn = ({ succeeded, failed }: any) => {
@@ -190,6 +199,57 @@ export const isUserExistInGroup = async (
   } catch (e) {
     console.error('ISUSEREXISTINGROUP:', e)
     return Promise.reject()
+  }
+}
+
+export const addLogMessage = async ({
+  groupId,
+  userId,
+  message,
+}: AddLogMessageRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.log.add({
+      groupId,
+      userId,
+      message,
+      date: new Date(),
+      deleteFlg: false,
+    })
+    return groupId
+  } catch (e) {
+    console.error('ADDLOGMESSAGE:', e)
+    return Promise.reject()
+  }
+}
+
+export const subscribeLogMessage = (
+  { groupId }: SubscribeLogMessageRequestPayload,
+  dispatcher: (obj: Context[]) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    collections.log
+      .where('groupId', '==', groupId)
+      .orderBy('date', 'asc')
+      .onSnapshot(snapshot => {
+        const all: SubscribeLogMessageRequestResponse[] = []
+        snapshot.forEach((d: any) => {
+          const data = d.data()
+          all.push({ ...data, date: data.date.toDate() })
+        })
+        const format = formatLogMessageToStateObj(all)
+        dispatcher(format)
+      })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEUSERS:', e)
+    return false
   }
 }
 

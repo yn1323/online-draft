@@ -15,12 +15,12 @@ const State = createSlice({
   name: STORE_NAME,
   initialState,
   reducers: {
-    initializeChat: (state: StateType) => {
-      return { ...state }
+    setContext: (state: StateType, { payload }) => {
+      return { ...state, context: payload }
     },
   },
 })
 
 export default State.reducer
 
-export const { initializeChat } = State.actions
+export const { setContext } = State.actions

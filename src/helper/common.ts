@@ -1,5 +1,6 @@
 import moment from 'moment'
 import { assetImages } from 'src/constant'
+import { Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
@@ -82,6 +83,20 @@ export const addComma = (x: number) =>
 
 export const findAvatarPath = (i: string) => {
   return assetImages.find(({ index, path }) => i === index)?.path || ''
+}
+
+export const findAvatarPathFromUserId = (
+  users: Users[],
+  targetUserId: string
+) => {
+  return users.find(({ userId }) => userId === targetUserId)?.avatar || ''
+}
+
+export const findUserNameFromUserId = (
+  users: Users[],
+  targetUserId: string
+) => {
+  return users.find(({ userId }) => userId === targetUserId)?.userName || ''
 }
 
 export const sessionStorageInfo = () => {

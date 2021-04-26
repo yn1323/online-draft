@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router'
+import { useTranslation } from 'react-i18next'
 import {
   defaultVal as componentDefault,
   hideNavComponent,
@@ -11,10 +12,12 @@ import {
   showLoading,
   hideLoading,
 } from 'src/store/component'
-import { setGroupId, setUserId } from 'src/store/userInfo'
+import moment from 'moment'
+import userInfo, { setGroupId, setUserId } from 'src/store/userInfo'
 
 import { State } from 'Store'
 import { sessionStorageInfo } from 'src/helper'
+import { findAvatarPathFromUserId, findUserNameFromUserId } from './common'
 
 export const useNav = () => {
   const dispatch = useDispatch()
@@ -87,5 +90,27 @@ export const useInfo = () => {
   return {
     addGroupId: (groupId: string) => groupIdProcess(groupId),
     addUserId: (userId: string) => userIdProcess(userId),
+  }
+}
+
+export const useChat = () => {
+  const { t } = useTranslation()
+  const {
+    userInfo,
+    chat: { context },
+  } = useSelector((state: State) => state)
+
+  const chatInfo = context.map(({ message, userId, date }) => ({
+    isMyLog: userInfo.userId === userId,
+    message,
+    userId,
+    userName: findUserNameFromUserId(userInfo.users, userId),
+    date: moment(date).format(t('M/D')),
+    //  なぜか時間が正常に取得できないため
+    time: `${date.getHours()}:${date.getMinutes()}`,
+    avatar: findAvatarPathFromUserId(userInfo.users, userId),
+  }))
+  return {
+    chatInfo,
   }
 }

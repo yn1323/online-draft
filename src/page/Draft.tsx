@@ -7,13 +7,15 @@ import 'src/asset/scss/page/Draft.scss'
 import {
   isUserExistInGroup,
   sessionStorageInfo,
+  subscribeLogMessage,
   subscribeUsers,
   useLoading,
   usePath,
 } from 'src/helper'
-import { State, Users } from 'Store'
+import { Context, State, Users } from 'Store'
 import Header from 'src/component/template/Header'
-import { setAllUserInfo } from 'src/store/userInfo'
+import { setAllUserInfo, setUserId } from 'src/store/userInfo'
+import { setContext } from 'src/store/chat'
 
 import UserListCard from 'src/component/organism/UserListCard'
 import LogCard from 'src/component/organism/LogCard'
@@ -39,8 +41,10 @@ const Draft = () => {
       showLoading()
       userExistanceCheck()
     } else if (process === 1) {
-      subscribeAllUserInfo()
+      setUser()
     } else if (process === 2) {
+      subscribes()
+    } else if (process === 3) {
       hideLoading()
       setIsLoaded(true)
     }
@@ -61,12 +65,20 @@ const Draft = () => {
       },
     })
   }
+  const setUser = () => {
+    const userId = getUserIdToSessionStorage()
+    dispatch(setUserId({ userId }))
+    setProcess(2)
+  }
 
-  const subscribeAllUserInfo = () => {
+  const subscribes = () => {
     subscribeUsers({ groupId: groupIdFromPath }, (obj: Users[]) =>
       dispatch(setAllUserInfo(obj))
     )
-    setProcess(2)
+    subscribeLogMessage({ groupId: groupIdFromPath }, (obj: Context[]) =>
+      dispatch(setContext(obj))
+    )
+    setProcess(3)
   }
 
   return isLoaded ? (
