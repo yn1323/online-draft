@@ -106,8 +106,11 @@ export const useChat = () => {
     userId,
     userName: findUserNameFromUserId(userInfo.users, userId),
     date: moment(date).format(t('M/D')),
-    //  なぜか時間が正常に取得できないため
-    time: `${date.getHours()}:${date.getMinutes()}`,
+    //  なぜか時間が正常に取得できないため頑張る
+    time: `${date
+      .getHours()
+      .toString()
+      .padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`,
     avatar: findAvatarPathFromUserId(userInfo.users, userId),
   }))
   return {
