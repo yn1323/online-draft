@@ -1,0 +1,54 @@
+@import '../common/Common.scss';
+
+.logWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  height: 50px;
+  margin: 10px 0;
+
+  &-right {
+    justify-content: flex-end;
+  }
+
+  img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+  }
+  .loginfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: calc(100% - 150px);
+    padding-right: 10px;
+    padding-left: 10px;
+
+    &-name {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 10px;
+      margin-bottom: 3px;
+      font-size: 12px;
+    }
+    &-text {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      height: 35px;
+      padding: 0 10px;
+      background: #eee;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+  }
+  .logtime {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 10px;
+  }
+}
