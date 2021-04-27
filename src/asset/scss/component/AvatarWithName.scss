@@ -1,0 +1,18 @@
+@import '../common//Common.scss';
+
+.avatarWithNameWrapper {
+  display: flex;
+  align-items: center;
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #eee;
+    border-radius: 20px;
+  }
+  .name {
+    max-width: 100px;
+    margin-left: 10px;
+    font-size: 14px;
+    @include ellipsis;
+  }
+}

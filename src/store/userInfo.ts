@@ -44,7 +44,16 @@ const State = createSlice({
       return { ...state, userId }
     },
     setAllUserInfo: (state: StateType, { payload }) => {
-      return { ...state, users: payload }
+      const myId = state.userId
+      const orderedArray = payload.reduce((acc: any, cur: any) => {
+        if (cur.userId !== myId) {
+          acc.push(cur)
+        } else {
+          acc.unshift(cur)
+        }
+        return acc
+      }, [])
+      return { ...state, users: orderedArray }
     },
   },
   extraReducers: ({ addCase }) => {

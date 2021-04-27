@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux'
 
 import { State } from 'Store'
 import CardBackground from 'src/component/template/ CardBackground'
+import EnterDraft from 'src/component/organism/EnterDraft'
 
 const UserListCard = () => {
   const {
@@ -9,7 +10,7 @@ const UserListCard = () => {
   } = useSelector((state: State) => state)
   return (
     <CardBackground customClass="userListCard">
-      <div>hoge</div>
+      <EnterDraft />
     </CardBackground>
   )
 }

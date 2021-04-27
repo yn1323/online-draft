@@ -37,6 +37,7 @@
       height: 10px;
       margin-bottom: 3px;
       font-size: 12px;
+      @include ellipsis;
     }
     &-text {
       align-items: center;

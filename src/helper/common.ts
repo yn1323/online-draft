@@ -85,18 +85,22 @@ export const findAvatarPath = (i: string) => {
   return assetImages.find(({ index, path }) => i === index)?.path || ''
 }
 
+export const findUserInfo = (users: Users[], targetUserId: string) => {
+  return users.find(({ userId }) => userId === targetUserId)
+}
+
 export const findAvatarPathFromUserId = (
   users: Users[],
   targetUserId: string
 ) => {
-  return users.find(({ userId }) => userId === targetUserId)?.avatar || ''
+  return findUserInfo(users, targetUserId)?.avatar || ''
 }
 
 export const findUserNameFromUserId = (
   users: Users[],
   targetUserId: string
 ) => {
-  return users.find(({ userId }) => userId === targetUserId)?.userName || ''
+  return findUserInfo(users, targetUserId)?.userName || ''
 }
 
 export const sessionStorageInfo = () => {
