@@ -1,5 +1,7 @@
 import { IonButton } from '@ionic/react'
 import { useTranslation } from 'react-i18next'
+import { useModal } from 'src/helper'
+import SubmitItem from './SubmitItem'
 
 interface Props {
   currentUser: string
@@ -10,8 +12,18 @@ const EnterDraftButton = ({ currentUser, targetUser }: Props) => {
   const { t } = useTranslation()
   const isEntered = true
 
+  const { showModal, setModalComponent } = useModal()
+
+  const showSubmitItem = () => {
+    setModalComponent({
+      component: <SubmitItem />,
+      title: t('ドラフト候補入力'),
+    })
+    showModal()
+  }
+
   const enterButton = (
-    <IonButton className="width-100" fill="solid">
+    <IonButton className="width-100" fill="solid" onClick={showSubmitItem}>
       {t('入力する')}
     </IonButton>
   )

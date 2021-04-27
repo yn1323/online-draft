@@ -1,5 +1,6 @@
 @import './Variable.scss';
 @import './Mixin.scss';
+@import './Library.scss';
 
 ion-content {
   --padding-bottom: 10px;
@@ -79,4 +80,17 @@ hr {
   &-pointer {
     cursor: pointer;
   }
+}
+
+.ReactModal__Content {
+  position: absolute;
+  top: 2.5rem;
+  right: 2.5rem;
+  bottom: 2.5rem;
+  left: 2.5rem;
+  overflow: auto;
+  background-color: #fff;
+  border-radius: 4px;
+  outline: none;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 97, 0.5);
 }

@@ -9,6 +9,7 @@ import { State } from 'Store'
 const Header = () => {
   const {
     userInfo: { groupName },
+    draft: { round },
   } = useSelector((state: State) => state)
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -26,9 +27,9 @@ const Header = () => {
 
   useEffect(() => {
     if (groupName) {
-      setHeaderTitle(groupName)
+      setHeaderTitle(`${groupName}    [ROUND-${round}]`)
     }
-  }, [groupName])
+  }, [groupName, round])
 
   return (
     <IonHeader>

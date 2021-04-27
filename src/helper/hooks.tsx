@@ -11,6 +11,9 @@ import {
   showToast,
   showLoading,
   hideLoading,
+  setModalComponent,
+  showModal,
+  hideModal,
 } from 'src/store/component'
 import moment from 'moment'
 import userInfo, { setGroupId, setUserId } from 'src/store/userInfo'
@@ -27,6 +30,16 @@ export const useNav = () => {
       dispatch(setNavComponent({ title, component })),
     showNav: () => dispatch(showNavComponent()),
     hideNav: () => dispatch(hideNavComponent()),
+  }
+}
+
+export const useModal = () => {
+  const dispatch = useDispatch()
+  return {
+    setModalComponent: ({ component, title }: any) =>
+      dispatch(setModalComponent({ component, title })),
+    showModal: () => dispatch(showModal()),
+    hideModal: () => dispatch(hideModal()),
   }
 }
 

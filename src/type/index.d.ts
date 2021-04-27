@@ -11,6 +11,7 @@ declare module 'Store' {
     nav: Nav
     toast: Toast
     loading: Loading
+    modal: Modal
   }
 
   interface Nav {
@@ -37,9 +38,20 @@ declare module 'Store' {
   interface Loading {
     show: boolean
   }
+
+  interface Modal {
+    show: boolean
+    title: string
+    component: any
+  }
   interface Draft {
-    historyData: HistoryData[]
-    onTable: OnTable[]
+    round: number
+    selections: Selections[]
+  }
+
+  interface Selections {
+    userId: string
+    selection: { randomNumber: number; item: string }[]
   }
   interface Chat {
     context: Context[]
@@ -92,6 +104,12 @@ declare module 'RequestPayload' {
   }
   interface SubscribeUsersRequestPayload {
     groupId: string
+  }
+  interface SubscribeGroupRoundRequestPayload {
+    groupId: string
+  }
+  interface SubscribeSelectionRequestPayload {
+    userId: string
   }
   interface GetGroupNameRequestPayload {
     groupId: string

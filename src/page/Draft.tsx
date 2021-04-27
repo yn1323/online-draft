@@ -7,6 +7,7 @@ import 'src/asset/scss/page/Draft.scss'
 import {
   isUserExistInGroup,
   sessionStorageInfo,
+  subscribeGroupRound,
   subscribeLogMessage,
   subscribeUsers,
   useLoading,
@@ -20,13 +21,13 @@ import { setContext } from 'src/store/chat'
 import UserListCard from 'src/component/organism/UserListCard'
 import LogCard from 'src/component/organism/LogCard'
 import TableCard from 'src/component/organism/TableCard'
+import { setRoundNumber } from 'src/store/draft'
+import Modal from 'src/component/template/Modal'
 
 const Draft = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const {
-    userInfo: { groupId },
-  } = useSelector((state: State) => state)
+  const { userInfo } = useSelector((state: State) => state)
   const { groupIdFromPath } = usePath()
   const [isLoaded, setIsLoaded] = useState(false)
   const [process, setProcess] = useState(0)
@@ -72,11 +73,13 @@ const Draft = () => {
   }
 
   const subscribes = () => {
-    subscribeUsers({ groupId: groupIdFromPath }, (obj: Users[]) =>
-      dispatch(setAllUserInfo(obj))
-    )
-    subscribeLogMessage({ groupId: groupIdFromPath }, (obj: Context[]) =>
+    const groupId = groupIdFromPath
+    subscribeUsers({ groupId }, (obj: Users[]) => dispatch(setAllUserInfo(obj)))
+    subscribeLogMessage({ groupId }, (obj: Context[]) =>
       dispatch(setContext(obj))
+    )
+    subscribeGroupRound({ groupId }, (obj: { round: number }) =>
+      dispatch(setRoundNumber(obj))
     )
     setProcess(3)
   }

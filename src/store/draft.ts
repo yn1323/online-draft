@@ -4,8 +4,8 @@ import { Draft as StateType } from 'Store'
 const STORE_NAME = 'draft'
 
 export const defaultVal: StateType = {
-  historyData: [],
-  onTable: [],
+  round: 1,
+  selections: [],
 }
 
 const initialState: StateType = {
@@ -16,12 +16,22 @@ const State = createSlice({
   name: STORE_NAME,
   initialState,
   reducers: {
-    initializeDraft: (state: StateType) => {
-      return { ...state }
+    setRoundNumber: (state: StateType, { payload: { round } }) => {
+      return { ...state, round }
+    },
+    setSelectionByUser: (
+      state: StateType,
+      { payload: { userId, selection } }
+    ) => {
+      const newSelections = state.selections.filter(
+        selection => selection.userId !== userId
+      )
+      newSelections.push({ userId, selection })
+      return { ...state, selections: newSelections }
     },
   },
 })
 
 export default State.reducer
 
-export const { initializeDraft } = State.actions
+export const { setRoundNumber } = State.actions

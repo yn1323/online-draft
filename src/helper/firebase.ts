@@ -4,7 +4,9 @@ import {
   CrateUserRequestPayload,
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
+  SubscribeGroupRoundRequestPayload,
   SubscribeLogMessageRequestPayload,
+  SubscribeSelectionRequestPayload,
   SubscribeUsersRequestPayload,
 } from 'RequestPayload'
 import {
@@ -33,6 +35,7 @@ const collections = {
   group: findDoc('group'),
   user: findDoc('user'),
   log: findDoc('log'),
+  selection: findDoc('selection'),
 }
 
 export const signIn = ({ succeeded, failed }: any) => {
@@ -63,6 +66,7 @@ export const createGroup = async (groupName: string) => {
       {
         groupName,
         id: groupId,
+        round: 1,
         deleteFlg: false,
       },
       // Create doc if not exist
@@ -72,6 +76,51 @@ export const createGroup = async (groupName: string) => {
   } catch (e) {
     console.error('CREATEGROUP:', e)
     return Promise.reject()
+  }
+}
+
+export const subscribeGroupRound = (
+  { groupId }: SubscribeGroupRoundRequestPayload,
+  dispatcher: (obj: { round: number }) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    collections.group.doc(groupId).onSnapshot(doc => {
+      const d = doc.data()
+      dispatcher({ round: d?.round || 1 })
+    })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEGROUPROUND:', e)
+    return false
+  }
+}
+
+export const subscribeSelection = (
+  { userId }: SubscribeSelectionRequestPayload,
+  dispatcher: (obj: { round: number }) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    collections.selection.doc(userId).onSnapshot(doc => {
+      if (doc.exists) {
+        const d = doc.data()
+        console.error(doc.data())
+        dispatcher({ round: d?.round || 1 })
+      }
+    })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBESELECTION:', e)
+    return false
   }
 }
 
