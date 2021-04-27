@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { IonButton, IonIcon, IonInput } from '@ionic/react'
 import { arrowRedoOutline } from 'ionicons/icons'
@@ -16,7 +16,6 @@ const Chat = () => {
   const message: any = useRef(null)
 
   const { chatInfo } = useChat()
-
   const submitChat = () => {
     const tmpMessage: any = message.current?.value
     if (!tmpMessage) {
@@ -26,9 +25,18 @@ const Chat = () => {
     message.current.value = ''
   }
 
+  const scrollBottom = () => {
+    const el: any = document.getElementById('logArea')
+    el.scrollTop = 999999
+  }
+
+  useEffect(() => {
+    scrollBottom()
+  }, [chatInfo.length])
+
   return (
     <div className="chatWrapper">
-      <div className="logArea">
+      <div className="logArea" id="logArea">
         {chatInfo.map(
           ({ isMyLog, message, avatar, userName, date, time }, i) => (
             <Log

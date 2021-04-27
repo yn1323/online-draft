@@ -9,6 +9,7 @@
   height: 100%;
   .logArea {
     height: calc(100% - #{$enterAreaH});
+    overflow-y: auto;
   }
   .enterArea {
     display: flex;

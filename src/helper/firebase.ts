@@ -236,6 +236,7 @@ export const subscribeLogMessage = (
     collections.log
       .where('groupId', '==', groupId)
       .orderBy('date', 'asc')
+      .limit(100)
       .onSnapshot(snapshot => {
         const all: SubscribeLogMessageRequestResponse[] = []
         snapshot.forEach((d: any) => {
