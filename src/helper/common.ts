@@ -120,7 +120,7 @@ export const sessionStorageInfo = () => {
 export const findUserOwnSelection = (
   selections: Selections[],
   userId: string
-) => {
+): Selection[] => {
   const oneSelection = selections.find(selection => selection.userId === userId)
 
   return oneSelection ? oneSelection.selection : []
@@ -179,4 +179,13 @@ export const makeNextItem = (
   console.log('nextSelection')
   console.log(nextSelection)
   return nextSelection
+}
+
+export const isUserFinishEnter = (
+  selections: Selections[],
+  userId: string,
+  round: number
+) => {
+  const draft = findUserOwnSelection(selections, userId)
+  return draft.some(s => s.round === round)
 }

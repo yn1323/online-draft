@@ -1,8 +1,10 @@
 import { useSelector } from 'react-redux'
-import { findUserInfo } from 'src/helper'
+import { findUserInfo, isUserFinishEnter } from 'src/helper'
 import { State } from 'Store'
 
 import 'src/asset/scss/component/AvatarWithName.scss'
+import { IonIcon } from '@ionic/react'
+import { checkmarkOutline } from 'ionicons/icons'
 
 interface Props {
   userId: string
@@ -11,12 +13,23 @@ interface Props {
 const AvatarWithName = ({ userId }: Props) => {
   const {
     userInfo: { users },
+    draft: { round, selections },
   } = useSelector((state: State) => state)
   const info = findUserInfo(users, userId)
+  const showCheckIcon = isUserFinishEnter(selections, userId, round)
   return (
     <div className="avatarWithNameWrapper">
       <img src={info?.avatar || ''} className="avatar" />
+
       <div className="name">{info?.userName || ''}</div>
+      {showCheckIcon && (
+        <IonIcon
+          className="icon"
+          slot="icon-only"
+          icon={checkmarkOutline}
+          color="success"
+        />
+      )}
     </div>
   )
 }
