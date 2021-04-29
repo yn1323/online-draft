@@ -6,6 +6,7 @@ const STORE_NAME = 'draft'
 export const defaultVal: StateType = {
   round: 1,
   selections: [],
+  roundAsIndex: 0,
 }
 
 const initialState: StateType = {
@@ -17,7 +18,7 @@ const State = createSlice({
   initialState,
   reducers: {
     setRoundNumber: (state: StateType, { payload: { round } }) => {
-      return { ...state, round }
+      return { ...state, round, roundAsIndex: round - 1 }
     },
     setSelectionByUser: (
       state: StateType,

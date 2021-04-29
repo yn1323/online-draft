@@ -46,6 +46,7 @@ declare module 'Store' {
   }
   interface Draft {
     round: number
+    roundAsIndex: number
     selections: Selections[]
   }
 
