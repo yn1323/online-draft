@@ -156,9 +156,9 @@ const createItem = (
   round: number,
   randomNumber = Math.random()
 ) => ({
-  item,
-  round,
   randomNumber,
+  round,
+  item,
 })
 
 export const makeNextItem = (
@@ -168,15 +168,11 @@ export const makeNextItem = (
 ) => {
   const hasRound = isRoundExistInSelection(selection, targetRound)
   let nextSelection = []
-  console.log('hasROUND')
-  console.log(hasRound)
-  console.log('selection')
-  console.log(selection)
   if (hasRound) {
     const targetRoundObj: any = selection.find(s => s.round === targetRound)
-    targetRoundObj.item = item
+    const newObj = { ...targetRoundObj, item }
     const deletedObjArr = selection.filter(s => s.round !== targetRound)
-    nextSelection = [...deletedObjArr, targetRoundObj]
+    nextSelection = [...deletedObjArr, newObj]
   } else {
     nextSelection = [...selection, createItem(item, targetRound)]
   }

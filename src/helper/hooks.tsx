@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +28,14 @@ import {
   createSelection,
   makeNextItem,
 } from 'src/helper'
+
+export const usePrevious = (value: any, initialVal?: any) => {
+  const ref = useRef(initialVal ?? null)
+  useEffect(() => {
+    ref.current = value
+  }, [value])
+  return ref.current
+}
 
 export const useNav = () => {
   const dispatch = useDispatch()
@@ -161,7 +170,7 @@ export const useItems = () => {
     }
     const selection = findUserOwnSelection(selections, updateUserId)
     const nextSelection = makeNextItem(selection, updateRoundIndex, item)
-    // createSelection({ userId: updateUserId, selection: nextSelection })
+    createSelection({ userId: updateUserId, selection: nextSelection })
   }
 
   return {

@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { Draft as StateType } from 'Store'
+import { Draft as StateType, Selections } from 'Store'
 
 const STORE_NAME = 'draft'
 
@@ -29,9 +29,17 @@ const State = createSlice({
       newSelections.push({ userId, selection })
       return { ...state, selections: newSelections }
     },
+    setSelections: (state: StateType, { payload }: { payload: Selections }) => {
+      const targetUserId = payload.userId
+      const newSelections = state.selections.filter(
+        selection => selection.userId !== targetUserId
+      )
+      newSelections.push(payload)
+      return { ...state, selections: newSelections }
+    },
   },
 })
 
 export default State.reducer
 
-export const { setRoundNumber } = State.actions
+export const { setRoundNumber, setSelections } = State.actions

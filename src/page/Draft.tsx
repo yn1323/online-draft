@@ -9,20 +9,22 @@ import {
   sessionStorageInfo,
   subscribeGroupRound,
   subscribeLogMessage,
+  subscribeSelection,
   subscribeUsers,
   useLoading,
   usePath,
+  usePrevious,
 } from 'src/helper'
-import { Context, State, Users } from 'Store'
+import { Context, Selections, State, Users } from 'Store'
 import Header from 'src/component/template/Header'
 import { setAllUserInfo, setUserId } from 'src/store/userInfo'
+import { setSelections } from 'src/store/draft'
 import { setContext } from 'src/store/chat'
 
 import UserListCard from 'src/component/organism/UserListCard'
 import LogCard from 'src/component/organism/LogCard'
 import TableCard from 'src/component/organism/TableCard'
 import { setRoundNumber } from 'src/store/draft'
-import Modal from 'src/component/template/Modal'
 
 const Draft = () => {
   const history = useHistory()
@@ -30,6 +32,7 @@ const Draft = () => {
   const {
     userInfo: { users },
   } = useSelector((state: State) => state)
+  const prevUsers = usePrevious(users, [])
   const { groupIdFromPath } = usePath()
   const [isLoaded, setIsLoaded] = useState(false)
   const [process, setProcess] = useState(0)
@@ -52,6 +55,19 @@ const Draft = () => {
       setIsLoaded(true)
     }
   }, [process])
+
+  useEffect(() => {
+    const currentUserIds = users.map(user => user.userId)
+    const prevUserIds = prevUsers.map((user: any) => user.userId)
+    const newSubscribeIds = currentUserIds.filter(
+      userId => !prevUserIds.includes(userId)
+    )
+    newSubscribeIds.forEach(userId => {
+      subscribeSelection({ userId }, (obj: Selections) =>
+        dispatch(setSelections(obj))
+      )
+    })
+  }, [users])
 
   const userExistanceCheck = () => {
     const userId = getUserIdToSessionStorage()

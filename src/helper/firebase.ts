@@ -17,7 +17,7 @@ import {
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
-import { Context, Users } from 'Store'
+import { Context, Selections, Users } from 'Store'
 import {
   formatLogMessageToStateObj,
   formatUserInfoToStateObj,
@@ -309,18 +309,16 @@ export const createSelection = async ({
 
 export const subscribeSelection = (
   { userId }: SubscribeSelectionRequestPayload,
-  dispatcher: (obj: any) => void
+  dispatcher: (obj: Selections) => void
 ) => {
   try {
     if (isErrorDebug) {
       throw new Error()
     }
-
     const unsubscribe = collections.selection.doc(userId).onSnapshot(doc => {
       if (doc.exists) {
-        const d = doc.data()
-        console.error(doc.data())
-        dispatcher({ round: d?.round || 1 })
+        const d: any = doc.data()
+        dispatcher(d)
       }
     })
     unsubscribesForSelection.push(unsubscribe)
