@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useMemo } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -196,4 +196,42 @@ export const useGetCurrentItem = (userId: string, targetRound = 0) => {
   const selection = findUserOwnSelection(selections, userId)
   const target = selection.find(s => s.round === compareRound)
   return target?.item ?? ''
+}
+
+export const useTableData = () => {
+  const {
+    draft: { selections, round },
+    userInfo: { users },
+  } = useSelector((state: State) => state)
+  const minimumRow = 10
+  const columns = useMemo(() => {
+    const index = [{ Header: 'No', accessor: 'no' }]
+    const userHeader = users.map(({ avatar, userId, userName }) => ({
+      Header: userName,
+      accessor: userId,
+      avatar: avatar,
+    }))
+    return [...index, ...userHeader]
+  }, [users])
+
+  const data = useMemo(() => {
+    const minimumRound = round < minimumRow ? minimumRow : round
+    const d: any = []
+    for (let loopRound = 1; loopRound <= minimumRound; loopRound++) {
+      let row: any = { no: loopRound }
+      selections.forEach(({ selection, userId }) => {
+        const roundData = selection.find(d => d.round === loopRound)
+        if (roundData) {
+          row = { ...row, [userId]: roundData.item, userId: userId }
+        }
+      })
+      d.push(row)
+    }
+    return d
+  }, [selections])
+
+  return {
+    columns,
+    data,
+  }
 }
