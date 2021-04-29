@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { assetImages } from 'src/constant'
-import { Selection, Selections, Users } from 'Store'
+import { Draft, Selection, Selections, Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
@@ -176,8 +176,6 @@ export const makeNextItem = (
   } else {
     nextSelection = [...selection, createItem(item, targetRound)]
   }
-  console.log('nextSelection')
-  console.log(nextSelection)
   return nextSelection
 }
 
@@ -188,4 +186,31 @@ export const isUserFinishEnter = (
 ) => {
   const draft = findUserOwnSelection(selections, userId)
   return draft.some(s => s.round === round)
+}
+
+export const isDuplicateItem = (
+  draft: Draft,
+  targetRound: number,
+  targetUserId: string,
+  checkVal: string
+) => {
+  const allItems = draft.selections
+    .map(({ selection, userId }) => {
+      return (
+        selection
+          .filter(s => {
+            return (
+              // 自分自身以外
+              !(s.round === targetRound && targetUserId === userId)
+            )
+          })
+          // 現在のROUNDでない
+          .filter(s => s.round !== draft.round)
+      )
+    })
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
+  return allItems.includes(checkVal)
 }

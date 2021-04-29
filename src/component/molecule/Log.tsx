@@ -1,3 +1,5 @@
+import { findAvatarPath } from 'src/helper'
+
 import 'src/asset/scss/component/Log.scss'
 
 interface Props {
@@ -24,11 +26,11 @@ const Log = ({
   )
   const LogInfo = (
     <div className="loginfo">
-      <div className="loginfo-name">{name}</div>
+      <div className="loginfo-name">{name || '自動メッセージ'}</div>
       <div className="loginfo-text">{message}</div>
     </div>
   )
-  const Avatar = <img src={avatar} />
+  const Avatar = <img src={avatar || findAvatarPath('99')} />
 
   const renderInLeft = () => (
     <div className="logWrapper">

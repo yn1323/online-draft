@@ -72,7 +72,8 @@
         background: $indexRowBackground;
         border-left: 1px solid $borderColor;
       }
-      :not(:first-child):hover {
+
+      .clickable:hover {
         cursor: pointer;
         background: $backgroundHover;
       }

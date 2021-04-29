@@ -16,6 +16,7 @@ import img15 from 'src/asset/img/15.png'
 import img16 from 'src/asset/img/16.png'
 import img17 from 'src/asset/img/17.png'
 import img18 from 'src/asset/img/18.png'
+import img99 from 'src/asset/img/99.png'
 
 // デバッグ用
 export const END_POINT = process.env.NODE_ENV === 'production' ? '' : ''
@@ -56,4 +57,5 @@ export const assetImages = [
   { index: '16', path: img16 },
   { index: '17', path: img17 },
   { index: '18', path: img18 },
+  { index: '99', path: img99 },
 ]

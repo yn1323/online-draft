@@ -1,4 +1,4 @@
-import { useEffect, useRef, useMemo } from 'react'
+import { useEffect, useRef, useMemo, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useLocation, useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
@@ -19,7 +19,7 @@ import {
 import moment from 'moment'
 import { setGroupId, setUserId } from 'src/store/userInfo'
 
-import { Selection, State } from 'Store'
+import { Selection, Selections, State } from 'Store'
 import { sessionStorageInfo } from 'src/helper'
 import {
   findAvatarPathFromUserId,
@@ -173,11 +173,25 @@ export const useItems = () => {
     const nextSelection = makeNextItem(selection, updateRoundIndex, item)
     createSelection({ userId: updateUserId, selection: nextSelection })
   }
-
+  const updateItem = (
+    targetUserId: string,
+    roundIndex: number,
+    item: string
+  ) => {
+    const updateUserId = targetUserId || userId
+    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
+    if (!item) {
+      return false
+    }
+    const selection = findUserOwnSelection(selections, updateUserId)
+    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
+    createSelection({ userId: updateUserId, selection: nextSelection })
+  }
   return {
     addItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
       addItem(targetUserId, roundIndex, item),
-    // updateSelection: () => updateSelection(),
+    updateItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
+      updateItem(targetUserId, roundIndex, item),
   }
 }
 
@@ -205,7 +219,7 @@ export const useTableData = () => {
   } = useSelector((state: State) => state)
   const minimumRow = 10
   const columns = useMemo(() => {
-    const index = [{ Header: 'No', accessor: 'no' }]
+    const index = [{ Header: 'No', accessor: 'round' }]
     const userHeader = users.map(({ avatar, userId, userName }) => ({
       Header: userName,
       accessor: userId,
@@ -218,7 +232,7 @@ export const useTableData = () => {
     const minimumRound = round < minimumRow ? minimumRow : round
     const d: any = []
     for (let loopRound = 1; loopRound <= minimumRound; loopRound++) {
-      let row: any = { no: loopRound }
+      let row: any = { round: loopRound }
       selections.forEach(({ selection, userId }) => {
         const roundData = selection.find(d => d.round === loopRound)
         if (roundData) {
