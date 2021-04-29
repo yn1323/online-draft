@@ -34,7 +34,7 @@ const EnterDraftButton = ({ currentUser, targetUser }: Props) => {
   )
   const othersEnteringButton = (
     <IonButton className="width-100" fill="default" disabled>
-      {t('考え中...')}
+      {t('考え中')}
     </IonButton>
   )
   const othersFinishButton = (
