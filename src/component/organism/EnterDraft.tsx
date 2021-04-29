@@ -4,8 +4,7 @@ import AvatarWithName from 'src/component/organism/AvatarWithName'
 import { State } from 'Store'
 
 import 'src/asset/scss/component/EnterDraft.scss'
-import { IonButton } from '@ionic/react'
-import EnterDraftButton from '../molecule/EnterDraftButton'
+import EnterDraftButton from 'src/component/molecule/EnterDraftButton'
 
 const EnterDraft = () => {
   const { t } = useTranslation()
@@ -18,7 +17,7 @@ const EnterDraft = () => {
         <div key={i} className="draftUser">
           <AvatarWithName userId={user.userId} />
           <div className="width-100 align-centerVH">
-            <EnterDraftButton currentUser={user.userId} targetUser={userId} />
+            <EnterDraftButton currentUser={user.userId} myId={userId} />
           </div>
         </div>
       ))}

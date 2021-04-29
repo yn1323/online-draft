@@ -27,6 +27,7 @@ import {
   findUserOwnSelection,
   createSelection,
   makeNextItem,
+  isUserFinishEnter,
 } from 'src/helper'
 
 export const usePrevious = (value: any, initialVal?: any) => {
@@ -178,4 +179,21 @@ export const useItems = () => {
       addItem(targetUserId, roundIndex, item),
     // updateSelection: () => updateSelection(),
   }
+}
+
+export const useIsUserFinishEnter = (userId: string) => {
+  const {
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+  return isUserFinishEnter(selections, userId, round)
+}
+
+export const useGetCurrentItem = (userId: string, targetRound = 0) => {
+  const {
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+  const compareRound = targetRound || round
+  const selection = findUserOwnSelection(selections, userId)
+  const target = selection.find(s => s.round === compareRound)
+  return target?.item ?? ''
 }

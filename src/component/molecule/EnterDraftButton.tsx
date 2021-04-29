@@ -1,22 +1,22 @@
 import { IonButton } from '@ionic/react'
 import { useTranslation } from 'react-i18next'
-import { useModal } from 'src/helper'
+import { useIsUserFinishEnter, useModal } from 'src/helper'
 import SubmitItem from './SubmitItem'
 
 interface Props {
   currentUser: string
-  targetUser: string
+  myId: string
 }
 
-const EnterDraftButton = ({ currentUser, targetUser }: Props) => {
+const EnterDraftButton = ({ currentUser, myId }: Props) => {
   const { t } = useTranslation()
-  const isEntered = true
+  const isEntered = useIsUserFinishEnter(currentUser)
 
   const { showModal, setModalComponent } = useModal()
 
   const showSubmitItem = () => {
     setModalComponent({
-      component: <SubmitItem />,
+      component: <SubmitItem userId={myId} />,
       title: t('ドラフト候補入力'),
     })
     showModal()
@@ -28,7 +28,12 @@ const EnterDraftButton = ({ currentUser, targetUser }: Props) => {
     </IonButton>
   )
   const finishButton = (
-    <IonButton className="width-100" fill="solid" color="success">
+    <IonButton
+      className="width-100"
+      fill="solid"
+      color="success"
+      onClick={showSubmitItem}
+    >
       {t('修正する')}
     </IonButton>
   )
@@ -44,9 +49,9 @@ const EnterDraftButton = ({ currentUser, targetUser }: Props) => {
   )
 
   if (isEntered) {
-    return currentUser === targetUser ? enterButton : othersEnteringButton
+    return currentUser === myId ? finishButton : othersFinishButton
   } else {
-    return currentUser === targetUser ? finishButton : othersFinishButton
+    return currentUser === myId ? enterButton : othersEnteringButton
   }
 }
 

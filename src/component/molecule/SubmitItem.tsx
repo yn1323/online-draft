@@ -1,14 +1,23 @@
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import { IonButton, IonInput } from '@ionic/react'
 
 import 'src/asset/scss/component/SubmitItem.scss'
-import { useItems, useModal, useToast } from 'src/helper'
+import { useGetCurrentItem, useItems, useModal, useToast } from 'src/helper'
 import { useTranslation } from 'react-i18next'
 
-const SubmitItem = () => {
+interface Props {
+  userId: string
+}
+
+const SubmitItem = ({ userId }: Props) => {
   const { t } = useTranslation()
   const item: any = useRef(null)
   const { hideModal } = useModal()
+  const currentItem = useGetCurrentItem(userId)
+
+  useEffect(() => {
+    item.current.value = currentItem
+  }, [])
 
   const { addItem } = useItems()
 
