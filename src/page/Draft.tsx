@@ -27,7 +27,9 @@ import Modal from 'src/component/template/Modal'
 const Draft = () => {
   const history = useHistory()
   const dispatch = useDispatch()
-  const { userInfo } = useSelector((state: State) => state)
+  const {
+    userInfo: { users },
+  } = useSelector((state: State) => state)
   const { groupIdFromPath } = usePath()
   const [isLoaded, setIsLoaded] = useState(false)
   const [process, setProcess] = useState(0)

@@ -2,6 +2,7 @@ import moment from 'moment'
 import {
   AddLogMessageRequestPayload,
   CrateUserRequestPayload,
+  CreateSelectionRequestPayload,
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
   SubscribeGroupRoundRequestPayload,
@@ -36,6 +37,11 @@ const collections = {
   user: findDoc('user'),
   log: findDoc('log'),
   selection: findDoc('selection'),
+}
+
+const unsubscribesForSelection: any = []
+export const unsubscribeSelection = () => {
+  unsubscribesForSelection.forEach((unsubscribe: () => void) => unsubscribe())
 }
 
 export const signIn = ({ succeeded, failed }: any) => {
@@ -96,30 +102,6 @@ export const subscribeGroupRound = (
     return true
   } catch (e) {
     console.error('SUBSCRIBEGROUPROUND:', e)
-    return false
-  }
-}
-
-export const subscribeSelection = (
-  { userId }: SubscribeSelectionRequestPayload,
-  dispatcher: (obj: { round: number }) => void
-) => {
-  try {
-    if (isErrorDebug) {
-      throw new Error()
-    }
-
-    collections.selection.doc(userId).onSnapshot(doc => {
-      if (doc.exists) {
-        const d = doc.data()
-        console.error(doc.data())
-        dispatcher({ round: d?.round || 1 })
-      }
-    })
-
-    return true
-  } catch (e) {
-    console.error('SUBSCRIBESELECTION:', e)
     return false
   }
 }
@@ -299,6 +281,53 @@ export const subscribeLogMessage = (
     return true
   } catch (e) {
     console.error('SUBSCRIBEUSERS:', e)
+    return false
+  }
+}
+
+export const createSelection = async ({
+  userId,
+  selection,
+}: CreateSelectionRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    console.log(userId), console.log(selection)
+    await collections.selection.doc(userId).set(
+      {
+        userId,
+        selection,
+      },
+      { merge: true }
+    )
+  } catch (e) {
+    console.error('CREATESELECTION:', e)
+    return Promise.reject()
+  }
+}
+
+export const subscribeSelection = (
+  { userId }: SubscribeSelectionRequestPayload,
+  dispatcher: (obj: any) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    const unsubscribe = collections.selection.doc(userId).onSnapshot(doc => {
+      if (doc.exists) {
+        const d = doc.data()
+        console.error(doc.data())
+        dispatcher({ round: d?.round || 1 })
+      }
+    })
+    unsubscribesForSelection.push(unsubscribe)
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBESELECTION:', e)
     return false
   }
 }

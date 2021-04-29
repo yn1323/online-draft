@@ -16,11 +16,17 @@ import {
   hideModal,
 } from 'src/store/component'
 import moment from 'moment'
-import userInfo, { setGroupId, setUserId } from 'src/store/userInfo'
+import { setGroupId, setUserId } from 'src/store/userInfo'
 
-import { State } from 'Store'
+import { Selection, State } from 'Store'
 import { sessionStorageInfo } from 'src/helper'
-import { findAvatarPathFromUserId, findUserNameFromUserId } from './common'
+import {
+  findAvatarPathFromUserId,
+  findUserNameFromUserId,
+  findUserOwnSelection,
+  createSelection,
+  makeNextItem,
+} from 'src/helper'
 
 export const useNav = () => {
   const dispatch = useDispatch()
@@ -128,5 +134,39 @@ export const useChat = () => {
   }))
   return {
     chatInfo,
+  }
+}
+
+export const useGetOneSelection = (userId: string) => {
+  const {
+    draft: { selections },
+  } = useSelector((state: State) => state)
+
+  const oneSelection = selections.find(selection => selection.userId === userId)
+
+  return oneSelection ? oneSelection.selection : []
+}
+
+export const useItems = () => {
+  const {
+    userInfo: { userId },
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+
+  const addItem = (targetUserId: string, roundIndex: number, item: string) => {
+    const updateUserId = targetUserId || userId
+    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
+    if (!item) {
+      return false
+    }
+    const selection = findUserOwnSelection(selections, updateUserId)
+    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
+    // createSelection({ userId: updateUserId, selection: nextSelection })
+  }
+
+  return {
+    addItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
+      addItem(targetUserId, roundIndex, item),
+    // updateSelection: () => updateSelection(),
   }
 }

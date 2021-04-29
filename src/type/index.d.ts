@@ -46,13 +46,17 @@ declare module 'Store' {
   }
   interface Draft {
     round: number
-    roundAsIndex: number
     selections: Selections[]
   }
 
   interface Selections {
     userId: string
-    selection: { randomNumber: number; item: string }[]
+    selection: Selection[]
+  }
+  export interface Selection {
+    randomNumber: number
+    item: string
+    round: number
   }
   interface Chat {
     context: Context[]
@@ -122,6 +126,10 @@ declare module 'RequestPayload' {
   }
   interface SubscribeLogMessageRequestPayload {
     groupId: string
+  }
+  interface CreateSelectionRequestPayload {
+    userId: string
+    selection: { randomNumber: number; item: string }[]
   }
 }
 

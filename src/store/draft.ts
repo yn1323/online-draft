@@ -6,7 +6,6 @@ const STORE_NAME = 'draft'
 export const defaultVal: StateType = {
   round: 1,
   selections: [],
-  roundAsIndex: 0,
 }
 
 const initialState: StateType = {

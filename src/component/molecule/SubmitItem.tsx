@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { IonButton, IonInput } from '@ionic/react'
 
 import 'src/asset/scss/component/SubmitItem.scss'
-import { useModal, useToast } from 'src/helper'
+import { useItems, useModal, useToast } from 'src/helper'
 import { useTranslation } from 'react-i18next'
 
 const SubmitItem = () => {
@@ -10,11 +10,13 @@ const SubmitItem = () => {
   const item: any = useRef(null)
   const { hideModal } = useModal()
 
+  const { addItem } = useItems()
+
   const { setToast, showToast } = useToast()
 
   const submit = () => {
-    const tmpItem = item.current?.value || ''
-    if (!tmpItem) {
+    const nextItem = item.current?.value || ''
+    if (!nextItem) {
       setToast({
         message: t('ドラフト候補を入力してください。'),
         color: 'danger',
@@ -23,8 +25,7 @@ const SubmitItem = () => {
       showToast()
       return false
     }
-
-    // Todo: Register
+    addItem({ item: nextItem })
     hideModal()
   }
   return (

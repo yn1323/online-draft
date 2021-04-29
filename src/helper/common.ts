@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { assetImages } from 'src/constant'
-import { Users } from 'Store'
+import { Selection, Selections, Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
@@ -115,4 +115,72 @@ export const sessionStorageInfo = () => {
       setUserIdToSessionStoragePrccess(userId),
     getUserIdToSessionStorage: () => getUserIdToSessionStoragePrccess(),
   }
+}
+
+export const findUserOwnSelection = (
+  selections: Selections[],
+  userId: string
+) => {
+  const oneSelection = selections.find(selection => selection.userId === userId)
+
+  return oneSelection ? oneSelection.selection : []
+}
+
+export const isRoundExistInSelections = (
+  selections: Selections[],
+  userId: string,
+  round: number
+) => {
+  const userSelection = selections.find(
+    selection => selection.userId === userId
+  )
+  if (!userSelection) {
+    return false
+  }
+  const targetRoundSelection = userSelection.selection.find(
+    selection => selection.round === round
+  )
+  return !!targetRoundSelection
+}
+
+export const isRoundExistInSelection = (
+  selection: Selection[],
+  round: number
+) => {
+  const t = selection.find(s => s.round === round)
+  return !!t
+}
+
+const createItem = (
+  item: string,
+  round: number,
+  randomNumber = Math.random()
+) => ({
+  item,
+  round,
+  randomNumber,
+})
+
+export const makeNextItem = (
+  selection: Selection[],
+  targetRound: number,
+  item: string
+) => {
+  const hasRound = isRoundExistInSelection(selection, targetRound)
+  let nextSelection = []
+  console.log('hasROUND')
+  console.log(hasRound)
+  console.log('selection')
+  console.log(selection)
+  if (hasRound) {
+    const targetRoundObj: any = selection.find(s => s.round === targetRound)
+    targetRoundObj.item = item
+    const deletedObjArr = selection.filter(s => s.round !== targetRound)
+    nextSelection = [...deletedObjArr, targetRoundObj]
+  } else {
+    nextSelection = [...selection, createItem(item, targetRound)]
+  }
+  console.log('nextSelection')
+  console.log(nextSelection)
+  return nextSelection
 }
