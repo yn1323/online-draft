@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { useTable } from 'react-table'
 import { useTranslation } from 'react-i18next'
 
-import { useModal, useTableData } from 'src/helper'
+import { getDuplicateItemInRound, useModal, useTableData } from 'src/helper'
 
 import SubmitItem from 'src/component/molecule/SubmitItem'
 
@@ -13,7 +13,8 @@ import 'src/asset/scss/component/DraftTable.scss'
 const DraftTable = () => {
   const { t } = useTranslation()
   const {
-    draft: { round },
+    userInfo: { users },
+    draft: { round, selections },
   } = useSelector((state: State) => state)
   const { columns, data } = useTableData()
   const { headerGroups, rows, prepareRow } = useTable({
@@ -34,6 +35,28 @@ const DraftTable = () => {
       return false
     }
     return true
+  }
+  const tdClass = (tableRowIndex: number, rowRound: number, userId: string) => {
+    const classNames: string[] = []
+    if (isClickable(tableRowIndex, rowRound)) {
+      classNames.push('clickable')
+    }
+    // 処理が重いため、限定的に検査
+    if (
+      rowRound === round - 1 &&
+      tableRowIndex !== 0 &&
+      selections.length === users.length
+    ) {
+      const { isUserDataDuplicates } = getDuplicateItemInRound(
+        selections,
+        userId,
+        rowRound
+      )
+      if (isUserDataDuplicates) {
+        classNames.push('duplicate')
+      }
+    }
+    return classNames.join(' ')
   }
 
   const showEditModal = (userId: string, rowRound: number) => {
@@ -67,7 +90,7 @@ const DraftTable = () => {
             <tr {...row.getRowProps()} key={i}>
               {row.cells.map((cell, j) => (
                 <td
-                  className={isClickable(j, original.round) ? 'clickable' : ''}
+                  className={tdClass(j, original.round, cell.column.id)}
                   {...cell.getCellProps()}
                   key={j}
                   onClick={() => {

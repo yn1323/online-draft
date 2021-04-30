@@ -236,11 +236,12 @@ export const useTableData = () => {
       selections.forEach(({ selection, userId }) => {
         const roundData = selection.find(d => d.round === loopRound)
         if (roundData) {
-          row = { ...row, [userId]: roundData.item, userId: userId }
+          row = { ...row, [userId]: roundData.item }
         }
       })
       d.push(row)
     }
+    console.log(d)
     return d
   }, [selections])
 

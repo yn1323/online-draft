@@ -11,6 +11,7 @@ import {
   IonToolbar,
 } from '@ionic/react'
 import {
+  getDuplicateItemInRound,
   goToNextRound,
   isEveryOneEntered,
   useIsLocation,
@@ -20,6 +21,7 @@ import {
 import { getGroupNameOnce } from 'src/store/userInfo'
 import { State } from 'Store'
 import { thumbsUpOutline } from 'ionicons/icons'
+import { isProduction } from 'src/constant'
 
 const Header = () => {
   const {
@@ -48,10 +50,17 @@ const Header = () => {
   }, [groupName, round])
 
   const showResult = () => {
-    console.log(round)
-    const isOK = isEveryOneEntered(selections, users, round)
-    console.log(isOK)
-    if (!isOK) {
+    const { hasDuplicate } = getDuplicateItemInRound(selections, '', round - 1)
+    if (hasDuplicate) {
+      setToast({
+        message: t('重複しているデータあります。データを修正してください。'),
+        color: 'danger',
+      })
+      showToast()
+      return false
+    }
+    const everyOneEntered = isEveryOneEntered(selections, users, round)
+    if (!everyOneEntered) {
       setToast({
         message: t(
           '入力が完了していないユーザーがいます。入力が完了するまでしばらくお待ち下さい。'
@@ -61,6 +70,7 @@ const Header = () => {
       showToast()
       return false
     }
+
     goToNextRound({ groupId, nextRound: round + 1 })
   }
 
@@ -69,6 +79,15 @@ const Header = () => {
       <IonToolbar color="primary">
         <IonTitle>{headerTitle}</IonTitle>
         <IonButtons slot="end" style={{ marginRight: 10 }}>
+          {!isProduction && (
+            <IonButton
+              fill="solid"
+              onClick={() => goToNextRound({ groupId, nextRound: round - 1 })}
+            >
+              <IonIcon slot="start" icon={thumbsUpOutline} />
+              {'DEBUG用-ROUND戻る'}
+            </IonButton>
+          )}
           <IonButton fill="solid" onClick={showResult}>
             <IonIcon slot="start" icon={thumbsUpOutline} />
             {t('結果発表')}

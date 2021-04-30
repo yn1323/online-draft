@@ -6,6 +6,10 @@
   $headerFontColor: #fefefe;
   $background: #d8e5ee;
   $backgroundHover: #cfe0eb;
+
+  $backgroundDuplicate: #e7b1cc;
+  $backgroundDuplicateHover: #e79ec3;
+
   $indexRowBackground: #8cbdff;
   $indexRowFontColor: #eee;
 
@@ -76,6 +80,12 @@
       .clickable:hover {
         cursor: pointer;
         background: $backgroundHover;
+      }
+      .duplicate {
+        background: $backgroundDuplicate;
+        &:hover {
+          background: $backgroundDuplicateHover;
+        }
       }
 
       td {

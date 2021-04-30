@@ -226,10 +226,54 @@ export const getTargetRoundData = (
   selections: Selections[],
   targetRound: number
 ) => {
-  const result = selections.map(({ selection }) =>
-    selection.find(({ round }) => round === targetRound)
-  )
-  return result.filter(r => r)
+  const result = selections.map(({ selection, userId }) => {
+    const s = selection.find(({ round }) => round === targetRound)
+    return s ? { ...s, userId } : undefined
+  })
+  return result.filter(s => s)
+}
+
+export const getDuplicateItemInRound = (
+  selections: Selections[],
+  userId: string,
+  targetRound: number
+) => {
+  const roundData = getTargetRoundData(selections, targetRound)
+  const duplicates: any = []
+  roundData.forEach(userRoundData => {
+    const item = userRoundData?.item
+    const sameObj = roundData.filter(e => e?.item === item)
+    if (sameObj.length !== 1) {
+      duplicates.push(sameObj)
+    }
+  })
+
+  const itemAlreadyAdded: string[] = []
+  const retDuplicates = duplicates.filter((d: any) => {
+    const item = d.item
+    if (!itemAlreadyAdded.includes(item)) {
+      itemAlreadyAdded.push(item)
+      return true
+    } else {
+      return false
+    }
+  })
+
+  return {
+    duplicateData: retDuplicates,
+    hasDuplicate: !!retDuplicates.length,
+    isUserDataDuplicates: retDuplicates
+      .map((d: any) =>
+        d.some((e: any) => {
+          if (!e) {
+            return false
+          } else {
+            return e.userId === userId
+          }
+        })
+      )
+      .some((d: any) => d),
+  }
 }
 
 export const isEveryOneEntered = (

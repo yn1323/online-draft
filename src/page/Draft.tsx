@@ -5,6 +5,7 @@ import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react'
 
 import 'src/asset/scss/page/Draft.scss'
 import {
+  getDuplicateItemInRound,
   isUserExistInGroup,
   sessionStorageInfo,
   subscribeGroupRound,
@@ -30,9 +31,11 @@ const Draft = () => {
   const history = useHistory()
   const dispatch = useDispatch()
   const {
-    userInfo: { users },
+    userInfo: { users, userId },
+    draft: { round, selections },
   } = useSelector((state: State) => state)
   const prevUsers = usePrevious(users, [])
+  const prevRound = usePrevious(round, -1)
   const { groupIdFromPath } = usePath()
   const [isLoaded, setIsLoaded] = useState(false)
   const [process, setProcess] = useState(0)
@@ -68,6 +71,13 @@ const Draft = () => {
       )
     })
   }, [users])
+
+  useEffect(() => {
+    // 初回以外
+    // if (round === prevRound + 1) {
+    //   return false
+    // }
+  }, [round])
 
   const userExistanceCheck = () => {
     const userId = getUserIdToSessionStorage()
