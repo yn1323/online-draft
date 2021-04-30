@@ -5,6 +5,7 @@ import {
   CreateSelectionRequestPayload,
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
+  GoToNextRoundRequestPayload,
   SubscribeGroupRoundRequestPayload,
   SubscribeLogMessageRequestPayload,
   SubscribeSelectionRequestPayload,
@@ -103,6 +104,27 @@ export const subscribeGroupRound = (
   } catch (e) {
     console.error('SUBSCRIBEGROUPROUND:', e)
     return false
+  }
+}
+
+export const goToNextRound = async ({
+  groupId,
+  nextRound,
+}: GoToNextRoundRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.group.doc(groupId).set(
+      {
+        round: nextRound,
+      },
+      { merge: true }
+    )
+    return Promise.resolve()
+  } catch (e) {
+    console.error('CREATEUSER:', e)
+    return Promise.reject()
   }
 }
 

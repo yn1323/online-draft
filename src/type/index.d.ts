@@ -104,6 +104,11 @@ declare module 'RequestPayload' {
     avatar: string
   }
 
+  interface GoToNextRoundRequestPayload {
+    groupId: string
+    nextRound: number
+  }
+
   interface GetUsersRequestPayload {
     groupId: string
   }

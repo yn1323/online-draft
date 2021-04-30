@@ -81,6 +81,11 @@ export const sortObjectedArray = (obj: any[], sortKey: string) => {
 export const addComma = (x: number) =>
   x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
+export const duplicateInArray = (a: any[]) => {
+  const s = new Set(a)
+  return s.size != a.length
+}
+
 export const findAvatarPath = (i: string) => {
   return assetImages.find(({ index, path }) => i === index)?.path || ''
 }
@@ -213,4 +218,36 @@ export const isDuplicateItem = (
     }, [])
     .map(({ item }) => item)
   return allItems.includes(checkVal)
+}
+
+// export const amIDuplicateWithRandomNumber = () => {}
+
+export const getTargetRoundData = (
+  selections: Selections[],
+  targetRound: number
+) => {
+  const result = selections.map(({ selection }) =>
+    selection.find(({ round }) => round === targetRound)
+  )
+  return result.filter(r => r)
+}
+
+export const isEveryOneEntered = (
+  selections: Selections[],
+  users: Users[],
+  targetRound: number
+) => {
+  const targetRoundData = getTargetRoundData(selections, targetRound)
+  console.log(targetRoundData)
+  return targetRoundData.length === users.length
+}
+
+export const isAnyDuplicateItem = (draft: Draft, excludeRoundFrom: number) => {
+  const allItems = draft.selections
+    .map(({ selection }) => selection.filter(s => s.round >= excludeRoundFrom))
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
+  return duplicateInArray(allItems)
 }
