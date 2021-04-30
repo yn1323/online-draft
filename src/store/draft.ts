@@ -4,7 +4,7 @@ import { Draft as StateType, Selections } from 'Store'
 const STORE_NAME = 'draft'
 
 export const defaultVal: StateType = {
-  round: 1,
+  round: -1,
   selections: [],
 }
 

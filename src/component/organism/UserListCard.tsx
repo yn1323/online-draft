@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import { State } from 'Store'
-import CardBackground from 'src/component/template/ CardBackground'
+import CardBackground from 'src/component/template/CardBackground'
 import EnterDraft from 'src/component/organism/EnterDraft'
 
 const UserListCard = () => {

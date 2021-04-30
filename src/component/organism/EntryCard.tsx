@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useInfo } from 'src/helper'
 
-import CardBackground from 'src/component/template/ CardBackground'
+import CardBackground from 'src/component/template/CardBackground'
 import CreateUser from 'src/component/organism/CreateUser'
 import UserList from 'src/component/molecule/UserList'
 

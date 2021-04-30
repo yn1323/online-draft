@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 
 import { State } from 'Store'
-import CardBackground from 'src/component/template/ CardBackground'
+import CardBackground from 'src/component/template/CardBackground'
 import DraftTable from 'src/component/template/DraftTable'
 
 const TableCard = () => {

@@ -5,7 +5,6 @@ import { IonCol, IonContent, IonGrid, IonPage, IonRow } from '@ionic/react'
 
 import 'src/asset/scss/page/Draft.scss'
 import {
-  getDuplicateItemInRound,
   isUserExistInGroup,
   sessionStorageInfo,
   subscribeGroupRound,
@@ -15,6 +14,7 @@ import {
   useLoading,
   usePath,
   usePrevious,
+  useModal,
 } from 'src/helper'
 import { Context, Selections, State, Users } from 'Store'
 import Header from 'src/component/template/Header'
@@ -26,6 +26,7 @@ import UserListCard from 'src/component/organism/UserListCard'
 import LogCard from 'src/component/organism/LogCard'
 import TableCard from 'src/component/organism/TableCard'
 import { setRoundNumber } from 'src/store/draft'
+import ResultModal from 'src/component/template/ResultModal'
 
 const Draft = () => {
   const history = useHistory()
@@ -41,6 +42,7 @@ const Draft = () => {
   const [process, setProcess] = useState(0)
   const { getUserIdToSessionStorage } = sessionStorageInfo()
   const { showLoading, hideLoading } = useLoading()
+  const { setModalComponent, showModal } = useModal()
 
   useEffect(() => {
     if (process === -1) {
@@ -75,7 +77,11 @@ const Draft = () => {
   useEffect(() => {
     // 初回以外
     // if (round === prevRound + 1) {
-    //   return false
+    setModalComponent({
+      component: <ResultModal targetRound={2} />,
+      title: 'test',
+    })
+    showModal()
     // }
   }, [round])
 

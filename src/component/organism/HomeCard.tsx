@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { IonButton, IonText } from '@ionic/react'
 import { useTranslation } from 'react-i18next'
 
-import CardBackground from 'src/component/template/ CardBackground'
+import CardBackground from 'src/component/template/CardBackground'
 import DraftHistoryList from 'src/component/organism/DraftHistoryList'
 import CreateGroup from 'src/component/organism/CreateGroup'
 
