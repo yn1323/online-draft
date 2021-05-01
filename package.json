@@ -1,7 +1,7 @@
 {
-  "name": "ionic-react",
-  "version": "0.0.1",
-  "description": "An Ionic project",
+  "name": "onlinedraft",
+  "version": "0.0.4",
+  "description": "Onlin draft meeting system",
   "private": true,
   "scripts": {
     "start": "react-scripts start",
