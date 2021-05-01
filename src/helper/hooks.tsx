@@ -14,6 +14,7 @@ import {
   hideLoading,
   setModalComponent,
   showModal,
+  showResultModal,
   hideModal,
 } from 'src/store/component'
 import moment from 'moment'
@@ -55,6 +56,7 @@ export const useModal = () => {
     setModalComponent: ({ component, title }: any) =>
       dispatch(setModalComponent({ component, title })),
     showModal: () => dispatch(showModal()),
+    showResultModal: () => dispatch(showResultModal()),
     hideModal: () => dispatch(hideModal()),
   }
 }

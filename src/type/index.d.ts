@@ -43,6 +43,7 @@ declare module 'Store' {
     show: boolean
     title: string
     component: any
+    showingResult: boolean
   }
   interface Draft {
     round: number

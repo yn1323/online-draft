@@ -44,7 +44,7 @@ const Draft = () => {
   const [process, setProcess] = useState(0)
   const { getUserIdToSessionStorage } = sessionStorageInfo()
   const { showLoading, hideLoading } = useLoading()
-  const { setModalComponent, showModal } = useModal()
+  const { setModalComponent, showResultModal } = useModal()
 
   useEffect(() => {
     if (process === -1) {
@@ -83,7 +83,7 @@ const Draft = () => {
         component: <ResultModal targetRound={2} />,
         title: t('結果発表'),
       })
-      showModal()
+      showResultModal()
     }
   }, [round])
 

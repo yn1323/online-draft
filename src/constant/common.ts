@@ -59,3 +59,5 @@ export const assetImages = [
   { index: '18', path: img18 },
   { index: '99', path: img99 },
 ]
+
+export const SLOT_TIME = 3000

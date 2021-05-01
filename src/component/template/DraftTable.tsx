@@ -15,6 +15,9 @@ const DraftTable = () => {
   const {
     userInfo: { users },
     draft: { round, selections },
+    component: {
+      modal: { showingResult },
+    },
   } = useSelector((state: State) => state)
   const { columns, data } = useTableData()
   const { headerGroups, rows, prepareRow } = useTable({
@@ -47,13 +50,19 @@ const DraftTable = () => {
       tableRowIndex !== 0 &&
       selections.length === users.length
     ) {
-      const { isUserDataDuplicates } = getDuplicateItemInRound(
+      const { duplicateDataUserIdsExcludeWinner } = getDuplicateItemInRound(
         selections,
         userId,
         rowRound
       )
-      if (isUserDataDuplicates) {
+      if (duplicateDataUserIdsExcludeWinner.includes(userId)) {
         classNames.push('duplicate')
+      }
+      if (
+        duplicateDataUserIdsExcludeWinner &&
+        duplicateDataUserIdsExcludeWinner[0] === userId
+      ) {
+        classNames.push('duplicate-change')
       }
     }
     return classNames.join(' ')
@@ -88,21 +97,25 @@ const DraftTable = () => {
           const { original = {} as any } = row
           return (
             <tr {...row.getRowProps()} key={i}>
-              {row.cells.map((cell, j) => (
-                <td
-                  className={tdClass(j, original.round, cell.column.id)}
-                  {...cell.getCellProps()}
-                  key={j}
-                  onClick={() => {
-                    if (isClickable(j, original.round)) {
-                      showEditModal(cell.column.id, row.cells[0].value)
-                    }
-                  }}
-                >
-                  {j === 0 && cell.render('Cell')}
-                  {j !== 0 && maskCell(cell.render('Cell'), original.round)}
-                </td>
-              ))}
+              {row.cells.map((cell, j) =>
+                showingResult && original.round === round - 1 ? (
+                  <td>-</td>
+                ) : (
+                  <td
+                    className={tdClass(j, original.round, cell.column.id)}
+                    {...cell.getCellProps()}
+                    key={j}
+                    onClick={() => {
+                      if (isClickable(j, original.round)) {
+                        showEditModal(cell.column.id, row.cells[0].value)
+                      }
+                    }}
+                  >
+                    {j === 0 && cell.render('Cell')}
+                    {j !== 0 && maskCell(cell.render('Cell'), original.round)}
+                  </td>
+                )
+              )}
             </tr>
           )
         })}

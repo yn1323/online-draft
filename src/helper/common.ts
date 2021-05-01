@@ -1,5 +1,4 @@
-import moment from 'moment'
-import { assetImages } from 'src/constant'
+import { assetImages, SLOT_TIME } from 'src/constant'
 import { Draft, Selection, Selections, Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -68,12 +67,22 @@ export const filterRaceMatch = (meta: any, raceDetail: any) => {
   }
 }
 
-export const sortObjectedArray = (obj: any[], sortKey: string) => {
+export const sortObjectedArray = (
+  obj: any[],
+  sortKey: string,
+  order: 'asc' | 'desc' = 'asc'
+) => {
   const t = [...obj]
   t.sort((a: any, b: any) => {
-    if (a[sortKey] < b[sortKey]) return -1
-    if (a[sortKey] > b[sortKey]) return 1
-    return 0
+    if (order === 'asc') {
+      if (a[sortKey] < b[sortKey]) return -1
+      if (a[sortKey] > b[sortKey]) return 1
+      return 0
+    } else {
+      if (a[sortKey] < b[sortKey]) return 1
+      if (a[sortKey] > b[sortKey]) return -1
+      return 0
+    }
   })
   return t
 }
@@ -261,18 +270,47 @@ export const getDuplicateItemInRound = (
   })
 
   const itemAlreadyAdded: string[] = []
-  const retDuplicates = duplicates.filter((d: any) => {
-    const item = d.item
-    if (!itemAlreadyAdded.includes(item)) {
-      itemAlreadyAdded.push(item)
-      return true
-    } else {
-      return false
-    }
-  })
+  const retDuplicates = duplicates
+    .filter((d: any) => {
+      const item = d[0].item
+      if (!itemAlreadyAdded.includes(item)) {
+        itemAlreadyAdded.push(item)
+        return true
+      } else {
+        return false
+      }
+    })
+    .map((d: any) => {
+      return sortObjectedArray(d, 'randomNumber', 'desc')
+    })
+
+  const duplicateDataUserIds = retDuplicates.reduce((acc: any, cur: any) => {
+    const userIds = cur.map((d: any) => d.userId)
+    return [...acc, ...userIds]
+  }, [])
+
+  const duplicateDataUserIdsExcludeWinner = sortObjectedArray(
+    retDuplicates
+      .map((d: any) => {
+        const tmp = [...d]
+        tmp.shift()
+        return tmp
+      })
+      .reduce((acc: any, cur: any) => {
+        return [...acc, ...cur]
+      }, []),
+    'randomNumber',
+    'desc'
+  )
+
+  const orderedDuplicateDataUserIdsExcludeWinner = duplicateDataUserIdsExcludeWinner.map(
+    (d: any) => d.userId
+  )
 
   return {
     duplicateData: retDuplicates,
+    duplicateDataUserIds: duplicateDataUserIds,
+    duplicateDataUserIdsExcludeWinner: orderedDuplicateDataUserIdsExcludeWinner,
     hasDuplicate: !!retDuplicates.length,
     isUserDataDuplicates: retDuplicates
       .map((d: any) =>
@@ -315,4 +353,12 @@ export const getAllItems = (selections: Selections[]) => {
       return [...acc, ...cur]
     }, [])
     .map(({ item }) => item)
+}
+
+export const slotTime = (order: number, userNum: number) => {
+  return {
+    timeToStart: order * SLOT_TIME,
+    timeToStop: SLOT_TIME,
+    allFinishedTime: SLOT_TIME * userNum + 1000,
+  }
 }
