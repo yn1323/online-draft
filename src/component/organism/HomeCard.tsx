@@ -24,7 +24,7 @@ const HomeCard = () => {
           </IonButton>
         </div>
 
-        {history.length && (
+        {!!history.length && (
           <>
             <hr className="bold" />
             <IonText className="align-centerVH">
