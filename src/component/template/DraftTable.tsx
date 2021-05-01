@@ -99,7 +99,7 @@ const DraftTable = () => {
             <tr {...row.getRowProps()} key={i}>
               {row.cells.map((cell, j) =>
                 showingResult && original.round === round - 1 ? (
-                  <td>-</td>
+                  <td key={j}>-</td>
                 ) : (
                   <td
                     className={tdClass(j, original.round, cell.column.id)}
