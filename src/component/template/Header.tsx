@@ -31,9 +31,11 @@ const Header = () => {
   const { t } = useTranslation()
   const dispatch = useDispatch()
 
-  const { groupIdFromPath } = usePath()
+  const { groupIdFromPath, windowPath } = usePath()
   const { setToast, showToast } = useToast()
   const isHome = useIsLocation(['/'], { exact: true })
+  const isEntry = windowPath.includes('/entry')
+  const isDraft = windowPath.includes('/draft')
   const [headerTitle, setHeaderTitle] = useState(
     isHome ? t('オンラインドラフト会議') : ''
   )
@@ -45,7 +47,11 @@ const Header = () => {
 
   useEffect(() => {
     if (groupName) {
-      setHeaderTitle(`${groupName}    [ROUND-${round}]`)
+      if (isEntry) {
+        setHeaderTitle(groupName)
+      } else {
+        setHeaderTitle(`${groupName}    [ROUND-${round}]`)
+      }
     }
   }, [groupName, round])
 
@@ -78,21 +84,23 @@ const Header = () => {
     <IonHeader>
       <IonToolbar color="primary">
         <IonTitle>{headerTitle}</IonTitle>
-        <IonButtons slot="end" style={{ marginRight: 10 }}>
-          {!isProduction && (
-            <IonButton
-              fill="solid"
-              onClick={() => goToNextRound({ groupId, nextRound: round - 1 })}
-            >
+        {isDraft && (
+          <IonButtons slot="end" style={{ marginRight: 10 }}>
+            {!isProduction && (
+              <IonButton
+                fill="solid"
+                onClick={() => goToNextRound({ groupId, nextRound: round - 1 })}
+              >
+                <IonIcon slot="start" icon={thumbsUpOutline} />
+                {'DEBUG用-ROUND戻る'}
+              </IonButton>
+            )}
+            <IonButton fill="solid" onClick={showResult}>
               <IonIcon slot="start" icon={thumbsUpOutline} />
-              {'DEBUG用-ROUND戻る'}
+              {t('結果発表')}
             </IonButton>
-          )}
-          <IonButton fill="solid" onClick={showResult}>
-            <IonIcon slot="start" icon={thumbsUpOutline} />
-            {t('結果発表')}
-          </IonButton>
-        </IonButtons>
+          </IonButtons>
+        )}
       </IonToolbar>
     </IonHeader>
   )

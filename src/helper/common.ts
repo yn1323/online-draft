@@ -1,4 +1,4 @@
-import { assetImages, SLOT_TIME } from 'src/constant'
+import { assetImages, SLOT_TIME, APP_NAME } from 'src/constant'
 import { Draft, Selection, Selections, Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -361,4 +361,15 @@ export const slotTime = (order: number, userNum: number) => {
     timeToStop: SLOT_TIME,
     allFinishedTime: SLOT_TIME * userNum + 1000,
   }
+}
+
+export const getDraftPageFromLS = () => {
+  return JSON.parse(window.localStorage.getItem(APP_NAME) || '[]')
+}
+export const addDraftPageToLS = (groupName: string) => {
+  const currentURL = window.location.href
+  const lsData = getDraftPageFromLS()
+  const newData = lsData.filter(({ url }: any) => url !== currentURL)
+  newData.unshift({ groupName, url: currentURL })
+  window.localStorage.setItem(APP_NAME, JSON.stringify(newData))
 }
