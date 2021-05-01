@@ -31,6 +31,7 @@ const SubmitItem = ({ userId, targetRound = 0, isUpdate = false }: Props) => {
 
   useEffect(() => {
     item.current.value = currentItem
+    checkDuplicate(currentItem)
   }, [])
 
   const { addItem, updateItem } = useItems()
