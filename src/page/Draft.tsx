@@ -27,8 +27,10 @@ import LogCard from 'src/component/organism/LogCard'
 import TableCard from 'src/component/organism/TableCard'
 import { setRoundNumber } from 'src/store/draft'
 import ResultModal from 'src/component/template/ResultModal'
+import { useTranslation } from 'react-i18next'
 
 const Draft = () => {
+  const { t } = useTranslation()
   const history = useHistory()
   const dispatch = useDispatch()
   const {
@@ -76,13 +78,13 @@ const Draft = () => {
 
   useEffect(() => {
     // 初回以外
-    // if (round === prevRound + 1) {
-    setModalComponent({
-      component: <ResultModal targetRound={2} />,
-      title: 'test',
-    })
-    showModal()
-    // }
+    if (round === prevRound + 1) {
+      setModalComponent({
+        component: <ResultModal targetRound={2} />,
+        title: t('結果発表'),
+      })
+      showModal()
+    }
   }, [round])
 
   const userExistanceCheck = () => {

@@ -241,7 +241,6 @@ export const useTableData = () => {
       })
       d.push(row)
     }
-    console.log(d)
     return d
   }, [selections])
 

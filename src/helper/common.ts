@@ -233,6 +233,18 @@ export const getTargetRoundData = (
   return result.filter(s => s)
 }
 
+export const getTargetRoundUserData = (
+  selections: Selections[],
+  targetUserId: string,
+  targetRound: number
+) => {
+  const result = selections.map(({ selection, userId }) => {
+    const s = selection.find(({ round }) => round === targetRound)
+    return s ? { ...s, userId } : undefined
+  })
+  return result
+}
+
 export const getDuplicateItemInRound = (
   selections: Selections[],
   userId: string,
@@ -294,4 +306,13 @@ export const isAnyDuplicateItem = (draft: Draft, excludeRoundFrom: number) => {
     }, [])
     .map(({ item }) => item)
   return duplicateInArray(allItems)
+}
+
+export const getAllItems = (selections: Selections[]) => {
+  return selections
+    .map(({ selection }) => selection)
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
 }
