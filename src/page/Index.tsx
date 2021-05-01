@@ -23,10 +23,12 @@ import Router from 'src/route'
 import Nav from 'src/component/template/Nav'
 import Toast from 'src/component/template/Toast'
 import Loading from 'src/component/template/Loading'
+import ModalTemplate from 'src/component/template/Modal'
 
 const Index = () => (
   <IonApp>
     <Router />
+    <ModalTemplate />
     <Nav />
     <Toast />
     <Loading />

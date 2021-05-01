@@ -19,6 +19,12 @@ export const defaultVal: StateType = {
   loading: {
     show: false,
   },
+  modal: {
+    show: false,
+    component: '',
+    title: '',
+    showingResult: false,
+  },
 }
 
 const initialState: StateType = {
@@ -49,6 +55,41 @@ const State = createSlice({
       nav: {
         ...state.nav,
         show: true,
+      },
+    }),
+    setModalComponent: (
+      state: StateType,
+      { payload: { title, component } }
+    ) => ({
+      ...state,
+      modal: {
+        title: title || '',
+        show: state.nav.show,
+        component,
+        showingResult: false,
+      },
+    }),
+    showModal: (state: StateType) => ({
+      ...state,
+      modal: {
+        ...state.modal,
+        show: true,
+      },
+    }),
+    showResultModal: (state: StateType) => ({
+      ...state,
+      modal: {
+        ...state.modal,
+        show: true,
+        showingResult: true,
+      },
+    }),
+    hideModal: (state: StateType) => ({
+      ...state,
+      modal: {
+        ...state.modal,
+        show: false,
+        showingResult: false,
       },
     }),
     setToast: (
@@ -93,6 +134,10 @@ export const {
   setNavComponent,
   hideNavComponent,
   showNavComponent,
+  setModalComponent,
+  showModal,
+  showResultModal,
+  hideModal,
   setToast,
   hideToast,
   showToast,

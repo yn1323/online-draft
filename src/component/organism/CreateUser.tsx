@@ -68,7 +68,7 @@ const CreateUser = ({ goBack }: Props) => {
             placeholder={t('ユーザー名')}
             ref={userName}
             required
-            maxlength={48}
+            maxlength={12}
           ></IonInput>
         </div>
         <div className="align-centerVH">

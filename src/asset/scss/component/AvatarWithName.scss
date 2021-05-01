@@ -1,0 +1,26 @@
+@import '../common//Common.scss';
+
+.avatarWithNameWrapper {
+  $avatarSize: 40px;
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  .avatar {
+    width: $avatarSize;
+    height: $avatarSize;
+    border: 1px solid #eee;
+    border-radius: 20px;
+  }
+  .name {
+    max-width: 100px;
+    margin-left: 10px;
+    font-size: 14px;
+    @include ellipsis;
+  }
+  .icon {
+    position: absolute;
+    top: 0;
+    left: calc(#{$avatarSize} - 10px);
+  }
+}

@@ -6,7 +6,7 @@ import 'src/asset/scss/page/Loading.scss'
 const Loading = () => {
   return (
     <IonPage>
-      <Header />
+      {/* <Header /> */}
       <IonContent className="height-100" scrollY={false}></IonContent>
     </IonPage>
   )

@@ -1,18 +1,14 @@
 import { IonItem, IonLabel, IonList } from '@ionic/react'
+import { getDraftPageFromLS } from 'src/helper'
 
 const DraftHistoryList = () => {
-  const list = [
-    { name: 'Pokémon Yellow', draftId: '' },
-    { name: 'Mega Man X', draftId: '' },
-    { name: 'The Legend of Zelda', draftId: '' },
-    { name: 'Pac-Man', draftId: '' },
-    { name: 'Super Mario World', draftId: '' },
-  ]
+  const list: any = getDraftPageFromLS()
+
   return (
     <IonList className="width-100">
-      {list.map(({ name, draftId }, i) => (
-        <IonItem button key={i} href={`/draft/${draftId}`}>
-          <IonLabel>{name}</IonLabel>
+      {list.map(({ groupName, url }: any, i: number) => (
+        <IonItem button key={i} href={url}>
+          <IonLabel>{groupName}</IonLabel>
         </IonItem>
       ))}
     </IonList>

@@ -1,5 +1,5 @@
-import moment from 'moment'
-import { assetImages } from 'src/constant'
+import { assetImages, SLOT_TIME, APP_NAME } from 'src/constant'
+import { Draft, Selection, Selections, Users } from 'Store'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
@@ -67,12 +67,22 @@ export const filterRaceMatch = (meta: any, raceDetail: any) => {
   }
 }
 
-export const sortObjectedArray = (obj: any[], sortKey: string) => {
+export const sortObjectedArray = (
+  obj: any[],
+  sortKey: string,
+  order: 'asc' | 'desc' = 'asc'
+) => {
   const t = [...obj]
   t.sort((a: any, b: any) => {
-    if (a[sortKey] < b[sortKey]) return -1
-    if (a[sortKey] > b[sortKey]) return 1
-    return 0
+    if (order === 'asc') {
+      if (a[sortKey] < b[sortKey]) return -1
+      if (a[sortKey] > b[sortKey]) return 1
+      return 0
+    } else {
+      if (a[sortKey] < b[sortKey]) return 1
+      if (a[sortKey] > b[sortKey]) return -1
+      return 0
+    }
   })
   return t
 }
@@ -80,6 +90,286 @@ export const sortObjectedArray = (obj: any[], sortKey: string) => {
 export const addComma = (x: number) =>
   x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
+export const duplicateInArray = (a: any[]) => {
+  const s = new Set(a)
+  return s.size != a.length
+}
+
 export const findAvatarPath = (i: string) => {
   return assetImages.find(({ index, path }) => i === index)?.path || ''
+}
+
+export const findUserInfo = (users: Users[], targetUserId: string) => {
+  return users.find(({ userId }) => userId === targetUserId)
+}
+
+export const findAvatarPathFromUserId = (
+  users: Users[],
+  targetUserId: string
+) => {
+  return findUserInfo(users, targetUserId)?.avatar || ''
+}
+
+export const findUserNameFromUserId = (
+  users: Users[],
+  targetUserId: string
+) => {
+  return findUserInfo(users, targetUserId)?.userName || ''
+}
+
+export const sessionStorageInfo = () => {
+  const setUserIdToSessionStoragePrccess = (userId: string) => {
+    sessionStorage.setItem('userId', userId)
+  }
+  const getUserIdToSessionStoragePrccess = () => {
+    return sessionStorage.getItem('userId') || ''
+  }
+  return {
+    setUserIdToSessionStorage: (userId: string) =>
+      setUserIdToSessionStoragePrccess(userId),
+    getUserIdToSessionStorage: () => getUserIdToSessionStoragePrccess(),
+  }
+}
+
+export const findUserOwnSelection = (
+  selections: Selections[],
+  userId: string
+): Selection[] => {
+  const oneSelection = selections.find(selection => selection.userId === userId)
+
+  return oneSelection ? oneSelection.selection : []
+}
+
+export const isRoundExistInSelections = (
+  selections: Selections[],
+  userId: string,
+  round: number
+) => {
+  const userSelection = selections.find(
+    selection => selection.userId === userId
+  )
+  if (!userSelection) {
+    return false
+  }
+  const targetRoundSelection = userSelection.selection.find(
+    selection => selection.round === round
+  )
+  return !!targetRoundSelection
+}
+
+export const isRoundExistInSelection = (
+  selection: Selection[],
+  round: number
+) => {
+  const t = selection.find(s => s.round === round)
+  return !!t
+}
+
+const createItem = (
+  item: string,
+  round: number,
+  randomNumber = Math.random()
+) => ({
+  randomNumber,
+  round,
+  item,
+})
+
+export const makeNextItem = (
+  selection: Selection[],
+  targetRound: number,
+  item: string
+) => {
+  const hasRound = isRoundExistInSelection(selection, targetRound)
+  let nextSelection = []
+  if (hasRound) {
+    const targetRoundObj: any = selection.find(s => s.round === targetRound)
+    const newObj = { ...targetRoundObj, item }
+    const deletedObjArr = selection.filter(s => s.round !== targetRound)
+    nextSelection = [...deletedObjArr, newObj]
+  } else {
+    nextSelection = [...selection, createItem(item, targetRound)]
+  }
+  return nextSelection
+}
+
+export const isUserFinishEnter = (
+  selections: Selections[],
+  userId: string,
+  round: number
+) => {
+  const draft = findUserOwnSelection(selections, userId)
+  return draft.some(s => s.round === round)
+}
+
+export const isDuplicateItem = (
+  draft: Draft,
+  targetRound: number,
+  targetUserId: string,
+  checkVal: string
+) => {
+  const allItems = draft.selections
+    .map(({ selection, userId }) => {
+      return (
+        selection
+          .filter(s => {
+            return (
+              // 自分自身以外
+              !(s.round === targetRound && targetUserId === userId)
+            )
+          })
+          // 現在のROUNDでない
+          .filter(s => s.round !== draft.round)
+      )
+    })
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
+  return allItems.includes(checkVal)
+}
+
+// export const amIDuplicateWithRandomNumber = () => {}
+
+export const getTargetRoundData = (
+  selections: Selections[],
+  targetRound: number
+) => {
+  const result = selections.map(({ selection, userId }) => {
+    const s = selection.find(({ round }) => round === targetRound)
+    return s ? { ...s, userId } : undefined
+  })
+  return result.filter(s => s)
+}
+
+export const getTargetRoundUserData = (
+  selections: Selections[],
+  targetUserId: string,
+  targetRound: number
+) => {
+  const result = selections.map(({ selection, userId }) => {
+    const s = selection.find(({ round }) => round === targetRound)
+    return s ? { ...s, userId } : undefined
+  })
+  return result
+}
+
+export const getDuplicateItemInRound = (
+  selections: Selections[],
+  userId: string,
+  targetRound: number
+) => {
+  const roundData = getTargetRoundData(selections, targetRound)
+  const duplicates: any = []
+  roundData.forEach(userRoundData => {
+    const item = userRoundData?.item
+    const sameObj = roundData.filter(e => e?.item === item)
+    if (sameObj.length !== 1) {
+      duplicates.push(sameObj)
+    }
+  })
+
+  const itemAlreadyAdded: string[] = []
+  const retDuplicates = duplicates
+    .filter((d: any) => {
+      const item = d[0].item
+      if (!itemAlreadyAdded.includes(item)) {
+        itemAlreadyAdded.push(item)
+        return true
+      } else {
+        return false
+      }
+    })
+    .map((d: any) => {
+      return sortObjectedArray(d, 'randomNumber', 'desc')
+    })
+
+  const duplicateDataUserIds = retDuplicates.reduce((acc: any, cur: any) => {
+    const userIds = cur.map((d: any) => d.userId)
+    return [...acc, ...userIds]
+  }, [])
+
+  const duplicateDataUserIdsExcludeWinner = sortObjectedArray(
+    retDuplicates
+      .map((d: any) => {
+        const tmp = [...d]
+        tmp.shift()
+        return tmp
+      })
+      .reduce((acc: any, cur: any) => {
+        return [...acc, ...cur]
+      }, []),
+    'randomNumber',
+    'desc'
+  )
+
+  const orderedDuplicateDataUserIdsExcludeWinner = duplicateDataUserIdsExcludeWinner.map(
+    (d: any) => d.userId
+  )
+
+  return {
+    duplicateData: retDuplicates,
+    duplicateDataUserIds: duplicateDataUserIds,
+    duplicateDataUserIdsExcludeWinner: orderedDuplicateDataUserIdsExcludeWinner,
+    hasDuplicate: !!retDuplicates.length,
+    isUserDataDuplicates: retDuplicates
+      .map((d: any) =>
+        d.some((e: any) => {
+          if (!e) {
+            return false
+          } else {
+            return e.userId === userId
+          }
+        })
+      )
+      .some((d: any) => d),
+  }
+}
+
+export const isEveryOneEntered = (
+  selections: Selections[],
+  users: Users[],
+  targetRound: number
+) => {
+  const targetRoundData = getTargetRoundData(selections, targetRound)
+  console.log(targetRoundData)
+  return targetRoundData.length === users.length
+}
+
+export const isAnyDuplicateItem = (draft: Draft, excludeRoundFrom: number) => {
+  const allItems = draft.selections
+    .map(({ selection }) => selection.filter(s => s.round >= excludeRoundFrom))
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
+  return duplicateInArray(allItems)
+}
+
+export const getAllItems = (selections: Selections[]) => {
+  return selections
+    .map(({ selection }) => selection)
+    .reduce((acc, cur) => {
+      return [...acc, ...cur]
+    }, [])
+    .map(({ item }) => item)
+}
+
+export const slotTime = (order: number, userNum: number) => {
+  return {
+    timeToStart: order * SLOT_TIME,
+    timeToStop: SLOT_TIME,
+    allFinishedTime: SLOT_TIME * userNum + 1000,
+  }
+}
+
+export const getDraftPageFromLS = () => {
+  return JSON.parse(window.localStorage.getItem(APP_NAME) || '[]')
+}
+export const addDraftPageToLS = (groupName: string) => {
+  const currentURL = window.location.href
+  const lsData = getDraftPageFromLS()
+  const newData = lsData.filter(({ url }: any) => url !== currentURL)
+  newData.unshift({ groupName, url: currentURL })
+  window.localStorage.setItem(APP_NAME, JSON.stringify(newData))
 }

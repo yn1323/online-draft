@@ -1,6 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { GetUsersRequestPayload } from 'RequestPayload'
-import { findAvatarPath, getUsers } from 'src/helper'
+import {
+  GetGroupNameRequestPayload,
+  GetUsersRequestPayload,
+} from 'RequestPayload'
+import { findAvatarPath, getGroupName, getUsers } from 'src/helper'
 import { UserInfo as StateType } from 'Store'
 
 const STORE_NAME = 'userInfo'
@@ -11,6 +14,7 @@ export const defaultVal: StateType = {
   groupId: '',
   userId: '',
   users: [],
+  groupName: '',
 }
 
 const initialState: StateType = {
@@ -20,6 +24,10 @@ const initialState: StateType = {
 export const getUserInfoOnce = createAsyncThunk(
   `${STORE_NAME}/getUserInfo`,
   async (params: GetUsersRequestPayload) => getUsers(params)
+)
+export const getGroupNameOnce = createAsyncThunk(
+  `${STORE_NAME}/getGroupName`,
+  async (params: GetGroupNameRequestPayload) => getGroupName(params)
 )
 
 const State = createSlice({
@@ -34,6 +42,18 @@ const State = createSlice({
     },
     setUserId: (state: StateType, { payload: { userId } }) => {
       return { ...state, userId }
+    },
+    setAllUserInfo: (state: StateType, { payload }) => {
+      const myId = state.userId
+      const orderedArray = payload.reduce((acc: any, cur: any) => {
+        if (cur.userId !== myId) {
+          acc.push(cur)
+        } else {
+          acc.unshift(cur)
+        }
+        return acc
+      }, [])
+      return { ...state, users: orderedArray }
     },
   },
   extraReducers: ({ addCase }) => {
@@ -60,9 +80,21 @@ const State = createSlice({
         isLoading: false,
         isSucceeded: false,
       }))
+      .addCase(
+        getGroupNameOnce.fulfilled,
+        (state: StateType, { payload }: any) => ({
+          ...state,
+          groupName: payload,
+        })
+      )
   },
 })
 
 export default State.reducer
 
-export const { initializeUser, setGroupId, setUserId } = State.actions
+export const {
+  initializeUser,
+  setGroupId,
+  setUserId,
+  setAllUserInfo,
+} = State.actions
