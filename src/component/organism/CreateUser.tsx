@@ -18,6 +18,7 @@ const CreateUser = ({ goBack }: Props) => {
   const { t } = useTranslation()
   const { userInfo } = useSelector((state: State) => state)
   const userName = useRef<HTMLIonInputElement>(null)
+  const [clicked, setClicked] = useState(false)
 
   const { setToast, showToast } = useToast()
   const [avatar, setAvatar] = useState('')
@@ -25,12 +26,14 @@ const CreateUser = ({ goBack }: Props) => {
   const { addUserId } = useInfo()
 
   const makeUser = async () => {
+    setClicked(true)
     if (!avatar) {
       setToast({
         message: t('アバターを選択してください'),
         color: 'danger',
       })
       showToast()
+      setClicked(false)
       return false
     }
     const userId = generateFirebaseId()
@@ -72,7 +75,7 @@ const CreateUser = ({ goBack }: Props) => {
           ></IonInput>
         </div>
         <div className="align-centerVH">
-          <IonButton type="button" onClick={makeUser}>
+          <IonButton type="button" onClick={makeUser} disabled={clicked}>
             {t('作成する')}
           </IonButton>
         </div>
