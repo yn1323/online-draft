@@ -8,18 +8,28 @@ import Header from 'src/component/template/Header'
 
 import { State } from 'Store'
 import { getUserInfoOnce } from 'src/store/userInfo'
+import { addDraftPageToLS } from 'src/helper'
 
 const Entry = () => {
   const dispatch = useDispatch()
   const {
-    userInfo: { groupId },
+    userInfo: { groupId, groupName },
   } = useSelector((state: State) => state)
+
   useEffect(() => {
     if (!groupId) {
       return
     }
     dispatch(getUserInfoOnce({ groupId }))
   }, [groupId])
+
+  useEffect(() => {
+    if (!groupName) {
+      return
+    }
+    addDraftPageToLS(groupName)
+  }, [groupId])
+
   return (
     <IonPage>
       <Header />

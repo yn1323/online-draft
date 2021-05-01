@@ -1,11 +1,28 @@
 import moment from 'moment'
-import { CrateUserRequestPayload, GetUsersRequestPayload } from 'RequestPayload'
+import {
+  AddLogMessageRequestPayload,
+  CrateUserRequestPayload,
+  CreateSelectionRequestPayload,
+  GetGroupNameRequestPayload,
+  GetUsersRequestPayload,
+  GoToNextRoundRequestPayload,
+  SubscribeGroupRoundRequestPayload,
+  SubscribeLogMessageRequestPayload,
+  SubscribeSelectionRequestPayload,
+  SubscribeUsersRequestPayload,
+} from 'RequestPayload'
+import {
+  SubscribeLogMessageRequestResponse,
+  SubscribeUsersRequestResponse,
+} from 'Response'
 import { isProduction, APP_NAME, LS_USER_ID } from 'src/constant'
 
 import { auth, db, storage, DEV_COLLECTION } from 'src/constant/firebase'
-
-// import { Post, State, User } from 'Store'
-// import { FetchList } from 'Request'
+import { Context, Selections, Users } from 'Store'
+import {
+  formatLogMessageToStateObj,
+  formatUserInfoToStateObj,
+} from './firebaseHelper'
 
 const isErrorDebug = false
 
@@ -13,27 +30,19 @@ export const generateFirebaseId = () => {
   return db.collection('_').doc().id
 }
 
-// export const getId = () => {
-//   const returnId = window.localStorage.getItem(LS_USER_ID) || ''
-//   return returnId
-// }
-
-// export const updateLSUserId = (id: string) => {
-//   window.localStorage.setItem(LS_USER_ID, id)
-// }
-
-// export const initializeUserId = () => {
-//   const id = isProduction ? getId() || generateFirebaseId() : DEV_COLLECTION
-//   updateLSUserId(id)
-//   return id
-// }
-
 const findDoc = (collection: string) =>
   db.collection('app').doc(APP_NAME).collection(collection)
 
 const collections = {
   group: findDoc('group'),
   user: findDoc('user'),
+  log: findDoc('log'),
+  selection: findDoc('selection'),
+}
+
+const unsubscribesForSelection: any = []
+export const unsubscribeSelection = () => {
+  unsubscribesForSelection.forEach((unsubscribe: () => void) => unsubscribe())
 }
 
 export const signIn = ({ succeeded, failed }: any) => {
@@ -64,6 +73,7 @@ export const createGroup = async (groupName: string) => {
       {
         groupName,
         id: groupId,
+        round: 1,
         deleteFlg: false,
       },
       // Create doc if not exist
@@ -72,6 +82,48 @@ export const createGroup = async (groupName: string) => {
     return groupId
   } catch (e) {
     console.error('CREATEGROUP:', e)
+    return Promise.reject()
+  }
+}
+
+export const subscribeGroupRound = (
+  { groupId }: SubscribeGroupRoundRequestPayload,
+  dispatcher: (obj: { round: number }) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    collections.group.doc(groupId).onSnapshot(doc => {
+      const d = doc.data()
+      dispatcher({ round: d?.round || 1 })
+    })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEGROUPROUND:', e)
+    return false
+  }
+}
+
+export const goToNextRound = async ({
+  groupId,
+  nextRound,
+}: GoToNextRoundRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.group.doc(groupId).set(
+      {
+        round: nextRound,
+      },
+      { merge: true }
+    )
+    return Promise.resolve()
+  } catch (e) {
+    console.error('CREATEUSER:', e)
     return Promise.reject()
   }
 }
@@ -125,6 +177,42 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
   }
 }
 
+export const subscribeUsers = (
+  { groupId }: SubscribeUsersRequestPayload,
+  dispatcher: (obj: Users[]) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    collections.user.where('groupId', '==', groupId).onSnapshot(snapshot => {
+      const all: SubscribeUsersRequestResponse[] = []
+      snapshot.forEach((d: any) => all.push(d.data()))
+      const format = formatUserInfoToStateObj(all)
+      dispatcher(format)
+    })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEUSERS:', e)
+    return false
+  }
+}
+
+export const getGroupName = async ({ groupId }: GetGroupNameRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+
+    const ref = await collections.group.doc(groupId).get()
+    return ref.data()?.groupName || ''
+  } catch (e) {
+    console.error('GETGROUPNAME:', e)
+    return Promise.reject()
+  }
+}
+
 export const isGroupExist = async (
   groupId: string,
   { succeeded, failed }: { succeeded: () => void; failed: () => void }
@@ -142,6 +230,125 @@ export const isGroupExist = async (
   } catch (e) {
     console.error('ISGROUPEXIST:', e)
     return Promise.reject()
+  }
+}
+
+export const isUserExistInGroup = async (
+  groupId: string,
+  userId: string,
+  { succeeded, failed }: { succeeded: () => void; failed: () => void }
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    const ref = await collections.user.doc(userId).get()
+    const data = ref.data()
+    if (data?.groupId === groupId) {
+      succeeded()
+    } else {
+      failed()
+    }
+  } catch (e) {
+    console.error('ISUSEREXISTINGROUP:', e)
+    return Promise.reject()
+  }
+}
+
+export const addLogMessage = async ({
+  groupId,
+  userId,
+  message,
+}: AddLogMessageRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.log.add({
+      groupId,
+      userId,
+      message,
+      date: new Date(),
+      deleteFlg: false,
+    })
+    return groupId
+  } catch (e) {
+    console.error('ADDLOGMESSAGE:', e)
+    return Promise.reject()
+  }
+}
+
+export const subscribeLogMessage = (
+  { groupId }: SubscribeLogMessageRequestPayload,
+  dispatcher: (obj: Context[]) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    collections.log
+      .where('groupId', '==', groupId)
+      .orderBy('date', 'asc')
+      .limit(100)
+      .onSnapshot(snapshot => {
+        const all: SubscribeLogMessageRequestResponse[] = []
+        snapshot.forEach((d: any) => {
+          const data = d.data()
+          all.push({ ...data, date: data.date.toDate() })
+        })
+        const format = formatLogMessageToStateObj(all)
+        dispatcher(format)
+      })
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBEUSERS:', e)
+    return false
+  }
+}
+
+export const createSelection = async ({
+  userId,
+  selection,
+}: CreateSelectionRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    console.log(userId), console.log(selection)
+    await collections.selection.doc(userId).set(
+      {
+        userId,
+        selection,
+      },
+      { merge: true }
+    )
+  } catch (e) {
+    console.error('CREATESELECTION:', e)
+    return Promise.reject()
+  }
+}
+
+export const subscribeSelection = (
+  { userId }: SubscribeSelectionRequestPayload,
+  dispatcher: (obj: Selections) => void
+) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    const unsubscribe = collections.selection.doc(userId).onSnapshot(doc => {
+      if (doc.exists) {
+        const d: any = doc.data()
+        dispatcher(d)
+      }
+    })
+    unsubscribesForSelection.push(unsubscribe)
+
+    return true
+  } catch (e) {
+    console.error('SUBSCRIBESELECTION:', e)
+    return false
   }
 }
 

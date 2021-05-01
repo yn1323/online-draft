@@ -1,0 +1,21 @@
+@import '../common//Common.scss';
+
+.submitItemWrapper {
+  width: 300px;
+  // padding: 0 10px 10px 10px;
+
+  ion-input {
+    margin-top: 15px;
+    border: solid 1px #aaa;
+    border-radius: 5px;
+  }
+  .buttonArea {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+  }
+  .warn {
+    font-size: 13px;
+    color: #c00;
+  }
+}

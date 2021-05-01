@@ -11,6 +11,7 @@ declare module 'Store' {
     nav: Nav
     toast: Toast
     loading: Loading
+    modal: Modal
   }
 
   interface Nav {
@@ -37,14 +38,35 @@ declare module 'Store' {
   interface Loading {
     show: boolean
   }
+
+  interface Modal {
+    show: boolean
+    title: string
+    component: any
+    showingResult: boolean
+  }
   interface Draft {
-    historyData: HistoryData[]
-    onTable: OnTable[]
+    round: number
+    selections: Selections[]
+  }
+
+  interface Selections {
+    userId: string
+    selection: Selection[]
+  }
+  export interface Selection {
+    randomNumber: number
+    item: string
+    round: number
   }
   interface Chat {
-    // groupId: string
-    // userId: string
-    context: { date: any; userId: string; text: string }[]
+    context: Context[]
+  }
+  export interface Context {
+    date: any
+    groupId: string
+    userId: string
+    message: string
   }
   interface HistoryData {
     userId: string
@@ -60,6 +82,7 @@ declare module 'Store' {
     groupId: string
     userId: string
     users: Users[]
+    groupName: string
   }
   export interface Users {
     userId: string
@@ -82,8 +105,54 @@ declare module 'RequestPayload' {
     avatar: string
   }
 
+  interface GoToNextRoundRequestPayload {
+    groupId: string
+    nextRound: number
+  }
+
   interface GetUsersRequestPayload {
     groupId: string
+  }
+  interface SubscribeUsersRequestPayload {
+    groupId: string
+  }
+  interface SubscribeGroupRoundRequestPayload {
+    groupId: string
+  }
+  interface SubscribeSelectionRequestPayload {
+    userId: string
+  }
+  interface GetGroupNameRequestPayload {
+    groupId: string
+  }
+  interface AddLogMessageRequestPayload {
+    groupId: string
+    userId: string
+    message: string
+  }
+  interface SubscribeLogMessageRequestPayload {
+    groupId: string
+  }
+  interface CreateSelectionRequestPayload {
+    userId: string
+    selection: { randomNumber: number; item: string }[]
+  }
+}
+
+declare module 'Response' {
+  interface SubscribeUsersRequestResponse {
+    avatar: string
+    deleteFlg: boolean
+    groupId: string
+    id: string
+    userName: string
+  }
+  interface SubscribeLogMessageRequestResponse {
+    date: Date
+    deleteFlg: boolean
+    groupId: string
+    userId: string
+    message: string
   }
 }
 
