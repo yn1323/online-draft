@@ -165,20 +165,11 @@ export const useItems = () => {
     draft: { round, selections },
   } = useSelector((state: State) => state)
 
-  const addItem = (targetUserId: string, roundIndex: number, item: string) => {
-    const updateUserId = targetUserId || userId
-    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
-    if (!item) {
-      return false
-    }
-    const selection = findUserOwnSelection(selections, updateUserId)
-    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
-    createSelection({ userId: updateUserId, selection: nextSelection })
-  }
-  const updateItem = (
+  const addItem = (
     targetUserId: string,
     roundIndex: number,
-    item: string
+    item: string,
+    comment: string
   ) => {
     const updateUserId = targetUserId || userId
     const updateRoundIndex = roundIndex === 0 ? round : roundIndex
@@ -186,14 +177,43 @@ export const useItems = () => {
       return false
     }
     const selection = findUserOwnSelection(selections, updateUserId)
-    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
+    const nextSelection = makeNextItem(
+      selection,
+      updateRoundIndex,
+      item,
+      comment
+    )
+    createSelection({ userId: updateUserId, selection: nextSelection })
+  }
+  const updateItem = (
+    targetUserId: string,
+    roundIndex: number,
+    item: string,
+    comment: string
+  ) => {
+    const updateUserId = targetUserId || userId
+    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
+    if (!item) {
+      return false
+    }
+    const selection = findUserOwnSelection(selections, updateUserId)
+    const nextSelection = makeNextItem(
+      selection,
+      updateRoundIndex,
+      item,
+      comment
+    )
     createSelection({ userId: updateUserId, selection: nextSelection })
   }
   return {
-    addItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
-      addItem(targetUserId, roundIndex, item),
-    updateItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
-      updateItem(targetUserId, roundIndex, item),
+    addItem: ({ targetUserId = '', roundIndex = 0, item = '', comment = '' }) =>
+      addItem(targetUserId, roundIndex, item, comment),
+    updateItem: ({
+      targetUserId = '',
+      roundIndex = 0,
+      item = '',
+      comment = '',
+    }) => updateItem(targetUserId, roundIndex, item, comment),
   }
 }
 
@@ -212,6 +232,16 @@ export const useGetCurrentItem = (userId: string, targetRound = 0) => {
   const selection = findUserOwnSelection(selections, userId)
   const target = selection.find(s => s.round === compareRound)
   return target?.item ?? ''
+}
+
+export const useGetCurrentComment = (userId: string, targetRound = 0) => {
+  const {
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+  const compareRound = targetRound || round
+  const selection = findUserOwnSelection(selections, userId)
+  const target = selection.find(s => s.round === compareRound)
+  return target?.comment ?? ''
 }
 
 export const useTableData = () => {
