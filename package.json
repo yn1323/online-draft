@@ -1,6 +1,6 @@
 {
   "name": "onlinedraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Onlin draft meeting system",
   "private": true,
   "scripts": {

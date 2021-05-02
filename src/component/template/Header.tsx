@@ -43,6 +43,7 @@ const Header = () => {
   const isHome = useIsLocation(['/'], { exact: true })
   const isEntry = windowPath.includes('/entry')
   const isDraft = windowPath.includes('/draft')
+
   const [headerTitle, setHeaderTitle] = useState(
     isHome ? t('オンラインドラフト会議') : ''
   )
@@ -79,12 +80,11 @@ const Header = () => {
     setModalComponent({ title: 'シェア', component: <ShareModal /> })
     showModal()
   }
-
   return (
     <IonHeader>
       <IonToolbar color="primary">
         <IonTitle>{headerTitle}</IonTitle>
-        {isDraft && (
+        {(isEntry || isDraft) && (
           <IonButtons slot="end" style={{ marginRight: 10 }}>
             {!isProduction && (
               <IonButton fill="solid" onClick={debugGoBack}>
@@ -92,12 +92,10 @@ const Header = () => {
                 {'DEBUG用-ROUND戻る'}
               </IonButton>
             )}
-            {(isEntry || isDraft) && (
-              <IonButton fill="solid" onClick={showShareModal}>
-                <IonIcon slot="start" icon={shareSocialOutline} />
-                {t('シェア')}
-              </IonButton>
-            )}
+            <IonButton fill="solid" onClick={showShareModal}>
+              <IonIcon slot="start" icon={shareSocialOutline} />
+              {t('シェア')}
+            </IonButton>
           </IonButtons>
         )}
       </IonToolbar>
