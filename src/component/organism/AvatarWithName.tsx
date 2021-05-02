@@ -10,12 +10,16 @@ interface Props {
   userId: string
   showCheck?: boolean
   childElement?: any
+  customStyle?: {}
+  customClass?: string
 }
 
 const AvatarWithName = ({
   userId,
   showCheck = true,
   childElement = <></>,
+  customStyle = {},
+  customClass = 'align-centerVH',
 }: Props) => {
   const {
     userInfo: { users },
@@ -24,7 +28,7 @@ const AvatarWithName = ({
   const showCheckIcon = useIsUserFinishEnter(userId)
 
   return (
-    <>
+    <div style={customStyle} className={customClass}>
       <div className="avatarWithNameWrapper">
         <img src={info?.avatar || ''} className="avatar" />
 
@@ -39,7 +43,7 @@ const AvatarWithName = ({
         )}
       </div>
       {childElement}
-    </>
+    </div>
   )
 }
 

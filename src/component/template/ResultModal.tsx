@@ -52,7 +52,7 @@ const ResultModal = ({ targetRound }: Props) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setHasFinishedSlot(true)
-    }, SLOT_TIME * users.length + 1000)
+    }, SLOT_TIME + 1000)
 
     return () => clearTimeout(timer)
   }, [])

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux'
-import { SLOT_TIME } from 'src/constant'
+import { SAMPLE_HORSES, SLOT_TIME } from 'src/constant'
 import { getAllItems, getTargetRoundData, slotTime } from 'src/helper'
 import { State } from 'Store'
 
@@ -32,9 +32,10 @@ const Slot = ({
   const [className, setClassName] = useState('result-selection')
 
   const startSlot = () => {
+    const horses = [...SAMPLE_HORSES, ...allItems]
     timer.current = setInterval(() => {
-      setCurrentString(allItems[Math.floor(Math.random() * itemLength)])
-    }, 50)
+      setCurrentString(horses[Math.floor(Math.random() * horses.length)])
+    }, 10)
   }
 
   const endSlot = () => {
@@ -59,8 +60,9 @@ const Slot = ({
       if (timer.current) {
         endSlot()
       }
-    const delay = order * eachTime
-    const allFinished = eachTime * allUserNum + 1000
+    // const delay = order * eachTime
+    const delay = 0
+    const allFinished = eachTime + 1000
     setTimeout(startSlot, delay)
     setTimeout(endSlot, delay + eachTime)
     setTimeout(setMyItem, delay + eachTime + 1)
@@ -70,7 +72,7 @@ const Slot = ({
 
   return (
     <div className={className}>
-      <span>{currentString}</span>
+      <div className="text">{currentString}</div>
     </div>
   )
 }

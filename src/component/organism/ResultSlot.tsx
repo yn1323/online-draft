@@ -23,6 +23,8 @@ const ResultSlot = () => {
           <AvatarWithName
             userId={user.userId}
             showCheck={false}
+            customStyle={{ width: `calc(85vw / ${users.length})` }}
+            customClass="centeringAvatar"
             childElement={
               <Slot
                 userId={user.userId}
