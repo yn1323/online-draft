@@ -17,6 +17,7 @@ const DraftTable = () => {
     draft: { round, selections },
     component: {
       modal: { showingResult },
+      tableMode,
     },
   } = useSelector((state: State) => state)
   const { columns, data } = useTableData()
@@ -91,7 +92,11 @@ const DraftTable = () => {
           </tr>
         ))}
       </thead>
-      <tbody>
+      <tbody
+        style={{
+          height: tableMode === 0 ? `calc(100% - 28px)` : `calc(100% - 54px)`,
+        }}
+      >
         {rows.map((row, i) => {
           prepareRow(row)
           const { original = {} as any } = row

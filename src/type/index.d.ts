@@ -12,6 +12,7 @@ declare module 'Store' {
     toast: Toast
     loading: Loading
     modal: Modal
+    tableMode: number
   }
 
   interface Nav {

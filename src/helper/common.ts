@@ -250,11 +250,8 @@ export const getTargetRoundUserData = (
   targetUserId: string,
   targetRound: number
 ) => {
-  const result = selections.map(({ selection, userId }) => {
-    const s = selection.find(({ round }) => round === targetRound)
-    return s ? { ...s, userId } : undefined
-  })
-  return result
+  const result = getTargetRoundData(selections, targetRound)
+  return result.find(({ userId }: any) => userId === targetUserId)
 }
 
 export const getDuplicateItemInRound = (

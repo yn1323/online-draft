@@ -28,6 +28,7 @@ import TableCard from 'src/component/organism/TableCard'
 import { setRoundNumber } from 'src/store/draft'
 import ResultModal from 'src/component/template/ResultModal'
 import { useTranslation } from 'react-i18next'
+import MenuCard from 'src/component/organism/MenuCard'
 
 const Draft = () => {
   const { t } = useTranslation()
@@ -134,7 +135,10 @@ const Draft = () => {
             </div>
           </div>
           <div className="dashboard-right">
-            <div className="height-100 dashboard-right-log">
+            <div className="dashboard-right-menu">
+              <MenuCard />
+            </div>
+            <div className="dashboard-right-log">
               <LogCard />
             </div>
           </div>

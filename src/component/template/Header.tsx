@@ -56,31 +56,6 @@ const Header = () => {
     }
   }, [groupName, round])
 
-  const showResult = () => {
-    const { hasDuplicate } = getDuplicateItemInRound(selections, '', round - 1)
-    if (hasDuplicate) {
-      setToast({
-        message: t('重複しているデータあります。データを修正してください。'),
-        color: 'danger',
-      })
-      showToast()
-      return false
-    }
-    const everyOneEntered = isEveryOneEntered(selections, users, round)
-    if (!everyOneEntered) {
-      setToast({
-        message: t(
-          '入力が完了していないユーザーがいます。入力が完了するまでしばらくお待ち下さい。'
-        ),
-        color: 'danger',
-      })
-      showToast()
-      return false
-    }
-
-    goToNextRound({ groupId, nextRound: round + 1 })
-  }
-
   const debugGoBack = () => {
     goToNextRound({ groupId, nextRound: round - 1 })
     console.log(round)
@@ -105,10 +80,6 @@ const Header = () => {
                 {'DEBUG用-ROUND戻る'}
               </IonButton>
             )}
-            <IonButton fill="solid" onClick={showResult}>
-              <IonIcon slot="start" icon={thumbsUpOutline} />
-              {t('結果発表')}
-            </IonButton>
           </IonButtons>
         )}
       </IonToolbar>

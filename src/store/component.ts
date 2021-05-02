@@ -25,6 +25,7 @@ export const defaultVal: StateType = {
     title: '',
     showingResult: false,
   },
+  tableMode: 0,
 }
 
 const initialState: StateType = {
@@ -125,6 +126,9 @@ const State = createSlice({
     hideLoading: (state: StateType) => {
       return { ...state, loading: { show: false } }
     },
+    changeTableMode: (state: StateType, { payload: { tableMode } }) => {
+      return { ...state, tableMode }
+    },
   },
 })
 
@@ -143,4 +147,5 @@ export const {
   showToast,
   showLoading,
   hideLoading,
+  changeTableMode,
 } = State.actions
