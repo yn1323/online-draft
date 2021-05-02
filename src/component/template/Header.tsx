@@ -14,6 +14,7 @@ import {
   getDuplicateItemInRound,
   goToNextRound,
   isEveryOneEntered,
+  setFinishedRounds,
   useIsLocation,
   usePath,
   useToast,
@@ -26,7 +27,7 @@ import { isProduction } from 'src/constant'
 const Header = () => {
   const {
     userInfo: { groupId, groupName, users },
-    draft: { round, selections },
+    draft: { round, selections, finishedRound },
   } = useSelector((state: State) => state)
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -80,6 +81,18 @@ const Header = () => {
     goToNextRound({ groupId, nextRound: round + 1 })
   }
 
+  const debugGoBack = () => {
+    goToNextRound({ groupId, nextRound: round - 1 })
+    console.log(round)
+    setFinishedRounds({
+      groupId,
+      currentFinishedRounds: finishedRound.filter(
+        r => r !== 0 && r !== round - 1
+      ),
+      finishedRound: 0,
+    })
+  }
+
   return (
     <IonHeader>
       <IonToolbar color="primary">
@@ -87,10 +100,7 @@ const Header = () => {
         {isDraft && (
           <IonButtons slot="end" style={{ marginRight: 10 }}>
             {!isProduction && (
-              <IonButton
-                fill="solid"
-                onClick={() => goToNextRound({ groupId, nextRound: round - 1 })}
-              >
+              <IonButton fill="solid" onClick={debugGoBack}>
                 <IonIcon slot="start" icon={thumbsUpOutline} />
                 {'DEBUG用-ROUND戻る'}
               </IonButton>

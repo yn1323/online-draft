@@ -2,9 +2,14 @@ import { useSelector } from 'react-redux'
 import { State, Users } from 'Store'
 import { getDuplicateItemInRound } from 'src/helper'
 import AvatarWithName from 'src/component/organism/AvatarWithName'
-import Slot from 'src/component/molecule/Slot'
+import JusdgeSlot from 'src/component/molecule/JudgeSlot'
 
-const ResultSlot = () => {
+interface Props {
+  start?: boolean
+  hasConflict?: boolean
+}
+
+const ConflictSlot = ({ start = false, hasConflict = false }: Props) => {
   const {
     userInfo: { users, userId },
     draft: { round, selections },
@@ -26,12 +31,14 @@ const ResultSlot = () => {
             customStyle={{ width: `calc(85vw / ${users.length})` }}
             customClass="centeringAvatar"
             childElement={
-              <Slot
+              <JusdgeSlot
                 userId={user.userId}
                 targetRound={round - 1}
-                order={i}
-                allUserNum={users.length}
-                isDuplicate={false}
+                isDuplicate={duplicateDataUserIdsExcludeWinner.includes(
+                  user.userId
+                )}
+                start={start}
+                hasConflict={hasConflict}
               />
             }
           />
@@ -41,4 +48,4 @@ const ResultSlot = () => {
   )
 }
 
-export default ResultSlot
+export default ConflictSlot

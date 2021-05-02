@@ -47,6 +47,7 @@ declare module 'Store' {
   }
   interface Draft {
     round: number
+    finishedRound: number[]
     selections: Selections[]
   }
 
@@ -58,6 +59,7 @@ declare module 'Store' {
     randomNumber: number
     item: string
     round: number
+    comment: string
   }
   interface Chat {
     context: Context[]
@@ -109,6 +111,11 @@ declare module 'RequestPayload' {
   interface GoToNextRoundRequestPayload {
     groupId: string
     nextRound: number
+  }
+  interface SetFinishedRoundsRequestPayload {
+    groupId: string
+    currentFinishedRounds: number[]
+    finishedRound: number
   }
 
   interface GetUsersRequestPayload {

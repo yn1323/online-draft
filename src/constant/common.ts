@@ -81,4 +81,5 @@ export const SAMPLE_HORSES = [
   'コントラチェック',
 ]
 
-export const SLOT_TIME = 3000
+export const SLOT_TIME = 100
+export const DOKIDOKI_TIME = 7000

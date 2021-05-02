@@ -12,7 +12,7 @@ interface Props {
   order?: number
 }
 
-const Slot = ({
+const JusdgeSlot = ({
   userId,
   targetRound,
   order = 0,
@@ -77,4 +77,4 @@ const Slot = ({
   )
 }
 
-export default Slot
+export default JusdgeSlot
