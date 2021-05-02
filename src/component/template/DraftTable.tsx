@@ -72,7 +72,11 @@ const DraftTable = () => {
   const showEditModal = (userId: string, rowRound: number) => {
     setModalComponent({
       component: (
-        <SubmitItem userId={userId} targetRound={rowRound} isUpdate={true} />
+        <SubmitItem
+          userId={userId.replace('-comment', '')}
+          targetRound={rowRound}
+          isUpdate={true}
+        />
       ),
       title: t('ドラフト候補編集'),
     })
@@ -94,7 +98,7 @@ const DraftTable = () => {
       </thead>
       <tbody
         style={{
-          height: tableMode === 0 ? `calc(100% - 28px)` : `calc(100% - 54px)`,
+          height: `calc(100% - 28px)`,
         }}
       >
         {rows.map((row, i) => {
