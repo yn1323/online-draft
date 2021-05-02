@@ -74,10 +74,8 @@ const ResultModal = ({ targetRound }: Props) => {
 
   useEffect(() => {
     if (submit === 2 && hasConflict && finishedRound.includes(targetRound)) {
-      const timer = setTimeout(() => {
-        setSubmit(4)
-        clearTimeout(timer)
-      }, DOKIDOKI_TIME + 1000)
+      setSubmit(3)
+      goToEnd()
     }
   }, [finishedRound])
 
@@ -92,13 +90,13 @@ const ResultModal = ({ targetRound }: Props) => {
     setHasClicked(true)
     finishThisRound()
   }
-
+  const goToEnd = () => {
+    setTimeout(() => {
+      setSubmit(4)
+    }, DOKIDOKI_TIME)
+  }
   return (
     <div className="resultModalWrapper">
-      {submit === 2 && hasClicked && (
-        <div className="conflict">{t('しばらくお待ち下さい。')}</div>
-      )}
-
       {submit === 4 && hasConflict && (
         <div className="conflict">
           {t('データの重複がありました。')}
