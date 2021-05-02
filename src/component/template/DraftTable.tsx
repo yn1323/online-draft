@@ -98,7 +98,7 @@ const DraftTable = () => {
           return (
             <tr {...row.getRowProps()} key={i}>
               {row.cells.map((cell, j) =>
-                showingResult && original.round === round - 1 ? (
+                showingResult && original.round === round - 1 && j !== 0 ? (
                   <td key={j}>-</td>
                 ) : (
                   <td

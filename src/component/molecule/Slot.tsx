@@ -40,18 +40,13 @@ const JusdgeSlot = ({
 
   const endSlot = () => {
     clearInterval(timer.current)
+    setMyItem()
   }
 
   const setMyItem = () => {
     const roundData = getTargetRoundData(selections, targetRound)
     const myData = roundData.find((d: any) => d.userId === userId)
     setCurrentString(myData?.item || 'ERROR')
-  }
-
-  const markDuplicate = () => {
-    if (isDuplicate) {
-      setClassName(className + ' duplicate')
-    }
   }
 
   useEffect(() => {
@@ -65,9 +60,6 @@ const JusdgeSlot = ({
     const allFinished = eachTime + 1000
     setTimeout(startSlot, delay)
     setTimeout(endSlot, delay + eachTime)
-    setTimeout(setMyItem, delay + eachTime + 1)
-
-    setTimeout(markDuplicate, allFinished)
   }, [selections, users])
 
   return (
