@@ -16,13 +16,19 @@ import {
   isEveryOneEntered,
   setFinishedRounds,
   useIsLocation,
+  useModal,
   usePath,
   useToast,
 } from 'src/helper'
 import { getGroupNameOnce } from 'src/store/userInfo'
 import { State } from 'Store'
-import { thumbsUpOutline } from 'ionicons/icons'
+import {
+  shareSocial,
+  shareSocialOutline,
+  thumbsUpOutline,
+} from 'ionicons/icons'
 import { isProduction } from 'src/constant'
+import ShareModal from '../molecule/ShareModal'
 
 const Header = () => {
   const {
@@ -40,6 +46,8 @@ const Header = () => {
   const [headerTitle, setHeaderTitle] = useState(
     isHome ? t('オンラインドラフト会議') : ''
   )
+  const { setModalComponent, showModal } = useModal()
+
   useEffect(() => {
     if (!isHome) {
       dispatch(getGroupNameOnce({ groupId: groupIdFromPath }))
@@ -67,6 +75,10 @@ const Header = () => {
       finishedRound: 0,
     })
   }
+  const showShareModal = () => {
+    setModalComponent({ title: 'シェア', component: <ShareModal /> })
+    showModal()
+  }
 
   return (
     <IonHeader>
@@ -78,6 +90,12 @@ const Header = () => {
               <IonButton fill="solid" onClick={debugGoBack}>
                 <IonIcon slot="start" icon={thumbsUpOutline} />
                 {'DEBUG用-ROUND戻る'}
+              </IonButton>
+            )}
+            {(isEntry || isDraft) && (
+              <IonButton fill="solid" onClick={showShareModal}>
+                <IonIcon slot="start" icon={shareSocialOutline} />
+                {t('シェア')}
               </IonButton>
             )}
           </IonButtons>
