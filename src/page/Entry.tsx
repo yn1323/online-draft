@@ -28,7 +28,7 @@ const Entry = () => {
       return
     }
     addDraftPageToLS(groupName)
-  }, [groupId])
+  }, [groupName])
 
   return (
     <IonPage>

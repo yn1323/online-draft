@@ -6,7 +6,8 @@ interface Props {
   selected: string
 }
 const AnimalList = ({ callback, selected }: Props) => {
-  const images = assetImages
+  // 自動応答用メッセージアイコンを除く
+  const images = assetImages.filter(({ index }) => index !== '99')
 
   return (
     <IonGrid>

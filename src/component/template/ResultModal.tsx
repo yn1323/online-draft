@@ -25,31 +25,33 @@ const ResultModal = ({ targetRound }: Props) => {
   const { hideModal } = useModal()
   const [hasErrorMsg, setHasErrorMsg] = useState(<></>)
   const [hasFinished, setHasFinished] = useState(false)
-  const { hasDuplicate } = getDuplicateItemInRound(selections, '', targetRound)
 
   useEffect(() => {
-    if (hasDuplicate) {
-      const timer = setTimeout(() => {
-        setHasErrorMsg(
-          <div className="conflict">
-            {t('データの重複がありました。')}
-            <br />
-            {t(
-              'ランダム抽選の結果、背景色が赤いユーザーはドラフト候補の変更が必要です。'
-            )}
-            <br />
-            <span className="caution">
-              {t(
-                '背景色が点滅しているユーザーから順に候補を変更してください。'
-              )}
-            </span>
-          </div>
-        )
-      }, SLOT_TIME * users.length + 1000)
+    console.log('%cHERE', 'background: red;')
+    const { hasDuplicate } = getDuplicateItemInRound(
+      selections,
+      '',
+      targetRound
+    )
 
-      return () => clearTimeout(timer)
+    console.log(getDuplicateItemInRound(selections, '', targetRound))
+
+    if (hasDuplicate) {
+      setHasErrorMsg(
+        <div className="conflict">
+          {t('データの重複がありました。')}
+          <br />
+          {t(
+            'ランダム抽選の結果、背景色が赤いユーザーはドラフト候補の変更が必要です。'
+          )}
+          <br />
+          <span className="caution">
+            {t('背景色が点滅しているユーザーから順に候補を変更してください。')}
+          </span>
+        </div>
+      )
     }
-  }, [hasDuplicate])
+  }, [hasFinished])
 
   useEffect(() => {
     const timer = setTimeout(() => {

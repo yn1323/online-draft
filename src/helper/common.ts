@@ -259,6 +259,8 @@ export const getDuplicateItemInRound = (
   userId: string,
   targetRound: number
 ) => {
+  console.log('RESULT')
+
   const roundData = getTargetRoundData(selections, targetRound)
   const duplicates: any = []
   roundData.forEach(userRoundData => {
