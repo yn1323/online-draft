@@ -8,7 +8,6 @@ import { useModal, useToast } from 'src/helper'
 import 'src/asset/scss/component/ShareModal.scss'
 import { clipboardOutline } from 'ionicons/icons'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { setToast } from 'src/store/component'
 
 const ShareModal = () => {
   const { t } = useTranslation()
