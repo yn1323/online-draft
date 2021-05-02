@@ -33,6 +33,7 @@ const ResultModal = ({ targetRound }: Props) => {
   const [hasFinishedSlot, setHasFinishedSlot] = useState(false)
   const [hasFinishedConflict, setHasFinishedConflict] = useState(false)
   const [hasConflict, setHasConflict] = useState(false)
+  const [hasClicked, setHasClicked] = useState(false)
   const isConflictLayout = hasConflict && !hasFinishedConflict
 
   useEffect(() => {
@@ -50,7 +51,9 @@ const ResultModal = ({ targetRound }: Props) => {
     } else if (submit === 2) {
       // startShowConflictData()
     } else if (submit === 3) {
-      finishThisRound()
+      // finishThisRound()
+    } else if (submit === 4) {
+      //
     }
   }, [submit])
 
@@ -64,13 +67,17 @@ const ResultModal = ({ targetRound }: Props) => {
       setHasConflict(true)
       setSubmit(2)
     } else {
+      finishThisRound()
       setSubmit(4)
     }
   }
 
   useEffect(() => {
-    if (finishedRound.includes(targetRound)) {
-      setHasFinishedConflict(true)
+    if (submit === 2 && hasConflict && finishedRound.includes(targetRound)) {
+      const timer = setTimeout(() => {
+        setSubmit(4)
+        clearTimeout(timer)
+      }, DOKIDOKI_TIME + 1000)
     }
   }, [finishedRound])
 
@@ -82,15 +89,16 @@ const ResultModal = ({ targetRound }: Props) => {
     })
   }
   const startShowConflictData = () => {
-    setSubmit(3)
-    const timer = setTimeout(() => {
-      setSubmit(4)
-      clearTimeout(timer)
-    }, DOKIDOKI_TIME + 1000)
+    setHasClicked(true)
+    finishThisRound()
   }
 
   return (
     <div className="resultModalWrapper">
+      {submit === 2 && hasClicked && (
+        <div className="conflict">{t('しばらくお待ち下さい。')}</div>
+      )}
+
       {submit === 4 && hasConflict && (
         <div className="conflict">
           {t('データの重複がありました。')}
@@ -118,6 +126,7 @@ const ResultModal = ({ targetRound }: Props) => {
               fill="solid"
               color="danger"
               onClick={() => startShowConflictData()}
+              disabled={hasClicked}
             >
               <IonIcon slot="start" icon={pawOutline} />
               {t('抽選開始！')}

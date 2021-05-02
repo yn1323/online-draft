@@ -62,7 +62,9 @@
       .text {
         @include ellipsis;
       }
-
+      &.allPass {
+        background: $backgroundNotDuplicate !important;
+      }
       &.duplicate {
         background: $backgroundDuplicate;
         animation: resultDuplicate $dokidokiTime 1 alternate;

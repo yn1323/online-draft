@@ -37,6 +37,10 @@ const Slot = ({
   }
 
   const markDuplicate = () => {
+    if (!hasConflict) {
+      setClassName(className + ' allPass')
+      return
+    }
     if (isDuplicate) {
       setClassName(className + ' duplicate')
     }
