@@ -169,6 +169,7 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
       userId: doc.data().id,
       userName: doc.data().userName,
       avatar: doc.data().avatar,
+      avatarIndex: doc.data().avatar,
     }))
     return users
   } catch (e) {

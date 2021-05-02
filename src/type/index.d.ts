@@ -89,6 +89,7 @@ declare module 'Store' {
     // isOnline?: boolean
     userName: string
     avatar: string
+    avatarIndex: string
   }
 
   interface ApiLoading {

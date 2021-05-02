@@ -24,19 +24,15 @@ const ResultModal = ({ targetRound }: Props) => {
   const { t } = useTranslation()
   const { hideModal } = useModal()
   const [hasErrorMsg, setHasErrorMsg] = useState(<></>)
-  const [hasFinished, setHasFinished] = useState(false)
+  const [hasFinishedSlot, setHasFinishedSlot] = useState(false)
 
   useEffect(() => {
-    console.log('%cHERE', 'background: red;')
     const { hasDuplicate } = getDuplicateItemInRound(
       selections,
       '',
       targetRound
     )
-
-    console.log(getDuplicateItemInRound(selections, '', targetRound))
-
-    if (hasDuplicate) {
+    if (hasFinishedSlot && hasDuplicate) {
       setHasErrorMsg(
         <div className="conflict">
           {t('データの重複がありました。')}
@@ -51,11 +47,11 @@ const ResultModal = ({ targetRound }: Props) => {
         </div>
       )
     }
-  }, [hasFinished])
+  }, [hasFinishedSlot])
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHasFinished(true)
+      setHasFinishedSlot(true)
     }, SLOT_TIME * users.length + 1000)
 
     return () => clearTimeout(timer)
@@ -67,7 +63,7 @@ const ResultModal = ({ targetRound }: Props) => {
       <section className="result">
         <ResultSlot />
       </section>
-      {hasFinished && (
+      {hasFinishedSlot && (
         <>
           <hr />
           <div className="closeBtn align-centerVH">

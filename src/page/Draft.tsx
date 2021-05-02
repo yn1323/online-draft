@@ -80,7 +80,7 @@ const Draft = () => {
     // 初回以外
     if (round === prevRound + 1) {
       setModalComponent({
-        component: <ResultModal targetRound={2} />,
+        component: <ResultModal targetRound={prevRound} />,
         title: t('結果発表'),
       })
       showResultModal()
