@@ -65,7 +65,7 @@ const MenuCard = () => {
         {t('表示切替')}
       </IonButton>
 
-      <CSVLink data={csvData} target="_blank">
+      <CSVLink data={csvData} target="_blank" filename={`${groupName}.csv`}>
         <IonButton fill="outline">
           <IonIcon
             slot="start"
