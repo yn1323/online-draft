@@ -14,6 +14,7 @@ import {
   getDuplicateItemInRound,
   goToNextRound,
   isEveryOneEntered,
+  setFinishedRounds,
   useIsLocation,
   usePath,
   useToast,
@@ -26,7 +27,7 @@ import { isProduction } from 'src/constant'
 const Header = () => {
   const {
     userInfo: { groupId, groupName, users },
-    draft: { round, selections },
+    draft: { round, selections, finishedRound },
   } = useSelector((state: State) => state)
   const { t } = useTranslation()
   const dispatch = useDispatch()
@@ -55,29 +56,16 @@ const Header = () => {
     }
   }, [groupName, round])
 
-  const showResult = () => {
-    const { hasDuplicate } = getDuplicateItemInRound(selections, '', round - 1)
-    if (hasDuplicate) {
-      setToast({
-        message: t('重複しているデータあります。データを修正してください。'),
-        color: 'danger',
-      })
-      showToast()
-      return false
-    }
-    const everyOneEntered = isEveryOneEntered(selections, users, round)
-    if (!everyOneEntered) {
-      setToast({
-        message: t(
-          '入力が完了していないユーザーがいます。入力が完了するまでしばらくお待ち下さい。'
-        ),
-        color: 'danger',
-      })
-      showToast()
-      return false
-    }
-
-    goToNextRound({ groupId, nextRound: round + 1 })
+  const debugGoBack = () => {
+    goToNextRound({ groupId, nextRound: round - 1 })
+    console.log(round)
+    setFinishedRounds({
+      groupId,
+      currentFinishedRounds: finishedRound.filter(
+        r => r !== 0 && r !== round - 1
+      ),
+      finishedRound: 0,
+    })
   }
 
   return (
@@ -87,18 +75,11 @@ const Header = () => {
         {isDraft && (
           <IonButtons slot="end" style={{ marginRight: 10 }}>
             {!isProduction && (
-              <IonButton
-                fill="solid"
-                onClick={() => goToNextRound({ groupId, nextRound: round - 1 })}
-              >
+              <IonButton fill="solid" onClick={debugGoBack}>
                 <IonIcon slot="start" icon={thumbsUpOutline} />
                 {'DEBUG用-ROUND戻る'}
               </IonButton>
             )}
-            <IonButton fill="solid" onClick={showResult}>
-              <IonIcon slot="start" icon={thumbsUpOutline} />
-              {t('結果発表')}
-            </IonButton>
           </IonButtons>
         )}
       </IonToolbar>

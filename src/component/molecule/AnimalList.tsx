@@ -1,12 +1,25 @@
+import { useSelector } from 'react-redux'
 import { IonCol, IonGrid, IonRow } from '@ionic/react'
 import { assetImages } from 'src/constant'
+import { State } from 'Store'
 
 interface Props {
   callback: (index: string) => void
   selected: string
 }
 const AnimalList = ({ callback, selected }: Props) => {
-  const images = assetImages
+  const {
+    userInfo: { users },
+  } = useSelector((state: State) => state)
+  const otherUsersAvatars = users.reduce((acc: string[], cur: any) => {
+    const avatar = cur.avatarIndex
+    return [...acc, avatar]
+  }, [])
+  // 自動応答用メッセージアイコンを除く
+  const excludeAvatarIndexes = [...otherUsersAvatars, '99']
+  const images = assetImages.filter(
+    ({ index }) => !excludeAvatarIndexes.includes(index)
+  )
 
   return (
     <IonGrid>

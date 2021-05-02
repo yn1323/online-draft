@@ -2,15 +2,21 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTranslation } from 'react-i18next'
 
-import { getDuplicateItemInRound, useModal } from 'src/helper'
-import { SLOT_TIME } from 'src/constant'
+import {
+  getDuplicateItemInRound,
+  useModal,
+  setFinishedRounds,
+} from 'src/helper'
+import { DOKIDOKI_TIME, SLOT_TIME } from 'src/constant'
 
 import ResultSlot from 'src/component/organism/ResultSlot'
+import ConflictSlot from 'src/component/organism/ConflictSlot'
 
 import 'src/asset/scss/component/ResultModal.scss'
 
 import { State } from 'Store'
-import { IonButton } from '@ionic/react'
+import { IonButton, IonIcon } from '@ionic/react'
+import { pawOutline } from 'ionicons/icons'
 
 interface Props {
   targetRound: number
@@ -18,54 +24,115 @@ interface Props {
 
 const ResultModal = ({ targetRound }: Props) => {
   const {
-    draft: { selections },
-    userInfo: { users },
+    draft: { selections, finishedRound },
+    userInfo: { groupId, users },
   } = useSelector((state: State) => state)
   const { t } = useTranslation()
   const { hideModal } = useModal()
-  const [hasErrorMsg, setHasErrorMsg] = useState(<></>)
-  const [hasFinished, setHasFinished] = useState(false)
-  const { hasDuplicate } = getDuplicateItemInRound(selections, '', targetRound)
-
-  useEffect(() => {
-    if (hasDuplicate) {
-      const timer = setTimeout(() => {
-        setHasErrorMsg(
-          <div className="conflict">
-            {t('データの重複がありました。')}
-            <br />
-            {t(
-              'ランダム抽選の結果、背景色が赤いユーザーはドラフト候補の変更が必要です。'
-            )}
-            <br />
-            <span className="caution">
-              {t(
-                '背景色が点滅しているユーザーから順に候補を変更してください。'
-              )}
-            </span>
-          </div>
-        )
-      }, SLOT_TIME * users.length + 1000)
-
-      return () => clearTimeout(timer)
-    }
-  }, [hasDuplicate])
+  const [submit, setSubmit] = useState(0)
+  const [hasFinishedSlot, setHasFinishedSlot] = useState(false)
+  const [hasFinishedConflict, setHasFinishedConflict] = useState(false)
+  const [hasConflict, setHasConflict] = useState(false)
+  const [hasClicked, setHasClicked] = useState(false)
+  const isConflictLayout = hasConflict && !hasFinishedConflict
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setHasFinished(true)
-    }, SLOT_TIME * users.length + 1000)
+      setSubmit(1)
+    }, SLOT_TIME + 1000)
 
     return () => clearTimeout(timer)
   }, [])
 
+  useEffect(() => {
+    console.log(submit)
+    if (submit === 1) {
+      duplicateCheck()
+    } else if (submit === 2) {
+      // startShowConflictData()
+    } else if (submit === 3) {
+      // finishThisRound()
+    } else if (submit === 4) {
+      //
+    }
+  }, [submit])
+
+  const duplicateCheck = () => {
+    const { hasDuplicate } = getDuplicateItemInRound(
+      selections,
+      '',
+      targetRound
+    )
+    if (hasDuplicate) {
+      setHasConflict(true)
+      setSubmit(2)
+    } else {
+      finishThisRound()
+      setSubmit(4)
+    }
+  }
+
+  useEffect(() => {
+    if (submit === 2 && hasConflict && finishedRound.includes(targetRound)) {
+      setSubmit(3)
+      goToEnd()
+    }
+  }, [finishedRound])
+
+  const finishThisRound = () => {
+    setFinishedRounds({
+      groupId,
+      currentFinishedRounds: finishedRound,
+      finishedRound: targetRound,
+    })
+  }
+  const startShowConflictData = () => {
+    setHasClicked(true)
+    finishThisRound()
+  }
+  const goToEnd = () => {
+    setTimeout(() => {
+      setSubmit(4)
+    }, DOKIDOKI_TIME)
+  }
   return (
     <div className="resultModalWrapper">
-      {hasErrorMsg}
+      {submit === 4 && hasConflict && (
+        <div className="conflict">
+          {t('データの重複がありました。')}
+          <br />
+          {t(
+            'ランダム抽選の結果、背景色が赤いユーザーはドラフト候補の変更が必要です。'
+          )}
+          <br />
+          <span className="caution">
+            {t(
+              'CLOSEボタン押下後、背景色が点滅しているユーザーから順に候補を変更してください。'
+            )}
+          </span>
+        </div>
+      )}
       <section className="result">
-        <ResultSlot />
+        {submit < 3 && <ResultSlot />}
+        {submit >= 3 && <ConflictSlot hasConflict={hasConflict} />}
       </section>
-      {hasFinished && (
+      {submit === 2 && (
+        <>
+          <hr />
+          <div className="closeBtn align-centerVH">
+            <IonButton
+              fill="solid"
+              color="danger"
+              onClick={() => startShowConflictData()}
+              disabled={hasClicked}
+            >
+              <IonIcon slot="start" icon={pawOutline} />
+              {t('抽選開始！')}
+            </IonButton>
+          </div>
+        </>
+      )}
+      {submit === 4 && (
         <>
           <hr />
           <div className="closeBtn align-centerVH">

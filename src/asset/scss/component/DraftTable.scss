@@ -22,10 +22,6 @@
     display: flex;
     flex: 1 0 auto;
     flex-direction: column;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
 
     tr {
@@ -60,7 +56,6 @@
     display: flex;
     flex: 99999 1 auto;
     flex-direction: column;
-    height: calc(100% - 32px);
     overflow: auto;
     tr {
       display: inline-flex;

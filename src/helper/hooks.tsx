@@ -29,7 +29,9 @@ import {
   createSelection,
   makeNextItem,
   isUserFinishEnter,
+  getTargetRoundUserData,
 } from 'src/helper'
+import { getTargetRoundData } from './common'
 
 export const usePrevious = (value: any, initialVal?: any) => {
   const ref = useRef(initialVal ?? null)
@@ -165,20 +167,11 @@ export const useItems = () => {
     draft: { round, selections },
   } = useSelector((state: State) => state)
 
-  const addItem = (targetUserId: string, roundIndex: number, item: string) => {
-    const updateUserId = targetUserId || userId
-    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
-    if (!item) {
-      return false
-    }
-    const selection = findUserOwnSelection(selections, updateUserId)
-    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
-    createSelection({ userId: updateUserId, selection: nextSelection })
-  }
-  const updateItem = (
+  const addItem = (
     targetUserId: string,
     roundIndex: number,
-    item: string
+    item: string,
+    comment: string
   ) => {
     const updateUserId = targetUserId || userId
     const updateRoundIndex = roundIndex === 0 ? round : roundIndex
@@ -186,14 +179,43 @@ export const useItems = () => {
       return false
     }
     const selection = findUserOwnSelection(selections, updateUserId)
-    const nextSelection = makeNextItem(selection, updateRoundIndex, item)
+    const nextSelection = makeNextItem(
+      selection,
+      updateRoundIndex,
+      item,
+      comment
+    )
+    createSelection({ userId: updateUserId, selection: nextSelection })
+  }
+  const updateItem = (
+    targetUserId: string,
+    roundIndex: number,
+    item: string,
+    comment: string
+  ) => {
+    const updateUserId = targetUserId || userId
+    const updateRoundIndex = roundIndex === 0 ? round : roundIndex
+    if (!item) {
+      return false
+    }
+    const selection = findUserOwnSelection(selections, updateUserId)
+    const nextSelection = makeNextItem(
+      selection,
+      updateRoundIndex,
+      item,
+      comment
+    )
     createSelection({ userId: updateUserId, selection: nextSelection })
   }
   return {
-    addItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
-      addItem(targetUserId, roundIndex, item),
-    updateItem: ({ targetUserId = '', roundIndex = 0, item = '' }) =>
-      updateItem(targetUserId, roundIndex, item),
+    addItem: ({ targetUserId = '', roundIndex = 0, item = '', comment = '' }) =>
+      addItem(targetUserId, roundIndex, item, comment),
+    updateItem: ({
+      targetUserId = '',
+      roundIndex = 0,
+      item = '',
+      comment = '',
+    }) => updateItem(targetUserId, roundIndex, item, comment),
   }
 }
 
@@ -214,21 +236,50 @@ export const useGetCurrentItem = (userId: string, targetRound = 0) => {
   return target?.item ?? ''
 }
 
+export const useGetCurrentComment = (userId: string, targetRound = 0) => {
+  const {
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+  const compareRound = targetRound || round
+  const selection = findUserOwnSelection(selections, userId)
+  const target = selection.find(s => s.round === compareRound)
+  return target?.comment ?? ''
+}
+
 export const useTableData = () => {
   const {
     draft: { selections, round },
     userInfo: { users },
+    component: { tableMode },
   } = useSelector((state: State) => state)
   const minimumRow = 10
   const columns = useMemo(() => {
     const index = [{ Header: 'No', accessor: 'round' }]
-    const userHeader = users.map(({ avatar, userId, userName }) => ({
-      Header: userName,
-      accessor: userId,
-      avatar: avatar,
-    }))
+    const userHeader =
+      tableMode === 0
+        ? users.map(({ avatar, userId, userName }) => ({
+            Header: userName,
+            accessor: userId,
+            avatar: avatar,
+          }))
+        : users.reduce((acc: any, cur) => {
+            const t = []
+            t.push({
+              Header: `${cur.userName}/ドラフト`,
+              accessor: cur.userId,
+              avatar: cur.avatar,
+            })
+            t.push({
+              Header: `${cur.userName}/コメント`,
+              accessor: `${cur.userId}-comment`,
+              avatar: cur.avatar,
+            })
+
+            return [...acc, ...t]
+          }, [])
+
     return [...index, ...userHeader]
-  }, [users])
+  }, [users, tableMode])
 
   const data = useMemo(() => {
     const minimumRound = round < minimumRow ? minimumRow : round
@@ -238,16 +289,66 @@ export const useTableData = () => {
       selections.forEach(({ selection, userId }) => {
         const roundData = selection.find(d => d.round === loopRound)
         if (roundData) {
-          row = { ...row, [userId]: roundData.item }
+          if (tableMode === 0) {
+            row = {
+              ...row,
+              [userId]: roundData.item,
+            }
+          } else {
+            row = {
+              ...row,
+              [userId]: roundData.item,
+              [`${userId}-comment`]: roundData.comment,
+            }
+          }
         }
       })
       d.push(row)
     }
     return d
-  }, [selections])
+  }, [selections, tableMode])
 
   return {
     columns,
     data,
   }
+}
+
+export const useCSV = () => {
+  const {
+    draft: { selections, round },
+    userInfo: { users },
+    component: { tableMode },
+  } = useSelector((state: State) => state)
+  const minimumRow = 10
+  const userIds = users.map(({ userId }) => userId)
+  const data = []
+
+  const headers = users.reduce(
+    (acc: any, cur) => {
+      const t = []
+      t.push(`${cur.userName}/ドラフト`)
+      t.push(`${cur.userName}/コメント`)
+
+      return [...acc, ...t]
+    },
+    ['Round']
+  )
+  data.push(headers)
+
+  const roundToFetch = round - 1
+
+  for (let i = 0; i < roundToFetch; i++) {
+    const tmp = []
+    const targetRound = i + 1
+    tmp.push(targetRound)
+    userIds.forEach(id => {
+      const d = getTargetRoundUserData(selections, id, targetRound)
+      tmp.push(d?.item ?? '')
+      tmp.push(d?.comment ?? '')
+    })
+    data.push(tmp)
+  }
+
+  return data
 }

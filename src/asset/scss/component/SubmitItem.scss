@@ -1,11 +1,18 @@
 @import '../common//Common.scss';
 
 .submitItemWrapper {
-  width: 300px;
+  width: 500px;
   // padding: 0 10px 10px 10px;
 
+  .label {
+    font-size: 15px;
+
+    &.comment {
+      margin-top: 10px;
+    }
+  }
   ion-input {
-    margin-top: 15px;
+    margin-top: 5px;
     border: solid 1px #aaa;
     border-radius: 5px;
   }

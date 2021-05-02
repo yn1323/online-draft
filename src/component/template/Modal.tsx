@@ -29,6 +29,7 @@ const ModalTemplate: React.FC = () => {
     <Modal
       isOpen={show}
       onRequestClose={() => hideModal()}
+      shouldCloseOnOverlayClick={false}
       ariaHideApp={false}
       style={customStyles}
     >

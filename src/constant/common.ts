@@ -60,4 +60,26 @@ export const assetImages = [
   { index: '99', path: img99 },
 ]
 
-export const SLOT_TIME = 3000
+export const SAMPLE_HORSES = [
+  'アイリスクォーツ',
+  'トゥースパークル',
+  'サブルドール',
+  'ルーレットスピナー',
+  'アーズローヴァー',
+  'ベレヌス',
+  'フォアランナー',
+  'グランディア',
+  'レベランス',
+  'フルヴォート',
+  'ヴァルキュリア',
+  'ヴェラアズール',
+  'オーソクレース',
+  'クラヴェル',
+  'パラレルヴィジョン',
+  'キングサーガ',
+  'ブッシュフェルト',
+  'コントラチェック',
+]
+
+export const SLOT_TIME = !isProduction ? 100 : 3000
+export const DOKIDOKI_TIME = 7000

@@ -24,8 +24,17 @@
     flex-shrink: 0;
     width: 30%;
     max-width: 500px;
+    &-menu {
+      height: 50px;
+
+      .menu {
+        justify-content: space-around;
+        font-size: 14px;
+      }
+    }
     &-log {
       position: relative;
+      height: calc(100% - 50px);
     }
   }
 }
@@ -33,6 +42,11 @@
 .userListCard {
   width: calc(100% - 10px);
   height: calc(100% - 5px);
+}
+
+.menuCard {
+  width: 100%;
+  height: 30px;
 }
 
 .logCard {

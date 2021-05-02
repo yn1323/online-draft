@@ -8,9 +8,10 @@ export const formatUserInfoToStateObj = (
   obj: SubscribeUsersRequestResponse[]
 ) => {
   return obj.map(({ avatar, id, userName }) => ({
-    avatar: findAvatarPath(avatar),
-    userName,
     userId: id,
+    userName,
+    avatar: findAvatarPath(avatar),
+    avatarIndex: avatar,
   }))
 }
 

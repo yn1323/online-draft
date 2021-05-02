@@ -6,6 +6,7 @@ import {
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
   GoToNextRoundRequestPayload,
+  SetFinishedRoundsRequestPayload,
   SubscribeGroupRoundRequestPayload,
   SubscribeLogMessageRequestPayload,
   SubscribeSelectionRequestPayload,
@@ -74,6 +75,7 @@ export const createGroup = async (groupName: string) => {
         groupName,
         id: groupId,
         round: 1,
+        finishedRound: [],
         deleteFlg: false,
       },
       // Create doc if not exist
@@ -88,7 +90,7 @@ export const createGroup = async (groupName: string) => {
 
 export const subscribeGroupRound = (
   { groupId }: SubscribeGroupRoundRequestPayload,
-  dispatcher: (obj: { round: number }) => void
+  dispatcher: (obj: { round: number; finishedRound: number[] }) => void
 ) => {
   try {
     if (isErrorDebug) {
@@ -97,7 +99,10 @@ export const subscribeGroupRound = (
 
     collections.group.doc(groupId).onSnapshot(doc => {
       const d = doc.data()
-      dispatcher({ round: d?.round || 1 })
+      dispatcher({
+        round: d?.round || 1,
+        finishedRound: d?.finishedRound || [],
+      })
     })
 
     return true
@@ -123,7 +128,29 @@ export const goToNextRound = async ({
     )
     return Promise.resolve()
   } catch (e) {
-    console.error('CREATEUSER:', e)
+    console.error('GOTONEXTROUND:', e)
+    return Promise.reject()
+  }
+}
+
+export const setFinishedRounds = async ({
+  groupId,
+  currentFinishedRounds,
+  finishedRound,
+}: SetFinishedRoundsRequestPayload) => {
+  try {
+    if (isErrorDebug) {
+      throw new Error()
+    }
+    await collections.group.doc(groupId).set(
+      {
+        finishedRound: [...currentFinishedRounds, finishedRound],
+      },
+      { merge: true }
+    )
+    return Promise.resolve()
+  } catch (e) {
+    console.error('SETFINISHEDROUND:', e)
     return Promise.reject()
   }
 }
@@ -169,6 +196,7 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
       userId: doc.data().id,
       userName: doc.data().userName,
       avatar: doc.data().avatar,
+      avatarIndex: doc.data().avatar,
     }))
     return users
   } catch (e) {

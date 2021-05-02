@@ -12,6 +12,7 @@ declare module 'Store' {
     toast: Toast
     loading: Loading
     modal: Modal
+    tableMode: number
   }
 
   interface Nav {
@@ -47,6 +48,7 @@ declare module 'Store' {
   }
   interface Draft {
     round: number
+    finishedRound: number[]
     selections: Selections[]
   }
 
@@ -58,6 +60,7 @@ declare module 'Store' {
     randomNumber: number
     item: string
     round: number
+    comment: string
   }
   interface Chat {
     context: Context[]
@@ -89,6 +92,7 @@ declare module 'Store' {
     // isOnline?: boolean
     userName: string
     avatar: string
+    avatarIndex: string
   }
 
   interface ApiLoading {
@@ -108,6 +112,11 @@ declare module 'RequestPayload' {
   interface GoToNextRoundRequestPayload {
     groupId: string
     nextRound: number
+  }
+  interface SetFinishedRoundsRequestPayload {
+    groupId: string
+    currentFinishedRounds: number[]
+    finishedRound: number
   }
 
   interface GetUsersRequestPayload {

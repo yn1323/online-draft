@@ -28,6 +28,7 @@ import TableCard from 'src/component/organism/TableCard'
 import { setRoundNumber } from 'src/store/draft'
 import ResultModal from 'src/component/template/ResultModal'
 import { useTranslation } from 'react-i18next'
+import MenuCard from 'src/component/organism/MenuCard'
 
 const Draft = () => {
   const { t } = useTranslation()
@@ -80,7 +81,7 @@ const Draft = () => {
     // 初回以外
     if (round === prevRound + 1) {
       setModalComponent({
-        component: <ResultModal targetRound={2} />,
+        component: <ResultModal targetRound={prevRound} />,
         title: t('結果発表'),
       })
       showResultModal()
@@ -134,7 +135,10 @@ const Draft = () => {
             </div>
           </div>
           <div className="dashboard-right">
-            <div className="height-100 dashboard-right-log">
+            <div className="dashboard-right-menu">
+              <MenuCard />
+            </div>
+            <div className="dashboard-right-log">
               <LogCard />
             </div>
           </div>

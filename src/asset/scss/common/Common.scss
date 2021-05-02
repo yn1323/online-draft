@@ -31,6 +31,10 @@ body {
     @include align;
     @include centering;
   }
+  &-centerV {
+    @include align;
+    @include centering(false, true);
+  }
 }
 
 .width {
