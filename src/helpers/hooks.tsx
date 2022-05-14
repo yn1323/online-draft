@@ -1,23 +1,9 @@
-import { useEffect, useRef, useMemo, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import moment from 'moment'
-
+import { useToast as useToastChakra } from '@chakra-ui/react'
+import type { UseToastOptions } from '@chakra-ui/react'
 import { State } from 'Store'
-import {
-  hideLoading,
-  hideModal,
-  hideNavComponent,
-  hideToast,
-  setModalComponent,
-  setNavComponent,
-  setToast,
-  showLoading,
-  showModal,
-  showNavComponent,
-  showResultModal,
-  showToast,
-} from '@/stores/component'
+import moment from 'moment'
+import { useEffect, useRef, useMemo } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import {
   findAvatarPathFromUserId,
   findUserNameFromUserId,
@@ -27,9 +13,19 @@ import {
   makeNextItem,
   sessionStorageInfo,
 } from '@/helpers/common'
-import { defaultVal as componentDefault } from '@/stores/component'
-import { setGroupId, setUserId } from '@/stores/userInfo'
 import { createSelection } from '@/helpers/firebase'
+import {
+  hideLoading,
+  hideModal,
+  hideNavComponent,
+  setModalComponent,
+  setNavComponent,
+  showLoading,
+  showModal,
+  showNavComponent,
+  showResultModal,
+} from '@/stores/component'
+import { setGroupId, setUserId } from '@/stores/userInfo'
 
 export const usePrevious = (value: any, initialVal?: any) => {
   const ref = useRef(initialVal ?? null)
@@ -62,17 +58,24 @@ export const useModal = () => {
 }
 
 export const useToast = () => {
-  const dispatch = useDispatch()
+  const toast = useToastChakra()
+  type ShowToastArgs = {
+    title: string
+    description?: string
+    duration?: number
+    status?: UseToastOptions['status']
+  }
 
   return {
-    setToast: ({
-      message = componentDefault.toast.message,
-      position = componentDefault.toast.position,
-      duration = componentDefault.toast.duration,
-      color = componentDefault.toast.color,
-    }) => dispatch(setToast({ message, position, duration, color })),
-    showToast: () => dispatch(showToast()),
-    hideToast: () => dispatch(hideToast()),
+    showToast: (args: ShowToastArgs) => {
+      toast({
+        title: args.title,
+        description: args.description,
+        duration: args.duration ?? 3000,
+        isClosable: true,
+        position: 'top-right',
+      })
+    },
   }
 }
 

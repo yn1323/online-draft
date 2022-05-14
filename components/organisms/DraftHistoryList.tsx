@@ -1,36 +1,32 @@
-import dynamic from 'next/dynamic'
+import { Button, Text, VStack } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import { getDraftPageFromLS } from '@/helpers/common'
 
-const IonItem = dynamic(
-  async () => await (await import('@ionic/react')).IonItem,
-  {
-    ssr: false,
-  }
-)
-const IonLabel = dynamic(
-  async () => await (await import('@ionic/react')).IonLabel,
-  {
-    ssr: false,
-  }
-)
-const IonList = dynamic(
-  async () => await (await import('@ionic/react')).IonList,
-  {
-    ssr: false,
-  }
-)
-
 const DraftHistoryList = () => {
-  const list: any = getDraftPageFromLS()
+  const history: { groupName: string; url: string }[] = getDraftPageFromLS()
+  const router = useRouter()
+
+  if (!history.length) {
+    return <></>
+  }
 
   return (
-    <IonList className="width-100">
-      {list.map(({ groupName, url }: any, i: number) => (
-        <IonItem button key={i} href={url}>
-          <IonLabel>{groupName}</IonLabel>
-        </IonItem>
-      ))}
-    </IonList>
+    <VStack mt="4" w="100%">
+      <Text mt="8">過去に参加したドラフト</Text>
+      <hr />
+      <VStack w="100%">
+        {history.map(({ groupName, url }: any, i: number) => (
+          <Button
+            variant="ghost"
+            key={i}
+            onClick={() => router.push(url)}
+            w="100%"
+          >
+            {groupName}
+          </Button>
+        ))}
+      </VStack>
+    </VStack>
   )
 }
 

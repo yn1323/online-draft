@@ -1,20 +1,11 @@
+import { Box, Button, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
-import dynamic from 'next/dynamic'
-import { useState } from 'react'
-
-import { useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
+import { useSelector } from 'react-redux'
 import { useInfo } from '@/helpers/hooks'
 import UserList from '@/molecules/UserList'
 import CreateUser from '@/organisms/CreateUser'
-import CardBackground from '@/templates/CardBackground'
-
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
 
 const EntryCard = () => {
   const {
@@ -31,27 +22,24 @@ const EntryCard = () => {
   }
 
   return (
-    <CardBackground customClass="login" index={cardIndex}>
-      <div className="draftselectionWrapper height-100">
-        {hasUser && (
-          <>
+    <Box boxShadow="md" p={8} border={1} rounded="base" w="400px" maxH="80vh">
+      {cardIndex === 0 && (
+        <VStack>
+          {hasUser && (
             <UserList
               users={users}
               title="登録ユーザー"
               callback={(userId: string) => loginWithExistUser(userId)}
             />
-            <hr />
-          </>
-        )}
+          )}
 
-        <div className="align-centerVH">
-          <IonButton onClick={() => setCardIndex(1)}>
+          <Button colorScheme="green" onClick={() => setCardIndex(1)}>
             新規ユーザー登録
-          </IonButton>
-        </div>
-      </div>
-      <CreateUser goBack={() => setCardIndex(0)} />
-    </CardBackground>
+          </Button>
+        </VStack>
+      )}
+      {cardIndex === 1 && <CreateUser goBack={() => setCardIndex(0)} />}
+    </Box>
   )
 }
 

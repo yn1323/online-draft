@@ -1,19 +1,3 @@
-import { APP_NAME } from '@/constants/common'
-import { auth, db } from '@/constants/firebase'
-import { signInAnonymously } from 'firebase/auth'
-import {
-  addDoc,
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  onSnapshot,
-  orderBy,
-  query,
-  updateDoc,
-  where,
-} from 'firebase/firestore'
 import {
   AddLogMessageRequestPayload,
   CrateUserRequestPayload,
@@ -33,10 +17,26 @@ import {
 } from 'Response'
 
 import { Context, Selections, Users } from 'Store'
+import { signInAnonymously } from 'firebase/auth'
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  limit,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from 'firebase/firestore'
 import {
   formatLogMessageToStateObj,
   formatUserInfoToStateObj,
 } from './firebaseHelper'
+import { APP_NAME } from '@/constants/common'
+import { auth, db } from '@/constants/firebase'
 
 const isErrorDebug = false
 

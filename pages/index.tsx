@@ -1,20 +1,11 @@
-import dynamic from 'next/dynamic'
-
-const HomeCard = dynamic(import('@/organisms/HomeCard'), {
-  ssr: false,
-})
-const Header = dynamic(import('@/templates/Header'), {
-  ssr: false,
-})
+import HomeCard from '@/organisms/HomeCard'
+import BasicTemplate from '@/templates/BasicTemplate'
 
 const Home = () => {
   return (
-    <>
-      <Header location="home" />
-      <div className="height-100 align-centerVH">
-        <HomeCard />
-      </div>
-    </>
+    <BasicTemplate location="home">
+      <HomeCard />
+    </BasicTemplate>
   )
 }
 

@@ -1,11 +1,11 @@
-import { findAvatarPath } from '@/helpers/common'
-import { getGroupName, getUsers } from '@/helpers/firebase'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
   GetGroupNameRequestPayload,
   GetUsersRequestPayload,
 } from 'RequestPayload'
 import { UserInfo as StateType } from 'Store'
+import { findAvatarPath } from '@/helpers/common'
+import { getGroupName, getUsers } from '@/helpers/firebase'
 
 const STORE_NAME = 'userInfo'
 

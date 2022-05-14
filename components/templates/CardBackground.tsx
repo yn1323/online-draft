@@ -13,16 +13,16 @@ const CardBackground = ({
   children,
   index = 0,
 }: Props) => {
-  const renderChildElement = () => {
-    return Array.isArray(children) ? children[index] : children
-  }
+  const renderChildElement = Array.isArray(children)
+    ? children[index]
+    : children
 
   return (
     <section
       className={`card ${customClass}`}
       style={customClass ? {} : { height, width }}
     >
-      {renderChildElement()}
+      {renderChildElement}
     </section>
   )
 }

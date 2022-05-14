@@ -26,7 +26,7 @@ const Nav = () => {
     document.addEventListener('ionBackButton', (ev: any) => {
       ev.detail.register(10, hideNav)
     })
-  }, [])
+  }, [hideNav])
 
   return !show ? (
     <></>

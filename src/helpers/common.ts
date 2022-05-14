@@ -1,5 +1,5 @@
-import { APP_NAME, assetImages, SLOT_TIME } from '@/constants/common'
 import { Draft, Selection, Selections, Users } from 'Store'
+import { APP_NAME, assetImages, SLOT_TIME } from '@/constants/common'
 
 export const deepcopy = (obj: {} | []) => JSON.parse(JSON.stringify(obj))
 

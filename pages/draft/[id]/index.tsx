@@ -21,7 +21,7 @@ import UserListCard from '@/organisms/UserListCard'
 import { setContext } from '@/stores/chat'
 import { setRoundNumber, setSelections } from '@/stores/draft'
 import { setAllUserInfo, setUserId } from '@/stores/userInfo'
-import Header from '@/templates/Header'
+import Header from '@/templates/BasicTemplate'
 import ResultModal from '@/templates/ResultModal'
 
 const IonPage = dynamic(
@@ -72,7 +72,7 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
       hideLoading()
       setIsLoaded(true)
     }
-  }, [process])
+  }, [process, router, groupId, hideLoading, showLoading])
 
   useEffect(() => {
     const currentUserIds = users.map(user => user.userId)

@@ -1,26 +1,13 @@
 import { ParsedUrlQuery } from 'querystring'
 import { State } from 'Store'
 import { GetServerSideProps, NextPage } from 'next'
-import dynamic from 'next/dynamic'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addDraftPageToLS } from '@/helpers/common'
 import EntryCard from '@/organisms/EntryCard'
 import { getUserInfoOnce } from '@/stores/userInfo'
-import Header from '@/templates/Header'
-
-const IonPage = dynamic(
-  async () => await (await import('@ionic/react')).IonPage,
-  {
-    ssr: false,
-  }
-)
-const IonContent = dynamic(
-  async () => await (await import('@ionic/react')).IonContent,
-  {
-    ssr: false,
-  }
-)
+import AnonymousAuthAuth from '@/templates/AnonymousAuth'
+import BasicTemplate from '@/templates/BasicTemplate'
 
 type PropTypes = {
   id: string
@@ -37,7 +24,7 @@ const Entry: NextPage<PropTypes> = ({ id }) => {
       return
     }
     dispatch(getUserInfoOnce({ groupId }))
-  }, [groupId])
+  }, [groupId, dispatch])
 
   useEffect(() => {
     if (!groupName) {
@@ -47,15 +34,11 @@ const Entry: NextPage<PropTypes> = ({ id }) => {
   }, [groupName])
 
   return (
-    <IonPage>
-      <Header location="entry" groupIdFromPath={id} />
-
-      <IonContent className="height-100" scrollY={false}>
-        <div className="height-100 align-centerVH">
-          <EntryCard />
-        </div>
-      </IonContent>
-    </IonPage>
+    <BasicTemplate location="entry" groupIdFromPath={id}>
+      <AnonymousAuthAuth groupId={id}>
+        <EntryCard />
+      </AnonymousAuthAuth>
+    </BasicTemplate>
   )
 }
 

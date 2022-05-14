@@ -1,60 +1,28 @@
+import { Box, Button, HStack, Spacer, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
-import { shareSocialOutline, thumbsUpOutline } from 'ionicons/icons'
+import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
-
+import { FaShareAlt } from 'react-icons/fa'
 import { useSelector, useDispatch } from 'react-redux'
 import { isProduction } from '@/constants/common'
 import { goToNextRound, setFinishedRounds } from '@/helpers/firebase'
 import { useModal } from '@/helpers/hooks'
 import ShareModal from '@/molecules/ShareModal'
 import { getGroupNameOnce } from '@/stores/userInfo'
-import dynamic from 'next/dynamic'
-
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
-const IonButtons = dynamic(
-  async () => await (await import('@ionic/react')).IonButtons,
-  {
-    ssr: false,
-  }
-)
-const IonHeader = dynamic(
-  async () => await (await import('@ionic/react')).IonHeader,
-  {
-    ssr: false,
-  }
-)
-const IonIcon = dynamic(
-  async () => await (await import('@ionic/react')).IonIcon,
-  {
-    ssr: false,
-  }
-)
-const IonTitle = dynamic(
-  async () => await (await import('@ionic/react')).IonTitle,
-  {
-    ssr: false,
-  }
-)
-const IonToolbar = dynamic(
-  async () => await (await import('@ionic/react')).IonToolbar,
-  {
-    ssr: false,
-  }
-)
 
 const LOCATIONS = ['home', 'entry', 'draft'] as const
 
 type PropTypes = {
   location: typeof LOCATIONS[number]
   groupIdFromPath?: string
+  children: JSX.Element
 }
 
-const Header: FC<PropTypes> = ({ location, groupIdFromPath = '' }) => {
+const BasicTemplate: FC<PropTypes> = ({
+  location,
+  groupIdFromPath = '',
+  children,
+}) => {
   const {
     userInfo: { groupId, groupName },
     draft: { round, finishedRound },
@@ -75,7 +43,7 @@ const Header: FC<PropTypes> = ({ location, groupIdFromPath = '' }) => {
     if (!isHome) {
       dispatch(getGroupNameOnce({ groupId: groupIdFromPath }))
     }
-  }, [])
+  }, [groupIdFromPath, dispatch, isHome])
 
   useEffect(() => {
     if (groupName) {
@@ -85,7 +53,7 @@ const Header: FC<PropTypes> = ({ location, groupIdFromPath = '' }) => {
         setHeaderTitle(`${groupName}    [ROUND-${round}]`)
       }
     }
-  }, [groupName, round])
+  }, [groupName, round, isEntry, setHeaderTitle])
 
   const debugGoBack = () => {
     goToNextRound({ groupId, nextRound: round - 1 })
@@ -103,26 +71,40 @@ const Header: FC<PropTypes> = ({ location, groupIdFromPath = '' }) => {
     showModal()
   }
   return (
-    <IonHeader>
-      <IonToolbar color="primary">
-        <IonTitle>{headerTitle}</IonTitle>
-        {(isEntry || isDraft) && (
-          <IonButtons slot="end" style={{ marginRight: 10 }}>
-            {!isProduction && (
-              <IonButton fill="solid" onClick={debugGoBack}>
-                <IonIcon slot="start" icon={thumbsUpOutline} />
-                {'DEBUG用-ROUND戻る'}
-              </IonButton>
-            )}
-            <IonButton fill="solid" onClick={showShareModal}>
-              <IonIcon slot="start" icon={shareSocialOutline} />
-              シェア
-            </IonButton>
-          </IonButtons>
+    <Box h="100vh">
+      <HStack h="3rem" px="12" bg="green.400">
+        <Link href="/" passHref>
+          <Button
+            variant="ghost"
+            colorScheme="teal"
+            as="a"
+            pointerEvents={'none'}
+            color="white"
+          >
+            {headerTitle}
+          </Button>
+        </Link>
+        <Spacer />
+        {(isEntry || isDraft) && !isProduction && (
+          <Button colorScheme="teal" onClick={debugGoBack}>
+            {'DEBUG用-ROUND戻る'}
+          </Button>
         )}
-      </IonToolbar>
-    </IonHeader>
+        {(isEntry || isDraft) && (
+          <Button
+            colorScheme="teal"
+            leftIcon={<FaShareAlt />}
+            onClick={showShareModal}
+          >
+            シェア
+          </Button>
+        )}
+      </HStack>
+      <VStack h="calc(100% - 3rem)" justifyContent="center">
+        {children}
+      </VStack>
+    </Box>
   )
 }
 
-export default Header
+export default BasicTemplate

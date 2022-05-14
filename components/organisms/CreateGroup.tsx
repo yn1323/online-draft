@@ -1,8 +1,11 @@
+import { Button, IconButton, Input } from '@chakra-ui/react'
 import { chevronBackOutline } from 'ionicons/icons'
 import dynamic from 'next/dynamic'
-import { useRef } from 'react'
-import { createGroup, isSignIn, signIn } from '@/helpers/firebase'
 import { useRouter } from 'next/router'
+import { useRef } from 'react'
+import { useState } from 'react'
+import { FaStepBackward } from 'react-icons/fa'
+import { createGroup, isSignIn, signIn } from '@/helpers/firebase'
 
 const IonButton = dynamic(
   async () => await (await import('@ionic/react')).IonButton,
@@ -28,16 +31,26 @@ interface Props {
 }
 
 const CreateGroup = ({ goBack }: Props) => {
-  const groupName = useRef<HTMLIonInputElement>(null)
+  const [groupName, setGroupName] = useState()
   const router = useRouter()
+  const handleChange = (event: any) => setGroupName(event.target.value)
+
+  const [isLoading, setIsLoading] = useState(false)
 
   const createGroupInFB = async (groupName: any) => {
     const id = await createGroup(groupName)
+    console.log(id)
     router.push(`/entry/${id}`)
   }
 
   const makeGroup = async () => {
-    const name: any = groupName.current?.value
+    setIsLoading(true)
+    const name = groupName
+    if (!groupName) {
+      alert('グループ名を入力してください。')
+      setIsLoading(false)
+      return
+    }
     if (!isSignIn()) {
       signIn({
         succeeded: () => {
@@ -45,6 +58,7 @@ const CreateGroup = ({ goBack }: Props) => {
         },
         failed: () => {
           alert('認証に失敗しました。再度試してください。')
+          setIsLoading(false)
         },
       })
     } else {
@@ -54,27 +68,28 @@ const CreateGroup = ({ goBack }: Props) => {
   return (
     <div className="createGroupWrapper">
       <div>
-        <IonButton fill="clear" onClick={goBack}>
-          <IonIcon
-            slot="icon-only"
-            icon={chevronBackOutline}
-            color="black"
-          ></IonIcon>
-        </IonButton>
+        <IconButton
+          aria-label="back"
+          colorScheme="green"
+          onClick={goBack}
+          variant="ghost"
+          icon={<FaStepBackward />}
+        />
       </div>
       <form>
         <div className="align-centerVH groupname">
-          <IonInput
+          <Input
             placeholder="グループ名"
-            ref={groupName}
+            value={groupName}
+            onChange={handleChange}
             required
-            maxlength={48}
-          ></IonInput>
+            maxLength={48}
+          />
         </div>
         <div className="align-centerVH">
-          <IonButton type="button" onClick={makeGroup}>
+          <Button colorScheme="green" onClick={makeGroup} isLoading={isLoading}>
             作成する
-          </IonButton>
+          </Button>
         </div>
       </form>
     </div>

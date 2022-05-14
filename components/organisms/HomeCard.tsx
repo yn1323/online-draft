@@ -1,54 +1,37 @@
+import { Box, Button, Text, VStack } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
-
-import { getDraftPageFromLS } from '@/helpers/common'
 import CreateGroup from '@/organisms/CreateGroup'
-import DraftHistoryList from '@/organisms/DraftHistoryList'
-import CardBackground from '@/templates/CardBackground'
 
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
-const IonText = dynamic(
-  async () => await (await import('@ionic/react')).IonText,
-  {
-    ssr: false,
-  }
-)
+const DraftHistoryList = dynamic(() => import('@/organisms/DraftHistoryList'), {
+  ssr: false,
+})
 
 const HomeCard = () => {
   const [cardIndex, setCardIndex] = useState(0)
 
-  const history: any[] = getDraftPageFromLS()
   return (
-    <CardBackground customClass="login" index={cardIndex}>
-      <div className="draftselectionWrapper height-100">
-        <IonText className="align-centerVH">
-          <h5>新しく作成する</h5>
-        </IonText>
-        <div className="align-centerVH">
-          <IonButton className="createNew" onClick={() => setCardIndex(1)}>
+    <Box boxShadow="md" p={8} border={1} rounded="base" w="400px" maxH="80vh">
+      {cardIndex === 0 && (
+        <VStack w="100%" spacing={8}>
+          <VStack w="100%">
+            <Text>新しく作成する</Text>
+            <hr />
+          </VStack>
+          <Button
+            className="createNew"
+            onClick={() => setCardIndex(1)}
+            colorScheme="green"
+          >
             グループを作成
-          </IonButton>
-        </div>
+          </Button>
 
-        {!!history.length && (
-          <>
-            <hr className="bold" />
-            <IonText className="align-centerVH">
-              <h5>過去に参加したドラフト</h5>
-            </IonText>
-            <div className="align-centerVH">
-              <DraftHistoryList />
-            </div>
-          </>
-        )}
-      </div>
-      <CreateGroup goBack={() => setCardIndex(0)} />
-    </CardBackground>
+          <DraftHistoryList />
+        </VStack>
+      )}
+
+      {cardIndex === 1 && <CreateGroup goBack={() => setCardIndex(0)} />}
+    </Box>
   )
 }
 

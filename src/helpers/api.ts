@@ -1,5 +1,5 @@
-import { END_POINT } from '@/constants/common'
 import axios from 'axios'
+import { END_POINT } from '@/constants/common'
 
 export const req = async (path: string, params: {}) =>
   await axios
