@@ -1,13 +1,13 @@
+import { ParsedUrlQuery } from 'querystring'
 import { State } from 'Store'
+import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { getUserInfoOnce } from '@/stores/userInfo'
 import { addDraftPageToLS } from '@/helpers/common'
-import Header from '@/templates/Header'
 import EntryCard from '@/organisms/EntryCard'
-import { GetServerSideProps, NextPage } from 'next'
-import { ParsedUrlQuery } from 'querystring'
+import { getUserInfoOnce } from '@/stores/userInfo'
+import Header from '@/templates/Header'
 
 const IonPage = dynamic(
   async () => await (await import('@ionic/react')).IonPage,

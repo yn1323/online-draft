@@ -1,9 +1,7 @@
 import { State } from 'Store'
 import dynamic from 'next/dynamic'
 import { useRef, useState, useEffect } from 'react'
-
 import { useSelector } from 'react-redux'
-
 import { findUserNameFromUserId, isDuplicateItem } from '@/helpers/common'
 import { addLogMessage } from '@/helpers/firebase'
 import {

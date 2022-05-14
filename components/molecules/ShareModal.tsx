@@ -43,7 +43,7 @@ const ShareModal = () => {
 
   return (
     <div className="shareModal">
-      <div className="msg">'参加者に下記URLをシェアしてください。</div>
+      <div className="msg">参加者に下記URLをシェアしてください。</div>
       <div className="url height-100 align-centerVH">
         <IonInput ref={url} />
 

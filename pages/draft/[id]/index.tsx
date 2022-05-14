@@ -1,8 +1,10 @@
+import { ParsedUrlQuery } from 'querystring'
 import { Context, Selections, State, Users } from 'Store'
+import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/router'
 import { sessionStorageInfo } from '@/helpers/common'
 import {
   isUserExistInGroup,
@@ -16,13 +18,11 @@ import LogCard from '@/organisms/LogCard'
 import MenuCard from '@/organisms/MenuCard'
 import TableCard from '@/organisms/TableCard'
 import UserListCard from '@/organisms/UserListCard'
-import Header from '@/templates/Header'
-import ResultModal from '@/templates/ResultModal'
 import { setContext } from '@/stores/chat'
 import { setRoundNumber, setSelections } from '@/stores/draft'
 import { setAllUserInfo, setUserId } from '@/stores/userInfo'
-import { GetServerSideProps, NextPage } from 'next'
-import { ParsedUrlQuery } from 'querystring'
+import Header from '@/templates/Header'
+import ResultModal from '@/templates/ResultModal'
 
 const IonPage = dynamic(
   async () => await (await import('@ionic/react')).IonPage,
