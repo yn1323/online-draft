@@ -1,0 +1,113 @@
+@import '../common/Common.scss';
+
+.draftTable {
+  $borderColor: #eee;
+  $backgroundHeader: #3880ff;
+  $headerFontColor: #fefefe;
+  $background: #d8e5ee;
+  $backgroundHover: #cfe0eb;
+
+  $backgroundDuplicate: #e7b1cc;
+  $backgroundDuplicateBlink: #e79ec3;
+  $backgroundDuplicateHover: #e79ec3;
+
+  $indexRowBackground: #8cbdff;
+  $indexRowFontColor: #eee;
+
+  width: 100%;
+  height: 100%;
+  font-size: 12px;
+
+  thead {
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.1);
+
+    tr {
+      display: inline-flex;
+      flex: 1 0 auto;
+      background: $backgroundHeader;
+      border-bottom: 1px solid $borderColor;
+
+      :first-child {
+        flex-grow: 0.5;
+      }
+      :last-child {
+        border-right: none;
+      }
+
+      th {
+        position: relative;
+        flex: 1 0 0;
+        padding: 5px 5px;
+        overflow: hidden;
+        line-height: normal;
+        color: $headerFontColor;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        border-right: 1px solid $borderColor;
+        box-shadow: inset 0 0 0 0 transparent;
+        transition: box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+    }
+  }
+  tbody {
+    display: flex;
+    flex: 99999 1 auto;
+    flex-direction: column;
+    overflow: auto;
+    tr {
+      display: inline-flex;
+      flex: 1 0 auto;
+      border-bottom: solid 1px $borderColor;
+
+      &:nth-child(even) {
+        background: $background;
+      }
+
+      :first-child {
+        flex-grow: 0.5;
+        color: $indexRowFontColor;
+        background: $indexRowBackground;
+        border-left: 1px solid $borderColor;
+      }
+
+      .clickable:hover {
+        cursor: pointer;
+        background: $backgroundHover;
+      }
+      .duplicate {
+        background: $backgroundDuplicate;
+        &:hover {
+          background: $backgroundDuplicateHover;
+        }
+        &-change {
+          animation: blinkAnime 1s infinite alternate;
+          @keyframes blinkAnime {
+            0% {
+              background: $backgroundDuplicate;
+            }
+            100% {
+              background: rgba(255, 0, 0, 0.5);
+            }
+          }
+        }
+      }
+
+      td {
+        flex: 1 0 0;
+        width: 100%;
+        padding: 7px 5px;
+        overflow: hidden;
+        text-align: center;
+        border-right: 1px solid $borderColor;
+        transition: 0.3s ease;
+        transition-property: width, min-width, padding, opacity;
+        line-break: anywhere;
+        @include align;
+        @include centering;
+      }
+    }
+  }
+}

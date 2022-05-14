@@ -1,0 +1,141 @@
+@import '../common/Common.scss';
+
+.resultModalWrapper {
+  $backgroundDuplicate: #e7b1cc;
+  $backgroundNotDuplicate: #b7f0ce;
+  $dokidokiTime: 7s;
+
+  width: 90vw;
+  .result {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &-selection {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 30px;
+      margin-top: 5px;
+      overflow: hidden;
+      font-size: 14px;
+      text-align: center;
+
+      .text {
+        @include ellipsis;
+      }
+
+      &.duplicate {
+        background: $backgroundDuplicate;
+      }
+    }
+  }
+  .judge {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 0;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: space-around;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+
+    &-selection {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 30px;
+      margin-top: 5px;
+      overflow: hidden;
+      font-size: 14px;
+      text-align: center;
+
+      .text {
+        @include ellipsis;
+      }
+      &.allPass {
+        background: $backgroundNotDuplicate !important;
+      }
+      &.duplicate {
+        background: $backgroundDuplicate;
+        animation: resultDuplicate $dokidokiTime 1 alternate;
+
+        @keyframes resultDuplicate {
+          0% {
+            background: #eee;
+          }
+          20% {
+            background: #a7a7f7;
+          }
+          40% {
+            background: white;
+          }
+          60% {
+            background: #a7a7f7;
+          }
+          80% {
+            background: white;
+          }
+          99% {
+            background: #a7a7f7;
+          }
+          100% {
+            background: $backgroundDuplicate;
+          }
+        }
+      }
+      &:not(.duplicate) {
+        background: $backgroundNotDuplicate;
+        animation: resultDuplicate $dokidokiTime 1 alternate;
+
+        @keyframes resultDuplicate {
+          0% {
+            background: #eee;
+          }
+          20% {
+            background: #a7a7f7;
+          }
+          40% {
+            background: white;
+          }
+          60% {
+            background: #a7a7f7;
+          }
+          80% {
+            background: white;
+          }
+          99% {
+            background: #a7a7f7;
+          }
+          100% {
+            background: $backgroundNotDuplicate;
+          }
+        }
+      }
+    }
+  }
+  .conflict {
+    margin: 0 10px 10px 10px;
+    font-size: 13px;
+    color: #c00;
+
+    .caution {
+      text-decoration: underline;
+    }
+  }
+
+  .centeringAvatar {
+    .avatarWithNameWrapper {
+      justify-content: center;
+    }
+  }
+}

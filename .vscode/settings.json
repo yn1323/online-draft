@@ -1,27 +1,24 @@
 {
-  "files.insertFinalNewline": true,
-  "files.trimTrailingWhitespace": true,
-  "typescript.tsserver.trace": "verbose",
-  "[markdown]": {
-    "files.trimTrailingWhitespace": false
-  },
+  "eslint.validate": ["html", "javascriptreact", "typescriptreact"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "codeActionsOnSaveTimeout": true,
-    "editor.codeActionsOnSaveTimeout": true,
-    "source.fixAll.stylelint": true
+    "source.fixAll.eslint": true
   },
-  "[javascriptreact]": {
-    "editor.formatOnSave": true,
+  "[typescriptreact]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
   },
-  "editor.formatOnSave": false,
-  "eslint.workingDirectories": [
-    {
-      "directory": "./app",
-      "changeProcessCWD": true
-    }
-  ],
-  "eslint.alwaysShowStatus": true,
+  "[typescript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[markdown]": {
+    "editor.formatOnSave": false
+  },
   // Monokai Extended for "console" color
   "editor.semanticTokenColorCustomizations": {
     "enabled": true,
@@ -34,4 +31,7 @@
   "less.validate": false,
   "scss.validate": false,
   "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.preferences.importModuleSpecifier": "non-relative"
 }

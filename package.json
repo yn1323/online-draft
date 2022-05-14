@@ -1,173 +1,50 @@
 {
   "name": "onlinedraft",
-  "version": "1.0.2",
-  "description": "Onlin draft meeting system",
+  "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "14.x"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "npx ionic build --mode production",
-    "start--en": "REACT_APP_LANG=en react-scripts start",
-    "build--en": "REACT_APP_LANG=en ionic build --mode production",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint": "eslint --ext ./ 'src/**/*.{js,jsx,ts,tsx}';",
-    "i18n-extract": "NODE_ENV=development babel './src/**/*.{js,jsx,ts,tsx}'",
-    "chmod": "chmod 755 ./bat/*",
-    "checkkey": "bat/checkkey.sh",
-    "createkey": "bat/createkey.sh",
-    "release--android": "npm run build && bat/release-android.sh ja",
-    "release--android--en": "npm run build--en && bat/release-android.sh en",
-    "sign--android": "bat/sign-android.sh"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
   "dependencies": {
-    "@date-io/moment": "^1.3.13",
-    "@ionic-native/core": "^5.31.1",
-    "@ionic/react": "^5.5.0",
-    "@ionic/react-router": "^5.5.0",
-    "@reduxjs/toolkit": "^1.5.0",
-    "@types/react-copy-to-clipboard": "^5.0.0",
-    "@types/react-csv": "^1.1.1",
-    "axios": "^0.21.0",
-    "firebase": "^8.4.1",
-    "i18next": "^19.8.7",
-    "ionicons": "^5.4.0",
-    "moment": "^2.29.1",
-    "node-sass": "^5.0.0",
-    "react": "^17.0.1",
-    "react-copy-to-clipboard": "^5.0.3",
-    "react-csv": "^2.0.3",
-    "react-dom": "^17.0.1",
-    "react-i18next": "^11.8.6",
-    "react-modal": "^3.13.1",
-    "react-redux": "^7.2.2",
-    "react-router": "^5.2.0",
-    "react-router-dom": "^5.2.0",
-    "react-scripts": "4.0.2",
-    "react-table": "^7.7.0",
-    "typescript": "^4.1.3",
-    "uuid": "^3.3.4",
-    "web-vitals": "^0.2.4",
-    "workbox-background-sync": "^5.1.4",
-    "workbox-broadcast-update": "^5.1.4",
-    "workbox-cacheable-response": "^5.1.4",
-    "workbox-core": "^5.1.4",
-    "workbox-expiration": "^5.1.4",
-    "workbox-google-analytics": "^5.1.4",
-    "workbox-navigation-preload": "^5.1.4",
-    "workbox-precaching": "^5.1.4",
-    "workbox-range-requests": "^5.1.4",
-    "workbox-routing": "^5.1.4",
-    "workbox-strategies": "^5.1.4",
-    "workbox-streams": "^5.1.4",
-    "xml2js": "^0.4.23"
+    "@chakra-ui/react": "^2.0.0",
+    "@emotion/react": "^11.9.0",
+    "@emotion/styled": "^11.8.1",
+    "@ionic/core": "^6.1.5",
+    "@ionic/react": "^6.1.5",
+    "@reduxjs/toolkit": "^1.8.1",
+    "axios": "^0.27.2",
+    "firebase": "^9.8.1",
+    "framer-motion": "^6.3.3",
+    "ionicons": "^6.0.1",
+    "moment": "^2.29.3",
+    "next": "12.1.6",
+    "react": "18.1.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-csv": "^2.2.2",
+    "react-dom": "18.1.0",
+    "react-modal": "^3.15.1",
+    "react-redux": "^8.0.1",
+    "redux": "^4.2.0",
+    "redux-logger": "^3.0.6",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.12.13",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.5.0",
-    "@testing-library/user-event": "^7.2.1",
-    "@types/jest": "^24.9.1",
-    "@types/node": "^12.12.68",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-modal": "^3.12.0",
-    "@types/react-redux": "^7.1.11",
-    "@types/react-router": "^5.1.11",
-    "@types/react-router-dom": "^5.1.6",
-    "@types/react-table": "^7.0.29",
-    "@types/redux-logger": "^3.0.8",
-    "@types/uuid": "^8.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.9.0",
-    "@typescript-eslint/parser": "^4.9.0",
-    "babel-plugin-i18next-extract": "^0.8.2",
-    "eslint": "^7.14.0",
-    "eslint-config-prettier": "^6.15.0",
-    "eslint-plugin-import": "^2.21.2",
-    "eslint-plugin-jest": "^23.13.2",
-    "eslint-plugin-prefer-arrow": "^1.2.1",
-    "eslint-plugin-prettier": "^3.2.0",
-    "eslint-plugin-react": "^7.21.5",
-    "husky": "^4.3.0",
-    "lint-staged": "^10.5.2",
-    "prettier": "^2.2.1",
-    "redux-logger": "^3.0.6",
-    "stylelint": "^13.8.0",
-    "stylelint-config-prettier": "^8.0.2",
-    "stylelint-config-recess-order": "^2.3.0",
-    "stylelint-config-recommended-scss": "^4.2.0",
-    "stylelint-config-standard": "^20.0.0",
-    "stylelint-declaration-block-no-ignored-properties": "^2.3.0",
-    "stylelint-prettier": "^1.1.2",
-    "stylelint-scss": "^3.18.0"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix",
-      "git add"
-    ]
-  },
-  "prettier": {
-    "bracketSpacing": true,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5",
-    "printWidth": 80,
-    "tabWidth": 2,
-    "useTabs": false,
-    "quoteProps": "as-needed",
-    "jsxSingleQuote": false,
-    "jsxBracketSameLine": false,
-    "arrowParens": "avoid",
-    "rangeStart": 0,
-    "filepath": "none",
-    "requirePragma": false,
-    "insertPragma": false,
-    "proseWrap": "preserve",
-    "htmlWhitespaceSensitivity": "css",
-    "vueIndentScriptAndStyle": false,
-    "endOfLine": "lf"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "babel": {
-    "presets": [
-      "react-app"
-    ],
-    "plugins": [
-      [
-        "i18next-extract",
-        {
-          "locales": [
-            "ja",
-            "en"
-          ],
-          "outputPath": "./src/locales/{{locale}}.json"
-        }
-      ]
-    ]
+    "@types/node": "17.0.33",
+    "@types/react": "18.0.9",
+    "@types/react-copy-to-clipboard": "^5.0.2",
+    "@types/react-dom": "18.0.4",
+    "@types/react-modal": "^3.13.1",
+    "@types/redux-logger": "^3.0.9",
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "eslint": "8.15.0",
+    "eslint-config-next": "12.1.6",
+    "eslint-plugin-import": "^2.26.0",
+    "prettier": "^2.6.2",
+    "sass": "^1.51.0",
+    "typescript": "4.6.4"
   }
 }
