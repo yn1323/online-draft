@@ -168,7 +168,7 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
       throw new Error()
     }
 
-    const q = query(collection(db, 'user'), where('capital', '==', true))
+    const q = query(collection(db, 'user'), where('groupId', '==', groupId))
     const querySnapshot = await getDocs(q)
 
     const users = querySnapshot.docs.map((doc: any) => ({

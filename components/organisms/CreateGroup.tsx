@@ -39,7 +39,6 @@ const CreateGroup = ({ goBack }: Props) => {
 
   const createGroupInFB = async (groupName: any) => {
     const id = await createGroup(groupName)
-    console.log(id)
     router.push(`/entry/${id}`)
   }
 

@@ -1,5 +1,5 @@
+import { HStack, Text, VStack } from '@chakra-ui/react'
 import { Users } from 'Store'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
 
 interface Props {
@@ -8,52 +8,25 @@ interface Props {
   callback: (id: string) => void
 }
 
-const IonAvatar = dynamic(
-  async () => await (await import('@ionic/react')).IonAvatar,
-  {
-    ssr: false,
-  }
-)
-const IonItem = dynamic(
-  async () => await (await import('@ionic/react')).IonItem,
-  {
-    ssr: false,
-  }
-)
-const IonLabel = dynamic(
-  async () => await (await import('@ionic/react')).IonLabel,
-  {
-    ssr: false,
-  }
-)
-const IonList = dynamic(
-  async () => await (await import('@ionic/react')).IonList,
-  {
-    ssr: false,
-  }
-)
-const IonListHeader = dynamic(
-  async () => await (await import('@ionic/react')).IonListHeader,
-  {
-    ssr: false,
-  }
-)
-
 const UserList = ({ title = '', users, callback }: Props) => {
   return (
-    <IonList>
-      <IonListHeader>{title}</IonListHeader>
-      {users.map(({ avatar, userName, userId }, index) => (
-        <IonItem key={index} button onClick={() => callback(userId)}>
-          <IonAvatar slot="start">
-            <Image src={avatar} alt="img" />
-          </IonAvatar>
-          <IonLabel>
-            <h2>{userName}</h2>
-          </IonLabel>
-        </IonItem>
+    <VStack justifyContent={'flex-start'} alignItems="flex-start" w="100%">
+      <Text mb="3">{title}</Text>
+      {users.map(({ avatar, userName, userId }, i) => (
+        <HStack
+          key={i}
+          onClick={() => callback(userId)}
+          w="100%"
+          h={50}
+          as="button"
+          _hover={{ backgroundColor: '#f5f5f5' }}
+          px={4}
+        >
+          <Image src={avatar} width={36} height={36} alt="avatar" />
+          <Text>{userName}</Text>
+        </HStack>
       ))}
-    </IonList>
+    </VStack>
   )
 }
 

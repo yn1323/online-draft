@@ -1,4 +1,4 @@
-import { Box, Button, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, Text, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
@@ -26,11 +26,18 @@ const EntryCard = () => {
       {cardIndex === 0 && (
         <VStack>
           {hasUser && (
-            <UserList
-              users={users}
-              title="登録ユーザー"
-              callback={(userId: string) => loginWithExistUser(userId)}
-            />
+            <>
+              <UserList
+                users={users}
+                title="登録ユーザー"
+                callback={(userId: string) => loginWithExistUser(userId)}
+              />
+              <HStack w="100%">
+                <hr />
+                <Text>or</Text>
+                <hr />
+              </HStack>
+            </>
           )}
 
           <Button colorScheme="green" onClick={() => setCardIndex(1)}>
