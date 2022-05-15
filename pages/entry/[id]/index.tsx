@@ -20,7 +20,6 @@ const Entry: NextPage<PropTypes> = ({ id }) => {
   } = useSelector((state: State) => state)
 
   useEffect(() => {
-    console.log(groupId)
     if (!groupId) {
       return
     }

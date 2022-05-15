@@ -172,7 +172,7 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
     const querySnapshot = await getDocs(q)
 
     const users = querySnapshot.docs.map((doc: any) => ({
-      userId: doc.data().id,
+      userId: doc.id,
       userName: doc.data().userName,
       avatar: doc.data().avatar,
       avatarIndex: doc.data().avatar,

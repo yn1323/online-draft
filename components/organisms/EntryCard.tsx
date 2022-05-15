@@ -26,10 +26,10 @@ const EntryCard = () => {
       {cardIndex === 0 && (
         <VStack>
           {hasUser && (
-            <>
+            <Box w="100%">
               <UserList
                 users={users}
-                title="登録ユーザー"
+                title="登録ユーザー選択"
                 callback={(userId: string) => loginWithExistUser(userId)}
               />
               <HStack w="100%">
@@ -37,7 +37,7 @@ const EntryCard = () => {
                 <Text>or</Text>
                 <hr />
               </HStack>
-            </>
+            </Box>
           )}
 
           <Button colorScheme="green" onClick={() => setCardIndex(1)}>
