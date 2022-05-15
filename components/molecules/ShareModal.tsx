@@ -1,63 +1,69 @@
-import { clipboardOutline } from 'ionicons/icons'
-import dynamic from 'next/dynamic'
-import { useState, useRef, useEffect } from 'react'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { useModal, useToast } from '@/helpers/hooks'
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  ModalProps,
+  Button,
+  Input,
+  IconButton,
+  Text,
+  VStack,
+  HStack,
+} from '@chakra-ui/react'
+import { useState, useEffect, FC } from 'react'
+import { FaPaste } from 'react-icons/fa'
+import { useToast } from '@/helpers/hooks'
 
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
-const IonIcon = dynamic(
-  async () => await (await import('@ionic/react')).IonIcon,
-  {
-    ssr: false,
-  }
-)
-const IonInput = dynamic(
-  async () => await (await import('@ionic/react')).IonInput,
-  {
-    ssr: false,
-  }
-)
+type PropTypes = {
+  groupId: string
+  isOpen: ModalProps['isOpen']
+  onClose: ModalProps['onClose']
+}
 
-const ShareModal = () => {
-  const { hideModal } = useModal()
-  const url: any = useRef('')
+const ShareModal: FC<PropTypes> = ({ groupId, isOpen, onClose }) => {
   const [copyText, setCopyText] = useState('')
 
-  const { setToast, showToast } = useToast()
+  const { showToast } = useToast()
 
   useEffect(() => {
     const location = window.location.href.replace('/draft', '/entry')
-    url.current.value = location
     setCopyText(location)
   }, [])
 
   const onCopy = () => {
-    setToast({ message: 'コピーしました。', color: 'success' })
-    showToast()
+    showToast({ title: 'コピーしました。' })
   }
 
   return (
-    <div className="shareModal">
-      <div className="msg">参加者に下記URLをシェアしてください。</div>
-      <div className="url height-100 align-centerVH">
-        <IonInput ref={url} />
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader rounded="xs">シェア</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody mt={5}>
+          <Text>参加者に下記URLをシェアしてください。</Text>
+          <HStack>
+            <Input value={copyText} disabled variant="flushed" />
+            <IconButton
+              colorScheme="green"
+              aria-label="copy"
+              icon={<FaPaste />}
+              onClick={onCopy}
+            />
+          </HStack>
+        </ModalBody>
 
-        <CopyToClipboard text={copyText} onCopy={onCopy}>
-          <IonButton>
-            <IonIcon icon-only icon={clipboardOutline} />
-          </IonButton>
-        </CopyToClipboard>
-      </div>
-      <hr />
-      <div className="height-100 align-centerVH">
-        <IonButton onClick={hideModal}>OK</IonButton>
-      </div>
-    </div>
+        <ModalFooter mt={5}>
+          <Button colorScheme="green" mr={3} onClick={onClose}>
+            OK
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 }
 

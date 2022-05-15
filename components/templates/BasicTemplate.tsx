@@ -1,5 +1,13 @@
-import { Box, Button, HStack, Spacer, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  HStack,
+  Spacer,
+  useDisclosure,
+  VStack,
+} from '@chakra-ui/react'
 import { State } from 'Store'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { FC, useEffect, useState } from 'react'
 import { FaShareAlt } from 'react-icons/fa'
@@ -7,8 +15,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isProduction } from '@/constants/common'
 import { goToNextRound, setFinishedRounds } from '@/helpers/firebase'
 import { useModal } from '@/helpers/hooks'
-import ShareModal from '@/molecules/ShareModal'
 import { getGroupNameOnce } from '@/stores/userInfo'
+
+const ShareModal = dynamic(() => import('@/molecules/ShareModal'))
 
 const LOCATIONS = ['home', 'entry', 'draft'] as const
 
@@ -27,6 +36,7 @@ const BasicTemplate: FC<PropTypes> = ({
     userInfo: { groupId, groupName },
     draft: { round, finishedRound },
   } = useSelector((state: State) => state)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const dispatch = useDispatch()
 
@@ -66,10 +76,7 @@ const BasicTemplate: FC<PropTypes> = ({
       finishedRound: 0,
     })
   }
-  const showShareModal = () => {
-    setModalComponent({ title: 'シェア', component: <ShareModal /> })
-    showModal()
-  }
+
   return (
     <Box h="100vh">
       <HStack h="3rem" px="12" bg="green.400">
@@ -91,11 +98,7 @@ const BasicTemplate: FC<PropTypes> = ({
           </Button>
         )}
         {(isEntry || isDraft) && (
-          <Button
-            colorScheme="teal"
-            leftIcon={<FaShareAlt />}
-            onClick={showShareModal}
-          >
+          <Button colorScheme="teal" leftIcon={<FaShareAlt />} onClick={onOpen}>
             シェア
           </Button>
         )}
@@ -103,6 +106,7 @@ const BasicTemplate: FC<PropTypes> = ({
       <VStack h="calc(100% - 3rem)" justifyContent="center">
         {children}
       </VStack>
+      <ShareModal groupId={groupId} isOpen={isOpen} onClose={onClose} />
     </Box>
   )
 }
