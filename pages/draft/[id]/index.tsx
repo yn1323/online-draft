@@ -1,40 +1,32 @@
 import { ParsedUrlQuery } from 'querystring'
+import { useDisclosure } from '@chakra-ui/react'
 import { Context, Selections, State, Users } from 'Store'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { sessionStorageInfo } from '@/helpers/common'
 import {
-  isUserExistInGroup,
   subscribeGroupRound,
   subscribeLogMessage,
   subscribeSelection,
   subscribeUsers,
 } from '@/helpers/firebase'
-import { useLoading, useModal, usePrevious } from '@/helpers/hooks'
+import { usePrevious } from '@/helpers/hooks'
 import LogCard from '@/organisms/LogCard'
 import MenuCard from '@/organisms/MenuCard'
 import TableCard from '@/organisms/TableCard'
 import UserListCard from '@/organisms/UserListCard'
 import { setContext } from '@/stores/chat'
 import { setRoundNumber, setSelections } from '@/stores/draft'
-import { setAllUserInfo, setUserId } from '@/stores/userInfo'
-import Header from '@/templates/BasicTemplate'
+import { setAllUserInfo } from '@/stores/userInfo'
+import AnonymousAuthAuth from '@/templates/AnonymousAuth'
+import BasicTemplate from '@/templates/BasicTemplate'
 import ResultModal from '@/templates/ResultModal'
 
-const IonPage = dynamic(
-  async () => await (await import('@ionic/react')).IonPage,
-  {
-    ssr: false,
-  }
-)
-const IonContent = dynamic(
-  async () => await (await import('@ionic/react')).IonContent,
-  {
-    ssr: false,
-  }
+const UserExistanceCheck = dynamic(
+  () => import('@/organisms/UserExistanceCheck'),
+  { ssr: false }
 )
 
 type PropTypes = {
@@ -51,28 +43,22 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
   } = useSelector((state: State) => state)
   const prevUsers = usePrevious(users, [])
   const prevRound = usePrevious(round, -1)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [process, setProcess] = useState(0)
-  const { getUserIdToSessionStorage } = sessionStorageInfo()
-  const { showLoading, hideLoading } = useLoading()
-  const { setModalComponent, showResultModal } = useModal()
+  const [allSettled, setAllSettled] = useState(false)
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
-    if (process === -1) {
-      router.push(`/entry/${groupId}`)
-      hideLoading()
-    } else if (process === 0) {
-      showLoading()
-      userExistanceCheck()
-    } else if (process === 1) {
-      setUser()
-    } else if (process === 2) {
-      subscribes()
-    } else if (process === 3) {
-      hideLoading()
-      setIsLoaded(true)
+    if (allSettled) {
+      subscribeUsers({ groupId }, (obj: Users[]) =>
+        dispatch(setAllUserInfo(obj))
+      )
+      subscribeLogMessage({ groupId }, (obj: Context[]) =>
+        dispatch(setContext(obj))
+      )
+      subscribeGroupRound({ groupId }, (obj: { round: number }) =>
+        dispatch(setRoundNumber(obj))
+      )
     }
-  }, [process, router, groupId, hideLoading, showLoading])
+  }, [allSettled, dispatch, groupId])
 
   useEffect(() => {
     const currentUserIds = users.map(user => user.userId)
@@ -85,77 +71,41 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
         dispatch(setSelections(obj))
       )
     })
-  }, [users])
+  }, [users, prevUsers, dispatch])
 
   useEffect(() => {
     // 初回以外
     if (round === prevRound + 1) {
-      setModalComponent({
-        component: <ResultModal targetRound={prevRound} />,
-        title: '結果発表',
-      })
-      showResultModal()
+      onOpen()
     }
-  }, [round])
+  }, [round, prevRound, onOpen])
 
-  const userExistanceCheck = () => {
-    const userId = getUserIdToSessionStorage()
-    if (!userId) {
-      setProcess(-1)
-      return
-    }
-    isUserExistInGroup(groupId, userId, {
-      succeeded: () => {
-        setProcess(1)
-      },
-      failed: () => {
-        setProcess(-1)
-      },
-    })
-  }
-  const setUser = () => {
-    const userId = getUserIdToSessionStorage()
-    dispatch(setUserId({ userId }))
-    setProcess(2)
-  }
-
-  const subscribes = () => {
-    subscribeUsers({ groupId }, (obj: Users[]) => dispatch(setAllUserInfo(obj)))
-    subscribeLogMessage({ groupId }, (obj: Context[]) =>
-      dispatch(setContext(obj))
-    )
-    subscribeGroupRound({ groupId }, (obj: { round: number }) =>
-      dispatch(setRoundNumber(obj))
-    )
-    setProcess(3)
-  }
-
-  return isLoaded ? (
-    <IonPage>
-      <Header location="draft" groupIdFromPath={groupId} />
-      <IonContent className="height-100" scrollY={false}>
-        <div className="height-100 dashboard">
-          <div className="dashboard-left">
-            <div className="dashboard-left-name">
-              <UserListCard />
+  return (
+    <BasicTemplate location="draft" groupIdFromPath={groupId}>
+      <AnonymousAuthAuth groupId={id}>
+        <UserExistanceCheck setChecked={setAllSettled} groupId={groupId}>
+          <div className="height-100 dashboard">
+            <div className="dashboard-left">
+              <div className="dashboard-left-name">
+                <UserListCard />
+              </div>
+              <div className="dashboard-left-table">
+                <TableCard />
+              </div>
             </div>
-            <div className="dashboard-left-table">
-              <TableCard />
+            <div className="dashboard-right">
+              <div className="dashboard-right-menu">
+                <MenuCard />
+              </div>
+              <div className="dashboard-right-log">
+                <LogCard />
+              </div>
             </div>
           </div>
-          <div className="dashboard-right">
-            <div className="dashboard-right-menu">
-              <MenuCard />
-            </div>
-            <div className="dashboard-right-log">
-              <LogCard />
-            </div>
-          </div>
-        </div>
-      </IonContent>
-    </IonPage>
-  ) : (
-    <></>
+        </UserExistanceCheck>
+      </AnonymousAuthAuth>
+      <ResultModal targetRound={prevRound} isOpen={isOpen} onClose={onClose} />
+    </BasicTemplate>
   )
 }
 

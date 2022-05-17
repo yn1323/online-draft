@@ -24,7 +24,7 @@ const LOCATIONS = ['home', 'entry', 'draft'] as const
 type PropTypes = {
   location: typeof LOCATIONS[number]
   groupIdFromPath?: string
-  children: JSX.Element
+  children: JSX.Element | JSX.Element[]
 }
 
 const BasicTemplate: FC<PropTypes> = ({
@@ -32,6 +32,7 @@ const BasicTemplate: FC<PropTypes> = ({
   groupIdFromPath = '',
   children,
 }) => {
+  const showElement = Array.isArray(children) ? children : [children]
   const {
     userInfo: { groupId, groupName },
     draft: { round, finishedRound },
@@ -47,7 +48,6 @@ const BasicTemplate: FC<PropTypes> = ({
   const [headerTitle, setHeaderTitle] = useState(
     isHome ? 'オンラインドラフト会議' : ''
   )
-  const { setModalComponent, showModal } = useModal()
 
   useEffect(() => {
     if (!isHome) {
@@ -104,7 +104,7 @@ const BasicTemplate: FC<PropTypes> = ({
         )}
       </HStack>
       <VStack h="calc(100% - 3rem)" justifyContent="center">
-        {children}
+        {showElement}
       </VStack>
       <ShareModal groupId={groupId} isOpen={isOpen} onClose={onClose} />
     </Box>
