@@ -1,16 +1,11 @@
-import { State } from 'Store'
-import { useSelector } from 'react-redux'
+import { Box } from '@chakra-ui/react'
 import EnterDraft from '@/organisms/EnterDraft'
-import CardBackground from '@/templates/CardBackground'
 
 const UserListCard = () => {
-  const {
-    userInfo: { users },
-  } = useSelector((state: State) => state)
   return (
-    <CardBackground customClass="userListCard">
+    <Box boxShadow="md" p={8} border={1} rounded="base" w="80vw" maxH="80vh">
       <EnterDraft />
-    </CardBackground>
+    </Box>
   )
 }
 

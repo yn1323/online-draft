@@ -1,8 +1,8 @@
-import { findAvatarPath } from '@/helpers/common'
 import {
   SubscribeLogMessageRequestResponse,
   SubscribeUsersRequestResponse,
 } from 'Response'
+import { findAvatarPath } from '@/helpers/common'
 
 export const formatUserInfoToStateObj = (
   obj: SubscribeUsersRequestResponse[]

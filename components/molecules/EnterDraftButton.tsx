@@ -1,12 +1,6 @@
-import dynamic from 'next/dynamic'
-
+import { Button, useDisclosure } from '@chakra-ui/react'
 import { useIsUserFinishEnter, useModal } from '@/helpers/hooks'
 import SubmitItem from '@/molecules/SubmitItem'
-
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  { ssr: false }
-)
 
 interface Props {
   currentUser: string
@@ -15,48 +9,46 @@ interface Props {
 
 const EnterDraftButton = ({ currentUser, myId }: Props) => {
   const isEntered = useIsUserFinishEnter(currentUser)
-
-  const { showModal, setModalComponent } = useModal()
-
-  const showSubmitItem = () => {
-    setModalComponent({
-      component: <SubmitItem userId={myId} />,
-      title: 'ドラフト候補入力',
-    })
-    showModal()
-  }
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const enterButton = (
-    <IonButton className="width-100" fill="solid" onClick={showSubmitItem}>
+    <Button className="width-100" colorScheme="green" onClick={onOpen}>
       入力する
-    </IonButton>
+    </Button>
   )
   const finishButton = (
-    <IonButton
+    <Button
       className="width-100"
-      fill="solid"
+      colorScheme="green"
       color="success"
-      onClick={showSubmitItem}
+      onClick={onOpen}
     >
       修正する
-    </IonButton>
+    </Button>
   )
   const othersEnteringButton = (
-    <IonButton className="width-100" fill="default" disabled>
+    <Button className="width-100" fill="default" disabled>
       考え中
-    </IonButton>
+    </Button>
   )
   const othersFinishButton = (
-    <IonButton className="width-100" fill="clear" disabled>
+    <Button className="width-100" fill="clear" disabled>
       入力完了
-    </IonButton>
+    </Button>
   )
 
-  if (isEntered) {
-    return currentUser === myId ? finishButton : othersFinishButton
-  } else {
-    return currentUser === myId ? enterButton : othersEnteringButton
-  }
+  return (
+    <>
+      {isEntered
+        ? currentUser === myId
+          ? finishButton
+          : othersFinishButton
+        : currentUser === myId
+        ? enterButton
+        : othersEnteringButton}
+      <SubmitItem userId={myId} isOpen={isOpen} onClose={onClose} />
+    </>
+  )
 }
 
 export default EnterDraftButton

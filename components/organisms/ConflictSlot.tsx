@@ -1,6 +1,5 @@
-import { State, Users } from 'Store'
+import { State } from 'Store'
 import { useSelector } from 'react-redux'
-import { getDuplicateItemInRound } from '@/helpers/common'
 import JusdgeSlot from '@/molecules/Slot'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
@@ -14,12 +13,6 @@ const ConflictSlot = ({ start = false, hasConflict = false }: Props) => {
     userInfo: { users, userId },
     draft: { round, selections },
   } = useSelector((state: State) => state)
-
-  const { duplicateDataUserIdsExcludeWinner } = getDuplicateItemInRound(
-    selections,
-    userId,
-    round - 1
-  )
 
   return (
     <>

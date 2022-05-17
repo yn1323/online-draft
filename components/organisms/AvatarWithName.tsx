@@ -1,17 +1,11 @@
+import { Icon } from '@chakra-ui/react'
 import { State } from 'Store'
 import { checkmarkOutline } from 'ionicons/icons'
-import dynamic from 'next/dynamic'
 import Image from 'next/image'
+import { FaRegCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { findUserInfo } from '@/helpers/common'
 import { useIsUserFinishEnter } from '@/helpers/hooks'
-
-const IonIcon = dynamic(
-  async () => await (await import('@ionic/react')).IonIcon,
-  {
-    ssr: false,
-  }
-)
 
 interface Props {
   userId: string
@@ -37,16 +31,17 @@ const AvatarWithName = ({
   return (
     <div style={customStyle} className={customClass}>
       <div className="avatarWithNameWrapper">
-        <Image src={info?.avatar || ''} alt="" className="avatar" />
+        <Image
+          src={info?.avatar || ''}
+          alt=""
+          className="avatar"
+          width={36}
+          height={36}
+        />
 
         <div className="name">{info?.userName || ''}</div>
         {showCheck && showCheckIcon && (
-          <IonIcon
-            className="icon"
-            slot="icon-only"
-            icon={checkmarkOutline}
-            color="success"
-          />
+          <Icon className="icon" as={FaRegCheckCircle} color="green" />
         )}
       </div>
       {childElement}

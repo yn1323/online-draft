@@ -16,7 +16,6 @@ const JusdgeSlot = ({ userId, targetRound }: Props) => {
   } = useSelector((state: State) => state)
   const eachTime = SLOT_TIME
   const allItems = getAllItems(selections)
-  const itemLength = allItems.length
   const timer: any = useRef(null)
 
   const [currentString, setCurrentString] = useState('')

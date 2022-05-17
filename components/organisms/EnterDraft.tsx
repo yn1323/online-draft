@@ -1,7 +1,5 @@
 import { State } from 'Store'
-
 import { useSelector } from 'react-redux'
-
 import EnterDraftButton from '@/molecules/EnterDraftButton'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
@@ -9,6 +7,7 @@ const EnterDraft = () => {
   const {
     userInfo: { users, userId },
   } = useSelector((state: State) => state)
+
   return (
     <div className="draftUserWrapper align-centerVH height-100">
       {users.map((user, i) => (

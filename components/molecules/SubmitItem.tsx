@@ -1,6 +1,17 @@
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  ModalProps,
+  Button,
+  Input,
+} from '@chakra-ui/react'
 import { State } from 'Store'
-import dynamic from 'next/dynamic'
-import { useRef, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { findUserNameFromUserId, isDuplicateItem } from '@/helpers/common'
 import { addLogMessage } from '@/helpers/firebase'
@@ -12,59 +23,44 @@ import {
   useToast,
 } from '@/helpers/hooks'
 
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
-const IonInput = dynamic(
-  async () => await (await import('@ionic/react')).IonInput,
-  {
-    ssr: false,
-  }
-)
-const IonItem = dynamic(
-  async () => await (await import('@ionic/react')).IonItem,
-  {
-    ssr: false,
-  }
-)
-
 interface Props {
   userId: string
   targetRound?: number
   isUpdate?: boolean
+  isOpen: ModalProps['isOpen']
+  onClose: ModalProps['onClose']
 }
 
-const SubmitItem = ({ userId, targetRound = 0, isUpdate = false }: Props) => {
+const SubmitItem = ({
+  userId,
+  targetRound = 0,
+  isUpdate = false,
+  isOpen,
+  onClose,
+}: Props) => {
   const { userInfo, draft } = useSelector((state: State) => state)
-  const item: any = useRef(null)
-  const comment: any = useRef(null)
+  const [item, setItem] = useState('')
+  const [comment, setComment] = useState('')
   const [isDuplicate, setIsDuplicate] = useState(false)
-  const { hideModal } = useModal()
   const currentItem = useGetCurrentItem(userId, targetRound)
   const currentComment = useGetCurrentComment(userId, targetRound)
 
   useEffect(() => {
-    item.current.value = currentItem
-    comment.current.value = currentComment
+    setItem(currentItem)
+    setComment(currentComment)
     checkDuplicate(currentItem)
   }, [])
 
   const { addItem, updateItem } = useItems()
-  const { setToast, showToast } = useToast()
+  const { showToast } = useToast()
 
   const submit = () => {
-    const nextItem = item.current?.value || ''
-    const nextComment = comment.current?.value || ''
+    const nextItem = item
+    const nextComment = comment
     if (!nextItem) {
-      setToast({
-        message: 'ドラフト候補を入力してください。',
-        color: 'danger',
-        position: 'bottom',
+      showToast({
+        title: 'ドラフト候補を入力してください。',
       })
-      showToast()
       return false
     }
     if (isUpdate) {
@@ -82,7 +78,7 @@ const SubmitItem = ({ userId, targetRound = 0, isUpdate = false }: Props) => {
     } else {
       addItem({ item: nextItem, comment: nextComment })
     }
-    hideModal()
+    onClose()
   }
 
   const checkDuplicate = (currentVal: string) => {
@@ -96,33 +92,48 @@ const SubmitItem = ({ userId, targetRound = 0, isUpdate = false }: Props) => {
   }
 
   return (
-    <div className="submitItemWrapper">
-      <section className="body">
-        {isDuplicate && (
-          <div className="warn">
-            ドラフト候補が重複しています。
-            <br />
-            別の候補を入力してください。
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent>
+        <ModalHeader rounded="xs">ドラフト候補入力</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody mt={5}>
+          <div className="submitItemWrapper">
+            <section className="body">
+              {isDuplicate && (
+                <div className="warn">
+                  ドラフト候補が重複しています。
+                  <br />
+                  別の候補を入力してください。
+                </div>
+              )}
+              <div className="label">ドラフト候補名</div>
+              <Input
+                value={item}
+                maxLength={32}
+                onChange={(e: any) => setItem(e.target.value)}
+              />
+              <div className="label comment">コメント</div>
+              <Input
+                value={comment}
+                maxLength={128}
+                placeholder="任意"
+                onChange={(e: any) => setComment(e.target.value)}
+              />
+            </section>
           </div>
-        )}
-        <div className="label">ドラフト候補名</div>
-        <IonInput
-          ref={item}
-          maxlength={32}
-          onIonChange={e => checkDuplicate(e.detail.value || '')}
-        />
-        <div className="label comment">コメント</div>
-        <IonInput ref={comment} maxlength={128} placeholder="任意" />
-        <div className="buttonArea">
-          <IonButton onClick={submit} disabled={isDuplicate}>
-            OK
-          </IonButton>
-          <IonButton fill="outline" onClick={() => hideModal()}>
-            Cancel
-          </IonButton>
-        </div>
-      </section>
-    </div>
+        </ModalBody>
+
+        <ModalFooter mt={5}>
+          <div className="buttonArea">
+            <Button colorScheme="green" onClick={submit} disabled={isDuplicate}>
+              OK
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </div>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   )
 }
 

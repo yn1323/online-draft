@@ -89,17 +89,11 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
               <div className="dashboard-left-name">
                 <UserListCard />
               </div>
-              <div className="dashboard-left-table">
-                <TableCard />
-              </div>
+              <div className="dashboard-left-table">{/* <TableCard /> */}</div>
             </div>
             <div className="dashboard-right">
-              <div className="dashboard-right-menu">
-                <MenuCard />
-              </div>
-              <div className="dashboard-right-log">
-                <LogCard />
-              </div>
+              <div className="dashboard-right-menu">{/* <MenuCard /> */}</div>
+              <div className="dashboard-right-log">{/* <LogCard /> */}</div>
             </div>
           </div>
         </UserExistanceCheck>

@@ -28,6 +28,7 @@ import {
   onSnapshot,
   orderBy,
   query,
+  setDoc,
   updateDoc,
   where,
 } from 'firebase/firestore'
@@ -196,7 +197,7 @@ export const subscribeUsers = (
 
     const unsubscribe = onSnapshot(q, (snapshot: any) => {
       const all: SubscribeUsersRequestResponse[] = []
-      snapshot.forEach((d: any) => all.push(d.data()))
+      snapshot.forEach((d: any) => all.push({ ...d.data(), id: d.id }))
       const format = formatUserInfoToStateObj(all)
       dispatcher(format)
     })
@@ -331,8 +332,11 @@ export const createSelection = async ({
     if (isErrorDebug) {
       throw new Error()
     }
-
-    await updateDoc(doc(db, 'user', userId), { userId, selection })
+    await setDoc(
+      doc(db, 'selection', userId),
+      { userId, selection },
+      { merge: true }
+    )
   } catch (e) {
     console.error('CREATESELECTION:', e)
     return Promise.reject()
@@ -352,7 +356,9 @@ export const subscribeSelection = (
     const unsubscribe = onSnapshot(q, (doc: any) => {
       if (doc.exists) {
         const d: any = doc.data()
-        dispatcher(d)
+        if (d) {
+          dispatcher(d)
+        }
       }
     })
 
