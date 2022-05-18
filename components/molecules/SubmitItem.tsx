@@ -9,6 +9,8 @@ import {
   ModalProps,
   Button,
   Input,
+  Box,
+  Text,
 } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useState, useEffect } from 'react'
@@ -98,7 +100,7 @@ const SubmitItem = ({
         <ModalHeader rounded="xs">ドラフト候補入力</ModalHeader>
         <ModalCloseButton />
         <ModalBody mt={5}>
-          <div className="submitItemWrapper">
+          <Box>
             <section className="body">
               {isDuplicate && (
                 <div className="warn">
@@ -121,12 +123,17 @@ const SubmitItem = ({
                 onChange={(e: any) => setComment(e.target.value)}
               />
             </section>
-          </div>
+          </Box>
         </ModalBody>
 
         <ModalFooter mt={5}>
           <div className="buttonArea">
-            <Button colorScheme="green" onClick={submit} disabled={isDuplicate}>
+            <Button
+              colorScheme="green"
+              onClick={submit}
+              disabled={isDuplicate}
+              mr={4}
+            >
               OK
             </Button>
             <Button onClick={onClose}>Cancel</Button>

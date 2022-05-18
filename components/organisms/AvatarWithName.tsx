@@ -41,7 +41,7 @@ const AvatarWithName = ({
 
         <div className="name">{info?.userName || ''}</div>
         {showCheck && showCheckIcon && (
-          <Icon className="icon" as={FaRegCheckCircle} color="green" />
+          <Icon ml={4} as={FaRegCheckCircle} color="green" />
         )}
       </div>
       {childElement}

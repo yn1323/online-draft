@@ -12,27 +12,22 @@ const EnterDraftButton = ({ currentUser, myId }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   const enterButton = (
-    <Button className="width-100" colorScheme="green" onClick={onOpen}>
+    <Button w="100%" colorScheme="green" onClick={onOpen}>
       入力する
     </Button>
   )
   const finishButton = (
-    <Button
-      className="width-100"
-      colorScheme="green"
-      color="success"
-      onClick={onOpen}
-    >
+    <Button w="100%" colorScheme="orange" onClick={onOpen}>
       修正する
     </Button>
   )
   const othersEnteringButton = (
-    <Button className="width-100" fill="default" disabled>
+    <Button w="100%" colorScheme="green" disabled>
       考え中
     </Button>
   )
   const othersFinishButton = (
-    <Button className="width-100" fill="clear" disabled>
+    <Button w="100%" colorScheme="orange" disabled>
       入力完了
     </Button>
   )

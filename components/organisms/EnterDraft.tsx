@@ -1,3 +1,4 @@
+import { Box, HStack, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useSelector } from 'react-redux'
 import EnterDraftButton from '@/molecules/EnterDraftButton'
@@ -9,16 +10,16 @@ const EnterDraft = () => {
   } = useSelector((state: State) => state)
 
   return (
-    <div className="draftUserWrapper align-centerVH height-100">
+    <HStack w="100%">
       {users.map((user, i) => (
-        <div key={i} className="draftUser">
-          <AvatarWithName userId={user.userId} />
-          <div className="width-100 align-centerVH">
+        <Box key={i} w="100%">
+          <VStack mx={4}>
+            <AvatarWithName userId={user.userId} />
             <EnterDraftButton currentUser={user.userId} myId={userId} />
-          </div>
-        </div>
+          </VStack>
+        </Box>
       ))}
-    </div>
+    </HStack>
   )
 }
 export default EnterDraft
