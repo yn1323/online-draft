@@ -14,7 +14,6 @@ interface Props {
 
 const CreateUser = ({ goBack }: Props) => {
   const { userInfo } = useSelector((state: State) => state)
-  console.log(userInfo)
   const [userName, setUserName] = useState('')
   const handleChange = (event: any) => setUserName(event.target.value)
 
@@ -47,7 +46,6 @@ const CreateUser = ({ goBack }: Props) => {
       userName: userName,
       avatar,
     })
-    console.log(userId)
     addUserId(userId)
     router.push(`/draft/${userInfo.groupId}`)
   }

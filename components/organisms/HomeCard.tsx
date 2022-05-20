@@ -12,7 +12,7 @@ const HomeCard = () => {
   const [cardIndex, setCardIndex] = useState(0)
 
   return (
-    <Box {...boxShadow} w="400px" maxH="80vh">
+    <Box {...boxShadow} w="320px" maxH="80vh" overflowY="scroll">
       {cardIndex === 0 && (
         <VStack w="100%" spacing={8}>
           <VStack w="100%">

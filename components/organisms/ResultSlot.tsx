@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { DOKIDOKI_TIME } from '@/constants/common'
 import { getDuplicateItemInRound } from '@/helpers/common'
+import { useScreenSize } from '@/helpers/hooks'
 import Slot from '@/molecules/Slot'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
@@ -23,11 +24,13 @@ const ResultSlot = () => {
     }, DOKIDOKI_TIME)
   }, [])
 
+  const { isSP } = useScreenSize()
+
   return (
     <VStack align="flex-start">
-      <HStack w="100%">
+      <HStack w="100%" flexWrap="wrap" justifyContent="space-around">
         {users.map((user, i) => (
-          <VStack key={i} w="100%">
+          <VStack key={i} w={isSP ? '45%' : '100%'}>
             <AvatarWithName userId={user.userId} showCheck={false} />
             <Slot
               userId={user.userId}
@@ -35,6 +38,7 @@ const ResultSlot = () => {
               showRoulette={showRoulette}
               errorUsers={duplicateDataUserIdsExcludeWinner}
             />
+            <Box h={5} />
           </VStack>
         ))}
       </HStack>

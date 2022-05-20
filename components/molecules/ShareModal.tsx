@@ -15,6 +15,7 @@ import {
   HStack,
 } from '@chakra-ui/react'
 import { useState, useEffect, FC } from 'react'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { FaPaste } from 'react-icons/fa'
 import { useToast } from '@/helpers/hooks'
 
@@ -48,12 +49,13 @@ const ShareModal: FC<PropTypes> = ({ groupId, isOpen, onClose }) => {
           <Text>参加者に下記URLをシェアしてください。</Text>
           <HStack>
             <Input value={copyText} disabled variant="flushed" />
-            <IconButton
-              colorScheme="green"
-              aria-label="copy"
-              icon={<FaPaste />}
-              onClick={onCopy}
-            />
+            <CopyToClipboard text={copyText} onCopy={onCopy}>
+              <IconButton
+                colorScheme="green"
+                aria-label="copy"
+                icon={<FaPaste />}
+              />
+            </CopyToClipboard>
           </HStack>
         </ModalBody>
 

@@ -118,7 +118,10 @@ const SubmitItem = ({
               <Input
                 value={item}
                 maxLength={32}
-                onChange={(e: any) => setItem(e.target.value)}
+                onChange={(e: any) => {
+                  checkDuplicate(e.target.value)
+                  setItem(e.target.value)
+                }}
               />
               <div className="label comment">コメント</div>
               <Input

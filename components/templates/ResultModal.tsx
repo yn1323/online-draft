@@ -114,9 +114,7 @@ const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
         <ModalHeader rounded="xs">結果発表！！</ModalHeader>
         <ModalCloseButton />
         <ModalBody mt={5}>
-          <Box>
-            <ResultSlot />
-          </Box>
+          <ResultSlot />
         </ModalBody>
         <ModalFooter mt={5}>
           <Button colorScheme="green" mr={3} onClick={onClose}>
