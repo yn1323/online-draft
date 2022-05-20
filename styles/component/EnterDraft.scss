@@ -1,0 +1,11 @@
+@import '../common/Common.scss';
+
+.draftUserWrapper {
+  display: flex;
+  justify-content: space-between;
+  overflow-x: auto;
+
+  .draftUser {
+    width: 100%;
+  }
+}
