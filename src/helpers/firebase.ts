@@ -68,7 +68,7 @@ export const createGroup = async (groupName: string) => {
     if (isErrorDebug) {
       throw new Error()
     }
-    const docRef = await addDoc(collection(db, 'group'), {
+    const docRef = await addDoc(collection(db, 'app', 'onlinedraft', 'group'), {
       groupName,
       round: 1,
       finishedRound: [],
@@ -90,13 +90,16 @@ export const subscribeGroupRound = (
       throw new Error()
     }
 
-    const unsubscribe = onSnapshot(doc(db, 'group', groupId), (doc: any) => {
-      const d = doc.data()
-      dispatcher({
-        round: d?.round || 1,
-        finishedRound: d?.finishedRound || [],
-      })
-    })
+    const unsubscribe = onSnapshot(
+      doc(db, 'app', 'onlinedraft', 'group', groupId),
+      (doc: any) => {
+        const d = doc.data()
+        dispatcher({
+          round: d?.round || 1,
+          finishedRound: d?.finishedRound || [],
+        })
+      }
+    )
 
     return true
   } catch (e) {
@@ -113,7 +116,9 @@ export const goToNextRound = async ({
     if (isErrorDebug) {
       throw new Error()
     }
-    await updateDoc(doc(db, 'group', groupId), { round: nextRound })
+    await updateDoc(doc(db, 'app', 'onlinedraft', 'group', groupId), {
+      round: nextRound,
+    })
 
     return Promise.resolve()
   } catch (e) {
@@ -131,7 +136,7 @@ export const setFinishedRounds = async ({
     if (isErrorDebug) {
       throw new Error()
     }
-    await updateDoc(doc(db, 'group', groupId), {
+    await updateDoc(doc(db, 'app', 'onlinedraft', 'group', groupId), {
       finishedRound: [...currentFinishedRounds, finishedRound],
     })
 
@@ -151,7 +156,7 @@ export const createUser = async ({
     if (isErrorDebug) {
       throw new Error()
     }
-    const docRef = await addDoc(collection(db, 'user'), {
+    const docRef = await addDoc(collection(db, 'app', 'onlinedraft', 'user'), {
       groupId,
       userName,
       avatar,
@@ -169,7 +174,10 @@ export const getUsers = async ({ groupId }: GetUsersRequestPayload) => {
       throw new Error()
     }
 
-    const q = query(collection(db, 'user'), where('groupId', '==', groupId))
+    const q = query(
+      collection(db, 'app', 'onlinedraft', 'user'),
+      where('groupId', '==', groupId)
+    )
     const querySnapshot = await getDocs(q)
 
     const users = querySnapshot.docs.map((doc: any) => ({
@@ -193,7 +201,10 @@ export const subscribeUsers = (
     if (isErrorDebug) {
       throw new Error()
     }
-    const q = query(collection(db, 'user'), where('groupId', '==', groupId))
+    const q = query(
+      collection(db, 'app', 'onlinedraft', 'user'),
+      where('groupId', '==', groupId)
+    )
 
     const unsubscribe = onSnapshot(q, (snapshot: any) => {
       const all: SubscribeUsersRequestResponse[] = []
@@ -215,7 +226,7 @@ export const getGroupName = async ({ groupId }: GetGroupNameRequestPayload) => {
       throw new Error()
     }
 
-    const ref = await getDoc(doc(db, 'group', groupId))
+    const ref = await getDoc(doc(db, 'app', 'onlinedraft', 'group', groupId))
     return ref.data()?.groupName || ''
   } catch (e) {
     console.error('GETGROUPNAME:', e)
@@ -231,7 +242,7 @@ export const isGroupExist = async (
     if (isErrorDebug) {
       throw new Error()
     }
-    const ref = await getDoc(doc(db, 'group', groupId))
+    const ref = await getDoc(doc(db, 'app', 'onlinedraft', 'group', groupId))
     if (ref.exists()) {
       succeeded()
     } else {
@@ -253,7 +264,7 @@ export const isUserExistInGroup = async (
       throw new Error()
     }
 
-    const ref = await getDoc(doc(db, 'user', userId))
+    const ref = await getDoc(doc(db, 'app', 'onlinedraft', 'user', userId))
 
     const data = ref.data()
     if (data?.groupId === groupId) {
@@ -277,7 +288,7 @@ export const addLogMessage = async ({
       throw new Error()
     }
 
-    await addDoc(collection(db, 'log'), {
+    await addDoc(collection(db, 'app', 'onlinedraft', 'log'), {
       groupId,
       userId,
       message,
@@ -303,7 +314,7 @@ export const subscribeLogMessage = (
 
     console.log(groupId)
     const q = query(
-      collection(db, 'log'),
+      collection(db, 'app', 'onlinedraft', 'log'),
       where('groupId', '==', groupId),
       orderBy('date', 'asc'),
       limit(100)
@@ -335,7 +346,7 @@ export const createSelection = async ({
       throw new Error()
     }
     await setDoc(
-      doc(db, 'selection', userId),
+      doc(db, 'app', 'onlinedraft', 'selection', userId),
       { userId, selection },
       { merge: true }
     )
@@ -354,7 +365,7 @@ export const subscribeSelection = (
       throw new Error()
     }
 
-    const q = doc(db, 'selection', userId)
+    const q = doc(db, 'app', 'onlinedraft', 'selection', userId)
     const unsubscribe = onSnapshot(q, (doc: any) => {
       if (doc.exists) {
         const d: any = doc.data()
