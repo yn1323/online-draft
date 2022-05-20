@@ -6,7 +6,10 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 90%;
+  height: 100%;
+  @media (max-width: 767px) {
+    height: 90%;
+  }
   .logArea {
     height: calc(100% - #{$enterAreaH});
     overflow-y: auto;
