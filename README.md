@@ -16,5 +16,5 @@ NEXT_PUBLIC_FIREBASE_PROJECT_ID="yyyyyyy"
 ```
 
 ### URL
-- [Production](https://online-draft.vercel.app/)
-- [Preview](https://preview-online-draft.vercel.app/)
+- [Production(masterマージで自動デプロイ)](https://online-draft.vercel.app/)
+- [Preview(developマージで自動デプロイ)](https://preview-online-draft.vercel.app/)
