@@ -62,4 +62,4 @@ export const SAMPLE_HORSES = [
 ]
 
 export const SLOT_TIME = !isProduction ? 100 : 3000
-export const DOKIDOKI_TIME = !isProduction ? 100 : 7000
+export const DOKIDOKI_TIME = !isProduction ? 100 : 5000
