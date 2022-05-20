@@ -1,6 +1,6 @@
 import { State } from 'Store'
 import { useSelector } from 'react-redux'
-import JusdgeSlot from '@/molecules/Slot'
+import RandomString from '@/molecules/RandomString'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
 interface Props {
@@ -10,8 +10,7 @@ interface Props {
 
 const ConflictSlot = ({ start = false, hasConflict = false }: Props) => {
   const {
-    userInfo: { users, userId },
-    draft: { round, selections },
+    userInfo: { users },
   } = useSelector((state: State) => state)
 
   return (
@@ -23,9 +22,7 @@ const ConflictSlot = ({ start = false, hasConflict = false }: Props) => {
             showCheck={false}
             customStyle={{ width: `calc(85vw / ${users.length})` }}
             customClass="centeringAvatar"
-            childElement={
-              <JusdgeSlot userId={user.userId} targetRound={round - 1} />
-            }
+            childElement={<RandomString />}
           />
         </div>
       ))}

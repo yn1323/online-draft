@@ -31,6 +31,7 @@ interface Props {
   isUpdate?: boolean
   isOpen: ModalProps['isOpen']
   onClose: ModalProps['onClose']
+  isFromTable?: boolean
 }
 
 const SubmitItem = ({
@@ -39,6 +40,7 @@ const SubmitItem = ({
   isUpdate = false,
   isOpen,
   onClose,
+  isFromTable = false,
 }: Props) => {
   const { userInfo, draft } = useSelector((state: State) => state)
   const [item, setItem] = useState('')
@@ -48,10 +50,12 @@ const SubmitItem = ({
   const currentComment = useGetCurrentComment(userId, targetRound)
 
   useEffect(() => {
-    setItem(currentItem)
-    setComment(currentComment)
-    checkDuplicate(currentItem)
-  }, [])
+    if (isOpen) {
+      setItem(currentItem)
+      setComment(currentComment)
+      checkDuplicate(currentItem)
+    }
+  }, [isOpen])
 
   const { addItem, updateItem } = useItems()
   const { showToast } = useToast()
@@ -82,6 +86,7 @@ const SubmitItem = ({
     }
     onClose()
   }
+  const modalTitle = isFromTable ? 'ドラフト候補編集' : 'ドラフト候補入力'
 
   const checkDuplicate = (currentVal: string) => {
     const localIsDuplicate = isDuplicateItem(
@@ -97,7 +102,7 @@ const SubmitItem = ({
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader rounded="xs">ドラフト候補入力</ModalHeader>
+        <ModalHeader rounded="xs">{modalTitle}</ModalHeader>
         <ModalCloseButton />
         <ModalBody mt={5}>
           <Box>

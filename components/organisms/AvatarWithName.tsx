@@ -33,10 +33,11 @@ const AvatarWithName = ({
       <div className="avatarWithNameWrapper">
         <Image
           src={info?.avatar || ''}
-          alt=""
+          alt="name"
           className="avatar"
           width={36}
           height={36}
+          objectFit="contain"
         />
 
         <div className="name">{info?.userName || ''}</div>

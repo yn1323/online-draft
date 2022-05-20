@@ -1,6 +1,7 @@
 import { Box, Button, Text, VStack } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
+import { boxShadow } from '@/constants/theme'
 import CreateGroup from '@/organisms/CreateGroup'
 
 const DraftHistoryList = dynamic(() => import('@/organisms/DraftHistoryList'), {
@@ -11,7 +12,7 @@ const HomeCard = () => {
   const [cardIndex, setCardIndex] = useState(0)
 
   return (
-    <Box boxShadow="md" p={8} border={1} rounded="base" w="400px" maxH="80vh">
+    <Box {...boxShadow} w="400px" maxH="80vh">
       {cardIndex === 0 && (
         <VStack w="100%" spacing={8}>
           <VStack w="100%">

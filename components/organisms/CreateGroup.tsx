@@ -1,30 +1,9 @@
 import { Button, IconButton, Input } from '@chakra-ui/react'
-import { chevronBackOutline } from 'ionicons/icons'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
-import { useRef } from 'react'
 import { useState } from 'react'
 import { FaStepBackward } from 'react-icons/fa'
 import { createGroup, isSignIn, signIn } from '@/helpers/firebase'
-
-const IonButton = dynamic(
-  async () => await (await import('@ionic/react')).IonButton,
-  {
-    ssr: false,
-  }
-)
-const IonIcon = dynamic(
-  async () => await (await import('@ionic/react')).IonIcon,
-  {
-    ssr: false,
-  }
-)
-const IonInput = dynamic(
-  async () => await (await import('@ionic/react')).IonInput,
-  {
-    ssr: false,
-  }
-)
 
 interface Props {
   goBack: () => void

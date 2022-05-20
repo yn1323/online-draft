@@ -1,10 +1,10 @@
+import { useDisclosure } from '@chakra-ui/react'
 import { State } from 'Store'
-
+import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { useTable } from 'react-table'
-
 import { getDuplicateItemInRound } from '@/helpers/common'
-import { useModal, useTableData } from '@/helpers/hooks'
+import { useTableData } from '@/helpers/hooks'
 import SubmitItem from '@/molecules/SubmitItem'
 
 const DraftTable = () => {
@@ -13,7 +13,6 @@ const DraftTable = () => {
     draft: { round, selections },
     component: {
       modal: { showingResult },
-      tableMode,
     },
   } = useSelector((state: State) => state)
   const { columns, data } = useTableData()
@@ -21,17 +20,13 @@ const DraftTable = () => {
     columns,
     data,
   })
-
-  const { setModalComponent, showModal } = useModal()
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const maskCell = (text: any, rowRound: number) => {
     return rowRound >= round ? '' : text
   }
   const isClickable = (rowIndex: number, rowRound: number) => {
-    if (rowIndex === 0) {
-      return false
-    }
-    if (rowRound >= round) {
+    if (rowIndex === 0 || rowRound >= round) {
       return false
     }
     return true
@@ -65,26 +60,22 @@ const DraftTable = () => {
     return classNames.join(' ')
   }
 
+  const [modalInfo, setModalInfo] = useState({
+    userId: '',
+    rowRound: 0,
+  })
+
   const showEditModal = (userId: string, rowRound: number) => {
-    setModalComponent({
-      component: (
-        <SubmitItem
-          userId={userId.replace('-comment', '')}
-          targetRound={rowRound}
-          isUpdate={true}
-        />
-      ),
-      title: 'ドラフト候補編集',
-    })
-    showModal()
+    setModalInfo({ userId, rowRound })
+    onOpen()
   }
 
   return (
     <table className="draftTable">
       <thead>
-        {headerGroups.map((headerGroup, i) => (
+        {headerGroups.map((headerGroup: any, i: number) => (
           <tr {...headerGroup.getHeaderGroupProps()} key={i}>
-            {headerGroup.headers.map((column, j) => (
+            {headerGroup.headers.map((column: any, j: number) => (
               <th {...column.getHeaderProps()} key={j}>
                 {column.render('Header')}
               </th>
@@ -97,12 +88,12 @@ const DraftTable = () => {
           height: `calc(100% - 28px)`,
         }}
       >
-        {rows.map((row, i) => {
+        {rows.map((row: any, i: number) => {
           prepareRow(row)
           const { original = {} as any } = row
           return (
             <tr {...row.getRowProps()} key={i}>
-              {row.cells.map((cell, j) =>
+              {row.cells.map((cell: any, j: number) =>
                 showingResult && original.round === round - 1 && j !== 0 ? (
                   <td key={j}>-</td>
                 ) : (
@@ -125,6 +116,14 @@ const DraftTable = () => {
           )
         })}
       </tbody>
+      <SubmitItem
+        userId={modalInfo.userId.replace('-comment', '')}
+        targetRound={modalInfo.rowRound}
+        isUpdate={true}
+        isOpen={isOpen}
+        onClose={onClose}
+        isFromTable={true}
+      />
     </table>
   )
 }

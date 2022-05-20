@@ -29,7 +29,15 @@ const Log = ({
       <div className="loginfo-text">{message}</div>
     </div>
   )
-  const Avatar = <Image src={avatar || findAvatarPath('99')} alt="img" />
+  const Avatar = (
+    <Image
+      src={avatar || findAvatarPath('99')}
+      alt="img"
+      width={36}
+      height={36}
+      objectFit="contain"
+    />
+  )
 
   const renderInLeft = () => (
     <div className="logWrapper">

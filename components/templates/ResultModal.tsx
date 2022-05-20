@@ -8,6 +8,7 @@ import {
   ModalCloseButton,
   ModalProps,
   Button,
+  Box,
 } from '@chakra-ui/react'
 import { State } from 'Store'
 import { FC, useEffect, useState } from 'react'
@@ -16,7 +17,6 @@ import { useSelector } from 'react-redux'
 import { DOKIDOKI_TIME, SLOT_TIME } from '@/constants/common'
 import { getDuplicateItemInRound } from '@/helpers/common'
 import { setFinishedRounds } from '@/helpers/firebase'
-import { useModal } from '@/helpers/hooks'
 import ConflictSlot from '@/organisms/ConflictSlot'
 import ResultSlot from '@/organisms/ResultSlot'
 
@@ -29,33 +29,44 @@ interface Props {
 const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
   const {
     draft: { selections, finishedRound },
-    userInfo: { groupId, users },
+    userInfo: { groupId },
   } = useSelector((state: State) => state)
 
-  const { hideModal } = useModal()
-  const [submit, setSubmit] = useState(0)
+  const [process, setProcess] = useState(0)
   const [hasConflict, setHasConflict] = useState(false)
   const [hasClicked, setHasClicked] = useState(false)
 
+  //  初期化処理
   useEffect(() => {
     const timer = setTimeout(() => {
-      setSubmit(1)
-    }, SLOT_TIME + 1000)
-
+      setProcess(1)
+    }, SLOT_TIME + 5000)
     return () => clearTimeout(timer)
-  }, [])
+  }, [isOpen])
+
+  // 終了処理
+  useEffect(() => {
+    if (!isOpen) {
+      setProcess(0)
+    }
+  }, [isOpen])
 
   useEffect(() => {
-    if (submit === 1) {
+    if (process === 0) {
+      // waiting画面
+    } else if (process === 1) {
+      // 重複があるかどうかを確認
       duplicateCheck()
-    } else if (submit === 2) {
-      // startShowConflictData()
-    } else if (submit === 3) {
-      // finishThisRound()
-    } else if (submit === 4) {
-      //
+    } else if (process === 2) {
+      // 重複があった場合の画面
+      startShowConflictData()
+    } else if (process === 3) {
+      // 重複なし → 終了
+      finishThisRound()
+    } else if (process === 4) {
+      // 重複があった場合の画面 → 終了
     }
-  }, [submit])
+  }, [process])
 
   const duplicateCheck = () => {
     const { hasDuplicate } = getDuplicateItemInRound(
@@ -65,19 +76,19 @@ const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
     )
     if (hasDuplicate) {
       setHasConflict(true)
-      setSubmit(2)
+      setProcess(2)
     } else {
       finishThisRound()
-      setSubmit(4)
+      setProcess(4)
     }
   }
 
   useEffect(() => {
-    if (submit === 2 && hasConflict && finishedRound.includes(targetRound)) {
-      setSubmit(3)
+    if (process === 2 && hasConflict && finishedRound.includes(targetRound)) {
+      setProcess(3)
       goToEnd()
     }
-  }, [finishedRound, hasConflict, submit, targetRound])
+  }, [finishedRound, hasConflict, process, targetRound])
 
   const finishThisRound = () => {
     setFinishedRounds({
@@ -92,9 +103,10 @@ const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
   }
   const goToEnd = () => {
     setTimeout(() => {
-      setSubmit(4)
+      setProcess(4)
     }, DOKIDOKI_TIME)
   }
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay />
@@ -102,48 +114,10 @@ const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
         <ModalHeader rounded="xs">結果発表！！</ModalHeader>
         <ModalCloseButton />
         <ModalBody mt={5}>
-          <div className="resultModalWrapper">
-            {submit === 4 && hasConflict && (
-              <div className="conflict">
-                データの重複がありました。
-                <br />
-                ランダム抽選の結果、背景色が赤いユーザーはドラフト候補の変更が必要です。
-                <br />
-                <span className="caution">
-                  CLOSEボタン押下後、背景色が点滅しているユーザーから順に候補を変更してください。
-                </span>
-              </div>
-            )}
-            <section className="result">
-              {submit < 3 && <ResultSlot />}
-              {submit >= 3 && <ConflictSlot hasConflict={hasConflict} />}
-            </section>
-            {submit === 2 && (
-              <>
-                <hr />
-                <div className="closeBtn align-centerVH">
-                  <Button
-                    colorScheme="red"
-                    onClick={startShowConflictData}
-                    disabled={hasClicked}
-                    leftIcon={<FaPaw />}
-                  >
-                    抽選開始！
-                  </Button>
-                </div>
-              </>
-            )}
-            {submit === 4 && (
-              <>
-                <hr />
-                <div className="closeBtn align-centerVH">
-                  <Button onClick={hideModal}>Close</Button>
-                </div>
-              </>
-            )}
-          </div>
+          <Box>
+            <ResultSlot />
+          </Box>
         </ModalBody>
-
         <ModalFooter mt={5}>
           <Button colorScheme="green" mr={3} onClick={onClose}>
             OK

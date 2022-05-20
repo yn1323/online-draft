@@ -28,7 +28,12 @@ const breakpoints = {
   '2xl': '96em',
 }
 
-const disabledBoxShadowComponents = ['Button', 'Popover', 'Input']
+const disabledBoxShadowComponents = [
+  'Button',
+  'Popover',
+  'Input',
+  'ModalCloseButton',
+]
 const componentObj = disabledBoxShadowComponents.reduce((acc, cur) => {
   return {
     ...acc,
@@ -47,3 +52,11 @@ export const themeChakra = extendTheme({
   breakpoints,
   components: componentObj,
 })
+
+export const boxShadow = {
+  boxShadow: 'md',
+  p: 8,
+  border: '1px',
+  rounded: 'base',
+  borderColor: 'gray.100',
+}

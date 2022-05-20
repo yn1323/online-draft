@@ -98,7 +98,13 @@ const BasicTemplate: FC<PropTypes> = ({
           </Button>
         )}
         {(isEntry || isDraft) && (
-          <Button colorScheme="teal" leftIcon={<FaShareAlt />} onClick={onOpen}>
+          <Button
+            colorScheme="green"
+            bg="white"
+            variant="outline"
+            leftIcon={<FaShareAlt />}
+            onClick={onOpen}
+          >
             シェア
           </Button>
         )}

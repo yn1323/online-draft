@@ -22,7 +22,13 @@ const UserList = ({ title = '', users, callback }: Props) => {
           _hover={{ backgroundColor: '#f5f5f5' }}
           px={4}
         >
-          <Image src={avatar} width={36} height={36} alt="avatar" />
+          <Image
+            src={avatar}
+            width={36}
+            height={36}
+            alt="avatar"
+            objectFit="contain"
+          />
           <Text>{userName}</Text>
         </HStack>
       ))}

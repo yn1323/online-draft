@@ -1,38 +1,32 @@
+import { Box, HStack, Icon } from '@chakra-ui/react'
 import { State } from 'Store'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { FaRegCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
-import { SAMPLE_HORSES, SLOT_TIME } from '@/constants/common'
-import { getAllItems, getTargetRoundData } from '@/helpers/common'
+import { DOKIDOKI_TIME } from '@/constants/common'
+import { getTargetRoundData } from '@/helpers/common'
+import RandomString from '@/molecules/RandomString'
 
 interface Props {
   userId: string
   targetRound: number
+  showRoulette?: boolean
+  errorUsers?: string[]
 }
 
-const JusdgeSlot = ({ userId, targetRound }: Props) => {
+const Slot = ({
+  userId,
+  targetRound,
+  showRoulette = false,
+  errorUsers = [],
+}: Props) => {
   const {
     draft: { selections },
-    userInfo: { users },
   } = useSelector((state: State) => state)
-  const eachTime = SLOT_TIME
-  const allItems = getAllItems(selections)
-  const timer: any = useRef(null)
 
   const [currentString, setCurrentString] = useState('')
-  const [className, setClassName] = useState('result-selection')
-
-  const startSlot = () => {
-    const horses = [...SAMPLE_HORSES, ...allItems]
-    timer.current = setInterval(() => {
-      setCurrentString(horses[Math.floor(Math.random() * horses.length)])
-    }, 10)
-  }
-
-  const endSlot = () => {
-    clearInterval(timer.current)
-    setMyItem()
-  }
-
+  // const icon = isDuplicate ? FaRegCheckCircle : FaRegCheckCircle
+  const icon = FaRegCheckCircle
   const setMyItem = () => {
     const roundData = getTargetRoundData(selections, targetRound)
     const myData = roundData.find((d: any) => d.userId === userId)
@@ -40,23 +34,25 @@ const JusdgeSlot = ({ userId, targetRound }: Props) => {
   }
 
   useEffect(() => {
-    const roundData = getTargetRoundData(selections, targetRound)
-    if (roundData.length === users.length)
-      if (timer.current) {
-        endSlot()
-      }
-    // const delay = order * eachTime
-    const delay = 0
-    const allFinished = eachTime + 1000
-    setTimeout(startSlot, delay)
-    setTimeout(endSlot, delay + eachTime)
-  }, [selections, users])
+    setMyItem()
+  }, [])
+
+  useEffect(() => {
+    setTimeout(() => {}, DOKIDOKI_TIME)
+  }, [])
+
+  const bgColor = errorUsers.includes(userId) ? 'red.300' : 'green.300'
+
+  if (showRoulette) {
+    return <RandomString />
+  }
 
   return (
-    <div className={className}>
-      <div className="text">{currentString}</div>
-    </div>
+    <HStack bg={bgColor} px={4} py={1} w="100%" justifyContent="center">
+      <Icon as={icon}></Icon>
+      <Box>{currentString}</Box>
+    </HStack>
   )
 }
 
-export default JusdgeSlot
+export default Slot
