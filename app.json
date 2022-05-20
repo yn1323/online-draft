@@ -1,9 +1,0 @@
-{
-  "appName": {
-    "ja": "アプリ名",
-    "en": "App Name"
-  },
-  "permissionXML": [
-    {"tag": "uses-permission", "attr": {"name": "android:name", "val": "android.permission.VIBRATE"}}
-  ]
-}
