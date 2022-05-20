@@ -83,6 +83,7 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
   }, [round, prevRound, onOpen])
 
   const { isSP } = useScreenSize()
+  const shadow = !isSP ? boxShadow : {}
 
   return (
     <BasicTemplate location="draft" groupIdFromPath={groupId}>
@@ -96,10 +97,10 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
               pr={0}
               spacing={isSP ? 0 : 4}
             >
-              <Box {...boxShadow} w="100%" p={4}>
+              <Box {...shadow} w="100%" p={4}>
                 <EnterDraft />
               </Box>
-              <Box {...boxShadow} h="100%" w="100%" p={4}>
+              <Box {...shadow} h="100%" w="100%" p={4}>
                 {isSP ? <DraftTableSP /> : <DraftTable />}
               </Box>
             </VStack>
