@@ -1,5 +1,27 @@
 @import '../common/Common.scss';
 
+button {
+  $backgroundDuplicate: #e7b1cc;
+  $backgroundDuplicateBlink: #e79ec3;
+  $backgroundDuplicateHover: #e79ec3;
+
+  .duplicate {
+    background: #e7b1cc;
+
+    &-change {
+      animation: blinkAnime 1s infinite alternate;
+      @keyframes blinkAnime {
+        0% {
+          background: #e7b1cc;
+        }
+        100% {
+          background: rgba(255, 0, 0, 0.5);
+        }
+      }
+    }
+  }
+}
+
 .draftTable {
   $borderColor: #eee;
   $backgroundHeader: #2f855a;

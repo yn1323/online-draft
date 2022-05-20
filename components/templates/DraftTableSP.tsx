@@ -12,17 +12,62 @@ import {
   useDisclosure,
   VStack,
 } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { css } from '@emotion/react'
+import { State } from 'Store'
+import { useCallback, useEffect, useState } from 'react'
 import { FaCheck } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
+import { getDuplicateItemInRound } from '@/helpers/common'
 import { useTableData } from '@/helpers/hooks'
 import SubmitItem from '@/molecules/SubmitItem'
 import AvatarWithName from '@/organisms/AvatarWithName'
 import { changeTableMode } from '@/stores/component'
 
 const DraftTableSP = () => {
+  const {
+    userInfo: { users },
+
+    draft: { round, selections },
+  } = useSelector((state: State) => state)
+  // モーダル表示時にすぐに結果が見えないよう工夫(それでもだめだけどね！)
+  const [localRound, setLocalRound] = useState(0)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLocalRound(round)
+    }, 1000)
+  }, [round])
+
   const dispatch = useDispatch()
   const { data } = useTableData()
+
+  const conflict = useCallback(
+    (rowRound: number, userId: string) => {
+      const result = {
+        isConflict: false,
+        isNextChoose: false,
+      }
+      if (rowRound === round - 1) {
+        // 処理が重いため、限定的に検査
+        const { duplicateDataUserIdsExcludeWinner } = getDuplicateItemInRound(
+          selections,
+          userId,
+          rowRound
+        )
+        if (duplicateDataUserIdsExcludeWinner.includes(userId)) {
+          result.isConflict = true
+        }
+        if (
+          duplicateDataUserIdsExcludeWinner &&
+          duplicateDataUserIdsExcludeWinner[0] === userId
+        ) {
+          result.isNextChoose = true
+        }
+      }
+      return result
+    },
+    [selections, round]
+  )
 
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -41,8 +86,6 @@ const DraftTableSP = () => {
     onOpen()
   }
 
-  console.log(data)
-
   return (
     <Accordion allowMultiple>
       {data.map((row: any, i: number) => (
@@ -50,20 +93,28 @@ const DraftTableSP = () => {
           <AccordionButton>
             <Box flex="1" textAlign="left">
               {row.round}R
-              {Object.keys(row).length !== 1 && (
+              {Object.keys(row).length !== 1 && localRound - 1 > i && (
                 <Icon color="green" ml={4} as={FaCheck} />
               )}
             </Box>
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4}>
-            {Object.keys(row).length === 1 && <Text>-</Text>}
-            {Object.keys(row).length !== 1 && (
+            {Object.keys(row).length === 1 ||
+              (localRound - 1 <= i && <Text>-</Text>)}
+            {Object.keys(row).length !== 1 && localRound - 1 > i && !isOpen && (
               <VStack w="100%">
                 {Object.keys(row)
                   .filter(k => k !== 'round' && !k.includes('-comment'))
                   .map((userId, j) => (
                     <Button
+                      colorScheme={
+                        conflict(row.round, userId).isConflict ? 'red' : 'gray'
+                      }
+                      css={
+                        conflict(row.round, userId).isNextChoose &&
+                        styles.duplicateChange
+                      }
                       key={j}
                       h="50px"
                       w="100%"
@@ -100,6 +151,23 @@ const DraftTableSP = () => {
       />
     </Accordion>
   )
+}
+
+const styles = {
+  duplicate: css`
+    background: #e7b1cc;
+  `,
+  duplicateChange: css`
+    animation: blinkAnime 1s infinite alternate;
+    @keyframes blinkAnime {
+      0% {
+        background: #e7b1cc;
+      }
+      100% {
+        background: rgba(255, 0, 0, 0.5);
+      }
+    }
+  `,
 }
 
 export default DraftTableSP
