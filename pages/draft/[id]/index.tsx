@@ -23,6 +23,7 @@ import { setAllUserInfo } from '@/stores/userInfo'
 import AnonymousAuthAuth from '@/templates/AnonymousAuth'
 import BasicTemplate from '@/templates/BasicTemplate'
 import DraftTable from '@/templates/DraftTable'
+import DraftTableSP from '@/templates/DraftTableSP'
 import ResultModal from '@/templates/ResultModal'
 
 const UserExistanceCheck = dynamic(
@@ -99,7 +100,7 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
                 <EnterDraft />
               </Box>
               <Box {...boxShadow} h="100%" w="100%" p={4}>
-                <DraftTable />
+                {isSP ? <DraftTableSP /> : <DraftTable />}
               </Box>
             </VStack>
             {!isSP && (
