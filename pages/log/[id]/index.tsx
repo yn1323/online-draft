@@ -1,29 +1,24 @@
 import { ParsedUrlQuery } from 'querystring'
-import { Box, HStack, useDisclosure, VStack } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import { Context, Selections, State, Users } from 'Store'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { boxShadow } from '@/constants/theme'
 import {
   subscribeGroupRound,
   subscribeLogMessage,
   subscribeSelection,
   subscribeUsers,
 } from '@/helpers/firebase'
-import { usePrevious, useScreenSize } from '@/helpers/hooks'
+import { usePrevious } from '@/helpers/hooks'
 import Chat from '@/organisms/Chat'
-import EnterDraft from '@/organisms/EnterDraft'
-import MenuCard from '@/organisms/MenuCard'
 import { setContext } from '@/stores/chat'
 import { setRoundNumber, setSelections } from '@/stores/draft'
 import { setAllUserInfo } from '@/stores/userInfo'
 import AnonymousAuthAuth from '@/templates/AnonymousAuth'
 import BasicTemplate from '@/templates/BasicTemplate'
-import DraftTable from '@/templates/DraftTable'
-import ResultModal from '@/templates/ResultModal'
 
 const UserExistanceCheck = dynamic(
   () => import('@/organisms/UserExistanceCheck'),
@@ -43,9 +38,7 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
     draft: { round, selections },
   } = useSelector((state: State) => state)
   const prevUsers = usePrevious(users, [])
-  const prevRound = usePrevious(round, -1)
   const [allSettled, setAllSettled] = useState(false)
-  const { isOpen, onOpen, onClose } = useDisclosure()
 
   useEffect(() => {
     if (allSettled) {
@@ -74,42 +67,15 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
     })
   }, [users, prevUsers, dispatch])
 
-  useEffect(() => {
-    // 初回以外
-    if (round === prevRound + 1) {
-      onOpen()
-    }
-  }, [round, prevRound, onOpen])
-
-  const { isSP } = useScreenSize()
-
   return (
     <BasicTemplate location="draft" groupIdFromPath={groupId}>
       <AnonymousAuthAuth groupId={id}>
-        <UserExistanceCheck setChecked={setAllSettled} groupId={groupId}>
-          <HStack h="100%" w="100%">
-            <VStack w={isSP ? '100%' : '70%'} h="100%" p={isSP ? 0 : 4} pr={0}>
-              <Box {...boxShadow} w="100%" p={4}>
-                <EnterDraft />
-              </Box>
-              <Box {...boxShadow} h="100%" w="100%" p={4}>
-                <DraftTable />
-              </Box>
-            </VStack>
-            {!isSP && (
-              <VStack w="30%" h="100%" p={4} pl={0}>
-                <Box w="100%">
-                  <MenuCard />
-                </Box>
-                <Box {...boxShadow} h="100%" w="100%" p={4}>
-                  <Chat />
-                </Box>
-              </VStack>
-            )}
-          </HStack>
-        </UserExistanceCheck>
+        {/* <UserExistanceCheck setChecked={setAllSettled} groupId={groupId}> */}
+        <Box h="100%" w="100%" p={4}>
+          <Chat />
+        </Box>
+        {/* </UserExistanceCheck> */}
       </AnonymousAuthAuth>
-      <ResultModal targetRound={prevRound} isOpen={isOpen} onClose={onClose} />
     </BasicTemplate>
   )
 }

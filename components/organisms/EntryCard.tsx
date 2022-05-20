@@ -3,6 +3,7 @@ import { State } from 'Store'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useSelector } from 'react-redux'
+import { boxShadow } from '@/constants/theme'
 import { useInfo } from '@/helpers/hooks'
 import UserList from '@/molecules/UserList'
 import CreateUser from '@/organisms/CreateUser'
@@ -22,7 +23,7 @@ const EntryCard = () => {
   }
 
   return (
-    <Box boxShadow="md" p={8} border={1} rounded="base" w="400px" maxH="80vh">
+    <Box {...boxShadow} w="320px" maxH="80vh">
       {cardIndex === 0 && (
         <VStack>
           {hasUser && (

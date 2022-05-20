@@ -1,5 +1,6 @@
-import { useToast as useToastChakra } from '@chakra-ui/react'
 import type { UseToastOptions } from '@chakra-ui/react'
+import { useToast as useToastChakra } from '@chakra-ui/react'
+import { useMediaQuery, useTheme } from '@chakra-ui/react'
 import { State } from 'Store'
 import moment from 'moment'
 import { useEffect, useRef, useMemo } from 'react'
@@ -331,4 +332,13 @@ export const useCSV = () => {
   }
 
   return data
+}
+
+export const useScreenSize = () => {
+  const theme = useTheme()
+  const [isSmallerThan] = useMediaQuery(`(max-width: ${theme.breakpoints.lg})`)
+  return {
+    isPC: !isSmallerThan,
+    isSP: isSmallerThan,
+  }
 }
