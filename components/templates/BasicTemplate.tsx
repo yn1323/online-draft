@@ -67,7 +67,6 @@ const BasicTemplate: FC<PropTypes> = ({
 
   const debugGoBack = () => {
     goToNextRound({ groupId, nextRound: round - 1 })
-    console.log(round)
     setFinishedRounds({
       groupId,
       currentFinishedRounds: finishedRound.filter(

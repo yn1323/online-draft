@@ -330,7 +330,6 @@ export const isEveryOneEntered = (
   targetRound: number
 ) => {
   const targetRoundData = getTargetRoundData(selections, targetRound)
-  console.log(targetRoundData)
   return targetRoundData.length === users.length
 }
 
