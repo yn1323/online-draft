@@ -88,7 +88,13 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
       <AnonymousAuthAuth groupId={id}>
         <UserExistanceCheck setChecked={setAllSettled} groupId={groupId}>
           <HStack h="100%" w="100%">
-            <VStack w={isSP ? '100%' : '70%'} h="100%" p={isSP ? 0 : 4} pr={0}>
+            <VStack
+              w={isSP ? '100%' : '70%'}
+              h="100%"
+              p={isSP ? 0 : 4}
+              pr={0}
+              spacing={isSP ? 0 : 4}
+            >
               <Box {...boxShadow} w="100%" p={4}>
                 <EnterDraft />
               </Box>

@@ -33,6 +33,7 @@ const disabledBoxShadowComponents = [
   'Popover',
   'Input',
   'ModalCloseButton',
+  'AccordionButton',
 ]
 const componentObj = disabledBoxShadowComponents.reduce((acc, cur) => {
   return {
