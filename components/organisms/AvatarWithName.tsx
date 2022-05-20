@@ -1,6 +1,5 @@
 import { Icon } from '@chakra-ui/react'
 import { State } from 'Store'
-import { checkmarkOutline } from 'ionicons/icons'
 import Image from 'next/image'
 import { FaRegCheckCircle } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
