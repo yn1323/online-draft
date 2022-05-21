@@ -25,18 +25,8 @@ import { changeTableMode } from '@/stores/component'
 
 const DraftTableSP = () => {
   const {
-    userInfo: { users },
-
-    draft: { round, selections },
+    draft: { round, selections, finishedRound },
   } = useSelector((state: State) => state)
-  // モーダル表示時にすぐに結果が見えないよう工夫(それでもだめだけどね！)
-  const [localRound, setLocalRound] = useState(0)
-
-  useEffect(() => {
-    setTimeout(() => {
-      setLocalRound(round)
-    }, 1000)
-  }, [round])
 
   const dispatch = useDispatch()
   const { data } = useTableData()
@@ -85,7 +75,9 @@ const DraftTableSP = () => {
     setModalInfo({ userId, rowRound })
     onOpen()
   }
+  const isFinishedRound = (round: number) => finishedRound.includes(round)
 
+  console.log(finishedRound)
   return (
     <Accordion allowMultiple>
       {data.map((row: any, i: number) => (
@@ -93,16 +85,15 @@ const DraftTableSP = () => {
           <AccordionButton>
             <Box flex="1" textAlign="left">
               {row.round}R
-              {Object.keys(row).length !== 1 && localRound - 1 > i && (
+              {isFinishedRound(i + 1) && (
                 <Icon color="green" ml={4} as={FaCheck} />
               )}
             </Box>
             <AccordionIcon />
           </AccordionButton>
           <AccordionPanel pb={4}>
-            {Object.keys(row).length === 1 ||
-              (localRound - 1 <= i && <Text>-</Text>)}
-            {Object.keys(row).length !== 1 && localRound - 1 > i && !isOpen && (
+            {!isFinishedRound(i + 1) && <Text>-</Text>}
+            {isFinishedRound(i + 1) && (
               <VStack w="100%">
                 {Object.keys(row)
                   .filter(k => k !== 'round' && !k.includes('-comment'))

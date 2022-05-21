@@ -10,7 +10,7 @@ import SubmitItem from '@/molecules/SubmitItem'
 const DraftTable = () => {
   const {
     userInfo: { users },
-    draft: { round, selections },
+    draft: { round, selections, finishedRound },
     component: {
       modal: { showingResult },
     },
@@ -94,7 +94,7 @@ const DraftTable = () => {
           return (
             <tr {...row.getRowProps()} key={i}>
               {row.cells.map((cell: any, j: number) =>
-                showingResult && original.round === round - 1 && j !== 0 ? (
+                !finishedRound.includes(i + 1) ? (
                   <td key={j}>-</td>
                 ) : (
                   <td
