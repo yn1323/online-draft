@@ -1,6 +1,7 @@
 import { Box, Button, Center, HStack, Text, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useEffect, useState } from 'react'
+import { FaPaw } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { DOKIDOKI_TIME } from '@/constants/common'
 import { getDuplicateItemInRound } from '@/helpers/common'
@@ -42,7 +43,11 @@ const ResultSlot = () => {
       </HStack>
       {showRoulette && (
         <HStack w="100%" justifyContent="center">
-          <Button colorScheme="orange" onClick={stopRouletteHandler}>
+          <Button
+            colorScheme="orange"
+            onClick={stopRouletteHandler}
+            leftIcon={<FaPaw />}
+          >
             ストップ
           </Button>
         </HStack>

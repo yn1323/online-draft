@@ -3,7 +3,6 @@ import { Box, HStack, useDisclosure, VStack } from '@chakra-ui/react'
 import { Context, Selections, State, Users } from 'Store'
 import { GetServerSideProps, NextPage } from 'next'
 import dynamic from 'next/dynamic'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { boxShadow } from '@/constants/theme'
@@ -37,7 +36,6 @@ type PropTypes = {
 
 const Draft: NextPage<PropTypes> = ({ id }) => {
   const groupId = id
-  const router = useRouter()
   const dispatch = useDispatch()
   const {
     userInfo: { users, userId },
@@ -117,7 +115,7 @@ const Draft: NextPage<PropTypes> = ({ id }) => {
           </HStack>
         </UserExistanceCheck>
       </AnonymousAuthAuth>
-      <ResultModal targetRound={prevRound} isOpen={isOpen} onClose={onClose} />
+      <ResultModal isOpen={isOpen} onClose={onClose} />
     </BasicTemplate>
   )
 }
