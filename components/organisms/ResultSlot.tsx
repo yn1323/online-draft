@@ -5,22 +5,32 @@ import { FaPaw } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { DOKIDOKI_TIME } from '@/constants/common'
 import { getDuplicateItemInRound } from '@/helpers/common'
+import { setFinishedRounds } from '@/helpers/firebase'
 import { useScreenSize } from '@/helpers/hooks'
 import Slot from '@/molecules/Slot'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
 const ResultSlot = () => {
   const {
-    userInfo: { users, userId },
-    draft: { round, selections },
+    userInfo: { users, userId, groupId },
+    draft: { round, selections, finishedRound },
   } = useSelector((state: State) => state)
   const [showRoulette, setShowRoulette] = useState(true)
+
+  useEffect(() => {
+    setShowRoulette(!finishedRound.includes(round - 1))
+  }, [finishedRound, round])
 
   const { duplicateDataUserIdsExcludeWinner, hasDuplicate } =
     getDuplicateItemInRound(selections, userId, round - 1)
 
   const stopRouletteHandler = () => {
     setShowRoulette(false)
+    setFinishedRounds({
+      groupId,
+      currentFinishedRounds: finishedRound,
+      finishedRound: round - 1,
+    })
   }
 
   const { isSP } = useScreenSize()
