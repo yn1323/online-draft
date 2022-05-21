@@ -103,8 +103,6 @@ const DraftTable = () => {
                     key={j}
                     onClick={() => {
                       if (isClickable(j, original.round)) {
-                        console.log(cell)
-                        console.log(row)
                         showEditModal(cell.column.id, row.cells[0].value)
                       }
                     }}
