@@ -1,4 +1,4 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Center, HStack, Text, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
@@ -18,11 +18,9 @@ const ResultSlot = () => {
   const { duplicateDataUserIdsExcludeWinner, hasDuplicate } =
     getDuplicateItemInRound(selections, userId, round - 1)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShowRoulette(false)
-    }, DOKIDOKI_TIME)
-  }, [])
+  const stopRouletteHandler = () => {
+    setShowRoulette(false)
+  }
 
   const { isSP } = useScreenSize()
 
@@ -42,6 +40,18 @@ const ResultSlot = () => {
           </VStack>
         ))}
       </HStack>
+      {showRoulette && (
+        <HStack w="100%" justifyContent="center">
+          <Button colorScheme="orange" onClick={stopRouletteHandler}>
+            ストップ
+          </Button>
+        </HStack>
+      )}
+      {showRoulette && (
+        <Text fontSize="sm">
+          抽選を止めるまでしばらくそのままお待ちください。
+        </Text>
+      )}
       {!showRoulette && hasDuplicate && (
         <>
           <Text fontSize="sm">データの重複がありました。</Text>

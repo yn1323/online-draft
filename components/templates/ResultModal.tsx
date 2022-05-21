@@ -86,7 +86,6 @@ const ResultModal: FC<Props> = ({ targetRound, isOpen, onClose }) => {
   useEffect(() => {
     if (process === 2 && hasConflict && finishedRound.includes(targetRound)) {
       setProcess(3)
-      goToEnd()
     }
   }, [finishedRound, hasConflict, process, targetRound])
 
