@@ -77,7 +77,6 @@ const DraftTableSP = () => {
   }
   const isFinishedRound = (round: number) => finishedRound.includes(round)
 
-  console.log(finishedRound)
   return (
     <Accordion allowMultiple>
       {data.map((row: any, i: number) => (
