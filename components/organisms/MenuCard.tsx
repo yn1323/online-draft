@@ -12,7 +12,7 @@ import { changeTableMode } from '@/stores/component'
 const MenuCard = () => {
   const {
     userInfo: { groupId, groupName, users },
-    draft: { round, selections, finishedRound },
+    draft: { round, selections },
     component: { tableMode },
   } = useSelector((state: State) => state)
 
