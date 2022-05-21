@@ -137,7 +137,9 @@ export const setFinishedRounds = async ({
       throw new Error()
     }
     await updateDoc(doc(db, 'app', 'onlinedraft', 'group', groupId), {
-      finishedRound: [...currentFinishedRounds, finishedRound],
+      finishedRound: Array.from(
+        new Set([...currentFinishedRounds, finishedRound])
+      ).sort(),
     })
 
     return Promise.resolve()

@@ -1,28 +1,37 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Center, HStack, Text, VStack } from '@chakra-ui/react'
 import { State } from 'Store'
 import { useEffect, useState } from 'react'
+import { FaPaw } from 'react-icons/fa'
 import { useSelector } from 'react-redux'
 import { DOKIDOKI_TIME } from '@/constants/common'
 import { getDuplicateItemInRound } from '@/helpers/common'
+import { setFinishedRounds } from '@/helpers/firebase'
 import { useScreenSize } from '@/helpers/hooks'
 import Slot from '@/molecules/Slot'
 import AvatarWithName from '@/organisms/AvatarWithName'
 
 const ResultSlot = () => {
   const {
-    userInfo: { users, userId },
-    draft: { round, selections },
+    userInfo: { users, userId, groupId },
+    draft: { round, selections, finishedRound },
   } = useSelector((state: State) => state)
   const [showRoulette, setShowRoulette] = useState(true)
+
+  useEffect(() => {
+    setShowRoulette(!finishedRound.includes(round - 1))
+  }, [finishedRound, round])
 
   const { duplicateDataUserIdsExcludeWinner, hasDuplicate } =
     getDuplicateItemInRound(selections, userId, round - 1)
 
-  useEffect(() => {
-    setTimeout(() => {
-      setShowRoulette(false)
-    }, DOKIDOKI_TIME)
-  }, [])
+  const stopRouletteHandler = () => {
+    setShowRoulette(false)
+    setFinishedRounds({
+      groupId,
+      currentFinishedRounds: finishedRound,
+      finishedRound: round - 1,
+    })
+  }
 
   const { isSP } = useScreenSize()
 
@@ -42,6 +51,22 @@ const ResultSlot = () => {
           </VStack>
         ))}
       </HStack>
+      {showRoulette && (
+        <HStack w="100%" justifyContent="center">
+          <Button
+            colorScheme="orange"
+            onClick={stopRouletteHandler}
+            leftIcon={<FaPaw />}
+          >
+            ストップ
+          </Button>
+        </HStack>
+      )}
+      {showRoulette && (
+        <Text fontSize="sm">
+          抽選を止めるまでしばらくそのままお待ちください。
+        </Text>
+      )}
       {!showRoulette && hasDuplicate && (
         <>
           <Text fontSize="sm">データの重複がありました。</Text>
