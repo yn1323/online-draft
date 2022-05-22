@@ -19,7 +19,10 @@ export default function Document() {
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:url" content={url} />
-        <meta name="twitter:image" content="img/logo/og.png" />
+        <meta
+          name="twitter:image"
+          content="https://online-draft.vercel.app/img/logo/og.png"
+        />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta property="twitter:locale" content="ja_JP" />
