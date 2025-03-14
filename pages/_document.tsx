@@ -5,6 +5,9 @@ export default function Document() {
   const description =
     '友達同士での野球、競馬(POG)で使える無料オンラインドラフト会議システム。利用開始に不要な登録など必要なし！URLをシェアするだけ！'
   const url = 'https://online-draft.vercel.app/'
+  const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
+
+
   return (
     <Html>
       <Head>
@@ -33,6 +36,11 @@ export default function Document() {
         />
       </Head>
       <body>
+        <noscript
+          dangerouslySetInnerHTML={{
+            __html: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display: none; visibility: hidden;" />`,
+          }}
+        />
         <Main />
         <NextScript />
       </body>
