@@ -94,4 +94,4 @@ jobs:
           message-id: playwright
           message: |
             🎭 Playwright Test Report 🎭
-            [Playwright Report](https://yn1323.github.io/yps-polar/playwright/${{ github.ref_name }})
+            [Playwright Report](https://yn1323.github.io/online-draft/playwright/${{ github.ref_name }})
