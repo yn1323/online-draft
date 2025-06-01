@@ -28,13 +28,6 @@ jobs:
         fetch-depth: 0
     - name: Setup
       uses: ./.github/actions/setup
-    - name: Dev Database Reset
-      uses: ./.github/actions/dev-database
-      with:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        DIRECT_URL: ${{ secrets.DIRECT_URL }}
-        TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
-        TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
     - name: Setup Playwright
       uses: ./.github/actions/playwright
       with:
