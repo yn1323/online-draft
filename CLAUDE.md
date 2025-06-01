@@ -156,6 +156,26 @@ pnpm storybook:test         # Storybookコンポーネントテスト
 pnpm vrt                    # Visual Regression Testing実行
 ```
 
+### E2Eテスト構成（IMPORTANT）
+```bash
+e2e/
+├── tests/
+│   ├── sample/homepage.test.ts    # 現在のサンプルページテスト
+│   ├── login/                     # 認証関連テスト
+│   ├── navigation/                # ナビゲーションテスト
+│   ├── draft/                     # ドラフト機能テスト（将来）
+│   └── chat/                      # チャット機能テスト（将来）
+├── utils/common.ts                # 共通ユーティリティ
+└── constants/index.ts             # テスト定数
+```
+
+**現在のE2Eテスト対象**:
+- ✅ `/`ページの「online-draft」h1表示確認
+- ✅ 「ログイン」リンクの表示・動作確認
+- ✅ CSSクラス適用確認（border, text-gray-500）
+- ✅ ページタイトル確認
+- 🔄 将来機能用テストはtest.skipで準備済み
+
 ### 環境設定
 `.env.local`に以下の環境変数が必要:
 ```
