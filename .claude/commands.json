@@ -1,0 +1,246 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Draft Game Platform Custom Commands for automated development workflows",
+    "baseActions": {
+      "git_status_check": {
+        "action": "bash",
+        "command": "git status",
+        "description": "Check current git status"
+      },
+      "git_diff_main": {
+        "action": "bash", 
+        "command": "git diff main...HEAD",
+        "description": "Show changes since branching from main"
+      }
+    }
+  },
+  "commands": {
+    "commit": {
+      "description": "Git commit with automatic staging and message generation",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current git status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff",
+          "description": "Show unstaged changes"
+        },
+        {
+          "action": "bash",
+          "command": "git log --oneline -5",
+          "description": "Show recent commit history for message style"
+        },
+        {
+          "action": "stage_changes",
+          "description": "Stage relevant changes for commit"
+        },
+        {
+          "action": "generate_commit_message",
+          "description": "Generate appropriate commit message based on changes"
+        },
+        {
+          "action": "git_commit",
+          "description": "Execute git commit with generated message"
+        }
+      ]
+    },
+    "push": {
+      "description": "Push to remote and create GitHub Pull Request",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current branch status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD",
+          "description": "Show all changes since branching from main"
+        },
+        {
+          "action": "bash",
+          "command": "git log main...HEAD --oneline",
+          "description": "Show commit history for PR"
+        },
+        {
+          "action": "push_branch",
+          "description": "Push current branch to remote"
+        },
+        {
+          "action": "create_pr",
+          "description": "Create GitHub Pull Request with generated summary"
+        }
+      ]
+    },
+    "new-branch": {
+      "description": "Create new branch from latest main with date-based naming",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current git status"
+        },
+        {
+          "action": "bash",
+          "command": "git checkout main",
+          "description": "Switch to main branch"
+        },
+        {
+          "action": "bash",
+          "command": "git pull origin main",
+          "description": "Pull latest changes from main"
+        },
+        {
+          "action": "generate_branch_name",
+          "description": "Generate branch name with current date (feat/YYYY-MM-DD format)"
+        },
+        {
+          "action": "create_and_checkout_branch",
+          "description": "Create new branch and checkout"
+        },
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Confirm new branch creation"
+        }
+      ]
+    },
+    "refactor": {
+      "description": "Refactor code changes made in current branch",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List changed files in current branch"
+        },
+        {
+          "action": "analyze_changes",
+          "description": "Analyze changes for refactoring opportunities"
+        },
+        {
+          "action": "identify_patterns",
+          "description": "Identify code patterns, duplications, and improvements"
+        },
+        {
+          "action": "apply_refactoring",
+          "description": "Apply refactoring improvements to code"
+        },
+        {
+          "action": "verify_functionality",
+          "description": "Verify refactored code maintains functionality"
+        },
+        {
+          "action": "commit_refactoring",
+          "description": "Commit refactoring changes with descriptive message"
+        }
+      ]
+    },
+    "pr-review": {
+      "description": "Review GitHub PR and post detailed review comments with collapsible sections",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "gh pr view --json title,body,headRefName,baseRefName,state,commits,changedFiles",
+          "description": "Get comprehensive PR information"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List all changed files"
+        },
+        {
+          "action": "bash",
+          "command": "git log main..HEAD --oneline",
+          "description": "Get commit history for context"
+        },
+        {
+          "action": "analyze_files_individually",
+          "description": "Analyze each changed file for code quality and issues"
+        },
+        {
+          "action": "identify_line_specific_issues",
+          "description": "Identify specific line numbers with issues for inline comments"
+        },
+        {
+          "action": "generate_summary_review",
+          "description": "Generate concise summary with overall assessment and star rating"
+        },
+        {
+          "action": "generate_detailed_sections",
+          "description": "Generate detailed review sections using collapsible <details> tags"
+        },
+        {
+          "action": "post_main_review_comment",
+          "description": "Post main review comment with summary and collapsible details"
+        },
+        {
+          "action": "post_inline_comments",
+          "description": "Post specific line-level comments using gh pr review for targeted feedback"
+        }
+      ]
+    },
+    "pr-fix": {
+      "description": "Fix issues raised in PR review comments",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "gh pr view --json number",
+          "description": "Get current PR number"
+        },
+        {
+          "action": "fetch_review_comments",
+          "description": "Fetch all review comments and feedback"
+        },
+        {
+          "action": "categorize_issues",
+          "description": "Categorize and prioritize review feedback"
+        },
+        {
+          "action": "implement_fixes",
+          "description": "Implement fixes for each review comment"
+        },
+        {
+          "action": "verify_fixes",
+          "description": "Verify fixes address the original concerns"
+        },
+        {
+          "action": "commit_fixes",
+          "description": "Commit fixes with reference to review comments"
+        },
+        {
+          "action": "update_pr",
+          "description": "Push fixes and update PR"
+        }
+      ]
+    },
+    "doc-update": {
+      "description": "Update CLAUDE.md documentation with design decisions, specifications, and important rules from conversation context",
+      "steps": [
+        {
+          "action": "analyze_conversation_context",
+          "description": "Analyze recent conversation for design decisions, specifications, and rules"
+        },
+        {
+          "action": "identify_key_information",
+          "description": "Identify important patterns: architecture decisions, coding standards, UI/UX guidelines, workflow rules"
+        },
+        {
+          "action": "categorize_documentation",
+          "description": "Categorize information into appropriate sections: design, implementation, rules, workflows"
+        },
+        {
+          "action": "update_claude_md",
+          "description": "Update CLAUDE.md with structured documentation following established format"
+        },
+        {
+          "action": "verify_documentation",
+          "description": "Verify documentation accuracy and completeness"
+        }
+      ]
+    }
+  }
+}

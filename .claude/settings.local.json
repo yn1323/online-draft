@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(firebase:*)",
+      "Bash(gh:*)",
+      "Bash(rm:*)",
+      "Bash(npm outdated)",
+      "Bash(mv:*)",
+      "Bash(ls:*)"
+    ],
+    "deny": []
+  }
+}

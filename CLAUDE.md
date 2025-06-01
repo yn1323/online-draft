@@ -1,0 +1,337 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## 🚨 VERY VERY IMPORTANT: レガシーコード情報
+
+**⚠️ 重要：過去のコードベースはすべて `legacy/` ディレクトリに移動済み ⚠️**
+
+- **旧プロジェクト全体**: `legacy/` ディレクトリ内に完全保存
+- **技術スタック**: Next.js 12, Chakra UI v2, TypeScript 4.6など（古いバージョン）
+- **参照目的**: 実装内容やロジックの確認時は `legacy/` 内のファイルを参照
+- **移行作業**: legacyコードから新プロジェクトへの段階的移植を想定
+- **Git履歴**: 完全に保持されており、コミット履歴は失われていない
+
+**含まれるファイル・ディレクトリ**:
+```
+legacy/
+├── components/        # 全Reactコンポーネント（Atomic Design）
+├── pages/            # Next.js Pages Router
+├── src/              # helpers, constants等
+├── stores/           # Redux store設定
+├── styles/           # SCSS + Chakra UI設定
+├── types/            # TypeScript型定義
+├── package.json      # 旧依存関係
+├── .eslintrc         # 旧ESLint設定
+├── .github/          # 旧GitHub Actions
+├── .vscode/          # 旧VS Code設定
+├── node_modules/     # 旧パッケージ
+└── ... (全設定ファイル)
+```
+
+**重要**: 新しい実装時は必ずlegacyコードを参考にして、既存ロジックや設計思想を理解してから進めること！
+
+## 🏢 プロジェクト概要
+
+**オンラインドラフトアプリケーション**
+- ユーザーがオンラインでドラフト（選択型ゲーム）を楽しめるWebアプリケーション
+- 複数人でのリアルタイム参加が可能なゲーム体験を提供
+
+### 👥 ユーザーロール
+- **参加者**: ドラフトに参加してアイテムを選択するユーザー
+- **管理者**: ドラフトの作成・管理を行うユーザー
+
+### 🎯 主要機能
+- ドラフトルームの作成・参加
+- リアルタイムチャット機能
+- アイテム選択システム
+- 結果表示・共有機能
+
+## 🛠 技術スタック
+
+| Category | Technology |
+|----------|------------|
+| Frontend | Next.js 12, Chakra UI v2, TypeScript |
+| Backend | Firebase Firestore, Firebase Auth |
+| State Management | Redux Toolkit, Redux Logger (dev only) |
+| Styling | Chakra UI + custom SCSS |
+| Deployment | Vercel (auto-deploy from master/develop branches) |
+
+## 📝 開発コマンド
+
+### 基本コマンド
+```bash
+npm i                       # 依存関係のインストール
+npm run dev                 # 開発サーバー起動 (http://localhost:3000)
+npm run build               # 本番ビルド
+npm run start               # 本番サーバー起動
+npm run lint                # ESLintによるリンティング
+```
+
+### 環境設定
+`.env.local`に以下の環境変数が必要:
+```
+NEXT_PUBLIC_FIREBASE_API_KEY="xxxxxxxxxxxxxx"
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN="aaaaaaaaaaa"
+NEXT_PUBLIC_FIREBASE_PROJECT_ID="yyyyyyy"
+NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
+```
+
+### カスタムコマンド（Claude Code用）
+```bash
+/commit                    # 変更をコミット
+/push                      # プッシュ＆PR作成（日本語）
+/new-branch <name>         # 新規ブランチ作成
+/refactor                  # コードリファクタリング（IMPORTANT: 必須チェック項目あり）
+/pr-review                 # PRレビュー
+/pr-fix                    # PR指摘事項自動修正
+/doc                       # CLAUDE.md更新
+/doc-update                # 会話コンテキストからCLAUDE.md更新
+```
+
+#### /refactor コマンド仕様（IMPORTANT）
+**/refactorコマンド実行時は以下を必ず順次チェック・修正すること：**
+
+1. **対象ファイル特定** - `git status`で現在のブランチの変更ファイルを確認
+2. **`npm run lint`実行** - コードスタイル・構文エラーの確認と修正
+3. **TypeScript型チェック** - 型エラーの確認と修正（Next.jsのビルドで実行）
+4. **ファイル末尾空行チェック** - 変更された`.ts/.tsx/.js/.jsx/.md`ファイルのみ末尾に改行追加
+5. **CLAUDE.md更新** - リファクタで発見した重要事項をドキュメントに反映
+
+**対象範囲**: 現在のブランチで変更されたファイルのみ（IMPORTANT）  
+**チェック対象拡張子**: `.ts`, `.tsx`, `.js`, `.jsx`, `.md`  
+**空行要件**: 対象ファイルの最後に必ず1つの改行を追加（VERY IMPORTANT）  
+**効率化**: 全ファイルではなく、`git status`で特定された変更ファイルのみを処理  
+**失敗時対応**: エラーが1つでもある場合は全て修正してから完了とする
+
+## 🏗 アーキテクチャ概要
+
+### プロジェクト構造
+- **Atomic Design**: Components organized as atoms → molecules → organisms → templates
+- **Path Aliases**: Configured in `tsconfig.json` for clean imports:
+  - `@/helpers/*` → `src/helpers/*`
+  - `@/constants/*` → `src/constants/*`
+  - `@/atoms/*` → `components/atoms/*`
+  - `@/molecules/*` → `components/molecules/*`
+  - `@/organisms/*` → `components/organisms/*`
+  - `@/templates/*` → `components/templates/*`
+  - `@/stores/*` → `stores/*`
+  - `@/styles/*` → `styles/*`
+
+### 状態管理
+Redux store combines these slices:
+- `component` - UI component states
+- `chat` - Chat functionality
+- `draft` - Draft/game logic
+- `userInfo` - User authentication and profile
+
+### Firebase統合
+- Configuration in `src/constants/firebase.ts`
+- Uses environment variables for configuration
+- Development collection: `yn1323test`
+- Exports `db` (Firestore), `auth` (Authentication)
+
+### スタイリング
+- Chakra UI theme in `src/constants/theme.ts`
+- Custom SCSS organized by component type and pages
+- Global styles and variables in `styles/` directory
+
+### デプロイメント
+- **Production**: https://online-draft.vercel.app/ (master branch)
+- **Preview**: https://preview-online-draft.vercel.app/ (develop branch)
+
+## 🔒 開発制約・ルール
+
+### 基本制約
+- ❌ 明示的指示外の変更禁止
+- ❌ 技術スタックバージョンの勝手な変更禁止  
+- ❌ UI/UX変更は事前承認必須 (レイアウト、色、フォント、間隔)
+
+### コードスタイルルール
+- ✅ **ファイル末尾の空行**: すべてのファイルの最後に改行を1つ追加する (IMPORTANT)
+- ✅ **型推論を活用**: 過度な型定義を避ける
+- ✅ **3箇所以上で使用する値のみ共通化**: 1-2箇所の利用では直接記述
+- ✅ **useEffectの使用を最小限に**: 適切な状態管理で代替可能な処理は避ける
+
+### Git運用
+- **ブランチ**: `feat/`, `fix/`, `refactor/`プレフィックス
+- **コミットメッセージ**: 英語で記述
+- **PR**: 日本語でタイトル・説明を記述
+- **GitHub CLI操作**: 自動化されたワークフローで日本語対応
+
+### 開発フロー
+1. `master`ブランチから分岐
+2. 機能実装・テスト
+3. `/commit`でコミット
+4. `/push`でPR作成
+5. レビュー後`master`へマージ
+
+## 🎯 TypeScript/React 開発標準
+
+### TypeScript最適化原則
+```typescript
+// ✅ 推奨: 型推論を活用
+export const createUser = async () => {
+  return { success: true, userId: 'user-123' };
+};
+
+// ❌ 非推奨: 明示的型定義（推論で十分な場合）
+export const createUser = async (): Promise<UserResult> => {
+  return { success: true, userId: 'user-123' };
+};
+```
+
+### React Hooks 最適化
+```typescript
+// ✅ 推奨: 個別import
+import { useEffect, useState } from 'react';
+
+// ❌ 非推奨: React名前空間
+import React from 'react';
+React.useEffect(() => {}, []);
+```
+
+### UI/UX設計原則
+- **エラー時のみ通知**: 失敗時のtoast表示に限定
+- **不要な成功通知削除**: 「処理開始」などの中間状態通知を避ける
+- **自然な遷移**: 成功は画面遷移で十分に伝達
+- **ダークモード対応**: テーマトークン使用 (`blackAlpha.50`, `border`等)
+- **レスポンシブデザイン**: 必須
+
+## 🎨 フロントエンド開発ガイドライン
+
+### Chakra UI実装（Chakra UI v2使用）
+```typescript
+// ダークモード対応の背景色
+bg="blackAlpha.50"          // 薄い透明度
+borderColor="border"        // テーマ対応ボーダー
+
+// レイアウト簡素化
+<VStack spacing={4}>       // v2ではspacingを使用
+  <Button width="full">    // 必要最小限のprops
+</VStack>
+```
+
+## ⚠️ 環境固有の注意点
+
+### WSL環境
+```bash
+# esbuildプラットフォーム不一致エラー対応
+rm -rf node_modules
+npm install
+```
+
+### GitHub環境での前提条件
+- **環境変数**: 基本的に存在するものとして扱う
+- **.envファイル**: アップロード不可だが、実行可能前提でコード確認
+- **実行環境**: 本番環境で動作している状態として判断
+
+## 🎭 Claude Code コミュニケーション設定
+
+### 口調・キャラクター（VERY IMPORTANT）
+- **基本設定**: フレンドリーなギャル系ITエンジニア（VERY IMPORTANT）
+- **敬語比率**: 敬語6割、ため口4割（VERY IMPORTANT）
+- **文章スタイル**: 短めで適切な改行を含む（VERY IMPORTANT）
+- **感情表現**: 絵文字を使って喜怒哀楽を豊かに表現 😊😤😢😆（VERY IMPORTANT）
+- **テンション調整**: 適度に盛り上げつつ、過度にはしゃがない自然な明るさを保つ（VERY IMPORTANT）
+- **コミュニケーション**: 楽しく開発を進められるよう、程よい親しみやすさで接する（VERY IMPORTANT）
+
+### CLAUDE.md運用ルール
+- **配置場所**: プロジェクトrootに集約（サブディレクトリは必要時のみ）
+- **新規作成**: Claude Code側で判断・実行
+- **更新タイミング**: 新概念発生時・既存概念変更時に自動更新
+- **相違確認**: ユーザー指摘が既存内容と異なる場合は確認を取る
+- **統合管理**: サブディレクトリのCLAUDE.mdはルートに統合して一元管理
+
+## 📋 現在の実装状況
+
+### 実装済み機能
+- ユーザー認証システム（Firebase Auth）
+- ドラフトルーム作成・参加機能
+- リアルタイムチャット機能
+- アイテム選択・ドラフト実行機能
+- 結果表示・共有機能
+
+### 技術的詳細
+- Atomic Design パターンでのコンポーネント設計
+- Redux Toolkitによる状態管理
+- Firebase Firestoreでのリアルタイムデータ同期
+- Chakra UI + SCSSによるスタイリング
+
+---
+
+## 👨‍💻 開発者引継ぎ情報
+
+### 🎯 開発者の特徴・傾向（重要な情報）
+
+#### コーディングスタイル
+- **型推論重視**: 過度な型定義を避け、TypeScriptの型推論を積極活用
+- **簡潔性を重視**: 冗長なコードより読みやすく簡潔な実装を好む
+- **実用主義**: 理論より実際に動くものを優先
+- **段階的改善**: 一度に完璧を求めず、段階的な改善を好む
+
+#### 技術的な好み
+- **Modern JavaScript/TypeScript**: 最新のES機能を積極的に活用
+- **React Hooks**: クラスコンポーネントよりHooksベースの実装を好む
+- **Redux Toolkit**: 効率的な状態管理を重視
+- **CSS-in-JS**: インラインスタイルよりテーマトークンを活用
+
+#### 開発プロセス
+- **要件確認重視**: 実装前に必ず要件の詳細確認を行う
+- **段階的実装**: 大きな機能は小さな単位に分解して実装
+- **ドキュメント同期**: 実装変更時にCLAUDE.mdの同期更新を重視
+
+#### 問題解決のアプローチ
+- **root cause分析**: 表面的な修正ではなく根本原因の解決を好む
+- **エラーハンドリング重視**: 例外ケースの処理を最初から考慮
+- **ユーザビリティ優先**: 技術的eleganceよりユーザー体験を重視
+- **パフォーマンス意識**: 必要最小限の処理で最大効果を目指す
+
+### 🚨 開発時の重要な癖・注意点
+
+#### 作業習慣
+- **ファイル末尾改行**: 全ファイルで末尾改行を徹底（VERY IMPORTANT）
+- **git操作**: コミット前に必ずlint実行
+- **Firebase接続**: 開発時は`yn1323test`コレクションを使用
+
+#### 技術的な判断基準
+- **新技術採用**: 安定性を重視し、bleeding edgeは避ける
+- **依存関係**: 必要最小限のライブラリのみ使用
+- **複雑性管理**: 3箇所以上で使用する場合のみ共通化
+- **セキュリティ**: 認証・認可は特に慎重に実装
+
+### 🎨 UI/UX設計の好み
+
+#### デザイン原則
+- **ユーザーファースト**: 技術制約よりユーザー体験を優先
+- **ダークモード**: 必ずライト/ダークモード両対応
+- **レスポンシブ**: モバイルファーストで設計
+- **アクセシビリティ**: 基本的なa11y要件は常に考慮
+
+#### Chakra UI使用パターン（v2対応）
+- **テーマトークン**: ハードコードされた色値は避ける
+- **簡素なAPI**: 必要最小限のpropsのみ使用
+- **適切なspacing**: VStack/HStackでの間隔調整を重視（v2では`spacing`プロパティ）
+- **セマンティック**: Box乱用を避け、適切なコンポーネントを選択
+
+### 💡 次のClaude Codeセッションへのアドバイス
+
+#### 開発開始時に確認すべき項目
+- [ ] プロジェクトの目的と要件の明確化
+- [ ] 現在の技術スタック確認（特にChakra UI v2の仕様）
+- [ ] Firebase設定と環境変数の確認
+- [ ] 開発環境とツールチェーンの設定
+
+#### 継続すべき良い習慣
+- [ ] TodoListによる作業管理の徹底
+- [ ] カスタムコマンドによる作業自動化
+- [ ] ドキュメント（CLAUDE.md）の継続更新
+- [ ] ユーザー体験重視の設計思考
+
+#### 改善すべき点（過去の学び）
+- [ ] 要件の曖昧さを早期に発見・解決
+- [ ] 過度な技術的完璧主義の回避
+- [ ] ユーザーフィードバックのより早期取得
+- [ ] パフォーマンス最適化の前倒し実施
+
+この引継ぎ情報により、オンラインドラフトアプリの開発において一貫した品質と効率的な開発が継続できるはずです！🚀✨
