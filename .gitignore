@@ -39,3 +39,31 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+*storybook.log
+storybook-static
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# cursor
+.cursor
+
+# prev
+transferFrom/
+
+prisma/generated
+
+# vrt
+.reg
+__screenshots__
+
+# logs
+/logs/
+
+# claude config (keep custom commands)
+!.claude/
