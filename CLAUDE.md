@@ -237,7 +237,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 /doc-update                # 会話コンテキストから包括的ドキュメント更新
 ```
 
-#### /doc-update コマンド仕様（UPDATED）
+#### /doc-update コマンド仕様（UPDATED& VERY IMPORTANT）
 **/doc-updateコマンド実行時は以下を包括的にCLAUDE.mdに反映すること：**
 
 ##### 📋 基本更新項目
