@@ -210,17 +210,25 @@ React.useEffect(() => {}, []);
 
 ## 🎨 フロントエンド開発ガイドライン
 
-### Chakra UI実装（Chakra UI v2使用）
+### Chakra UI実装（Chakra UI v3使用）（IMPORTANT）
+**⚠️ UI作成時の必須参考ファイル**: `src/chakraui-llms-full.txt`を必ず参照すること！
+
 ```typescript
 // ダークモード対応の背景色
 bg="blackAlpha.50"          // 薄い透明度
 borderColor="border"        // テーマ対応ボーダー
 
 // レイアウト簡素化
-<VStack spacing={4}>       // v2ではspacingを使用
+<VStack gap={4}>           // v3ではgapを使用（spacingは非推奨）
   <Button width="full">    // 必要最小限のprops
 </VStack>
 ```
+
+#### Chakra UI v3 重要な変更点
+- **Chakra UI v3**: 最新版を使用（v2からアップグレード済み）
+- **参考ファイル**: UIコンポーネント作成時は`src/chakraui-llms-full.txt`を必須参照
+- **spacing → gap**: VStack/HStackでは`spacing`ではなく`gap`プロパティを使用
+- **Provider設定**: `@/src/components/ui/provider`でテーマ・カラーモード設定済み
 
 ## ⚠️ 環境固有の注意点
 
