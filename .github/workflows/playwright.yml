@@ -2,7 +2,7 @@ name: Playwright Tests
 
 on:
   pull_request:
-    branches: [develop]
+    branches: [develop, refactor/develop]
 
 concurrency:
   group: e2e-tests-global
