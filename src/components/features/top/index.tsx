@@ -1,6 +1,5 @@
 'use client';
 
-import { ThemeToggle } from '@/src/components/layout/ThemeToggle';
 import {
   Badge,
   Box,
@@ -12,16 +11,21 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { IoEnter } from 'react-icons/io5';
+import {
+  MdAdd,
+  MdCreate,
+  MdDevices,
+  MdFastForward,
+  MdPlayArrow,
+  MdShare,
+  MdSpeed,
+} from 'react-icons/md';
 
 export const TopPage = () => {
-  const router = useRouter();
-
   return (
     <Box minHeight="100vh" bg="bg">
-      {/* デバッグ用テーマ切り替え */}
-      <ThemeToggle />
-
       <Container maxW="container.lg" py={8}>
         <VStack gap={8} align="stretch">
           {/* ヒーローセクション */}
@@ -33,7 +37,7 @@ export const TopPage = () => {
               color="gray.800"
               _dark={{ color: 'gray.100' }}
             >
-              推しを選んで、かぶったら勝負！
+              オンラインドラフト会議
             </Heading>
 
             <Text
@@ -42,18 +46,27 @@ export const TopPage = () => {
               _dark={{ color: 'gray.400' }}
               maxW="600px"
             >
-              みんなでオンラインドラフトを楽しもう
+              オンラインでみんなでドラフト
             </Text>
 
             <HStack justify="center" gap={3} flexWrap="wrap" mt={2}>
               <Badge colorPalette="green" variant="subtle" size="lg">
-                簡単セットアップ
+                <HStack gap={1}>
+                  <MdFastForward size="16" />
+                  <Text>簡単セットアップ</Text>
+                </HStack>
               </Badge>
               <Badge colorPalette="blue" variant="subtle" size="lg">
-                リアルタイム
+                <HStack gap={1}>
+                  <MdSpeed size="16" />
+                  <Text>リアルタイム</Text>
+                </HStack>
               </Badge>
               <Badge colorPalette="gray" variant="subtle" size="lg">
-                スマホ対応
+                <HStack gap={1}>
+                  <MdDevices size="16" />
+                  <Text>スマホ対応</Text>
+                </HStack>
               </Badge>
             </HStack>
           </VStack>
@@ -68,15 +81,11 @@ export const TopPage = () => {
           >
             {/* グループを作る */}
             <Button
+              asChild
               size="lg"
               height={{ base: '120px', md: '150px' }}
               width="full"
               colorPalette="green"
-              onClick={() => {
-                // 仮実装：ランダムIDでグループページへ遷移
-                const tempGroupId = Math.random().toString(36).substring(7);
-                router.push(`/entry/${tempGroupId}`);
-              }}
               flexDirection="column"
               gap={3}
               p={6}
@@ -84,28 +93,34 @@ export const TopPage = () => {
               transition="all 0.2s"
               _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}
             >
-              <Text fontSize={{ base: '3xl', md: '4xl' }}>＋</Text>
-              <VStack gap={1}>
-                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
-                  グループを作る
-                </Text>
-                <Text fontSize="sm" opacity={0.8}>
-                  新しいドラフトを始める
-                </Text>
-              </VStack>
+              <Link href={`/entry/${Math.random().toString(36).substring(7)}`}>
+                <Box
+                  p={3}
+                  bg="green.100"
+                  borderRadius="full"
+                  color="green.700"
+                  _dark={{ bg: 'green.900/30', color: 'green.300' }}
+                >
+                  <MdAdd size={32} />
+                </Box>
+                <VStack gap={1}>
+                  <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
+                    ドラフトを作る
+                  </Text>
+                  <Text fontSize="sm" opacity={0.8}>
+                    新しい会議を作成
+                  </Text>
+                </VStack>
+              </Link>
             </Button>
 
             {/* グループに参加 */}
             <Button
+              asChild
               size="lg"
               height={{ base: '120px', md: '150px' }}
               width="full"
               colorPalette="blue"
-              onClick={() => {
-                // 仮実装：サンプルIDでグループページへ遷移
-                const sampleGroupId = 'sample123';
-                router.push(`/entry/${sampleGroupId}`);
-              }}
               flexDirection="column"
               gap={3}
               p={6}
@@ -113,15 +128,25 @@ export const TopPage = () => {
               transition="all 0.2s"
               _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}
             >
-              <Text fontSize={{ base: '3xl', md: '4xl' }}>参加</Text>
-              <VStack gap={1}>
-                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
-                  グループに参加
-                </Text>
-                <Text fontSize="sm" opacity={0.8}>
-                  IDで参加
-                </Text>
-              </VStack>
+              <Link href="/entry/sample123">
+                <Box
+                  p={3}
+                  bg="blue.100"
+                  borderRadius="full"
+                  color="blue.700"
+                  _dark={{ bg: 'blue.900/30', color: 'blue.300' }}
+                >
+                  <IoEnter size={32} />
+                </Box>
+                <VStack gap={1}>
+                  <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
+                    会議に参加
+                  </Text>
+                  <Text fontSize="sm" opacity={0.8}>
+                    IDで参加してドラフト
+                  </Text>
+                </VStack>
+              </Link>
             </Button>
           </SimpleGrid>
 
@@ -157,22 +182,38 @@ export const TopPage = () => {
                     justifyContent="center"
                     fontSize="2xl"
                     fontWeight="bold"
+                    position="relative"
                   >
-                    1
+                    <MdCreate size={24} />
+                    <Box
+                      position="absolute"
+                      bottom="-2px"
+                      right="-2px"
+                      bg="green.600"
+                      borderRadius="full"
+                      width="20px"
+                      height="20px"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      fontSize="xs"
+                    >
+                      1
+                    </Box>
                   </Box>
                   <Heading
                     size="md"
                     color="green.700"
                     _dark={{ color: 'green.300' }}
                   >
-                    グループを作る
+                    会議を作成
                   </Heading>
                   <Text
                     color="gray.600"
                     _dark={{ color: 'gray.400' }}
                     textAlign="center"
                   >
-                    「グループを作る」ボタンを押して、みんなでドラフトするグループを作成しよう！
+                    ドラフト会議を作成して、メンバーを招待しよう
                   </Text>
                 </VStack>
 
@@ -195,22 +236,38 @@ export const TopPage = () => {
                     justifyContent="center"
                     fontSize="2xl"
                     fontWeight="bold"
+                    position="relative"
                   >
-                    2
+                    <MdShare size={24} />
+                    <Box
+                      position="absolute"
+                      bottom="-2px"
+                      right="-2px"
+                      bg="orange.600"
+                      borderRadius="full"
+                      width="20px"
+                      height="20px"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      fontSize="xs"
+                    >
+                      2
+                    </Box>
                   </Box>
                   <Heading
                     size="md"
                     color="orange.700"
                     _dark={{ color: 'orange.300' }}
                   >
-                    友達を招待
+                    メンバー招待
                   </Heading>
                   <Text
                     color="gray.600"
                     _dark={{ color: 'gray.400' }}
                     textAlign="center"
                   >
-                    グループIDを友達にシェア！QRコードでの参加も対応予定だよ〜
+                    会議IDをメンバーにシェアして参加してもらおう
                   </Text>
                 </VStack>
 
@@ -233,22 +290,38 @@ export const TopPage = () => {
                     justifyContent="center"
                     fontSize="2xl"
                     fontWeight="bold"
+                    position="relative"
                   >
-                    3
+                    <MdPlayArrow size={24} />
+                    <Box
+                      position="absolute"
+                      bottom="-2px"
+                      right="-2px"
+                      bg="blue.600"
+                      borderRadius="full"
+                      width="20px"
+                      height="20px"
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="center"
+                      fontSize="xs"
+                    >
+                      3
+                    </Box>
                   </Box>
                   <Heading
                     size="md"
                     color="blue.700"
                     _dark={{ color: 'blue.300' }}
                   >
-                    ドラフト開始！
+                    ドラフト実行
                   </Heading>
                   <Text
                     color="gray.600"
                     _dark={{ color: 'gray.400' }}
                     textAlign="center"
                   >
-                    みんなで推しを選んで、かぶったら勝負！誰が一番のお気に入りを選べるかな？
+                    メンバー全員で選択し、重複したら話し合って決定
                   </Text>
                 </VStack>
               </SimpleGrid>
@@ -260,7 +333,7 @@ export const TopPage = () => {
                   color="gray.700"
                   _dark={{ color: 'gray.300' }}
                 >
-                  こんな時におすすめ！
+                  こんな時におすすめ
                 </Heading>
                 <SimpleGrid columns={{ base: 1, md: 2 }} gap={4} w="full">
                   <HStack
@@ -306,7 +379,7 @@ export const TopPage = () => {
                 </SimpleGrid>
 
                 <Text fontSize="sm" color="gray.500" mt={4}>
-                  使い方は無限大！友達や家族と一緒に楽しもう
+                  使い方は無限大！チームやグループで決定しよう
                 </Text>
               </VStack>
             </VStack>

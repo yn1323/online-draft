@@ -4,6 +4,7 @@ import type { Preview } from '@storybook/react';
 import React from 'react';
 import { z } from 'zod';
 import { customErrorMap } from '../src/configs/zod/zop-setup';
+import { ColorModeProvider } from '../src/components/ui/color-mode';
 
 const preview: Preview = {
   parameters: {
@@ -19,7 +20,9 @@ const preview: Preview = {
       z.setErrorMap(customErrorMap);
       return (
         <ChakraProvider value={defaultSystem}>
-          <Story />
+          <ColorModeProvider>
+            <Story />
+          </ColorModeProvider>
         </ChakraProvider>
       );
     },

@@ -20,7 +20,13 @@
       "Bash(pnpm test:*)",
       "Bash(pnpm list:*)",
       "Bash(pnpm *)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(pnpm ls:*)",
+      "WebFetch(domain:docs.chakra-ui.com)",
+      "WebFetch(domain:www.chakra-ui.com)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }
