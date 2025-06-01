@@ -88,11 +88,37 @@ legacy/
 - **参加者**: ドラフトに参加してアイテムを選択するユーザー
 - **管理者**: ドラフトの作成・管理を行うユーザー
 
-### 🎯 主要機能
-- ドラフトルームの作成・参加
-- リアルタイムチャット機能
-- アイテム選択システム
-- 結果表示・共有機能
+### 🎯 主要機能（詳細版）
+
+#### 1. **グループ管理機能**
+- グループ作成: グループ名を入力して新しいドラフトルームを作成
+- グループ参加: 作成されたグループIDを使って他のユーザーが参加可能
+- 履歴管理: 過去に参加したグループの履歴をローカルストレージに保存
+
+#### 2. **ユーザー管理機能**
+- 匿名認証: Firebase Authを使用した匿名認証
+- ユーザー作成: 名前とアバター（18種類の動物アイコン）を選択して登録
+- 既存ユーザー選択: 既に登録済みのユーザーとしてログイン可能
+- 複数デバイス対応: 同じユーザーで複数デバイスからアクセス可能
+
+#### 3. **ドラフト機能（コア機能）**
+- ラウンド制: 複数ラウンドで進行するドラフトシステム
+- アイテム選択: 各ユーザーが順番にアイテム（例：競走馬名）を選択
+- コメント機能: 選択時にコメントを追加可能
+- 重複チェック: 同じラウンドで同じアイテムが選択された場合の処理
+- ランダム抽選: 重複時は選択時に既に割り振られたランダムIDで勝者決定（スロットは演出）
+- 編集機能: 過去のラウンドの選択を編集可能
+
+#### 4. **リアルタイムチャット機能**
+- グループチャット: 参加者全員でリアルタイムチャット
+- 自動スクロール: 新着メッセージで自動的に最下部へスクロール
+- システムログ: 編集ログなどのシステムメッセージも表示
+
+#### 5. **UI/UX機能**
+- レスポンシブデザイン: PC・スマホ両対応
+- ドラフトテーブル: 全ユーザーの選択状況を一覧表示
+- スロットアニメーション: 結果発表時のドキドキ感を演出（実際は既に決定済み）
+- モーダル表示: 結果発表、アイテム入力などはモーダルで表示
 
 ## 🛠 技術スタック（UPDATED）
 
@@ -109,11 +135,12 @@ legacy/
 | CI/CD | GitHub Actions | ✅ 完了 |
 
 ### 🔄 予定技術スタック（Phase 3以降）
-| Category | Technology | Status |
-|----------|------------|--------|
-| Backend | Firebase Firestore, Firebase Auth | 🔄 Phase 3 |
-| Deployment | Vercel (auto-deploy) | 🔄 Phase 3 |
-| Analytics | Firebase Analytics (optional) | 🔄 Phase 4 |
+| Category | Technology | Status | 備考 |
+|----------|------------|--------|------|
+| Backend | Firebase Firestore, Firebase Auth | 🔄 Phase 3 | リアルタイム同期重視 |
+| State Management | Jotai + Firebase onSnapshot | 🔄 Phase 3 | Reduxから完全移行 |
+| Deployment | Vercel (auto-deploy) | 🔄 Phase 3 | - |
+| Analytics | Firebase Analytics (optional) | 🔄 Phase 4 | - |
 
 ### 📦 Legacy技術スタック（参考用）
 | Category | Technology | Status |
@@ -226,18 +253,42 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
   - `@/stores/*` → `stores/*`
   - `@/styles/*` → `styles/*`
 
-### 状態管理
+### 状態管理（Legacy → Modern）
+
+#### Legacy（Redux）
 Redux store combines these slices:
 - `component` - UI component states
 - `chat` - Chat functionality
 - `draft` - Draft/game logic
 - `userInfo` - User authentication and profile
 
+#### Modern（Jotai予定）
+```typescript
+// シンプルなatom定義でリアルタイム同期
+const groupAtom = atom<Group | null>(null);
+const usersAtom = atom<User[]>([]);
+const selectionsAtom = atom<Selection[]>([]);
+const chatMessagesAtom = atom<ChatMessage[]>([]);
+
+// Firebase onSnapshotと統合してリアルタイム性を実現
+// RxJSなどの複雑なライブラリは使用せず、useEffect + onSnapshotでシンプルに実装
+```
+
 ### Firebase統合
 - Configuration in `src/constants/firebase.ts`
 - Uses environment variables for configuration
 - Development collection: `yn1323test`
 - Exports `db` (Firestore), `auth` (Authentication)
+
+#### Firestore構造
+```
+app/
+└── onlinedraft/
+    ├── group/        # グループ情報
+    ├── user/         # ユーザー情報
+    ├── selection/    # 選択情報（ランダムID含む）
+    └── logMessage/   # チャットログ
+```
 
 ### スタイリング
 - Chakra UI theme in `src/constants/theme.ts`
@@ -455,4 +506,141 @@ npm install
 - [ ] ユーザーフィードバックのより早期取得
 - [ ] パフォーマンス最適化の前倒し実施
 
+### 🔥 技術選定の決定事項（重要）
+
+#### リアルタイム同期の実装方針
+- **採用**: Jotai + Firebase onSnapshot の組み合わせ
+- **不採用**: TanStack Query（リアルタイム性との相性が悪い）
+- **不採用**: RxJS（オーバーエンジニアリング）
+- **理由**: シンプルさとリアルタイム性の両立
+
+#### 実装パターン
+```typescript
+// シンプルなuseEffect + onSnapshotパターン
+const useRealtimeGroup = (groupId: string) => {
+  const [group, setGroup] = useAtom(groupAtom);
+  
+  useEffect(() => {
+    if (!groupId) return;
+    
+    const unsubscribe = onSnapshot(
+      doc(db, 'groups', groupId),
+      (snapshot) => setGroup(snapshot.data() as Group)
+    );
+    
+    return () => unsubscribe();
+  }, [groupId, setGroup]);
+  
+  return group;
+};
+```
+
 この引継ぎ情報により、オンラインドラフトアプリの開発において一貫した品質と効率的な開発が継続できるはずです！🚀✨
+
+---
+
+## 🎯 最終仕様まとめ（みんなで楽しむドラフトアプリ）
+
+### 🎯 コンセプト
+**みんなでゆる〜くワイワイ楽しむオンラインドラフトアプリ 🎉**
+- シンプルで誰でも使いやすい
+- 友達・家族・仲間と気軽に楽しめる
+- オンライン飲み会、雑談しながら、ゆる〜く遊ぶのも真剣勝負もOK！
+- 難しい設定は不要、すぐに始められる！
+
+### 📦 機能一覧
+
+#### 1️⃣ グループ管理機能
+##### 既存機能（そのまま維持）
+- ✅ グループ名を入力してルーム作成
+- ✅ グループIDで参加
+- ✅ ローカルストレージに履歴保存
+
+##### 新規追加
+- 🆕 **QRコード共有**: URLとQRコード両方で招待できる
+
+#### 2️⃣ ユーザー管理機能
+##### 既存機能（そのまま維持）
+- ✅ 名前と動物アイコン（18種類）で登録
+- ✅ Firebase匿名認証対応
+- ✅ 複数デバイス対応（同じユーザーで複数端末OK）
+- ✅ 既存ユーザー選択して再ログイン可能
+
+#### 3️⃣ ドラフト機能（コア機能）
+##### 既存機能（そのまま維持）
+- ✅ ラウンド制で進行
+- ✅ アイテム選択＋コメント入力
+- ✅ 重複時はランダムID勝負（スロット演出で盛り上げ）
+- ✅ 過去ラウンドの編集可能
+- ✅ 編集ログをチャットに表示
+
+##### 新規追加
+- 🆕 **事前リスト作成機能**
+  - リストを事前に作成・保存
+  - プライベート設定（認証ユーザーのみ閲覧可）
+  - グループメンバーと共有可能
+  - 急な欠席者をCPU参加させられる
+
+#### 4️⃣ リアルタイムチャット機能
+##### 既存機能（そのまま維持）
+- ✅ グループ内リアルタイムチャット
+- ✅ 自動スクロール（新着メッセージで最下部へ）
+- ✅ システムログ表示（編集ログなど）
+
+#### 5️⃣ UI/UX
+##### 既存機能（そのまま維持）
+- ✅ レスポンシブデザイン（PC・スマホ対応）
+- ✅ ドラフトテーブル（全員の選択状況一覧）
+- ✅ モーダル表示（結果発表、アイテム入力など）
+
+##### 新規追加
+- 🆕 **わかりやすいTOPページ**
+  - 初見でも使い方がわかるデザイン
+  - 「グループを作る」「グループに参加」が一目瞭然
+  - 最近参加したグループへのクイックアクセス
+  
+- 🆕 **インタラクティブチュートリアル**
+  - 初回利用時に自動表示
+  - ステップバイステップで操作説明
+  - いつでも見返せる「使い方」ボタン
+  
+- 🆕 **モバイルUI改善**
+  - より見やすく、操作しやすく
+  - タッチ操作の最適化
+
+#### 6️⃣ その他の機能
+##### 既存機能（そのまま維持）
+- ✅ 観戦モード（`/log/[id]`でチャットのみ閲覧）
+- ✅ 4つのページ構成
+  - ホーム（`/`）
+  - エントリー（`/entry/[id]`）
+  - ドラフト（`/draft/[id]`）
+  - ログ（`/log/[id]`）
+
+### 📊 実装優先度
+
+| 優先度 | 機能 | 理由 |
+|--------|------|------|
+| 🥇 高 | わかりやすいTOPページ | 最初の印象が大事 |
+| 🥇 高 | QRコード共有 | 実装簡単＆便利 |
+| 🥇 高 | モバイルUI改善 | ユーザビリティ向上 |
+| 🥈 中 | チュートリアル | 初回ユーザーサポート |
+| 🥈 中 | 事前リスト作成 | CPU参加に便利 |
+| 🥉 低 | その他の改善 | 余裕があれば |
+
+### 🛠 技術面の変更
+
+#### バックエンド（変更なし）
+- ✅ Firebase Firestore（リアルタイム同期）
+- ✅ Firebase Auth（匿名認証）
+
+#### フロントエンド（モダン化）
+- 🔄 Redux → **Jotai**（シンプルな状態管理）
+- 🔄 Next.js 12 → **Next.js 15**
+- 🔄 Chakra UI v2 → **Chakra UI v3**
+- 🔄 JavaScript → **TypeScript 5**（型安全）
+
+### 🎉 まとめ
+**「シンプル・イズ・ベスト」で、身内で楽しく使えることを最優先に！**
+
+既存の良さはそのまま残して、最小限の便利機能を追加！🍺✨
