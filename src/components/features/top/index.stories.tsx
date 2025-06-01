@@ -10,11 +10,3 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Basic: Story = {};
-
-export const Dark: Story = {
-  parameters: {
-    themes: {
-      themeOverride: 'dark',
-    },
-  },
-};
