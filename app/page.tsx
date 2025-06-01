@@ -1,15 +1,14 @@
 import { Animation } from '@/src/components/templates/Animation';
-import Link from 'next/link';
+import { TopPage } from '@/src/components/features/top';
 
 export const metadata = {
-  title: 'YPS-Polar',
+  title: 'オンラインドラフト - 推しを選んで、かぶったら勝負！',
 };
 
-export default async function Page() {
+export default function Page() {
   return (
     <Animation>
-      <h1 className="border text-gray-500">online-draft</h1>
-      <Link href="/signin">ログイン</Link>
+      <TopPage />
     </Animation>
   );
 }
