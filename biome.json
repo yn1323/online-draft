@@ -5,7 +5,7 @@
   },
   "formatter": {
     "enabled": true,
-    "ignore": [".next", "node_modules", ".scaffdog"],
+    "ignore": [".next", "node_modules", ".scaffdog", "legacy"],
     "indentStyle": "space"
   },
   "javascript": {
@@ -15,7 +15,7 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": [".next", "node_modules", ".scaffdog"],
+    "ignore": [".next", "node_modules", ".scaffdog", "legacy"],
     "rules": {
       "suspicious": {
         "noArrayIndexKey": "off"

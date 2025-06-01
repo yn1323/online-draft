@@ -16,7 +16,12 @@
       "Bash(npm run type-check:*)",
       "Bash(pnpm install:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(pnpm add:*)"
     ],
     "deny": []
   }
