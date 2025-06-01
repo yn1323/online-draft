@@ -7,7 +7,10 @@
       "Bash(rm:*)",
       "Bash(npm outdated)",
       "Bash(mv:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }
