@@ -31,6 +31,16 @@ legacy/
 
 **重要**: 新しい実装時は必ずlegacyコードを参考にして、既存ロジックや設計思想を理解してから進めること！
 
+## 🔗 参考プロジェクト情報
+
+**環境設定・技術スタック参考**: https://github.com/yn1323/yps-polar (developブランチ)
+
+- **技術構成**: Next.js 15 + React 19 + TypeScript 5 + Chakra UI v3 + Jotai + Biome + Vitest + Playwright
+- **環境設定**: package.json、tsconfig.json、設定ファイル構成を参考にする
+- **ディレクトリ構成**: appディレクトリ、srcディレクトリ構成を参考にする
+- **開発ツール**: CI/CD、テスト環境、リンター設定を参考にする
+- **注意**: Supabase部分はFirebaseに置き換える（認証・DB）
+
 ## 🏢 プロジェクト概要
 
 **オンラインドラフトアプリケーション**

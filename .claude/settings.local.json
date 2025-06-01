@@ -10,7 +10,11 @@
       "Bash(ls:*)",
       "WebFetch(domain:github.com)",
       "WebFetch(domain:raw.githubusercontent.com)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run type-check:*)",
+      "Bash(pnpm install:*)"
     ],
     "deny": []
   }
