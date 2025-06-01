@@ -34,5 +34,5 @@
     "src/configs/vitest/vitest-setup.ts",
     "prisma/generated/**/*"
   ],
-  "exclude": ["node_modules", ".scaffdog"]
+  "exclude": ["node_modules", ".scaffdog", "legacy"]
 }
