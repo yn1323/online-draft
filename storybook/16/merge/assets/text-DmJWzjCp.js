@@ -1,0 +1,1 @@
+import{j as o,S as r,f as a}from"./iconBase-ss_5gd6R.js";import{r as c}from"./index-BXymfbzT.js";const p=c.forwardRef(function(t,e){return o.jsx(r,{align:"center",...t,direction:"column",ref:e})}),{withContext:n}=a({key:"text"}),f=n("p");export{f as T,p as V};
