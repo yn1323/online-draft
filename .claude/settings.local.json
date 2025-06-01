@@ -14,7 +14,8 @@
       "Bash(npx create-next-app:*)",
       "Bash(npm run lint)",
       "Bash(npm run type-check:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }
