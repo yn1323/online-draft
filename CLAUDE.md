@@ -31,6 +31,53 @@ legacy/
 
 **重要**: 新しい実装時は必ずlegacyコードを参考にして、既存ロジックや設計思想を理解してから進めること！
 
+## 🔗 参考プロジェクト情報
+
+**環境設定・技術スタック参考**: https://github.com/yn1323/yps-polar (developブランチ)
+
+- **技術構成**: Next.js 15 + React 19 + TypeScript 5 + Chakra UI v3 + Jotai + Biome + Vitest + Playwright
+- **環境設定**: package.json、tsconfig.json、設定ファイル構成を参考にする
+- **ディレクトリ構成**: appディレクトリ、srcディレクトリ構成を参考にする
+- **開発ツール**: CI/CD、テスト環境、リンター設定を参考にする
+- **注意**: Supabase部分はFirebaseに置き換える（認証・DB）
+
+## 🚀 開発フェーズ進捗状況
+
+### ✅ Phase 1: 基本プロジェクト設定とコア技術（完了）
+**目標**: 動く土台を作る + CI/CD構築
+- ✅ Next.js 15 (App Router) + React 19 + TypeScript 5
+- ✅ Biome (リンター/フォーマッター) + pnpm
+- ✅ GitHub Actions CI/CD設定
+- ✅ 基本プロジェクト構造構築
+- ✅ Hello World表示確認
+
+### ✅ Phase 2: UI基盤とコンポーネントシステム（完了）
+**目標**: モダンな見た目の基盤完成
+- ✅ Chakra UI v3セットアップ・テーマ構築
+- ✅ Jotai状態管理導入
+- ✅ React Hook Form + Zod設定
+- ✅ Vitest + Playwright + Storybook構築
+- ✅ 現在のサンプルページ対応E2Eテスト整備
+
+### 🔄 Phase 3: Firebase統合と認証（準備中）
+**目標**: Firebaseで動作確認
+- 🔄 Firebase プロジェクト設定
+- 🔄 環境変数設定 (.env連携)
+- 🔄 認証フロー実装 (Google, Email)
+- 🔄 Firestore接続テスト
+
+### 📋 Phase 4: 機能のモダン再実装（予定）
+**目標**: 既存機能をモダンに作り直し
+- 📋 ドラフト機能を新設計で実装
+- 📋 チャット機能をモダン化
+- 📋 結果表示を新UI/UXで再構築
+
+### 🧪 Phase 5: テスト環境とQA（予定）
+**目標**: 品質保証体制構築
+- 📋 重要機能のテスト作成
+- 📋 Storybookでのコンポーネント管理
+- 📋 CI/CDでの自動テスト実行
+
 ## 🏢 プロジェクト概要
 
 **オンラインドラフトアプリケーション**
@@ -47,26 +94,87 @@ legacy/
 - アイテム選択システム
 - 結果表示・共有機能
 
-## 🛠 技術スタック
+## 🛠 技術スタック（UPDATED）
 
-| Category | Technology |
-|----------|------------|
-| Frontend | Next.js 12, Chakra UI v2, TypeScript |
-| Backend | Firebase Firestore, Firebase Auth |
-| State Management | Redux Toolkit, Redux Logger (dev only) |
-| Styling | Chakra UI + custom SCSS |
-| Deployment | Vercel (auto-deploy from master/develop branches) |
+### 🎯 現在の技術スタック（Phase 1-2 完了）
+| Category | Technology | Status |
+|----------|------------|--------|
+| Frontend | Next.js 15 + React 19 + TypeScript 5 | ✅ 完了 |
+| UI Framework | Chakra UI v3 + next-themes | ✅ 完了 |
+| State Management | Jotai | ✅ 完了 |
+| Form Management | React Hook Form + Zod | ✅ 完了 |
+| Linting/Formatting | Biome | ✅ 完了 |
+| Testing | Vitest + Playwright + Storybook | ✅ 完了 |
+| Package Manager | pnpm | ✅ 完了 |
+| CI/CD | GitHub Actions | ✅ 完了 |
 
-## 📝 開発コマンド
+### 🔄 予定技術スタック（Phase 3以降）
+| Category | Technology | Status |
+|----------|------------|--------|
+| Backend | Firebase Firestore, Firebase Auth | 🔄 Phase 3 |
+| Deployment | Vercel (auto-deploy) | 🔄 Phase 3 |
+| Analytics | Firebase Analytics (optional) | 🔄 Phase 4 |
+
+### 📦 Legacy技術スタック（参考用）
+| Category | Technology | Status |
+|----------|------------|--------|
+| Frontend | Next.js 12, Chakra UI v2, TypeScript 4.6 | 📁 legacy/ |
+| State Management | Redux Toolkit, Redux Logger | 📁 legacy/ |
+| Styling | SCSS + Chakra UI v2 | 📁 legacy/ |
+
+## 📝 開発コマンド（UPDATED）
 
 ### 基本コマンド
 ```bash
-npm i                       # 依存関係のインストール
-npm run dev                 # 開発サーバー起動 (http://localhost:3000)
-npm run build               # 本番ビルド
-npm run start               # 本番サーバー起動
-npm run lint                # ESLintによるリンティング
+pnpm install                # 依存関係のインストール
+pnpm dev                    # 開発サーバー起動 (http://localhost:3000)
+pnpm build                  # 本番ビルド
+pnpm start                  # 本番サーバー起動
+pnpm lint                   # Biomeによるリンティング
+pnpm lint:fix               # Biomeによる自動修正
+pnpm type-check             # TypeScript型チェック
 ```
+
+### テストコマンド
+```bash
+pnpm test                   # Vitestユニットテスト実行
+pnpm e2e                    # Playwright E2Eテスト実行
+pnpm e2e:ui                 # Playwright UIモード
+pnpm e2e:debug              # Playwright デバッグモード
+pnpm e2e:report             # Playwright レポート表示
+```
+
+### Storybookコマンド
+```bash
+pnpm storybook              # Storybook開発サーバー起動 (http://localhost:6006)
+pnpm build-storybook        # Storybookビルド
+pnpm storybook:test         # Storybookコンポーネントテスト
+```
+
+### VRTコマンド
+```bash
+pnpm vrt                    # Visual Regression Testing実行
+```
+
+### E2Eテスト構成（IMPORTANT）
+```bash
+e2e/
+├── tests/
+│   ├── sample/homepage.test.ts    # 現在のサンプルページテスト
+│   ├── login/                     # 認証関連テスト
+│   ├── navigation/                # ナビゲーションテスト
+│   ├── draft/                     # ドラフト機能テスト（将来）
+│   └── chat/                      # チャット機能テスト（将来）
+├── utils/common.ts                # 共通ユーティリティ
+└── constants/index.ts             # テスト定数
+```
+
+**現在のE2Eテスト対象**:
+- ✅ `/`ページの「online-draft」h1表示確認
+- ✅ 「ログイン」リンクの表示・動作確認
+- ✅ CSSクラス適用確認（border, text-gray-500）
+- ✅ ページタイトル確認
+- 🔄 将来機能用テストはtest.skipで準備済み
 
 ### 環境設定
 `.env.local`に以下の環境変数が必要:
@@ -200,17 +308,25 @@ React.useEffect(() => {}, []);
 
 ## 🎨 フロントエンド開発ガイドライン
 
-### Chakra UI実装（Chakra UI v2使用）
+### Chakra UI実装（Chakra UI v3使用）（IMPORTANT）
+**⚠️ UI作成時の必須参考ファイル**: `src/chakraui-llms-full.txt`を必ず参照すること！
+
 ```typescript
 // ダークモード対応の背景色
 bg="blackAlpha.50"          // 薄い透明度
 borderColor="border"        // テーマ対応ボーダー
 
 // レイアウト簡素化
-<VStack spacing={4}>       // v2ではspacingを使用
+<VStack gap={4}>           // v3ではgapを使用（spacingは非推奨）
   <Button width="full">    // 必要最小限のprops
 </VStack>
 ```
+
+#### Chakra UI v3 重要な変更点
+- **Chakra UI v3**: 最新版を使用（v2からアップグレード済み）
+- **参考ファイル**: UIコンポーネント作成時は`src/chakraui-llms-full.txt`を必須参照
+- **spacing → gap**: VStack/HStackでは`spacing`ではなく`gap`プロパティを使用
+- **Provider設定**: `@/src/components/ui/provider`でテーマ・カラーモード設定済み
 
 ## ⚠️ 環境固有の注意点
 
@@ -243,20 +359,34 @@ npm install
 - **相違確認**: ユーザー指摘が既存内容と異なる場合は確認を取る
 - **統合管理**: サブディレクトリのCLAUDE.mdはルートに統合して一元管理
 
-## 📋 現在の実装状況
+## 📋 現在の実装状況（UPDATED）
 
-### 実装済み機能
+### ✅ 完了済み機能（Phase 1-2）
+- **基本プロジェクト構造**: Next.js 15 + App Router
+- **UI基盤**: Chakra UI v3 + テーマシステム
+- **開発環境**: Biome + TypeScript 5 + pnpm
+- **テスト環境**: Vitest + Playwright + Storybook
+- **CI/CD**: GitHub Actions自動化
+- **サンプルページ**: 「online-draft」表示 + ログインリンク
+
+### 🔄 実装中機能（Phase 3準備中）
+- Firebase認証システム統合
+- Firestore データベース設定
+- 基本認証フロー（Google, Email）
+
+### 📋 Legacy実装済み機能（参考用）
 - ユーザー認証システム（Firebase Auth）
 - ドラフトルーム作成・参加機能
 - リアルタイムチャット機能
 - アイテム選択・ドラフト実行機能
 - 結果表示・共有機能
 
-### 技術的詳細
-- Atomic Design パターンでのコンポーネント設計
-- Redux Toolkitによる状態管理
-- Firebase Firestoreでのリアルタイムデータ同期
-- Chakra UI + SCSSによるスタイリング
+### 🎯 技術的詳細（現在）
+- **コンポーネント設計**: Atomic Design準備済み
+- **状態管理**: Jotai導入済み
+- **スタイリング**: Chakra UI v3 + テーマトークン
+- **フォーム管理**: React Hook Form + Zod設定済み
+- **テスト**: 現在のサンプルページ対応E2Eテスト完備
 
 ---
 
@@ -273,8 +403,6 @@ npm install
 #### 技術的な好み
 - **Modern JavaScript/TypeScript**: 最新のES機能を積極的に活用
 - **React Hooks**: クラスコンポーネントよりHooksベースの実装を好む
-- **Redux Toolkit**: 効率的な状態管理を重視
-- **CSS-in-JS**: インラインスタイルよりテーマトークンを活用
 
 #### 開発プロセス
 - **要件確認重視**: 実装前に必ず要件の詳細確認を行う
@@ -292,7 +420,6 @@ npm install
 #### 作業習慣
 - **ファイル末尾改行**: 全ファイルで末尾改行を徹底（VERY IMPORTANT）
 - **git操作**: コミット前に必ずlint実行
-- **Firebase接続**: 開発時は`yn1323test`コレクションを使用
 
 #### 技術的な判断基準
 - **新技術採用**: 安定性を重視し、bleeding edgeは避ける
@@ -307,12 +434,6 @@ npm install
 - **ダークモード**: 必ずライト/ダークモード両対応
 - **レスポンシブ**: モバイルファーストで設計
 - **アクセシビリティ**: 基本的なa11y要件は常に考慮
-
-#### Chakra UI使用パターン（v2対応）
-- **テーマトークン**: ハードコードされた色値は避ける
-- **簡素なAPI**: 必要最小限のpropsのみ使用
-- **適切なspacing**: VStack/HStackでの間隔調整を重視（v2では`spacing`プロパティ）
-- **セマンティック**: Box乱用を避け、適切なコンポーネントを選択
 
 ### 💡 次のClaude Codeセッションへのアドバイス
 
