@@ -36,7 +36,11 @@
       "Bash(rg:*)",
       "mcp__puppeteer__puppeteer_click",
       "mcp__puppeteer__puppeteer_fill",
-      "git"
+      "git",
+      "Bash(for file in /Users/natani/work/OnlineDraft/src/components/features/join/*.{ts,tsx})",
+      "Bash(do echo \"=== $file ===\")",
+      "Bash(tail:*)",
+      "Bash(done)"
     ],
     "deny": []
   }

@@ -81,6 +81,20 @@ legacy/
 - ✅ ResponsiveModal共通コンポーネント化
 - ✅ UI/ドメインロジック分離
 
+### ✅ Phase 2.8: 会議参加ページ実装（完了）
+**目標**: 会議参加フローの完全実装
+- ✅ JoinPageコンポーネント実装（会議参加機能）
+- ✅ 会議ID・URLによる参加方法2パターン対応
+- ✅ 最近参加した会議履歴表示機能
+- ✅ Server Actions統合（joinMeeting）
+- ✅ エラーハンドリング・バリデーション
+- ✅ レスポンシブデザイン（PC・SP最適化）
+- ✅ Storybook対応（基本・PC・SP表示パターン）
+- ✅ /app/join ページルーティング設定
+- ✅ TOPページからの導線完備
+- ✅ react-icons使用（IoEnter, MdHistory, MdLink, MdNumbers）
+- ✅ 参加方法説明UI（青色ボックス・ポイント表示）
+
 ### 🔄 Phase 3: Firebase統合と認証（準備中）
 **目標**: Firebaseで動作確認
 - 🔄 Firebase プロジェクト設定
@@ -472,7 +486,7 @@ npm install
 
 ## 📋 現在の実装状況（UPDATED）
 
-### ✅ 完了済み機能（Phase 1-2.7）
+### ✅ 完了済み機能（Phase 1-2.8）
 - **基本プロジェクト構造**: Next.js 15 + App Router
 - **UI基盤**: Chakra UI v3 + テーマシステム
 - **開発環境**: Biome + TypeScript 5 + pnpm
@@ -493,6 +507,12 @@ npm install
   - PC: 中央配置Dialog、SP: Bottom Sheet
   - CreateDraftModal実装（Server Actions対応）
   - features/配下でドメインロジック分離
+- **会議参加システム**: 完全な参加フロー実装
+  - JoinPageコンポーネント（会議ID・URL両対応）
+  - 最近参加した会議履歴機能
+  - 参加方法説明UI（わかりやすいポイント表示）
+  - レスポンシブデザイン最適化
+  - Server Actions統合（エラーハンドリング付き）
 
 ### 🔄 実装中機能（Phase 3準備中）
 - Firebase認証システム統合
@@ -623,6 +643,13 @@ const useRealtimeGroup = (groupId: string) => {
 - **教訓**: フォーマル感とワイワイ感の絶妙なバランスが重要
 - **今後の指針**: キャッチコピーは無理に作らず、シンプルで分かりやすい表現を優先
 
+#### 参加フローのUX設計
+- **重要発見**: 参加方法の複数パターン提供が重要
+- **実装**: 会議ID・URL・履歴の3つの参加方法
+- **ユーザビリティ**: 「または」区切り線でわかりやすい選択肢表示
+- **エラーハンドリング**: 具体的で親切なエラーメッセージ設計
+- **期待値管理**: 説明UIで事前に参加方法を理解してもらう
+
 #### アイコンの効果的な活用
 - **成功例**: react-iconsによる直感的なUI実現
 - **重要ポイント**: ライト・ダークモード両対応の色設定が必須
@@ -637,6 +664,13 @@ const useRealtimeGroup = (groupId: string) => {
 - **成功解決法**: useRouter → Linkコンポーネントへの置き換え
 - **副次効果**: より良い設計パターンの発見
 - **教訓**: 制約を逆手に取ってより良い設計に導くことが可能
+
+#### Server Actionsとクライアントコンポーネントの統合
+- **課題**: 'use client'とServer Actionsの組み合わせ
+- **解決**: 別ファイル（actions.ts）にServer Actions分離
+- **メリット**: クリーンな責務分離とテストしやすい構造
+- **注意点**: Storybookではmocker用関数が必要（現在はコメントアウト対応）
+- **今後の方針**: Firebase統合時にServer ActionsからClient-side APIに移行予定
 
 #### ダークモード対応の複雑さ
 - **課題**: Storybook + Chakra UI v3でのダークモード表示

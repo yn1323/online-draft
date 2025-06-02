@@ -134,7 +134,7 @@ export const TopPage = () => {
               transition="all 0.2s"
               _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}
             >
-              <Link href="/entry/sample123">
+              <Link href="/join">
                 <Box
                   p={3}
                   bg="blue.100"
@@ -402,3 +402,4 @@ export const TopPage = () => {
     </Box>
   );
 };
+
