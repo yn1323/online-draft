@@ -71,6 +71,16 @@ legacy/
 - ✅ デバッグ用ThemeToggleをapp/layout.tsxに移動
 - ✅ 不要なサンプルファイル削除とプロジェクト構造整理
 
+### ✅ Phase 2.7: レスポンシブモーダル実装（完了）
+**目標**: デバイス最適化されたモーダルシステム構築
+- ✅ CreateDraftModal実装（ドラフト作成機能）
+- ✅ レスポンシブ対応（PC: Dialog、SP: Bottom Sheet）
+- ✅ Server Actions対応のフォーム送信
+- ✅ TOPページとの統合
+- ✅ Storybook対応（PC・SP・基本パターン）
+- ✅ ResponsiveModal共通コンポーネント化
+- ✅ UI/ドメインロジック分離
+
 ### 🔄 Phase 3: Firebase統合と認証（準備中）
 **目標**: Firebaseで動作確認
 - 🔄 Firebase プロジェクト設定
@@ -291,6 +301,8 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 
 ### プロジェクト構造
 - **Atomic Design**: Components organized as atoms → molecules → organisms → templates
+- **UI/ドメイン分離**: UI共通コンポーネント（ui/）とドメインロジック（features/）の分離
+- **ResponsiveModal**: デバイス別UI最適化の共通コンポーネント
 - **Path Aliases**: Configured in `tsconfig.json` for clean imports:
   - `@/helpers/*` → `src/helpers/*`
   - `@/constants/*` → `src/constants/*`
@@ -460,7 +472,7 @@ npm install
 
 ## 📋 現在の実装状況（UPDATED）
 
-### ✅ 完了済み機能（Phase 1-2.5）
+### ✅ 完了済み機能（Phase 1-2.7）
 - **基本プロジェクト構造**: Next.js 15 + App Router
 - **UI基盤**: Chakra UI v3 + テーマシステム
 - **開発環境**: Biome + TypeScript 5 + pnpm
@@ -476,6 +488,11 @@ npm install
 - **ThemeToggle**: ダークモード切り替え完備（app/layout.tsx配置）
 - **Storybook**: ライト・ダークモード両対応ストーリー
 - **レスポンシブ対応**: モバイル・PC両対応
+- **レスポンシブモーダルシステム**: 
+  - ResponsiveModal共通コンポーネント
+  - PC: 中央配置Dialog、SP: Bottom Sheet
+  - CreateDraftModal実装（Server Actions対応）
+  - features/配下でドメインロジック分離
 
 ### 🔄 実装中機能（Phase 3準備中）
 - Firebase認証システム統合
