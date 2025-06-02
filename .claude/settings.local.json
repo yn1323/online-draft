@@ -35,7 +35,8 @@
       "Bash(pnpm build:*)",
       "Bash(rg:*)",
       "mcp__puppeteer__puppeteer_click",
-      "mcp__puppeteer__puppeteer_fill"
+      "mcp__puppeteer__puppeteer_fill",
+      "git"
     ],
     "deny": []
   }
