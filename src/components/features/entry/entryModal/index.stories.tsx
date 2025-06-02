@@ -10,15 +10,15 @@ const meta: Meta<typeof CreateDraftModal> = {
   args: {
     isOpen: true,
     onClose: () => console.log('Close modal'),
-    onCreateSuccess: (groupId) => console.log(`Group created with ID: ${groupId}`),
+    onCreateSuccess: (groupId) =>
+      console.log(`Group created with ID: ${groupId}`),
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// PC表示
-export const PC: Story = {
+export const Basic: Story = {
   parameters: {
     viewport: {
       defaultViewport: 'desktop',
@@ -26,7 +26,6 @@ export const PC: Story = {
   },
 };
 
-// スマホ表示
 export const SP: Story = {
   parameters: {
     viewport: {
@@ -34,6 +33,3 @@ export const SP: Story = {
     },
   },
 };
-
-// 基本パターン
-export const Basic: Story = {};
