@@ -12,6 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { useState } from 'react';
 import { IoEnter } from 'react-icons/io5';
 import {
   MdAdd,
@@ -22,8 +23,15 @@ import {
   MdShare,
   MdSpeed,
 } from 'react-icons/md';
+import { CreateDraftModal } from '../entry/entryModal';
 
 export const TopPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleCreateSuccess = (groupId: string) => {
+    // 作成成功時は直接ページ遷移
+    window.location.href = `/entry/${groupId}`;
+  };
   return (
     <Box minHeight="100vh" bg="bg">
       <Container maxW="container.lg" py={8}>
@@ -81,7 +89,6 @@ export const TopPage = () => {
           >
             {/* グループを作る */}
             <Button
-              asChild
               size="lg"
               height={{ base: '120px', md: '150px' }}
               width="full"
@@ -92,26 +99,25 @@ export const TopPage = () => {
               borderRadius="xl"
               transition="all 0.2s"
               _hover={{ transform: 'translateY(-2px)', shadow: 'lg' }}
+              onClick={() => setIsModalOpen(true)}
             >
-              <Link href={`/entry/${Math.random().toString(36).substring(7)}`}>
-                <Box
-                  p={3}
-                  bg="green.100"
-                  borderRadius="full"
-                  color="green.700"
-                  _dark={{ bg: 'green.900/30', color: 'green.300' }}
-                >
-                  <MdAdd size={32} />
-                </Box>
-                <VStack gap={1}>
-                  <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
-                    ドラフトを作る
-                  </Text>
-                  <Text fontSize="sm" opacity={0.8}>
-                    新しい会議を作成
-                  </Text>
-                </VStack>
-              </Link>
+              <Box
+                p={3}
+                bg="green.100"
+                borderRadius="full"
+                color="green.700"
+                _dark={{ bg: 'green.900/30', color: 'green.300' }}
+              >
+                <MdAdd size={32} />
+              </Box>
+              <VStack gap={1}>
+                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold">
+                  ドラフトを作る
+                </Text>
+                <Text fontSize="sm" opacity={0.8}>
+                  新しい会議を作成
+                </Text>
+              </VStack>
             </Button>
 
             {/* グループに参加 */}
@@ -386,6 +392,13 @@ export const TopPage = () => {
           </Box>
         </VStack>
       </Container>
+      
+      {/* モーダル */}
+      <CreateDraftModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onCreateSuccess={handleCreateSuccess}
+      />
     </Box>
   );
 };
