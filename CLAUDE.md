@@ -109,6 +109,20 @@ legacy/
   - 他のUI要素との干渉防止
   - スムーズなトランジション（0.2s）
 
+### ✅ Phase 2.10: エントリーページ実装（完了）
+**目標**: ユーザー登録・選択フローの完全実装
+- ✅ EntryPageコンポーネント実装（/app/entry/[id]）
+- ✅ 既存ユーザー選択機能（アバター付きリスト表示）
+- ✅ 新規ユーザー作成機能（アバター選択＋ユーザー名入力）
+- ✅ ステップ分離UI（選択画面⇔作成画面の切り替え）
+- ✅ 18種類動物アバター実装（legacy/public/img移行完了）
+- ✅ レスポンシブアバターグリッド（PC:6列、タブレット:5列、SP:4列）
+- ✅ アバター選択状態の視覚的フィードバック（緑ボーダー＋チェックマーク）
+- ✅ カラー統一（青:グループID、緑:選択状態、グレー:ラベル）
+- ✅ Storybook対応（Basic・PC・SP表示パターン）
+- ✅ Animation統合（非同期Page⇔クライアントPageInnerパターン確立）
+- ✅ Chakra UI v3 API対応（loading, disabled, useColorModeValue）
+
 ### 🔄 Phase 3: Firebase統合と認証（準備中）
 **目標**: Firebaseで動作確認
 - 🔄 Firebase プロジェクト設定
@@ -228,6 +242,27 @@ pnpm storybook              # Storybook開発サーバー起動 (http://localhos
 pnpm build-storybook        # Storybookビルド
 pnpm storybook:test         # Storybookコンポーネントテスト
 ```
+
+### Storybook設定ルール（IMPORTANT）
+```typescript
+// ✅ 推奨: シンプルな設定（基本パターン）
+const meta: Meta<typeof Component> = {
+  title: 'Features/Component/ComponentName',
+  component: Component,
+  // layoutは通常指定不要（デフォルトで適切）
+};
+
+// ❌ 非推奨: 不要なfullscreen指定
+const meta: Meta<typeof Component> = {
+  title: 'Features/Component/ComponentName',
+  component: Component,
+  parameters: {
+    layout: 'fullscreen', // 必要な場合のみ指定
+  },
+};
+```
+
+**重要**: `parameters.layout: 'fullscreen'`は本当に必要な場合（ページ全体表示など）のみ使用すること
 
 ### VRTコマンド
 ```bash
@@ -392,6 +427,33 @@ const chatMessagesAtom = atom<ChatMessage[]>([]);
 // Firebase onSnapshotと統合してリアルタイム性を実現
 // RxJSなどの複雑なライブラリは使用せず、useEffect + onSnapshotでシンプルに実装
 ```
+
+### エントリーページ設計方針
+
+#### UI/UX設計原則
+- **ステップ分離**: 既存ユーザー選択と新規作成を明確に分離
+- **視覚的フィードバック**: アバター選択時の緑ボーダー＋チェックマーク
+- **レスポンシブグリッド**: デバイスサイズに応じたアバター列数調整
+- **カラー統一**: プロジェクト全体の色彩ルールに準拠
+
+#### コンポーネント構造
+```typescript
+src/components/features/entry/
+├── index.tsx           # メインコンポーネント
+├── index.stories.tsx   # Storybook設定
+└── actions.ts          # Server Actions（将来のFirebase統合用）
+```
+
+#### 技術的特徴
+- **非同期Page⇔クライアントコンポーネント分離**: Animation統合のベストプラクティス確立
+- **Chakra UI v3完全対応**: loading, disabled, useColorModeValueの正しい使用
+- **レスポンシブ画像グリッド**: useBreakpointValueによる動的列数制御
+- **アクセシビリティ配慮**: 適切なalt属性、キーボードナビゲーション対応
+
+#### アバター管理
+- **画像ソース**: legacy/public/img → public/img (18種類の動物アイコン)
+- **選択状態管理**: ローカルstate + 視覚的フィードバック
+- **将来の拡張**: Firebase統合時のリアルタイム同期準備
 
 ### Firebase統合
 - Configuration in `src/constants/firebase.ts`
@@ -725,6 +787,13 @@ const useRealtimeGroup = (groupId: string) => {
 - **実装パターン**: `color="green.700" _dark={{ color: 'green.300' }}`
 - **注意点**: 背景色との十分なコントラスト確保が重要
 
+#### エントリーページでの複雑なUXフロー設計
+- **ステップ分離の重要性**: 既存ユーザー選択⇔新規作成の明確な分離
+- **視覚的状態管理**: アバター選択の緑ボーダー＋チェックマークによる明確なフィードバック
+- **レスポンシブグリッド**: useBreakpointValueで画面サイズに応じた最適な列数表示
+- **アセット移行**: legacy/public/img → public/img の段階的移行手法確立
+- **カラーシステム統一**: プロジェクト全体で一貫した色彩ルール（青:ID、緑:選択、グレー:ラベル）
+
 ### 🛠️ 技術的な課題と解決法
 
 #### StorybookでのuseRouterエラー対応
@@ -746,6 +815,13 @@ const useRealtimeGroup = (groupId: string) => {
 - **解決**: ColorModeProviderをStorybookのdecoratorに追加
 - **重要設定**: `withThemeByClassName` + `ColorModeProvider`の組み合わせ
 - **今後の注意**: 新しいコンポーネント作成時は必ずダークモード確認
+
+#### Chakra UI v3 API移行と非同期コンポーネント統合
+- **課題**: loading/disabled props、useColorModeValueのimport先変更
+- **解決**: `@/src/components/ui/color-mode`からの正しいimport
+- **非同期Page対応**: Animation統合時のPage⇔PageInnerパターン確立
+- **型安全性**: Next.js 15のPromise<params>対応とawait params記法
+- **ベストプラクティス**: 非同期処理とクライアントコンポーネントの適切な分離
 
 ### 📁 プロジェクト構造とファイル管理
 

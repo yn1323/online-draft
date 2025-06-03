@@ -4,9 +4,6 @@ import { JoinPage } from '.';
 const meta: Meta<typeof JoinPage> = {
   title: 'Features/Join/JoinPage',
   component: JoinPage,
-  parameters: {
-    layout: 'fullscreen',
-  },
 };
 
 export default meta;
@@ -23,7 +20,7 @@ export const Basic: Story = {
 export const SP: Story = {
   parameters: {
     viewport: {
-      defaultViewport: 'mobile1',
+      defaultViewport: 'mobile2',
     },
   },
 };

@@ -4,9 +4,6 @@ import { CreateDraftModal } from '.';
 const meta: Meta<typeof CreateDraftModal> = {
   title: 'Features/Entry/CreateDraftModal',
   component: CreateDraftModal,
-  parameters: {
-    layout: 'fullscreen',
-  },
   args: {
     isOpen: true,
     onClose: () => console.log('Close modal'),
@@ -29,7 +26,7 @@ export const Basic: Story = {
 export const SP: Story = {
   parameters: {
     viewport: {
-      defaultViewport: 'mobile1',
+      defaultViewport: 'mobile2',
     },
   },
 };
