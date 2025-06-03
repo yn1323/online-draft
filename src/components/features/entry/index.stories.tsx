@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, userEvent, within } from '@storybook/test';
 import EntryPage from './index';
 
 const meta: Meta<typeof EntryPage> = {
@@ -21,10 +22,32 @@ export const Basic: Story = {
   },
 };
 
-export const PC: Story = {
+export const CreateUserLayout: Story = {
   args: {
-    groupId: 'xyz789',
-    groupName: '2024年度新入社員歓迎会ドラフト大会',
+    groupId: 'create123',
+    groupName: '新規ユーザー作成レイアウト確認',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // 新しいユーザーを作成ボタンをクリック
+    const createButton = canvas.getByText('新しいユーザーを作成');
+    await userEvent.click(createButton);
+    
+    // 作成画面が表示されることを確認
+    await expect(canvas.getByText('ユーザー名')).toBeInTheDocument();
+    await expect(canvas.getByText('アバターを選択')).toBeInTheDocument();
+    
+    // アバター選択（最初のアバターをクリック）
+    const firstAvatar = canvas.getByRole('button', { name: /avatar-1/ });
+    await userEvent.click(firstAvatar);
+    
+    // ユーザー名入力
+    const nameInput = canvas.getByPlaceholderText('名前を入力してください');
+    await userEvent.type(nameInput, 'テストユーザー');
+    
+    // VRT用: 入力完了状態でレイアウトを固定
+    // この状態でVRTスクリーンショットが撮影される
   },
   parameters: {
     viewport: {
@@ -44,3 +67,4 @@ export const SP: Story = {
     },
   },
 };
+

@@ -14,9 +14,12 @@ import {
 import { useState } from 'react';
 import { IoEnter } from 'react-icons/io5';
 import { MdHistory } from 'react-icons/md';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import { Field } from '@/src/components/ui/field';
 import { toaster } from '@/src/components/ui/toaster';
+import { joinMeetingSchema, type JoinMeetingForm } from '@/src/constants/schemas';
 import { joinMeeting } from './actions';
 
 // 仮の履歴データ（後でlocalStorageやAPIから取得）
@@ -27,26 +30,37 @@ const RECENT_MEETINGS = [
 ];
 
 export const JoinPage = () => {
-  const [meetingInput, setMeetingInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleJoin = async () => {
-    if (!meetingInput.trim()) {
-      return;
-    }
-    
+  // React Hook Form setup
+  const form = useForm<JoinMeetingForm>({
+    resolver: zodResolver(joinMeetingSchema),
+    defaultValues: {
+      meetingInput: "",
+    },
+  });
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+    reset,
+  } = form;
+
+  const handleJoinMeeting = async (data: JoinMeetingForm) => {
     setIsLoading(true);
     try {
-      let meetingId = meetingInput.trim();
+      let meetingId = data.meetingInput.trim();
       
       // URLの場合はIDを抽出
-      const urlMatch = meetingInput.match(/\/entry\/([a-zA-Z0-9]+)/);
+      const urlMatch = data.meetingInput.match(/\/entry\/([a-zA-Z0-9]+)/);
       if (urlMatch) {
         meetingId = urlMatch[1];
       }
       
       const result = await joinMeeting(meetingId);
       if (result.success) {
+        reset();
         window.location.href = `/entry/${result.meetingId}`;
       } else {
         // トースト通知でエラー表示
@@ -138,25 +152,22 @@ export const JoinPage = () => {
             <VStack gap={4}>
               <Field 
                 label="参加コード" 
-                invalid={meetingInput.length > 0 && meetingInput.length < 3}
-                errorText={meetingInput.length > 0 && meetingInput.length < 3 ? "3文字以上で入力してください" : ""}
+                invalid={!!errors.meetingInput}
+                errorText={errors.meetingInput?.message}
               >
                 <Input
+                  {...register("meetingInput")}
                   placeholder="ABC123 または招待リンク"
-                  value={meetingInput}
-                  onChange={(e) => setMeetingInput(e.target.value)}
                   disabled={isLoading}
                   size="lg"
                   bg="white"
-                  borderColor={meetingInput.length > 0 && meetingInput.length < 3 ? "red.300" : "blue.300"}
+                  borderColor={errors.meetingInput ? "red.300" : "blue.300"}
                   _dark={{ 
                     bg: 'gray.800', 
-                    borderColor: meetingInput.length > 0 && meetingInput.length < 3 ? "red.400" : "blue.500"
+                    borderColor: errors.meetingInput ? "red.400" : "blue.500"
                   }}
                   _focus={{ borderColor: 'blue.500' }}
                   aria-label="参加コードまたは招待リンク"
-                  aria-invalid={meetingInput.length > 0 && meetingInput.length < 3}
-                  aria-describedby={meetingInput.length > 0 && meetingInput.length < 3 ? "meeting-input-error" : undefined}
                 />
               </Field>
               
@@ -164,9 +175,9 @@ export const JoinPage = () => {
                 colorPalette="blue"
                 size="lg"
                 width="full"
-                disabled={!meetingInput.trim() || isLoading || (meetingInput.length > 0 && meetingInput.length < 3)}
+                disabled={!isValid || isLoading}
                 loading={isLoading}
-                onClick={handleJoin}
+                onClick={handleSubmit(handleJoinMeeting)}
                 fontSize={{ base: "sm", md: "md" }}
                 fontWeight="bold"
                 _hover={{ 

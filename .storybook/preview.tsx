@@ -20,7 +20,7 @@ const preview: Preview = {
       z.setErrorMap(customErrorMap);
       return (
         <ChakraProvider value={defaultSystem}>
-          <ColorModeProvider>
+          <ColorModeProvider defaultColorMode="light" forcedTheme="light">
             <Story />
           </ColorModeProvider>
         </ChakraProvider>

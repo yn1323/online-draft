@@ -36,7 +36,15 @@
       "Bash(done)",
       "Bash(node:*)",
       "Bash(afplay:*)",
-      "mcp__puppeteer__puppeteer_connect_active_tab"
+      "mcp__puppeteer__puppeteer_connect_active_tab",
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_click",
+      "mcp__puppeteer__*",
+      "Bash(cp:*)",
+      "Bash(curl:*)",
+      "mcp__playwright__playwright_navigate",
+      "mcp__playwright__playwright_screenshot"
     ],
     "deny": []
   }
