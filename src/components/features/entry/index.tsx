@@ -58,7 +58,9 @@ export default function EntryPage({ groupId, groupName = "サンプルグルー�
   };
 
   const handleCreateUser = async () => {
-    if (!selectedAvatar || !userName.trim()) return;
+    if (!selectedAvatar || !userName.trim()) {
+      return;
+    }
 
     setIsLoading(true);
     // TODO: Firebase ユーザー作成処理

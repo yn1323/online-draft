@@ -1076,4 +1076,24 @@ const showLabel = !isMinimized && !isMobile;
 - **Phase 4**: レガシー機能のモダン再実装
 - **Phase 5**: 品質保証とパフォーマンス最適化
 
+### 🛠️ リファクタリング標準プロセス（UPDATED）
+
+#### /refactorコマンドの実行項目
+1. **Biome lint実行**: `pnpm lint`でコードスタイル・構文エラーの修正
+2. **TypeScript型チェック**: `pnpm build`でNext.jsビルド時の型チェック実行
+3. **ファイル末尾改行**: 変更された`.ts/.tsx/.js/.jsx/.md`ファイルに必須の改行追加
+4. **ドキュメント反映**: リファクタリング内容をCLAUDE.mdに記録
+
+#### 最新のlintルール対応
+- **useBlockStatements**: 早期returnはブロック文 `{ return; }` で記述
+- **ファイル末尾改行**: 全ファイルで必須（`echo "" >> filepath`で追加）
+- **型安全性**: Chakra UI v3のAPIに準拠した実装
+
+#### エントリーページリファクタリング実績（2025/1/6）
+- **修正項目**: 
+  - 早期returnのブロック文化（lint規則準拠）
+  - ファイル末尾改行の追加
+- **品質確認**: lint完了 + TypeScript型チェック完了
+- **対象ファイル**: `src/components/features/entry/index.tsx`
+
 これらの改善により、開発速度と品質の両立を実現しています！ 💪✨
