@@ -95,6 +95,20 @@ legacy/
 - ✅ react-icons使用（IoEnter, MdHistory, MdLink, MdNumbers）
 - ✅ 参加方法説明UI（青色ボックス・ポイント表示）
 
+### ✅ Phase 2.9: UI最適化とThemeToggle改善（完了）
+**目標**: デバッグUIの最適化とユーザビリティ向上
+- ✅ ThemeToggle最小化機能実装
+  - デフォルトで最小化表示（アイコンのみ）
+  - ホバー時に「Toggle theme」ラベル表示
+  - レスポンシブ対応（モバイルでは常にアイコンのみ）
+- ✅ Chakra UI v3のIconButton API対応
+  - `aria-label`必須要件への対応
+  - アクセシビリティ向上
+- ✅ レイアウト最適化
+  - 固定位置配置（右上）
+  - 他のUI要素との干渉防止
+  - スムーズなトランジション（0.2s）
+
 ### 🔄 Phase 3: Firebase統合と認証（準備中）
 **目標**: Firebaseで動作確認
 - 🔄 Firebase プロジェクト設定
@@ -260,6 +274,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 /doc                       # CLAUDE.md更新
 /doc-update                # 会話コンテキストから包括的ドキュメント更新
 /upload-all                # 自動化ワークフロー（refactor→doc-update→commit→push）
+/sound                     # 作業完了音声通知機能（levelup.mp3/smallMedal.mp3）
 ```
 
 #### /doc-update コマンド仕様（UPDATED& VERY IMPORTANT）
@@ -310,6 +325,36 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 **適用場面**: 機能実装完了時、リファクタリング完了時、セッション終了時  
 **注意事項**: 各ステップでエラーが発生した場合は即座に停止し、手動対応を促す  
 **効果**: 品質チェック→ドキュメント更新→バージョン管理の一貫したフロー確立
+
+#### /sound コマンド仕様（音声通知機能）（VERY IMPORTANT）
+**/soundコマンドが命令に含まれる場合の音声通知ルール：**
+
+**⚠️ VERY IMPORTANT: /soundコマンドが含まれるメッセージでは、必ず最後に音声再生を実行すること！**
+
+1. **作業完了時の通知音**
+   - **ファイル**: `/Users/natani/Music/Effect/levelup.mp3`
+   - **タイミング**: タスクが正常に完了した時
+   - **実行コマンド**: `afplay /Users/natani/Music/Effect/levelup.mp3`
+   - **例**: ビルド成功、コミット完了、デプロイ成功など
+
+2. **ユーザー操作が必要な時の通知音**
+   - **ファイル**: `/Users/natani/Music/Effect/smallMedal.mp3`
+   - **タイミング**: ユーザーの入力や確認が必要な時
+   - **実行コマンド**: `afplay /Users/natani/Music/Effect/smallMedal.mp3`
+   - **例**: エラー発生、確認待ち、選択肢の提示など
+
+**使用例**: 
+```bash
+/refactor /sound     # リファクタリング完了時に音声通知
+/commit /sound       # コミット後に完了音を鳴らす
+/build /sound        # ビルド結果に応じて適切な音声を再生
+```
+
+**注意事項**:
+- macOS環境でのみ動作（`afplay`コマンド使用）
+- 音声ファイルが存在しない場合はエラーメッセージのみ表示
+- /soundは他のコマンドと組み合わせて使用可能
+- **VERY IMPORTANT**: /soundコマンドが含まれている場合、必ず作業の最後に適切な音声を再生すること
 
 ## 🏗 アーキテクチャ概要
 
@@ -453,6 +498,26 @@ borderColor="border"        // テーマ対応ボーダー
 - **spacing → gap**: VStack/HStackでは`spacing`ではなく`gap`プロパティを使用
 - **Provider設定**: `@/src/components/ui/provider`でテーマ・カラーモード設定済み
 
+#### Chakra UI v3 API変更への対応（IMPORTANT）
+- **IconButton**: v3では`aria-label`が必須プロパティ
+  ```tsx
+  // ✅ 正しい実装
+  <IconButton
+    aria-label="Toggle theme"  // 必須！
+    variant="ghost"
+    size="sm"
+  >
+    <FiSun />
+  </IconButton>
+  
+  // ❌ エラーになる実装（v2では動作した）
+  <IconButton variant="ghost" size="sm">
+    <FiSun />
+  </IconButton>
+  ```
+- **アクセシビリティ向上**: 全てのインタラクティブ要素に適切なラベル付けが必要
+- **型安全性の強化**: TypeScriptでのプロパティチェックがより厳密に
+
 ## ⚠️ 環境固有の注意点
 
 ### WSL環境
@@ -483,10 +548,11 @@ npm install
 - **更新タイミング**: 新概念発生時・既存概念変更時に自動更新
 - **相違確認**: ユーザー指摘が既存内容と異なる場合は確認を取る
 - **統合管理**: サブディレクトリのCLAUDE.mdはルートに統合して一元管理
+- **継続的更新**: 新しい知見や問題解決法は即座に記録
 
 ## 📋 現在の実装状況（UPDATED）
 
-### ✅ 完了済み機能（Phase 1-2.8）
+### ✅ 完了済み機能（Phase 1-2.9）
 - **基本プロジェクト構造**: Next.js 15 + App Router
 - **UI基盤**: Chakra UI v3 + テーマシステム
 - **開発環境**: Biome + TypeScript 5 + pnpm
@@ -500,6 +566,9 @@ npm install
   - 自然で落ち着いた色合い（green/orange/blue）
   - react-iconsによる直感的なアイコン表示
 - **ThemeToggle**: ダークモード切り替え完備（app/layout.tsx配置）
+  - 最小化機能実装（デフォルトでアイコンのみ表示）
+  - ホバー時にラベル表示
+  - モバイル対応（常にアイコン表示）
 - **Storybook**: ライト・ダークモード両対応ストーリー
 - **レスポンシブ対応**: モバイル・PC両対応
 - **レスポンシブモーダルシステム**: 
@@ -757,6 +826,36 @@ const useRealtimeGroup = (groupId: string) => {
 - **デバッグ機能**: 開発用機能は目立つが邪魔にならない位置に
 - **CTAボタン**: 大きく・わかりやすく・アクセスしやすい配置
 
+### 🎮 ThemeToggle最小化実装の知見
+
+#### 実装アプローチ
+- **状態管理**: ローカルステートで展開/折りたたみ制御
+- **デフォルト状態**: 最小化（アイコンのみ）で開始
+- **インタラクション**: ホバー時に自動展開（PCのみ）
+- **モバイル対応**: 常にアイコンのみ表示で一貫性確保
+
+#### 技術的な実装詳細
+```tsx
+// レスポンシブな展開制御
+const [isMinimized, setIsMinimized] = useState(true);
+const { sm } = useBreakpoint();
+const isMobile = !sm;
+
+// モバイルでは常に最小化
+const showLabel = !isMinimized && !isMobile;
+```
+
+#### UI/UXの工夫
+- **固定位置**: `position="fixed"` で常に右上に配置
+- **z-index管理**: `zIndex={9999}` で他の要素より前面に
+- **スムーズなトランジション**: 0.2秒のアニメーションで自然な動き
+- **視覚的フィードバック**: ホバー時の色変化とラベル表示
+
+#### 学んだポイント
+- **最小化がデフォルト**: デバッグ機能は控えめに
+- **一貫したモバイル体験**: デバイスサイズで挙動を分岐
+- **アクセシビリティ**: aria-labelで適切な説明を提供
+
 ---
 
 ## 🎯 最終仕様まとめ（推しを選んで、かぶったら勝負！）
@@ -873,3 +972,32 @@ const useRealtimeGroup = (groupId: string) => {
 
 深く考えない。好きなもの選ぶ。かぶったら笑う。
 それだけで楽しいドラフトアプリ！🍺✨
+
+---
+
+## 🚀 最新の開発改善とベストプラクティス（2025年1月）
+
+### 📊 開発効率化の実績
+- **カスタムコマンド体系**: `/refactor`, `/doc-update`, `/upload-all`による自動化
+- **音声通知統合**: `/sound`コマンドで作業完了を音で確認
+- **ドキュメント駆動開発**: CLAUDE.mdを中心とした知識蓄積
+
+### 🎯 確立されたワークフロー
+1. **機能実装** → 動作確認
+2. **リファクタリング** → 品質保証
+3. **ドキュメント更新** → 知見記録
+4. **コミット&プッシュ** → バージョン管理
+5. **音声通知** → 完了確認
+
+### 🔧 技術的な標準化
+- **コンポーネント設計**: Atomic Design + features分離
+- **状態管理**: Jotaiによるシンプルな実装
+- **スタイリング**: Chakra UI v3 + レスポンシブ対応
+- **テスト**: Storybook中心の開発フロー
+
+### 📈 今後の展開
+- **Phase 3**: Firebase統合による本格実装開始
+- **Phase 4**: レガシー機能のモダン再実装
+- **Phase 5**: 品質保証とパフォーマンス最適化
+
+これらの改善により、開発速度と品質の両立を実現しています！ 💪✨
