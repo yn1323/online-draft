@@ -1,5 +1,5 @@
-import { Animation } from '@/src/components/templates/Animation';
 import { TopPage } from '@/src/components/features/top';
+import { Animation } from '@/src/components/templates/Animation';
 
 export const metadata = {
   title: 'オンラインドラフト - みんなでドラフト会議',

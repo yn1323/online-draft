@@ -1,10 +1,14 @@
-"use client";
+'use client';
 
-import { useEffect } from 'react';
-import { useAtom } from 'jotai';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/src/lib/firebase';
-import { authUserAtom, authLoadingAtom, authErrorAtom } from '@/src/stores/user';
+import {
+  authErrorAtom,
+  authLoadingAtom,
+  authUserAtom,
+} from '@/src/stores/user';
+import { onAuthStateChanged } from 'firebase/auth';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
 
 /**
  * Firebase認証の状態を監視するカスタムフック
@@ -21,8 +25,11 @@ export function useAuth() {
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => {
-        console.log('🔥 認証状態変更:', firebaseUser ? `UID: ${firebaseUser.uid}` : 'ログアウト');
-        
+        console.log(
+          '🔥 認証状態変更:',
+          firebaseUser ? `UID: ${firebaseUser.uid}` : 'ログアウト',
+        );
+
         setUser(firebaseUser);
         setLoading(false);
         setError(null);
@@ -31,7 +38,7 @@ export function useAuth() {
         console.error('❌ 認証状態監視エラー:', error);
         setError(error.message);
         setLoading(false);
-      }
+      },
     );
 
     return () => {

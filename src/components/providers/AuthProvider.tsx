@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { useAuth } from '@/src/hooks/useAuth';
 
@@ -13,6 +13,6 @@ type AuthProviderProps = {
 export function AuthProvider({ children }: AuthProviderProps) {
   // useAuthを呼び出すことで認証状態の監視が開始される
   useAuth();
-  
+
   return <>{children}</>;
 }

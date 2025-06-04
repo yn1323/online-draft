@@ -1,12 +1,15 @@
 'use client';
 
-import { Input, Text } from '@chakra-ui/react';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Field } from '@/src/components/ui/field';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import {
+  type DraftCreateForm,
+  draftCreateSchema,
+} from '@/src/constants/schemas';
+import { Input, Text } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { draftCreateSchema, type DraftCreateForm } from '@/src/constants/schemas';
 import { createDraft } from './actions';
 
 interface CreateDraftModalProps {
@@ -26,7 +29,7 @@ export const CreateDraftModal = ({
   const form = useForm<DraftCreateForm>({
     resolver: zodResolver(draftCreateSchema),
     defaultValues: {
-      groupName: "",
+      groupName: '',
     },
   });
 
@@ -64,7 +67,11 @@ export const CreateDraftModal = ({
 
   return (
     <>
-      <form id="create-draft-form" onSubmit={handleSubmit(handleCreateDraft)} style={{ display: 'none' }} />
+      <form
+        id="create-draft-form"
+        onSubmit={handleSubmit(handleCreateDraft)}
+        style={{ display: 'none' }}
+      />
       <ResponsiveModal
         isOpen={isOpen}
         onClose={onClose}
@@ -83,9 +90,14 @@ export const CreateDraftModal = ({
           },
         }}
       >
-        <Field label="グループ名" required invalid={!!errors.groupName} errorText={errors.groupName?.message}>
+        <Field
+          label="グループ名"
+          required
+          invalid={!!errors.groupName}
+          errorText={errors.groupName?.message}
+        >
           <Input
-            {...register("groupName")}
+            {...register('groupName')}
             form="create-draft-form"
             placeholder="例：今日のランチ会議"
             disabled={isLoading}
@@ -101,4 +113,3 @@ export const CreateDraftModal = ({
     </>
   );
 };
-

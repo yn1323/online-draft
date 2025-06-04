@@ -1,6 +1,6 @@
-import { db, auth } from './firebase';
-import { collection, doc, setDoc, getDoc, deleteDoc } from 'firebase/firestore';
 import { signInAnonymously, signOut } from 'firebase/auth';
+import { collection, deleteDoc, doc, getDoc, setDoc } from 'firebase/firestore';
+import { auth, db } from './firebase';
 
 export async function testFirebaseConnection() {
   const testResults: {
@@ -24,7 +24,7 @@ export async function testFirebaseConnection() {
     // 2. Firestore読み書きテスト
     console.log('💾 Firestore読み書きテスト中...');
     const testDocRef = doc(collection(db, 'test'), 'connection-test');
-    
+
     // 書き込みテスト
     await setDoc(testDocRef, {
       message: 'Hello Firebase!',
@@ -52,10 +52,10 @@ export async function testFirebaseConnection() {
 
     console.log('🎉 Firebase接続テスト完了！すべて正常に動作しています');
     return testResults;
-
   } catch (error) {
     console.error('❌ Firebase接続テストエラー:', error);
-    testResults.error = error instanceof Error ? error.message : 'Unknown error';
+    testResults.error =
+      error instanceof Error ? error.message : 'Unknown error';
     return testResults;
   }
 }

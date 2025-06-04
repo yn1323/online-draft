@@ -1,7 +1,15 @@
 'use client';
 
-import { Button, VStack, Text, ClientOnly, Skeleton, IconButton, Box } from '@chakra-ui/react';
 import { useColorMode } from '@/src/components/ui/color-mode';
+import {
+  Box,
+  Button,
+  ClientOnly,
+  IconButton,
+  Skeleton,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiSettings, FiX } from 'react-icons/fi';
 
@@ -10,29 +18,26 @@ export const ThemeToggle = () => {
   const [isMinimized, setIsMinimized] = useState(true);
 
   return (
-    <ClientOnly fallback={
-      <IconButton 
-        aria-label="テーマ切り替え"
-        position="fixed"
-        top={4}
-        left={4}
-        zIndex={1000}
-        size="sm"
-        variant="solid"
-        bg="bg.panel"
-        border="1px"
-        borderColor="border"
-        shadow="sm"
-      >
-        <FiSettings />
-      </IconButton>
-    }>
-      <Box
-        position="fixed"
-        top={4}
-        left={4}
-        zIndex={1000}
-      >
+    <ClientOnly
+      fallback={
+        <IconButton
+          aria-label="テーマ切り替え"
+          position="fixed"
+          top={4}
+          left={4}
+          zIndex={1000}
+          size="sm"
+          variant="solid"
+          bg="bg.panel"
+          border="1px"
+          borderColor="border"
+          shadow="sm"
+        >
+          <FiSettings />
+        </IconButton>
+      }
+    >
+      <Box position="fixed" top={4} left={4} zIndex={1000}>
         {isMinimized ? (
           <IconButton
             aria-label="テーマ設定を開く"
@@ -61,7 +66,12 @@ export const ThemeToggle = () => {
             transition="all 0.2s"
           >
             <Box width="full" position="relative">
-              <Text fontSize="xs" fontWeight="bold" color="gray.600" _dark={{ color: 'gray.400' }}>
+              <Text
+                fontSize="xs"
+                fontWeight="bold"
+                color="gray.600"
+                _dark={{ color: 'gray.400' }}
+              >
                 デバッグ
               </Text>
               <IconButton
@@ -77,7 +87,7 @@ export const ThemeToggle = () => {
                 <FiX />
               </IconButton>
             </Box>
-            
+
             <Button
               size="sm"
               variant={colorMode === 'light' ? 'solid' : 'outline'}
@@ -87,7 +97,7 @@ export const ThemeToggle = () => {
             >
               ☀️ ライト
             </Button>
-            
+
             <Button
               size="sm"
               variant={colorMode === 'dark' ? 'solid' : 'outline'}
@@ -97,7 +107,7 @@ export const ThemeToggle = () => {
             >
               🌙 ダーク
             </Button>
-            
+
             <Text fontSize="xs" color="gray.500">
               現在: {colorMode === 'dark' ? 'ダーク' : 'ライト'}
             </Text>

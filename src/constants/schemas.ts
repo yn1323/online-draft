@@ -30,16 +30,13 @@ export const joinMeetingSchema = z.object({
   meetingInput: z
     .string()
     .min(1, '会議IDまたはURLを入力してください')
-    .refine(
-      (value) => {
-        // 会議IDパターン（6-20文字の英数字）
-        const idPattern = /^[a-zA-Z0-9]{6,20}$/;
-        // URLパターン（https://で始まる）
-        const urlPattern = /^https:\/\/.+/;
-        return idPattern.test(value) || urlPattern.test(value);
-      },
-      '有効な会議IDまたはURLを入力してください'
-    ),
+    .refine((value) => {
+      // 会議IDパターン（6-20文字の英数字）
+      const idPattern = /^[a-zA-Z0-9]{6,20}$/;
+      // URLパターン（https://で始まる）
+      const urlPattern = /^https:\/\/.+/;
+      return idPattern.test(value) || urlPattern.test(value);
+    }, '有効な会議IDまたはURLを入力してください'),
 });
 
 export type JoinMeetingForm = z.infer<typeof joinMeetingSchema>;

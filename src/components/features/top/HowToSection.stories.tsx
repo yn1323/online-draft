@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { JoinPage } from './index';
+import HowToSection from './HowToSection';
 
-const meta: Meta<typeof JoinPage> = {
-  title: 'Features/Join/JoinPage',
-  component: JoinPage,
+const meta: Meta<typeof HowToSection> = {
+  title: 'Features/Top/HowToSection',
+  component: HowToSection,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'centered',
   },
 };
 

@@ -3,7 +3,7 @@
 export async function joinMeeting(meetingId: string) {
   // TODO: Firebase実装時にここで会議の存在確認
   // 現在は仮の実装で、どのIDでも成功とする
-  
+
   if (!meetingId || meetingId.trim().length === 0) {
     return {
       success: false,

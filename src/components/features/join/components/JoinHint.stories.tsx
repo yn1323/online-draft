@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { JoinPage } from './index';
+import JoinHint from './JoinHint';
 
-const meta: Meta<typeof JoinPage> = {
-  title: 'Features/Join/JoinPage',
-  component: JoinPage,
+const meta: Meta<typeof JoinHint> = {
+  title: 'Features/Join/Components/JoinHint',
+  component: JoinHint,
   parameters: {
-    layout: 'fullscreen',
+    layout: 'centered',
   },
 };
 

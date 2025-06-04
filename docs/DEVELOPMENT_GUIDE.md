@@ -204,13 +204,35 @@ npm install
 - **レスポンシブグリッド**: デバイスサイズに応じたアバター列数調整
 - **カラー統一**: プロジェクト全体の色彩ルールに準拠
 
-#### コンポーネント構造
-```typescript
-src/components/features/lobby/
-├── index.tsx           # メインコンポーネント
-├── index.stories.tsx   # Storybook設定
-└── actions.ts          # Server Actions（将来のFirebase統合用）
+#### コンポーネント構造・設計方針
+
+**階層設計の基準:**
 ```
+lobby/
+├── index.tsx                    # ページ全体の統合・ルーティング
+├── index.stories.tsx           # メインページのStorybook
+├── UserSelectStep.tsx          # ユーザー選択画面の完全な責務
+├── UserSelectStep.stories.tsx  # 選択画面のStorybook
+├── UserCreateStep.tsx          # ユーザー作成画面の完全な責務
+├── UserCreateStep.stories.tsx  # 作成画面のStorybook
+├── actions.ts          # Server Actions（将来のFirebase統合用）
+└── components/                 # 再利用可能なUI部品
+    ├── StepIndicator.tsx        # ステップ表示UI
+    ├── StepIndicator.stories.tsx
+    ├── AvatarSelector.tsx       # アバター選択UI
+    ├── AvatarSelector.stories.tsx
+    ├── ExistingUserList.tsx     # ユーザー一覧UI
+    └── ExistingUserList.stories.tsx
+```
+
+**分類基準:**
+- **画面レベル（Step系）**: 画面全体の機能・ビジネスロジック・状態管理を担当。他の画面要素を組み合わせる役割
+- **パーツレベル（components/）**: 単一の明確な機能を持つ独立したUI。複数箇所で使われる可能性があり、独立してテスト可能
+
+**設計思想:**
+- Atomic DesignやContainer/Presentationalパターンは使用しない
+- 純粋に機能・責務ベースでの分類
+- 実用性と保守性を重視した階層構造
 
 #### 技術的特徴
 - **非同期Page⇔クライアントコンポーネント分離**: Animation統合のベストプラクティス確立

@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
 import type { User } from 'firebase/auth';
+import { atom } from 'jotai';
 
 // 認証ユーザーの状態管理
 export const authUserAtom = atom<User | null>(null);

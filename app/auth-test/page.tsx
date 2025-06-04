@@ -1,5 +1,5 @@
-import { Container, Heading, VStack } from '@chakra-ui/react';
 import { AuthComponent } from '@/src/components/features/auth';
+import { Container, Heading, VStack } from '@chakra-ui/react';
 
 export default function AuthTestPage() {
   return (
@@ -8,7 +8,7 @@ export default function AuthTestPage() {
         <Heading size="lg" textAlign="center">
           🔐 認証テストページ
         </Heading>
-        
+
         <AuthComponent />
       </VStack>
     </Container>
