@@ -7,6 +7,7 @@ on:
 jobs:
   check_expected_screenshots:
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -37,6 +38,7 @@ jobs:
   take_expected_screenshots:
     needs: check_expected_screenshots
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -77,6 +79,7 @@ jobs:
 
   check_actual_screenshots:
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -106,6 +109,7 @@ jobs:
   take_actual_screenshots:
     needs: check_actual_screenshots
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -140,6 +144,7 @@ jobs:
       - take_expected_screenshots
       - take_actual_screenshots
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 30
     steps:
       - name: Checkout
@@ -191,6 +196,7 @@ jobs:
   upload-to-github-pages:
     needs: run_reg_suit
     runs-on: ubuntu-latest
+    environment: preview
     permissions:
       contents: write
       pull-requests: write

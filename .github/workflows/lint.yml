@@ -6,6 +6,7 @@ on:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    environment: preview
     steps:
       - uses: actions/checkout@v4
         with:

@@ -20,7 +20,7 @@ jobs:
       TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
       TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-lates
     environment: preview
     steps: 
     - uses: actions/checkout@v4
