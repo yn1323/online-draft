@@ -9,13 +9,12 @@ interface PageProps {
 
 interface PageInnerProps {
   id: string;
-  groupName: string;
 }
 
-function PageInner({ id, groupName }: PageInnerProps) {
+function PageInner({ id }: PageInnerProps) {
   return (
     <Animation>
-      <LobbyPage groupId={id} groupName={groupName} />
+      <LobbyPage groupId={id} />
     </Animation>
   );
 }
@@ -23,8 +22,5 @@ function PageInner({ id, groupName }: PageInnerProps) {
 export default async function Page({ params }: PageProps) {
   const { id } = await params;
 
-  // TODO: Firebase からグループ情報を取得
-  const groupName = 'オンラインドラフト会議'; // 仮のグループ名
-
-  return <PageInner id={id} groupName={groupName} />;
+  return <PageInner id={id} />;
 }
