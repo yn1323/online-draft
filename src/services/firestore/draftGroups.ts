@@ -2,6 +2,7 @@
  * ドラフトグループ関連のFirestore操作 (Legacy 互換)
  */
 
+import { auth, db } from '@/src/lib/firebase';
 import {
   addDoc,
   collection,
@@ -11,7 +12,6 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { auth, db } from '@/src/lib/firebase';
 
 /**
  * Legacy 互換型定義 (一時的にここに配置)
@@ -40,7 +40,7 @@ export type CreateDraftGroupResult = {
 };
 
 export async function createDraftGroup(
-  input: CreateDraftGroupInput
+  input: CreateDraftGroupInput,
 ): Promise<CreateDraftGroupResult> {
   console.log('🔄 ドラフトグループ作成開始...', input);
 
@@ -61,7 +61,7 @@ export async function createDraftGroup(
     // Firestoreに保存 (Legacy パス)
     const docRef = await addDoc(
       collection(db, ...COLLECTIONS.BASE, COLLECTIONS.GROUP),
-      groupData
+      groupData,
     );
 
     console.log('✅ ドラフトグループ作成成功:', {
@@ -80,7 +80,9 @@ export async function createDraftGroup(
 /**
  * グループIDからグループ情報を取得 (Legacy 互換)
  */
-export async function getDraftGroup(groupId: string): Promise<(Groups & { id: string }) | null> {
+export async function getDraftGroup(
+  groupId: string,
+): Promise<(Groups & { id: string }) | null> {
   try {
     const docRef = doc(db, ...COLLECTIONS.BASE, COLLECTIONS.GROUP, groupId);
     const docSnap = await getDoc(docRef);

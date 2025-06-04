@@ -41,7 +41,10 @@ interface LobbyPageProps {
 export default function LobbyPage({ groupId }: LobbyPageProps) {
   const [step, setStep] = useState<Step>('select');
   const [isLoading, setIsLoading] = useState(false);
-  const [groupData, setGroupData] = useState<{ groupName: string; round: number } | null>(null);
+  const [groupData, setGroupData] = useState<{
+    groupName: string;
+    round: number;
+  } | null>(null);
   const [groupLoading, setGroupLoading] = useState(true);
   const [groupError, setGroupError] = useState<string | null>(null);
   const { isAuthenticated, loading: authLoading } = useAuth();
@@ -85,7 +88,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
         setGroupError(null);
 
         const group = await getDraftGroup(groupId);
-        
+
         if (!group) {
           setGroupError('指定されたグループが見つかりません');
           console.error('❌ グループが存在しません:', { groupId });
@@ -154,7 +157,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               グループが見つかりません
             </Heading>
             <Text color="gray.500">
-              {groupError || '指定されたグループID のグループは存在しないか、削除されている可能性があります。'}
+              {groupError ||
+                '指定されたグループID のグループは存在しないか、削除されている可能性があります。'}
             </Text>
             <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
               グループID: {groupId}
@@ -249,11 +253,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
           p={4}
           textAlign="center"
         >
-          <Text
-            fontSize="sm"
-            color={helpTextColor}
-            fontWeight="medium"
-          >
+          <Text fontSize="sm" color={helpTextColor} fontWeight="medium">
             💡{' '}
             {step === 'select'
               ? '既存のユーザーを選択するか、新しいユーザーを作成してグループに参加しましょう'

@@ -266,12 +266,97 @@ const showLabel = !isMinimized && !isMobile;
 - **デバッグ機能**: 開発用機能は目立つが邪魔にならない位置に
 - **CTAボタン**: 大きく・わかりやすく・アクセスしやすい配置
 
+## 🧪 Storybookテスト品質保証の重要な学び（2025年1月6日）
+
+### ❌ 重大な失敗：MockLobbyPageアプローチ
+- **問題**: Firestore依存を回避するために`MockLobbyPage`という別コンポーネントを作成
+- **結果**: 実際のコンポーネントと全く違うテストで品質保証にならない
+- **学び**: **実際のコンポーネントでテストしなければ意味がない**
+
+#### 失敗したアプローチ
+```tsx
+// ❌ BAD: 実際のコンポーネントを回避
+const MockLobbyPage = ({ groupId }: { groupId: string }) => {
+  return <div>モック表示...</div>; // 実際のロジックと無関係
+};
+
+const meta: Meta<typeof MockLobbyPage> = {
+  component: MockLobbyPage, // 偽物をテスト
+};
+```
+
+### ✅ 正解：実コンポーネント + 適切なモック戦略
+- **解決**: 実際の`LobbyPage`をテスト対象に、依存関係をMSWとデコレーターでモック
+- **効果**: 本物のコンポーネントのスモークテスト＋VRT（Visual Regression Testing）
+
+#### 成功したアプローチ
+```tsx
+// ✅ GOOD: 実際のコンポーネントをテスト
+import { withAuthenticatedUser, mswHandlers } from '@/src/test-utils/storybook';
+import LobbyPage from './index'; // 実際のコンポーネント
+
+const meta: Meta<typeof LobbyPage> = {
+  component: LobbyPage, // 本物をテスト
+  decorators: [withAuthenticatedUser],
+  parameters: {
+    msw: { handlers: mswHandlers.common },
+  },
+};
+```
+
+### 🎯 確立されたStorybookテスト戦略
+1. **MSW**: Firestore API、Firebase Auth等のAPI呼び出しモック
+2. **Storybookデコレーター**: useAuth等の認証系フックモック
+3. **Jotaiストアモック**: 状態管理の適切な初期値設定
+4. **実コンポーネント使用**: 絶対に実際のindex.tsxをテスト対象にする
+
+### 🛠️ テストユーティリティ共通化の設計思想
+
+#### 責務別分離の構造
+```
+src/test-utils/
+├── mocks/                    # 機能別モック
+│   ├── firebase-user.ts      # Firebase認証モック
+│   ├── jotai-store.ts        # 状態管理モック  
+│   ├── storybook-decorators.tsx  # デコレーター
+│   └── index.ts
+└── storybook/               # Storybook専用
+    ├── msw-handlers.ts       # APIモック
+    └── index.ts
+```
+
+#### 再利用性の追求
+- **Before（分散）**: 各Storybookで個別にモック実装
+- **After（共通化）**: 1行のimportで全てのモックが利用可能
+
+```tsx
+// 超シンプルな使用例
+import { withAuthenticatedUser, mswHandlers } from '@/src/test-utils/storybook';
+
+const meta = {
+  decorators: [withAuthenticatedUser],
+  parameters: { msw: { handlers: mswHandlers.common } },
+};
+```
+
+### 📝 ドキュメント品質の改善知見
+- **不要な説明削除**: `docs.description`は定数名で十分判断可能
+- **IMPORTANT指摘**: 冗長な説明は保守コストになるだけ
+- **簡潔性重視**: コード品質向上のための積極的な削除
+
+### 🎯 今後のStorybook開発ルール
+1. **実コンポーネント必須**: MockXXXコンポーネント作成禁止
+2. **MSW優先**: API依存は必ずMSWでモック
+3. **共通ユーティリティ活用**: `test-utils`の積極的使用
+4. **簡潔なストーリー**: 不要なdescriptionは書かない
+
 ## 🚀 最新の開発改善とベストプラクティス（2025年1月）
 
 ### 📊 開発効率化の実績
 - **カスタムコマンド体系**: `/refactor`, `/doc-update`, `/upload-all`による自動化
 - **音声通知統合**: `/sound`コマンドで作業完了を音で確認
 - **ドキュメント駆動開発**: CLAUDE.mdを中心とした知識蓄積
+- **テストユーティリティ共通化**: `src/test-utils/`による再利用可能なモック構造
 
 ### 🎯 確立されたワークフロー
 1. **機能実装** → 動作確認
@@ -284,7 +369,8 @@ const showLabel = !isMinimized && !isMobile;
 - **コンポーネント設計**: Atomic Design + features分離
 - **状態管理**: Jotaiによるシンプルな実装
 - **スタイリング**: Chakra UI v3 + レスポンシブ対応
-- **テスト**: Storybook中心の開発フロー
+- **テスト**: Storybook中心の開発フロー + MSW統合
+- **品質保証**: 実コンポーネントでのスモークテスト戦略
 
 ### 📈 今後の展開
 - **Phase 3**: Firebase統合による本格実装開始

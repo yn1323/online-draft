@@ -10,7 +10,9 @@ const TopPageVisual = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: 'var(--chakra-colors-bg)' }}>
+    <div
+      style={{ minHeight: '100vh', backgroundColor: 'var(--chakra-colors-bg)' }}
+    >
       <div style={{ maxWidth: '768px', margin: '0 auto', padding: '2rem' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           {/* ヒーローセクション */}
@@ -35,26 +37,13 @@ const meta: Meta<typeof TopPageVisual> = {
   component: TopPageVisual,
   parameters: {
     layout: 'fullscreen',
-    docs: {
-      description: {
-        component: 'トップページのビジュアル表示（useRouter依存を回避したモック版）',
-      },
-    },
   },
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'トップページの通常表示状態',
-      },
-    },
-  },
-};
+export const Default: Story = {};
 
 export const Loading: Story = {
   render: () => {
@@ -63,9 +52,16 @@ export const Loading: Story = {
     };
 
     return (
-      <div style={{ minHeight: '100vh', backgroundColor: 'var(--chakra-colors-bg)' }}>
+      <div
+        style={{
+          minHeight: '100vh',
+          backgroundColor: 'var(--chakra-colors-bg)',
+        }}
+      >
         <div style={{ maxWidth: '768px', margin: '0 auto', padding: '2rem' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+          >
             <HeroSection />
             <MainActionsSection
               onCreateDraft={mockHandleCreateDraft}
@@ -77,11 +73,5 @@ export const Loading: Story = {
       </div>
     );
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'ドラフト作成ボタンがローディング中の状態',
-      },
-    },
-  },
+  parameters: {},
 };

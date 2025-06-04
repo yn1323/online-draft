@@ -256,67 +256,132 @@ lobby/
 
 ## 🧪 テスト・品質管理ガイドライン
 
-### Storybook作業時の重要事項（VERY IMPORTANT）
-- **実コンポーネントテスト**: 実際のindex.tsxを必ずテスト対象にする
-- **モック戦略優先順位**:
-  1. **MSW**: API呼び出し（Firestore等）のモック
-  2. **Storybookデコレーター**: 認証系フック（useAuth等）のモック  
-  3. **依存注入**: 最終手段として設計変更
-- **ビジュアル専用コンポーネント作成禁止**: 実際のコンポーネントを回避するLobbyPageVisual等は NG
-- **目的**: スモークテスト + VRT（Visual Regression Testing）
+### Storybook品質保証戦略（VERY IMPORTANT）
+- **実コンポーネント必須**: 実際のindex.tsxを必ずテスト対象にする
+- **MockXXXコンポーネント作成禁止**: 実際のコンポーネントを回避する偽物は品質保証にならない
+- **共通テストユーティリティ活用**: `src/test-utils/storybook`を積極利用
+- **目的**: 実コンポーネントのスモークテスト + VRT（Visual Regression Testing）
+
+### テストユーティリティの構造と使用法
+
+#### 基本的な使用例
+```typescript
+// 最もシンプルな使用例
+import { withAuthenticatedUser, mswHandlers } from '@/src/test-utils/storybook';
+import LobbyPage from './index'; // 実際のコンポーネント
+
+const meta: Meta<typeof LobbyPage> = {
+  title: 'Features/Lobby/LobbyPage',
+  component: LobbyPage, // 実物をテスト
+  parameters: {
+    layout: 'fullscreen',
+    msw: { handlers: mswHandlers.common },
+  },
+  decorators: [withAuthenticatedUser],
+};
+```
+
+#### テストユーティリティディレクトリ構造
+```
+src/test-utils/
+├── mocks/                    # 機能別モック
+│   ├── firebase-user.ts      # Firebase認証モック
+│   ├── jotai-store.ts        # 状態管理モック  
+│   ├── storybook-decorators.tsx  # デコレーター
+│   └── index.ts
+└── storybook/               # Storybook専用
+    ├── msw-handlers.ts       # APIモック
+    └── index.ts
+```
+
+#### 利用可能なデコレーター
+```typescript
+// 認証済みユーザー（デフォルト）
+decorators: [withAuthenticatedUser]
+
+// 未認証ユーザー
+decorators: [withUnauthenticatedUser]
+
+// 認証ローディング中
+decorators: [withAuthLoading]
+
+// カスタムユーザー
+decorators: [withCustomUser({ uid: 'custom-user-id', displayName: 'カスタムユーザー' })]
+```
+
+#### MSWハンドラーの種類
+```typescript
+// 全部入り（推奨）
+msw: { handlers: mswHandlers.common }
+
+// Firestoreのみ
+msw: { handlers: mswHandlers.firestore }
+
+// Firebase Authのみ
+msw: { handlers: mswHandlers.auth }
+```
 
 ### MSW実装ガイドライン
-```typescript
-// Firestore API呼び出しのモック例
-// .storybook/main.ts または stories内で設定
-import { http, HttpResponse } from 'msw';
 
-export const handlers = [
-  // Firestore getDraftGroup API
-  http.get('/firestore/getDraftGroup/:groupId', ({ params }) => {
-    return HttpResponse.json({
-      id: params.groupId,
-      groupName: 'サンプルグループ',
-      round: 1,
-      finishedRound: [],
-      deleteFlg: false,
-    });
-  }),
-];
+#### 対応しているAPI
+```typescript
+// Firestore グループ取得（複数パターン）
+// GET /v1/projects/*/databases/(default)/documents/draftGroups/:groupId
+// サポート: ABC123, XYZ789, 12, LOADING_TEST
+// 存在しないID: 404エラー返却
+
+// Firebase Auth 匿名認証
+// POST /v1/accounts:signInAnonymously
+// POST /accounts:signUp (匿名認証で使用)
+// POST /accounts:lookup (ユーザー情報取得)
 ```
 
-### Storybookデコレーター実装ガイドライン
+#### カスタムハンドラー追加例
 ```typescript
-// 認証系フックのモック例
-import type { Decorator } from '@storybook/react';
+// src/test-utils/storybook/msw-handlers.ts に追加
+http.get('*/custom-api/:id', ({ params }) => {
+  return HttpResponse.json({
+    id: params.id,
+    customData: 'テストデータ'
+  });
+})
+```
 
-export const mockAuthDecorator: Decorator = (Story) => {
-  // useAuthフックをモック
-  jest.doMock('@/src/hooks/useAuth', () => ({
-    useAuth: () => ({
-      isAuthenticated: true,
-      user: { uid: 'mock-user-123', isAnonymous: true },
-      loading: false,
-    }),
-  }));
+### Storybook設計ルール
 
-  return <Story />;
-};
+#### 必須項目
+1. **実コンポーネント使用**: 偽物コンポーネント禁止
+2. **適切なデコレーター**: 認証状態に応じたデコレーター選択
+3. **MSWハンドラー**: API依存がある場合は必須設定
+4. **簡潔性**: 不要な`docs.description`は書かない
 
-// ストーリーでの使用
+#### 推奨ストーリーパターン
+```typescript
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+// 基本パターン
 export const Default: Story = {
-  decorators: [mockAuthDecorator],
-  args: {
-    groupId: 'ABC123',
-  },
+  args: { groupId: 'ABC123' },
+};
+
+// 長いデータパターン  
+export const LongGroupName: Story = {
+  args: { groupId: 'XYZ789' },
+};
+
+// エラーパターン
+export const NonExistentGroup: Story = {
+  args: { groupId: 'nonexistent' },
 };
 ```
 
-### 品質チェック手順
+### 品質チェック手順（改良版）
 1. **型エラーチェック**: `pnpm type-check`
-2. **Lintチェック**: `pnpm lint`
+2. **Lintチェック**: `pnpm lint:fix`
 3. **テスト実行**: `pnpm test`
 4. **ファイル末尾改行**: 全ファイル必須
+5. **実コンポーネント確認**: MockXXXコンポーネントが無いことを確認
 
 ## 🔥 Firebase・Firestore統合ガイドライン
 

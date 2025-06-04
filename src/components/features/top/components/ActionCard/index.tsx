@@ -73,7 +73,12 @@ export default function ActionCard({
   }
 
   return (
-    <Button {...buttonProps} onClick={onClick} loading={isLoading} disabled={isLoading}>
+    <Button
+      {...buttonProps}
+      onClick={onClick}
+      loading={isLoading}
+      disabled={isLoading}
+    >
       {content}
     </Button>
   );

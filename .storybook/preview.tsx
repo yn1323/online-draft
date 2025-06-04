@@ -5,6 +5,11 @@ import React from 'react';
 import { z } from 'zod';
 import { customErrorMap } from '../src/configs/zod/zop-setup';
 import { ColorModeProvider } from '../src/components/ui/color-mode';
+import { initialize, mswLoader } from 'msw-storybook-addon';
+import { handlers } from './mocks/handlers';
+
+// MSWの初期化
+initialize();
 
 const preview: Preview = {
   parameters: {
@@ -14,7 +19,11 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
+    msw: {
+      handlers: handlers,
+    },
   },
+  loaders: [mswLoader],
   decorators: [
     (Story) => {
       z.setErrorMap(customErrorMap);

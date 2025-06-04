@@ -14,26 +14,9 @@ const meta: Meta<typeof ThemeToggle> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Basic: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          'デフォルトでは最小化された状態で表示されます。設定アイコンをクリックすると展開されます。',
-      },
-    },
-  },
-};
+export const Basic: Story = {};
 
 export const Expanded: Story = {
-  parameters: {
-    docs: {
-      description: {
-        story:
-          '展開された状態のテーマトグルボタンです。×ボタンで最小化できます。',
-      },
-    },
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     // 少し待ってから設定アイコンをクリック

@@ -5,10 +5,10 @@ import { useState } from 'react';
 
 import { toaster } from '@/src/components/ui/toaster';
 import type { JoinMeetingForm } from '@/src/constants/schemas';
-import { joinMeeting } from './actions';
 import JoinForm from '../components/JoinForm';
 import JoinHint from '../components/JoinHint';
 import RecentMeetingsList from '../components/RecentMeetingsList';
+import { joinMeeting } from './actions';
 
 // 仮の履歴データ（後でlocalStorageやAPIから取得）
 const RECENT_MEETINGS = [
