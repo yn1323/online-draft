@@ -10,8 +10,6 @@ const meta: Meta<typeof HowToSection> = {
 };
 
 export default meta;
-// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 type Story = StoryObj<typeof meta>;
 
-// なぜかGHAでテストが通らないためコメントアウト
-// export const Default: Story = {};
+export const Default: Story = {};
