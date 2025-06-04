@@ -21,25 +21,11 @@ export const Default: Story = {
   args: {
     groupId: 'ABC123',
   },
-  parameters: {
-    docs: {
-      description: {
-        story: 'ロビーページの通常表示状態（Firestoreから取得）',
-      },
-    },
-  },
 };
 
 export const LongGroupName: Story = {
   args: {
     groupId: 'XYZ789',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: '長いグループ名での表示状態（Firestoreから取得）',
-      },
-    },
   },
 };
 
@@ -47,24 +33,10 @@ export const ShortGroupId: Story = {
   args: {
     groupId: '12',
   },
-  parameters: {
-    docs: {
-      description: {
-        story: '短いグループIDでの表示状態（Firestoreから取得）',
-      },
-    },
-  },
 };
 
 export const NonExistentGroup: Story = {
   args: {
     groupId: 'nonexistent',
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'グループが存在しない場合のエラー表示状態',
-      },
-    },
   },
 };
