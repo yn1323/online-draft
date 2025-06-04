@@ -2,6 +2,8 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
+import { useAuth } from '@/src/hooks/useAuth';
+import { auth } from '@/src/lib/firebase';
 import {
   Badge,
   Box,
@@ -11,7 +13,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { signInAnonymously } from 'firebase/auth';
+import { useEffect, useState } from 'react';
 import { FiUsers } from 'react-icons/fi';
 import UserCreateStep from './UserCreateStep';
 import UserSelectStep from './UserSelectStep';
@@ -40,9 +43,30 @@ export default function LobbyPage({
 }: LobbyPageProps) {
   const [step, setStep] = useState<Step>('select');
   const [isLoading, setIsLoading] = useState(false);
+  const { isAuthenticated, loading: authLoading } = useAuth();
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
+
+  // ロビーページアクセス時の自動匿名ログイン
+  useEffect(() => {
+    const autoLogin = async () => {
+      if (!authLoading && !isAuthenticated) {
+        try {
+          console.log('🔄 ロビーページ - 自動匿名ログイン開始...');
+          const userCredential = await signInAnonymously(auth);
+          console.log('✅ 自動ログイン成功:', {
+            uid: userCredential.user.uid,
+            isAnonymous: userCredential.user.isAnonymous,
+          });
+        } catch (error) {
+          console.error('❌ 自動ログインエラー:', error);
+        }
+      }
+    };
+
+    autoLogin();
+  }, [authLoading, isAuthenticated]);
 
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);

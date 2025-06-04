@@ -6,7 +6,7 @@ import {
   authLoadingAtom,
   authUserAtom,
 } from '@/src/stores/user';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { useAtom } from 'jotai';
 import { useEffect } from 'react';
 
@@ -41,9 +41,24 @@ export function useAuth() {
       },
     );
 
+    // 他サイト離脱時の自動ログアウト
+    const handleBeforeUnload = async () => {
+      if (auth.currentUser) {
+        console.log('🚪 他サイト離脱検知 - 自動ログアウト実行');
+        try {
+          await signOut(auth);
+        } catch (error) {
+          console.error('❌ 自動ログアウトエラー:', error);
+        }
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
     return () => {
       console.log('👋 Firebase認証状態の監視を停止');
       unsubscribe();
+      window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [setUser, setLoading, setError]);
 
