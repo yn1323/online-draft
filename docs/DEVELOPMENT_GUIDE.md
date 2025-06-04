@@ -253,3 +253,132 @@ lobby/
 ### デプロイメント
 - **Production**: https://online-draft.vercel.app/ (master branch)
 - **Preview**: https://preview-online-draft.vercel.app/ (develop branch)
+
+## 🧪 テスト・品質管理ガイドライン
+
+### Storybook作業時の重要事項（VERY IMPORTANT）
+- **実コンポーネントテスト**: 実際のindex.tsxを必ずテスト対象にする
+- **モック戦略優先順位**:
+  1. **MSW**: API呼び出し（Firestore等）のモック
+  2. **Storybookデコレーター**: 認証系フック（useAuth等）のモック  
+  3. **依存注入**: 最終手段として設計変更
+- **ビジュアル専用コンポーネント作成禁止**: 実際のコンポーネントを回避するLobbyPageVisual等は NG
+- **目的**: スモークテスト + VRT（Visual Regression Testing）
+
+### MSW実装ガイドライン
+```typescript
+// Firestore API呼び出しのモック例
+// .storybook/main.ts または stories内で設定
+import { http, HttpResponse } from 'msw';
+
+export const handlers = [
+  // Firestore getDraftGroup API
+  http.get('/firestore/getDraftGroup/:groupId', ({ params }) => {
+    return HttpResponse.json({
+      id: params.groupId,
+      groupName: 'サンプルグループ',
+      round: 1,
+      finishedRound: [],
+      deleteFlg: false,
+    });
+  }),
+];
+```
+
+### Storybookデコレーター実装ガイドライン
+```typescript
+// 認証系フックのモック例
+import type { Decorator } from '@storybook/react';
+
+export const mockAuthDecorator: Decorator = (Story) => {
+  // useAuthフックをモック
+  jest.doMock('@/src/hooks/useAuth', () => ({
+    useAuth: () => ({
+      isAuthenticated: true,
+      user: { uid: 'mock-user-123', isAnonymous: true },
+      loading: false,
+    }),
+  }));
+
+  return <Story />;
+};
+
+// ストーリーでの使用
+export const Default: Story = {
+  decorators: [mockAuthDecorator],
+  args: {
+    groupId: 'ABC123',
+  },
+};
+```
+
+### 品質チェック手順
+1. **型エラーチェック**: `pnpm type-check`
+2. **Lintチェック**: `pnpm lint`
+3. **テスト実行**: `pnpm test`
+4. **ファイル末尾改行**: 全ファイル必須
+
+## 🔥 Firebase・Firestore統合ガイドライン
+
+### Firestoreデータ連携時の注意事項
+- **Legacy互換**: 必ず`legacy/`のスキーマ構造を参考にする
+- **コレクション**: `app/onlinedraft/group`パスを使用
+- **型定義**: interfaceではなくtypeを使用（VERY IMPORTANT）
+- **エラーハンドリング**: 権限エラー、ネットワークエラーを適切に処理
+
+### Firestore実装パターン
+```typescript
+// 推奨: Legacy互換型定義
+type Groups = {
+  groupName: string;
+  round: number;
+  finishedRound: number[];
+  deleteFlg: boolean;
+};
+
+// 推奨: エラーハンドリング込みの実装
+export async function getDraftGroup(groupId: string): Promise<(Groups & { id: string }) | null> {
+  try {
+    const docRef = doc(db, ...COLLECTIONS.BASE, COLLECTIONS.GROUP, groupId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      return {
+        id: docSnap.id,
+        ...docSnap.data(),
+      } as Groups & { id: string };
+    }
+
+    return null;
+  } catch (error) {
+    console.error('❌ グループ取得エラー:', error);
+    throw error;
+  }
+}
+```
+
+### 認証統合パターン
+```typescript
+// Firebase Anonymous Auth + Jotai統合
+import { useAuth } from '@/src/hooks/useAuth';
+
+// 自動ログイン実装例
+useEffect(() => {
+  const autoLogin = async () => {
+    if (!authLoading && !isAuthenticated) {
+      try {
+        console.log('🔄 自動匿名ログイン開始...');
+        const userCredential = await signInAnonymously(auth);
+        console.log('✅ 自動ログイン成功:', {
+          uid: userCredential.user.uid,
+          isAnonymous: userCredential.user.isAnonymous,
+        });
+      } catch (error) {
+        console.error('❌ 自動ログインエラー:', error);
+      }
+    }
+  };
+
+  autoLogin();
+}, [authLoading, isAuthenticated]);
+```
