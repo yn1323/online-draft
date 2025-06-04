@@ -1,44 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from 'react';
-import { 
-  Box, 
-  Button, 
-  VStack, 
-  Text
-} from '@chakra-ui/react';
+import { useAuth } from '@/src/hooks/useAuth';
+import { auth } from '@/src/lib/firebase';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import type { User } from 'firebase/auth';
 import { signInAnonymously, signOut } from 'firebase/auth';
-import { auth } from '@/src/lib/firebase';
-import { useAuth } from '@/src/hooks/useAuth';
+import { useState } from 'react';
 
 type AuthComponentProps = {
   onAuthSuccess?: (user: User) => void;
   onAuthError?: (error: string) => void;
 };
 
-export function AuthComponent({ onAuthSuccess, onAuthError }: AuthComponentProps) {
+export function AuthComponent({
+  onAuthSuccess,
+  onAuthError,
+}: AuthComponentProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { user, error: authError, isAuthenticated } = useAuth();
 
   const handleAnonymousLogin = async () => {
     setIsLoading(true);
-    
+
     try {
       const userCredential = await signInAnonymously(auth);
       const loggedInUser = userCredential.user;
-      
+
       onAuthSuccess?.(loggedInUser);
-      
+
       console.log('✅ 匿名ログイン成功:', {
         uid: loggedInUser.uid,
-        isAnonymous: loggedInUser.isAnonymous
+        isAnonymous: loggedInUser.isAnonymous,
       });
-      
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : '認証エラーが発生しました';
+      const errorMessage =
+        error instanceof Error ? error.message : '認証エラーが発生しました';
       onAuthError?.(errorMessage);
-      
+
       console.error('❌ 匿名ログインエラー:', error);
     } finally {
       setIsLoading(false);
@@ -72,12 +70,12 @@ export function AuthComponent({ onAuthSuccess, onAuthError }: AuthComponentProps
           bg="red.50"
           border="1px solid"
           borderColor="red.200"
-          _dark={{ 
-            bg: "red.900",
-            borderColor: "red.700" 
+          _dark={{
+            bg: 'red.900',
+            borderColor: 'red.700',
           }}
         >
-          <Text color="red.800" _dark={{ color: "red.200" }}>
+          <Text color="red.800" _dark={{ color: 'red.200' }}>
             ❌ {authError}
           </Text>
         </Box>
@@ -91,29 +89,37 @@ export function AuthComponent({ onAuthSuccess, onAuthError }: AuthComponentProps
             bg="green.50"
             border="1px solid"
             borderColor="green.200"
-            _dark={{ 
-              bg: "green.900",
-              borderColor: "green.700" 
+            _dark={{
+              bg: 'green.900',
+              borderColor: 'green.700',
             }}
           >
             <VStack align="start" gap={1}>
-              <Text fontWeight="bold" color="green.800" _dark={{ color: "green.200" }}>
+              <Text
+                fontWeight="bold"
+                color="green.800"
+                _dark={{ color: 'green.200' }}
+              >
                 ✅ ログイン成功！
               </Text>
-              <Text fontSize="sm" color="green.700" _dark={{ color: "green.300" }}>
+              <Text
+                fontSize="sm"
+                color="green.700"
+                _dark={{ color: 'green.300' }}
+              >
                 UID: {user?.uid}
               </Text>
-              <Text fontSize="sm" color="green.700" _dark={{ color: "green.300" }}>
+              <Text
+                fontSize="sm"
+                color="green.700"
+                _dark={{ color: 'green.300' }}
+              >
                 匿名ユーザー: {user?.isAnonymous ? 'はい' : 'いいえ'}
               </Text>
             </VStack>
           </Box>
-          
-          <Button
-            colorScheme="red"
-            variant="outline"
-            onClick={handleLogout}
-          >
+
+          <Button colorScheme="red" variant="outline" onClick={handleLogout}>
             🚪 ログアウト
           </Button>
         </VStack>

@@ -23,14 +23,14 @@ import {
   MdShare,
   MdSpeed,
 } from 'react-icons/md';
-import { CreateDraftModal } from '../entry/entryModal';
+import { CreateDraftModal } from '../lobby/lobbyModal';
 
 export const TopPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleCreateSuccess = (groupId: string) => {
     // 作成成功時は直接ページ遷移
-    window.location.href = `/entry/${groupId}`;
+    window.location.href = `/lobby/${groupId}`;
   };
   return (
     <Box minHeight="100vh" bg="bg">

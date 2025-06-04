@@ -1,4 +1,4 @@
-import EntryPage from "@/src/components/features/entry";
+import LobbyPage from "@/src/components/features/lobby";
 import { Animation } from "@/src/components/templates/Animation";
 
 interface PageProps {
@@ -15,7 +15,7 @@ interface PageInnerProps {
 function PageInner({ id, groupName }: PageInnerProps) {
   return (
     <Animation>
-      <EntryPage groupId={id} groupName={groupName} />
+      <LobbyPage groupId={id} groupName={groupName} />
     </Animation>
   );
 }

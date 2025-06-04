@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, userEvent, within } from '@storybook/test';
-import EntryPage from './index';
+import LobbyPage from './index';
 
-const meta: Meta<typeof EntryPage> = {
-  title: 'Features/Entry/EntryPage',
-  component: EntryPage,
+const meta: Meta<typeof LobbyPage> = {
+  title: 'Features/Lobby/LobbyPage',
+  component: LobbyPage,
 };
 
 export default meta;

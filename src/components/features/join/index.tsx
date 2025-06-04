@@ -30,7 +30,7 @@ const RECENT_MEETINGS = [
 ];
 
 export const JoinPage = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMeetingId, setLoadingMeetingId] = useState<string | null>(null);
 
   // React Hook Form setup
   const form = useForm<JoinMeetingForm>({
@@ -43,25 +43,24 @@ export const JoinPage = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { errors, isValid, isSubmitting },
     reset,
   } = form;
 
   const handleJoinMeeting = async (data: JoinMeetingForm) => {
-    setIsLoading(true);
     try {
       let meetingId = data.meetingInput.trim();
       
-      // URLの場合はIDを抽出
-      const urlMatch = data.meetingInput.match(/\/entry\/([a-zA-Z0-9]+)/);
+      // URLの場合はIDを抽出（entry/lobbyの両方に対応）
+      const urlMatch = data.meetingInput.match(/\/(entry|lobby)\/([a-zA-Z0-9]+)/);
       if (urlMatch) {
-        meetingId = urlMatch[1];
+        meetingId = urlMatch[2];
       }
       
       const result = await joinMeeting(meetingId);
       if (result.success) {
         reset();
-        window.location.href = `/entry/${result.meetingId}`;
+        window.location.href = `/lobby/${result.meetingId}`;
       } else {
         // トースト通知でエラー表示
         const friendlyMessage = result.error?.includes('見つから') 
@@ -84,15 +83,14 @@ export const JoinPage = () => {
         duration: 5000,
       });
     }
-    setIsLoading(false);
   };
 
   const handleJoinRecent = async (id: string) => {
-    setIsLoading(true);
+    setLoadingMeetingId(id);
     try {
       const result = await joinMeeting(id);
       if (result.success) {
-        window.location.href = `/entry/${result.meetingId}`;
+        window.location.href = `/lobby/${result.meetingId}`;
       } else {
         toaster.create({
           title: '参加できませんでした',
@@ -110,7 +108,7 @@ export const JoinPage = () => {
         duration: 5000,
       });
     }
-    setIsLoading(false);
+    setLoadingMeetingId(null);
   };
 
   return (
@@ -158,7 +156,7 @@ export const JoinPage = () => {
                 <Input
                   {...register("meetingInput")}
                   placeholder="ABC123 または招待リンク"
-                  disabled={isLoading}
+                  disabled={isSubmitting}
                   size="lg"
                   bg="white"
                   borderColor={errors.meetingInput ? "red.300" : "blue.300"}
@@ -175,8 +173,8 @@ export const JoinPage = () => {
                 colorPalette="blue"
                 size="lg"
                 width="full"
-                disabled={!isValid || isLoading}
-                loading={isLoading}
+                disabled={!isValid || isSubmitting}
+                loading={isSubmitting}
                 onClick={handleSubmit(handleJoinMeeting)}
                 fontSize={{ base: "sm", md: "md" }}
                 fontWeight="bold"
@@ -212,7 +210,8 @@ export const JoinPage = () => {
                     p={4}
                     justifyContent="flex-start"
                     textAlign="left"
-                    disabled={isLoading}
+                    disabled={loadingMeetingId === meeting.id}
+                    loading={loadingMeetingId === meeting.id}
                     onClick={() => handleJoinRecent(meeting.id)}
                     _hover={{ bg: 'blue.50' }}
                     borderRadius="lg"

@@ -1,10 +1,7 @@
 'use client';
 
-import { 
-  Button, 
-  VStack,
-  useBreakpointValue,
-} from '@chakra-ui/react';
+import { Button, VStack, useBreakpointValue } from '@chakra-ui/react';
+import type { ReactNode } from 'react';
 import {
   DialogActionTrigger,
   DialogBody,
@@ -25,7 +22,6 @@ import {
   DrawerRoot,
   DrawerTitle,
 } from './drawer';
-import type { ReactNode } from 'react';
 
 interface ResponsiveModalProps {
   isOpen: boolean;
@@ -66,7 +62,12 @@ export const ResponsiveModal = ({
         placement="bottom"
         size="full"
       >
-        <DrawerContent borderTopRadius="xl" maxH="80vh" display="flex" flexDirection="column">
+        <DrawerContent
+          borderTopRadius="xl"
+          maxH="80vh"
+          display="flex"
+          flexDirection="column"
+        >
           <DrawerHeader textAlign="center" pb={2}>
             <DrawerTitle fontSize="xl">{title}</DrawerTitle>
             <DrawerCloseTrigger />
@@ -93,9 +94,8 @@ export const ResponsiveModal = ({
             >
               {actions.cancel && (
                 <DrawerActionTrigger asChild>
-                  <Button 
-                    variant="ghost" 
-                    disabled={actions.submit?.disabled}
+                  <Button
+                    variant="ghost"
                     size="lg"
                     flex={1}
                     onClick={actions.cancel.onClick || onClose}
@@ -134,19 +134,16 @@ export const ResponsiveModal = ({
         </DialogHeader>
 
         <DialogBody>
-          <VStack gap={4}>
-            {children}
-          </VStack>
+          <VStack gap={4}>{children}</VStack>
         </DialogBody>
 
         {actions && (
           <DialogFooter>
             {actions.cancel && (
               <DialogActionTrigger asChild>
-                <Button 
-                  type="button" 
-                  variant="ghost" 
-                  disabled={actions.submit?.disabled}
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={actions.cancel.onClick || onClose}
                 >
                   {actions.cancel.text}

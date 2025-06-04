@@ -44,7 +44,8 @@
       "Bash(cp:*)",
       "Bash(curl:*)",
       "mcp__playwright__playwright_navigate",
-      "mcp__playwright__playwright_screenshot"
+      "mcp__playwright__playwright_screenshot",
+      "Bash(kill:*)"
     ],
     "deny": []
   }

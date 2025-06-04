@@ -33,12 +33,12 @@ const MOCK_USERS = [
   { userId: "2", userName: "山田花子", avatarIndex: "5", avatar: "/img/5.png" },
 ];
 
-interface EntryPageProps {
+interface LobbyPageProps {
   groupId: string;
   groupName?: string;
 }
 
-export default function EntryPage({ groupId, groupName = "サンプルグループ" }: EntryPageProps) {
+export default function LobbyPage({ groupId, groupName = "サンプルグループ" }: LobbyPageProps) {
   const [step, setStep] = useState<"select" | "create">("select");
   const [isLoading, setIsLoading] = useState(false);
 
