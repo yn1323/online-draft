@@ -11,6 +11,7 @@
 ### 現在のタスク状況 📍
 **Phase 3.2**: Firebase データ連携実装
 - ✅ **完了**: 認証システム（自動ログイン・ログアウト）
+- ✅ **完了**: ディレクトリ構成リファクタリング（コンポーネント統一）
 - 🔄 **進行中**: ドラフト作成機能（グループ管理）
 - ⏳ **次回**: ユーザー登録機能、リアルタイム同期
 
@@ -51,6 +52,14 @@
 - **ディレクトリ**: 新機能は`src/`配下で実装
 - **コンポーネント**: Atomic Design + features分離
 - **テスト**: Storybook中心の開発フロー
+
+### コンポーネントディレクトリ構成（VERY IMPORTANT）
+- **features構成**: `src/components/features/<feature>/<ComponentName>/`
+- **ファイル構成**: `index.tsx`, `index.stories.tsx`, `actions.ts`, `index.test.tsx`
+- **命名規則**: 
+  - feature: 小文字始まり (`auth`, `join`, `lobby`, `top`)
+  - ComponentName: 大文字始まり (`AuthComponent`, `JoinPage`, `LobbyPage`)
+- **export**: 各feature配下に`index.tsx`でexport統一
 
 ## 🎭 Claude Code設定（VERY IMPORTANT）
 
@@ -132,4 +141,4 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/6 - 認証システム完成、Firebase データ連携実装開始
+**最終更新**: 2025/1/6 - ディレクトリ構成リファクタリング完成、Firebase データ連携実装準備完了

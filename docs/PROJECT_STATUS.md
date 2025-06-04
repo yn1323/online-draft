@@ -119,6 +119,24 @@
 - `onbeforeunload`イベントでの自動ログアウト実装完了
 - 他サイト離脱時の認証状態リセット機能完了
 
+### ✅ Phase 3.1.5: ディレクトリ構成リファクタリング（完了 2025/1/6）
+**目標**: コンポーネントディレクトリの統一と整理
+
+#### ✅ 1. features配下の構成統一
+- `src/components/features/<feature>/<ComponentName>/`形式に統一完了
+- 各コンポーネント配下を`index.tsx`, `index.stories.tsx`, `actions.ts`に統一完了
+- 命名規則統一: feature(小文字) + ComponentName(大文字始まり)完了
+
+#### ✅ 2. import文の一括修正
+- 内部相対import文の全修正完了
+- Storybookファイルのimport文修正完了
+- 外部export用index.tsxファイル作成完了
+
+#### ✅ 3. 品質確認
+- TypeScriptコンパイルエラー解決完了
+- Lintエラー解決完了
+- 型チェック通過確認完了
+
 ### 🔄 Phase 3.2: Firebase データ連携実装（進行中）
 **目標**: ドラフト・ユーザー管理のFirestore連携
 
@@ -195,6 +213,11 @@
   - 他サイト離脱時の自動ログアウト
   - Jotai状態管理との完全連携
   - 認証テストページ（/auth-test）
+- **コンポーネントディレクトリ構成**: 完全統一
+  - `src/components/features/<feature>/<ComponentName>/`形式統一
+  - ファイル構成統一（index.tsx, index.stories.tsx, actions.ts）
+  - 命名規則統一（feature小文字 + ComponentName大文字始まり）
+  - import文の一括修正とexport統一
 
 ### 🔄 実装中機能（Phase 3.2）
 - ドラフト作成機能（グループ管理）
@@ -216,6 +239,19 @@
 - **テスト**: 現在のサンプルページ対応E2Eテスト完備
 
 ## 🔧 最新のリファクタリング実績
+
+### ディレクトリ構成リファクタリング実績（2025/1/6）
+- **統一構成**: `src/components/features/<feature>/<ComponentName>/`形式
+- **ファイル規則**: `index.tsx`, `index.stories.tsx`, `actions.ts`, `index.test.tsx`
+- **命名規則**: feature(小文字) + ComponentName(大文字始まり)
+- **対象範囲**: 
+  - auth → AuthComponent
+  - join → JoinPage + components配下
+  - lobby → LobbyPage + UserCreateStep + UserSelectStep + components配下
+  - top → TopPage + HeroSection + HowToSection + MainActionsSection + components配下
+- **import修正**: 相対パス27箇所の一括修正完了
+- **export統一**: 各feature配下にindex.tsx作成
+- **品質確認**: TypeScript型チェック + Lint完了
 
 ### ロビーページリファクタリング実績（2025/1/6）
 - **修正項目**: 
