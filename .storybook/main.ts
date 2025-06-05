@@ -1,5 +1,9 @@
 import type { StorybookConfig } from '@storybook/experimental-nextjs-vite';
+import { config as dotenvConfig } from 'dotenv';
 import path from 'node:path';
+
+// Storybook用のダミー環境変数を読み込み
+dotenvConfig({ path: path.resolve(__dirname, '.dummyEnv') });
 
 const config: StorybookConfig = {
   refs: {
@@ -42,11 +46,5 @@ const config: StorybookConfig = {
     };
     return config;
   },
-  env: (config) => ({
-    ...config,
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL ?? '',
-    NEXT_PUBLIC_SUPABASE_ANON_KEY:
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? '',
-  }),
 };
 export default config;
