@@ -1,4 +1,5 @@
-import { mswHandlers, withAuthenticatedUser } from '@/src/test-utils/storybook';
+import { handlers } from '@/src/test-utils/msw';
+import { withAuthenticatedUser } from '@/src/test-utils/mocks';
 import type { Meta, StoryObj } from '@storybook/react';
 import LobbyPage from './index';
 
@@ -8,7 +9,7 @@ const meta: Meta<typeof LobbyPage> = {
   parameters: {
     layout: 'fullscreen',
     msw: {
-      handlers: mswHandlers.common,
+      handlers: handlers,
     },
   },
   decorators: [withAuthenticatedUser],
