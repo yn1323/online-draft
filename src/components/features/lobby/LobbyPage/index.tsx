@@ -57,8 +57,14 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   // ロビーページアクセス時の自動匿名ログイン
   useEffect(() => {
-    // Storybook環境では自動ログインをスキップ
-    if (typeof window !== 'undefined' && window.location.port === '6006') {
+    // Storybook/テスト環境では自動ログインをスキップ
+    const isTestEnvironment = 
+      typeof window !== 'undefined' && 
+      (window.location.port === '6006' || 
+       window.location.hostname === '127.0.0.1' ||
+       process.env.NODE_ENV === 'test');
+    
+    if (isTestEnvironment) {
       return;
     }
 
