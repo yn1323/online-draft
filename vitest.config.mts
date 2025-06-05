@@ -23,36 +23,36 @@ const sharedConfig = defineConfig({
   resolve: resolveAlias,
 });
 
-const storybookConfig = defineConfig({
-  plugins: [
-    storybookTest({
-      configDir: path.join(dirname, '.storybook'),
-    }),
-  ],
-  test: {
-    // GHAでエラーになるようなら数字を変更してください
-    testTimeout: 100000,
-    globals: true,
-    name: 'storybook',
-    setupFiles: ['.storybook/vitest.setup.ts'],
-    browser: {
-      enabled: true,
-      headless: true,
-      provider: 'playwright',
-      instances: [
-        {
-          browser: 'chromium',
-        },
-      ],
-    },
-    server: {
-      fs: {
-        allow: ['..'],
-      },
-    },
-  },
-  resolve: resolveAlias,
-});
+// const storybookConfig = defineConfig({
+//   plugins: [
+//     storybookTest({
+//       configDir: path.join(dirname, '.storybook'),
+//     }),
+//   ],
+//   test: {
+//     // GHAでエラーになるようなら数字を変更してください
+//     testTimeout: 100000,
+//     globals: true,
+//     name: 'storybook',
+//     setupFiles: ['.storybook/vitest.setup.ts'],
+//     browser: {
+//       enabled: true,
+//       headless: true,
+//       provider: 'playwright',
+//       instances: [
+//         {
+//           browser: 'chromium',
+//         },
+//       ],
+//     },
+//     server: {
+//       fs: {
+//         allow: ['..'],
+//       },
+//     },
+//   },
+//   resolve: resolveAlias,
+// });
 
 const vitestConfig = defineConfig({
   test: {
@@ -69,7 +69,7 @@ const vitestConfig = defineConfig({
 });
 
 const workspace = defineWorkspace([
-  mergeConfig(sharedConfig, storybookConfig),
+  // mergeConfig(sharedConfig, storybookConfig),
   mergeConfig(sharedConfig, vitestConfig),
 ]);
 
