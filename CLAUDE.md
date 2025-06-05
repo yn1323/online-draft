@@ -19,13 +19,15 @@
 - [ ] **Storybookテストでエラーがないこと**: pnpm storybook:test-ci で確認（Storybookが6006で起動済みの場合）
 
 ### 現在のタスク状況 📍
-**Phase 3.4**: ユーザー登録機能とリアルタイム同期
+**Phase 3.5**: ユーザー登録機能とリアルタイム同期
 - ✅ **完了**: 認証システム（自動ログイン・ログアウト）
 - ✅ **完了**: ディレクトリ構成リファクタリング（コンポーネント統一）
 - ✅ **完了**: Firestoreグループ作成・取得機能
 - ✅ **完了**: LobbyPage Storybookの適切なモック実装（MSW + 実コンポーネントテスト）
 - ✅ **完了**: テストユーティリティ共通化（src/test-utils構造確立）
 - ✅ **完了**: Storybookテスト品質保証戦略の確立
+- ✅ **完了**: MSWハンドラー構造最適化（Firebase Auth/Firestore分離、共通化戦略）
+- ✅ **完了**: Storybook環境検出の共通化（isStorybookEnvironment ヘルパー）
 - 🔄 **進行中**: ユーザー登録機能の実装
 - ⏳ **次回**: リアルタイム同期、チャット機能
 
@@ -64,7 +66,10 @@
 
 ### Storybookテスト関連の重要事項（VERY IMPORTANT）
 - **Firebase環境変数**: テスト用フォールバック値が設定済み（`src/lib/firebase.ts`）
-- **LobbyPageテスト**: Storybook環境（ポート6006）ではFirebase APIコールを自動スキップ
+- **環境検出**: `isStorybookEnvironment()`ヘルパーで共通化（`src/helpers/utils/env/`）
+- **LobbyPageテスト**: Storybook環境ではFirebase APIコールを自動スキップ
+- **MSWハンドラー**: `src/test-utils/msw/`配下で機能別分離（firebase-auth.ts / firestore.ts）
+- **モック戦略**: LobbyPageのモックデータは`mocks.ts`で外部化
 - **act警告**: `.storybook/vitest.setup.ts`で抑制済み
 - **タイムアウト**: VRTテストは60秒に設定（`--testTimeout 60000`）
 - **キャッシュ問題**: `storybook-vrt.yml`は毎回クリーンビルドする設定
@@ -111,6 +116,9 @@ pnpm build        # 型チェック兼ビルド
 - `src/components/features/lobby/` - ロビーページ（旧entry）
 - `src/components/features/join/` - 参加ページ
 - `src/hooks/useAuth.ts` - 認証フック
+- `src/helpers/utils/env/` - 環境検出ヘルパー（isStorybookEnvironment）
+- `src/test-utils/msw/` - MSWハンドラー（firebase-auth.ts, firestore.ts）
+- `src/test-utils/mocks/` - Storybookデコレーター・モック関連
 - `/lobby/[id]` - ユーザー選択・作成（旧 /entry/[id]）
 - `/join` - グループ参加
 - `/auth-test` - 認証テストページ
@@ -137,7 +145,8 @@ pnpm build        # 型チェック兼ビルド
 - ✅ Firebase匿名認証（自動ログイン・ログアウト・onbeforeunload対応）
 - ✅ Firestoreグループ管理（作成・取得・エラーハンドリング）
 - ✅ ロビーページでのFirestoreグループ情報表示
-- 🔄 Storybookテスト品質改善（MSW + Storybook Decorator戦略）
+- ✅ Storybookテスト品質改善（MSW + Storybook Decorator戦略完了）
+- ✅ MSWハンドラー構造最適化（機能別分離、共通化戦略確立）
 - ⏳ ユーザー登録・リアルタイム同期機能
 
 ## 📚 詳細ドキュメント（必要時のみ参照 IMPORTANT）
@@ -167,4 +176,4 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/6 - Storybookテスト環境の完全整備（Firebase環境対応、VRT設定改善、act警告解決、MSW Service Workerパス問題解決）
+**最終更新**: 2025/1/6 - MSWハンドラー構造最適化とStorybook環境検出共通化（firebase-auth.ts/firestore.ts分離、isStorybookEnvironment ヘルパー作成、モック戦略外部化）

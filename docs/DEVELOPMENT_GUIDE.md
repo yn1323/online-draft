@@ -267,7 +267,8 @@ lobby/
 #### 基本的な使用例
 ```typescript
 // 最もシンプルな使用例
-import { withAuthenticatedUser, mswHandlers } from '@/src/test-utils/storybook';
+import { handlers } from '@/src/test-utils/msw';
+import { withAuthenticatedUser } from '@/src/test-utils/mocks';
 import LobbyPage from './index'; // 実際のコンポーネント
 
 const meta: Meta<typeof LobbyPage> = {
@@ -275,7 +276,7 @@ const meta: Meta<typeof LobbyPage> = {
   component: LobbyPage, // 実物をテスト
   parameters: {
     layout: 'fullscreen',
-    msw: { handlers: mswHandlers.common },
+    msw: { handlers: handlers },
   },
   decorators: [withAuthenticatedUser],
 };
@@ -289,8 +290,11 @@ src/test-utils/
 │   ├── jotai-store.ts        # 状態管理モック  
 │   ├── storybook-decorators.tsx  # デコレーター
 │   └── index.ts
+├── msw/                     # MSWハンドラー（機能別分離）
+│   ├── firebase-auth.ts      # Firebase認証API
+│   ├── firestore.ts          # Firestore API
+│   └── index.ts             # 統合エクスポート
 └── storybook/               # Storybook専用
-    ├── msw-handlers.ts       # APIモック
     └── index.ts
 ```
 
@@ -312,13 +316,12 @@ decorators: [withCustomUser({ uid: 'custom-user-id', displayName: 'カスタム�
 #### MSWハンドラーの種類
 ```typescript
 // 全部入り（推奨）
-msw: { handlers: mswHandlers.common }
+import { handlers } from '@/src/test-utils/msw';
+msw: { handlers: handlers }
 
-// Firestoreのみ
-msw: { handlers: mswHandlers.firestore }
-
-// Firebase Authのみ
-msw: { handlers: mswHandlers.auth }
+// 機能別使用も可能
+import { firestoreHandlers } from '@/src/test-utils/msw/firestore';
+import { firebaseAuthHandlers } from '@/src/test-utils/msw/firebase-auth';
 ```
 
 ### MSW実装ガイドライン
@@ -338,7 +341,7 @@ msw: { handlers: mswHandlers.auth }
 
 #### カスタムハンドラー追加例
 ```typescript
-// src/test-utils/storybook/msw-handlers.ts に追加
+// src/test-utils/msw/firestore.ts または firebase-auth.ts に追加
 http.get('*/custom-api/:id', ({ params }) => {
   return HttpResponse.json({
     id: params.id,
@@ -485,7 +488,7 @@ useEffect(() => {
 
 **必須のFirebase Authエンドポイント:**
 ```typescript
-// src/test-utils/storybook/msw-handlers.ts
+// src/test-utils/msw/firebase-auth.ts
 http.post('*/v1/accounts:signInAnonymously', () => {
   return HttpResponse.json({
     localId: 'mock-anonymous-user-id',
