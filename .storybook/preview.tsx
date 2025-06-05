@@ -7,8 +7,11 @@ import { ColorModeProvider } from '../src/components/ui/color-mode';
 import { customErrorMap } from '../src/configs/zod/zop-setup';
 import { handlers } from './mocks/handlers';
 
-// MSWの初期化
-initialize();
+initialize({
+  serviceWorker: {
+    url: './mockServiceWorker.js',
+  },
+});
 
 const preview: Preview = {
   parameters: {
