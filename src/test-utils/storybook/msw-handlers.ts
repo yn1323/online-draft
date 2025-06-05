@@ -131,6 +131,17 @@ export const firebaseAuthHandlers = [
     });
   }),
 
+  // 匿名認証のモック（signInAnonymously用）
+  http.post('*/v1/accounts:signInAnonymously', () => {
+    return HttpResponse.json({
+      localId: 'mock-anonymous-user-id',
+      idToken: 'mock-id-token',
+      refreshToken: 'mock-refresh-token',
+      expiresIn: '3600',
+      isNewUser: true,
+    });
+  }),
+
   // ユーザー情報取得のモック
   http.post('*/accounts:lookup', () => {
     return HttpResponse.json({

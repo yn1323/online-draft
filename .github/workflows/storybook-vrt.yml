@@ -63,7 +63,7 @@ jobs:
           name: expected-storybook-static
           path: storybook-static/
       - name: take screenshots
-        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test --testTimeout 60000 -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
+        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
       - name: upload screenshots
         uses: actions/upload-artifact@v4
         with:
@@ -130,7 +130,7 @@ jobs:
           name: actual-storybook-static
           path: storybook-static/
       - name: take screenshots
-        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test --testTimeout 60000 -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
+        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
       - name: upload screenshots
         uses: actions/upload-artifact@v4
         with:

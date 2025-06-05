@@ -57,6 +57,11 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   // ロビーページアクセス時の自動匿名ログイン
   useEffect(() => {
+    // Storybook環境では自動ログインをスキップ
+    if (typeof window !== 'undefined' && window.location.port === '6006') {
+      return;
+    }
+
     const autoLogin = async () => {
       if (!authLoading && !isAuthenticated) {
         try {
@@ -79,6 +84,16 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   useEffect(() => {
     const fetchGroupData = async () => {
       if (!groupId) {
+        return;
+      }
+
+      // Storybook環境ではFirestoreアクセスをスキップ
+      if (typeof window !== 'undefined' && window.location.port === '6006') {
+        setGroupLoading(false);
+        setGroupData({
+          groupName: 'テストグループ',
+          round: 3,
+        });
         return;
       }
 
