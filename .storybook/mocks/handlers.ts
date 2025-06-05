@@ -3,6 +3,6 @@
  * 共通化されたテストユーティリティを使用
  */
 
-import { commonHandlers } from '../../src/test-utils/storybook/msw-handlers';
+import { handlers as commonHandlers } from '../../src/test-utils/msw';
 
 export const handlers = commonHandlers;

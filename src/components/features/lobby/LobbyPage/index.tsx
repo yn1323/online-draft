@@ -2,9 +2,16 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
+import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { useAuth } from '@/src/hooks/useAuth';
 import { auth } from '@/src/lib/firebase';
 import { getDraftGroup } from '@/src/services/firestore/draftGroups';
+import {
+  AVATAR_IMAGES,
+  MOCK_USERS,
+  STORYBOOK_GROUP_DATA,
+  STORYBOOK_LOADING_DELAY,
+} from './mocks';
 import {
   Badge,
   Box,
@@ -21,18 +28,6 @@ import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
 import UserSelectStep from '../UserSelectStep';
 import StepIndicator, { type Step } from '../components/StepIndicator';
-
-// 仮のアバター画像データ（実際のFirebase連携時に置き換え）
-const AVATAR_IMAGES = Array.from({ length: 18 }, (_, i) => ({
-  index: `${i + 1}`,
-  path: `/img/${i + 1}.png`,
-}));
-
-// 仮のユーザーデータ（実際のFirebase連携時に置き換え）
-const MOCK_USERS = [
-  { userId: '1', userName: '田中太郎', avatarIndex: '1', avatar: '/img/1.png' },
-  { userId: '2', userName: '山田花子', avatarIndex: '5', avatar: '/img/5.png' },
-];
 
 interface LobbyPageProps {
   groupId: string;
@@ -55,12 +50,9 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const helpBorderColor = useColorModeValue('blue.200', 'blue.700');
   const helpTextColor = useColorModeValue('blue.700', 'blue.300');
 
-  // Storybook環境判定
-  const isStorybookEnvironment = process.env.NEXT_PUBLIC_STORYBOOK_ACCESS;
-
   // ロビーページアクセス時の自動匿名ログイン
   useEffect(() => {
-    if (isStorybookEnvironment) {
+    if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のため自動ログインをスキップ');
       return;
     }
@@ -81,7 +73,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     };
 
     autoLogin();
-  }, [authLoading, isAuthenticated, isStorybookEnvironment]);
+  }, [authLoading, isAuthenticated]);
 
   // グループ情報の取得
   useEffect(() => {
@@ -91,34 +83,20 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       }
 
       // Storybook環境では固定データを使用
-      if (isStorybookEnvironment) {
+      if (isStorybookEnvironment()) {
         console.log('📚 Storybook環境のためモックデータを使用');
         setGroupLoading(true);
 
         // 少し遅延を入れてローディング状態をテスト
         setTimeout(() => {
-          const mockData = {
-            ABC123: { groupName: 'テストグループ 1', round: 3 },
-            XYZ789: {
-              groupName:
-                '非常に長いグループ名のテストケースです！これは表示の確認用',
-              round: 5,
-            },
-            '12': { groupName: '短ID', round: 1 },
-            LOADING_TEST: {
-              groupName: 'ローディングテスト用グループ',
-              round: 2,
-            },
-          };
-
-          const mockGroup = mockData[groupId as keyof typeof mockData];
+          const mockGroup = STORYBOOK_GROUP_DATA[groupId as keyof typeof STORYBOOK_GROUP_DATA];
           if (mockGroup) {
             setGroupData(mockGroup);
           } else {
             setGroupError('指定されたグループが見つかりません');
           }
           setGroupLoading(false);
-        }, 1000);
+        }, STORYBOOK_LOADING_DELAY);
         return;
       }
 
@@ -150,7 +128,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     };
 
     fetchGroupData();
-  }, [groupId, isStorybookEnvironment]);
+  }, [groupId]);
 
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);
@@ -304,3 +282,4 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     </Container>
   );
 }
+

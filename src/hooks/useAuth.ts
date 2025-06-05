@@ -1,5 +1,6 @@
 'use client';
 
+import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { auth } from '@/src/lib/firebase';
 import {
   authErrorAtom,
@@ -20,10 +21,7 @@ export function useAuth() {
   const [error, setError] = useAtom(authErrorAtom);
 
   useEffect(() => {
-    // Storybook環境判定
-    const isStorybookEnvironment = process.env.NEXT_PUBLIC_STORYBOOK_ACCESS === 'true';
-
-    if (isStorybookEnvironment) {
+    if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためFirebase認証監視をスキップ');
       setLoading(false);
       setUser(null);
@@ -81,3 +79,4 @@ export function useAuth() {
     isAnonymous: user?.isAnonymous || false,
   };
 }
+
