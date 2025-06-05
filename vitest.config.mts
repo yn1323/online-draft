@@ -31,6 +31,7 @@ const storybookConfig = defineConfig({
     }),
   ],
   test: {
+    // GHAでエラーになるようなら数字を変更してください
     testTimeout: 100000,
     globals: true,
     name: 'storybook',
