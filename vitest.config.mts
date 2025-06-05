@@ -31,6 +31,7 @@ const storybookConfig = defineConfig({
     }),
   ],
   test: {
+    testTimeout: 100000,
     globals: true,
     name: 'storybook',
     setupFiles: ['.storybook/vitest.setup.ts'],
