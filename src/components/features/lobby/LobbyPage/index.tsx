@@ -55,8 +55,16 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const helpBorderColor = useColorModeValue('blue.200', 'blue.700');
   const helpTextColor = useColorModeValue('blue.700', 'blue.300');
 
+  // Storybook環境判定
+  const isStorybookEnvironment = process.env.NEXT_PUBLIC_STORYBOOK_ACCESS;
+
   // ロビーページアクセス時の自動匿名ログイン
   useEffect(() => {
+    if (isStorybookEnvironment) {
+      console.log('📚 Storybook環境のため自動ログインをスキップ');
+      return;
+    }
+
     const autoLogin = async () => {
       if (!authLoading && !isAuthenticated) {
         try {
@@ -73,12 +81,44 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     };
 
     autoLogin();
-  }, [authLoading, isAuthenticated]);
+  }, [authLoading, isAuthenticated, isStorybookEnvironment]);
 
   // グループ情報の取得
   useEffect(() => {
     const fetchGroupData = async () => {
       if (!groupId) {
+        return;
+      }
+
+      // Storybook環境では固定データを使用
+      if (isStorybookEnvironment) {
+        console.log('📚 Storybook環境のためモックデータを使用');
+        setGroupLoading(true);
+
+        // 少し遅延を入れてローディング状態をテスト
+        setTimeout(() => {
+          const mockData = {
+            ABC123: { groupName: 'テストグループ 1', round: 3 },
+            XYZ789: {
+              groupName:
+                '非常に長いグループ名のテストケースです！これは表示の確認用',
+              round: 5,
+            },
+            '12': { groupName: '短ID', round: 1 },
+            LOADING_TEST: {
+              groupName: 'ローディングテスト用グループ',
+              round: 2,
+            },
+          };
+
+          const mockGroup = mockData[groupId as keyof typeof mockData];
+          if (mockGroup) {
+            setGroupData(mockGroup);
+          } else {
+            setGroupError('指定されたグループが見つかりません');
+          }
+          setGroupLoading(false);
+        }, 1000);
         return;
       }
 
@@ -110,7 +150,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     };
 
     fetchGroupData();
-  }, [groupId]);
+  }, [groupId, isStorybookEnvironment]);
 
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);

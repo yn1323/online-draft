@@ -20,6 +20,17 @@ export function useAuth() {
   const [error, setError] = useAtom(authErrorAtom);
 
   useEffect(() => {
+    // Storybook環境判定
+    const isStorybookEnvironment = process.env.NEXT_PUBLIC_STORYBOOK_ACCESS === 'true';
+
+    if (isStorybookEnvironment) {
+      console.log('📚 Storybook環境のためFirebase認証監視をスキップ');
+      setLoading(false);
+      setUser(null);
+      setError(null);
+      return;
+    }
+
     console.log('🔄 Firebase認証状態の監視を開始...');
 
     const unsubscribe = onAuthStateChanged(
@@ -41,7 +52,7 @@ export function useAuth() {
       },
     );
 
-    // 他サイト離脱時の自動ログアウト
+    // 他サイト離脱時の自動ログアウト（Storybook環境以外）
     const handleBeforeUnload = async () => {
       if (auth.currentUser) {
         console.log('🚪 他サイト離脱検知 - 自動ログアウト実行');
