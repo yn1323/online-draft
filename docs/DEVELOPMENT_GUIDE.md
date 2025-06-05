@@ -524,6 +524,18 @@ http.post('*/v1/accounts:signInAnonymously', () => {
 - **問題**: Storybookビルドキャッシュによる不整合
 - **解決**: 毎回クリーンビルド＋アーティファクト経由での受け渡し
 
+#### MSW Service Workerパス問題（VERY IMPORTANT）
+- **問題**: VRT環境（http-server）でMSWのService Workerが読み込めない
+- **症状**: LobbyPageなどFirebase依存コンポーネントでタイムアウトエラー
+- **解決**: `.storybook/preview.tsx`でService Workerパスを明示的に指定
+  ```typescript
+  initialize({
+    serviceWorker: {
+      url: './mockServiceWorker.js', // 相対パスで指定
+    },
+  });
+  ```
+
 ```yaml
 # ビルドジョブ
 - name: Upload expected storybook build

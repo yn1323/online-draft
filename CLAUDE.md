@@ -36,7 +36,7 @@
 - [ ] **型エラーがないこと**: pnpm type-checkで確認。エラーがあれば修正すること
 - [ ] **Lintエラーがないこと**: pnpm lintで確認。エラーがあれば修正すること
 - [ ] **テストのエラーがないこと**: pnpm testで確認。単体テスト、StorybookともにこのコマンドでOK。エラーがあれば修正すること
-- [ ] **Storybookテストのみ実行**: pnpm storybook:test で確認（Storybookが起動済みの場合）
+- [ ] **Storybookテストでエラーがないこと**: pnpm storybook:test で確認（Storybookが6006で起動済みの場合）
 
 ## 📢 IMPORTANT（作業内容により参照）
 
@@ -67,6 +67,7 @@
 - **act警告**: `.storybook/vitest.setup.ts`で抑制済み
 - **タイムアウト**: VRTテストは60秒に設定（`--testTimeout 60000`）
 - **キャッシュ問題**: `storybook-vrt.yml`は毎回クリーンビルドする設定
+- **MSW Service Worker**: VRT環境では相対パス`./mockServiceWorker.js`で指定必須
 
 ### 新機能実装時の制約
 - **レガシー参考**: 必ず`legacy/`内のコードを参考にして既存ロジック理解
@@ -165,4 +166,4 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/6 - Storybookテスト環境の完全整備（Firebase環境対応、VRT設定改善、act警告解決）
+**最終更新**: 2025/1/6 - Storybookテスト環境の完全整備（Firebase環境対応、VRT設定改善、act警告解決、MSW Service Workerパス問題解決）
