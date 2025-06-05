@@ -1,6 +1,5 @@
 import { mswHandlers, withAuthenticatedUser } from '@/src/test-utils/storybook';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, within } from '@storybook/test';
 import LobbyPage from './index';
 
 const meta: Meta<typeof LobbyPage> = {
