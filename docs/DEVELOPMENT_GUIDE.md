@@ -447,3 +447,111 @@ useEffect(() => {
   autoLogin();
 }, [authLoading, isAuthenticated]);
 ```
+
+## テスト・品質管理ガイドライン
+
+### Storybookテスト戦略
+
+#### テスト環境の構成
+- **実行環境**: Chromium（Playwright）
+- **タイムアウト**: vitest.config.mts で 100秒設定
+- **MSW統合**: API呼び出しを完全モック化
+
+#### Firebase連携コンポーネントのテスト
+
+**問題点と対策:**
+1. **Firebase初期化エラー対策**
+   ```typescript
+   // src/lib/firebase.ts
+   const firebaseConfig = {
+     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'test-api-key',
+     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN || 'test.firebaseapp.com',
+     projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 'test-project',
+   };
+   ```
+
+2. **Storybook環境でのAPI呼び出しスキップ**
+   ```typescript
+   // ポート6006（Storybook）での実行を検出
+   if (typeof window !== 'undefined' && window.location.port === '6006') {
+     // Firebase API呼び出しをスキップし、モックデータを使用
+     setGroupLoading(false);
+     setGroupData({ groupName: 'テストグループ', round: 3 });
+     return;
+   }
+   ```
+
+#### MSWハンドラー設定
+
+**必須のFirebase Authエンドポイント:**
+```typescript
+// src/test-utils/storybook/msw-handlers.ts
+http.post('*/v1/accounts:signInAnonymously', () => {
+  return HttpResponse.json({
+    localId: 'mock-anonymous-user-id',
+    idToken: 'mock-id-token',
+    refreshToken: 'mock-refresh-token',
+    expiresIn: '3600',
+    isNewUser: true,
+  });
+}),
+```
+
+#### VRTテストの注意点
+
+1. **act警告の抑制**
+   ```typescript
+   // .storybook/vitest.setup.ts
+   beforeAll(() => {
+     console.error = (...args) => {
+       if (args[0]?.includes('Warning: An update to %s inside a test was not wrapped in act')) {
+         return;
+       }
+       originalError.call(console, ...args);
+     };
+   });
+   ```
+
+2. **GitHub Actionsでのタイムアウト対策**
+   ```yaml
+   # .github/workflows/storybook-vrt.yml
+   pnpm storybook:test --testTimeout 60000 -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+   ```
+
+### GitHub Actions VRT設定
+
+#### キャッシュ問題の回避
+- **問題**: Storybookビルドキャッシュによる不整合
+- **解決**: 毎回クリーンビルド＋アーティファクト経由での受け渡し
+
+```yaml
+# ビルドジョブ
+- name: Upload expected storybook build
+  uses: actions/upload-artifact@v4
+  with:
+    name: expected-storybook-static
+    path: storybook-static/
+    retention-days: 1
+
+# テストジョブ
+- name: Download expected storybook build
+  uses: actions/download-artifact@v4
+  with:
+    name: expected-storybook-static
+    path: storybook-static/
+```
+
+#### 環境変数の設定
+```yaml
+env:
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+```
+
+### テストのベストプラクティス
+
+1. **実コンポーネント中心**: MockXXXコンポーネントは作らない
+2. **MSWによる境界モック**: APIレイヤーでのモック実装
+3. **環境検出によるスキップ**: テスト環境では実APIコールを回避
+4. **適切なタイムアウト設定**: Firebase認証処理には十分な時間を確保
