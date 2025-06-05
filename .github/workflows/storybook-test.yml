@@ -5,6 +5,7 @@ on: push
 jobs:
   storybook-test:
     runs-on: ubuntu-latest
+    environment: preview
     timeout-minutes: 15
     steps:
       - name: Checkout
