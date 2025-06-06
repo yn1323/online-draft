@@ -27,8 +27,8 @@ importers:
         specifier: ^11.8.1
         version: 11.8.1
       jotai:
-        specifier: 2.12.2
-        version: 2.12.2(@types/react@19.1.6)(react@19.0.0)
+        specifier: 2.12.5
+        version: 2.12.5(@types/react@19.1.6)(react@19.0.0)
       next:
         specifier: 15.3.3
         version: 15.3.3(@babel/core@7.27.4)(@playwright/test@1.51.1)(babel-plugin-macros@3.1.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -48,8 +48,8 @@ importers:
         specifier: 5.5.0
         version: 5.5.0(react@19.0.0)
       zod:
-        specifier: 3.25.46
-        version: 3.25.46
+        specifier: 3.25.55
+        version: 3.25.55
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -3645,8 +3645,8 @@ packages:
   joi@17.13.3:
     resolution: {integrity: sha512-otDA4ldcIx+ZXsKHWmp0YizCweVRZG96J10b0FevjfuncLO1oX59THoAmHkNubYJ+9gWsYsp5k8v4ib6oDv1fA==}
 
-  jotai@2.12.2:
-    resolution: {integrity: sha512-oN8715y7MkjXlSrpyjlR887TOuc/NLZMs9gvgtfWH/JP47ChwO0lR2ijSwBvPMYyXRAPT+liIAhuBavluKGgtA==}
+  jotai@2.12.5:
+    resolution: {integrity: sha512-G8m32HW3lSmcz/4mbqx0hgJIQ0ekndKWiYP7kWVKi0p6saLXdSoye+FZiOFyonnd7Q482LCzm8sMDl7Ar1NWDw==}
     engines: {node: '>=12.20.0'}
     peerDependencies:
       '@types/react': '>=17.0.0'
@@ -5181,8 +5181,8 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
-  zod@3.25.46:
-    resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
+  zod@3.25.55:
+    resolution: {integrity: sha512-219huNnkSLQnLsQ3uaRjXsxMrVm5C9W3OOpEVt2k5tvMKuA8nBSu38e0B//a+he9Iq2dvmk2VyYVlHqiHa4YBA==}
 
 snapshots:
 
@@ -9551,7 +9551,7 @@ snapshots:
       '@sideway/formula': 3.0.1
       '@sideway/pinpoint': 2.0.0
 
-  jotai@2.12.2(@types/react@19.1.6)(react@19.0.0):
+  jotai@2.12.5(@types/react@19.1.6)(react@19.0.0):
     optionalDependencies:
       '@types/react': 19.1.6
       react: 19.0.0
@@ -11279,4 +11279,4 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod@3.25.46: {}
+  zod@3.25.55: {}
