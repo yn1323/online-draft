@@ -18,6 +18,13 @@
 - [ ] **テストのエラーがないこと**: pnpm testで確認。単体テスト、StorybookともにこのコマンドでOK。エラーがあれば修正すること
 - [ ] **Storybookテストでエラーがないこと**: pnpm storybook:test-ci で確認（Storybookが6006で起動済みの場合）
 
+### Claude Code Actions実行時の特別ルール（VERY IMPORTANT）
+- [ ] **Claude Code Actionsによる自動実行時は、test/lint/type-checkコマンドは実行しない**
+  - 理由：環境変数の欠如により無限ループに陥る可能性があるため
+  - 対象コマンド：`pnpm test`, `pnpm lint`, `pnpm type-check`, `pnpm storybook:test-ci`
+  - 代替手段：コード変更後は手動で実行するか、ローカル環境で確認すること
+  - PR修正のときはかならず実行すること！
+
 ### 現在のタスク状況 📍
 **Phase 3.5**: ユーザー登録機能とリアルタイム同期
 - ✅ **完了**: 認証システム（自動ログイン・ログアウト）
@@ -176,4 +183,5 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/6 - MSWハンドラー構造最適化とStorybook環境検出共通化（firebase-auth.ts/firestore.ts分離、isStorybookEnvironment ヘルパー作成、モック戦略外部化）
+**最終更新**: 2025/1/7 - Claude Code Actions実行時のtest/lint/type-check無限ループ防止ルール追加
+
