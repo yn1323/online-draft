@@ -12,18 +12,11 @@
 - [ ] **複雑タスク**: 3つ以上のステップがある場合はTodoWrite使用必須
 - [ ] **/docの確認**: 実装に入る前に/docの該当するファイルを確認すること
 
-### 作業完了前チェックリスト（VERY VERY IMPORTANT）
+### 作業完了チェックリスト（VERY VERY IMPORTANT）
 - [ ] **型エラーがないこと**: pnpm type-checkで確認。エラーがあれば修正すること
 - [ ] **Lintエラーがないこと**: pnpm lintで確認。エラーがあれば修正すること
 - [ ] **テストのエラーがないこと**: pnpm testで確認。単体テスト、StorybookともにこのコマンドでOK。エラーがあれば修正すること
 - [ ] **Storybookテストでエラーがないこと**: pnpm storybook:test-ci で確認（Storybookが6006で起動済みの場合）
-
-### Claude Code Actions実行時の特別ルール（VERY IMPORTANT）
-- [ ] **Claude Code Actionsによる自動実行時は、test/lint/type-checkコマンドは実行しない**
-  - 理由：環境変数の欠如により無限ループに陥る可能性があるため
-  - 対象コマンド：`pnpm test`, `pnpm lint`, `pnpm type-check`, `pnpm storybook:test-ci`
-  - 代替手段：コード変更後は手動で実行するか、ローカル環境で確認すること
-  - PR修正のときはかならず実行すること！
 
 ### 現在のタスク状況 📍
 **Phase 3.5**: ユーザー登録機能とリアルタイム同期
@@ -66,6 +59,9 @@
 - **コマンド順序**: `/refactor` → lint → 型チェック → ファイル末尾改行 → ドキュメント更新
 - **対象範囲**: `git status`で変更されたファイルのみ
 - **失敗時対応**: エラーが1つでもある場合は全て修正してから完了
+
+### Git・コミット関連の重要事項
+- **コミットメッセージは日本語で書く**（VERY IMPORTANT）
 
 ### 技術ガイドライン参照
 - **Storybookテスト**: `docs/DEVELOPMENT_GUIDE.md`の「テスト・品質管理ガイドライン」参照

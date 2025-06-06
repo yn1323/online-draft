@@ -1,5 +1,6 @@
 import type { User } from 'firebase/auth';
 import { atom } from 'jotai';
+import type { UserDocument } from '../../types/firestore';
 
 // 認証ユーザーの状態管理
 export const authUserAtom = atom<User | null>(null);
@@ -14,3 +15,17 @@ export const authErrorAtom = atom<string | null>(null);
 export const userAtom = atom({
   uid: '',
 });
+
+// ===== ユーザー登録機能用のatom =====
+
+// 現在のユーザー情報（ドラフト参加用）
+export const currentUserAtom = atom<UserDocument | null>(null);
+
+// グループ内のユーザー一覧
+export const groupUsersAtom = atom<UserDocument[]>([]);
+
+// ユーザー登録のローディング状態
+export const userRegistrationLoadingAtom = atom(false);
+
+// ユーザー登録のエラー状態
+export const userRegistrationErrorAtom = atom<string | null>(null);

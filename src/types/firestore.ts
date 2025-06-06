@@ -26,6 +26,7 @@ export type Groups = {
  * Users コレクション (Legacy 互換)
  */
 export type UserDocument = {
+  userId?: string; // FirestoreドキュメントID（新規作成時は未定義）
   groupId: string;
   userName: string;
   avatar: string; // アバターインデックス ("1", "2", etc.)
