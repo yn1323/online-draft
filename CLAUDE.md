@@ -146,6 +146,7 @@
 /todo             # 次にやるべきことを一覧で表示（TodoRead実行）
 /issue            # [内容] 単一のISSUEを作成（AI_ISSUE_WRITING_GUIDE参照）
 /issue-schedule   # 現在のTODOを複数のISSUEに分割して作成
+/pr-make          # PRテンプレートベースでGitHub PR作成
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm build        # 型チェック兼ビルド
 ```

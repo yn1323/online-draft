@@ -366,6 +366,47 @@
         "read_only_analysis": true,
         "consultation_only": true
       }
+    },
+    "pr-make": {
+      "description": "Create GitHub Pull Request using .github/pull_request_template.md template",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current branch status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List all changed files since branching from main"
+        },
+        {
+          "action": "bash",
+          "command": "git log main...HEAD --oneline",
+          "description": "Show commit history for PR context"
+        },
+        {
+          "action": "read_pr_template",
+          "command": "read .github/pull_request_template.md",
+          "description": "Read PR template structure for content generation"
+        },
+        {
+          "action": "analyze_changes_for_pr",
+          "description": "Analyze changes to populate PR template sections appropriately"
+        },
+        {
+          "action": "generate_pr_content",
+          "description": "Generate PR title and body following template structure with Japanese content"
+        },
+        {
+          "action": "create_github_pr",
+          "description": "Create GitHub PR using gh cli with generated content based on template"
+        },
+        {
+          "action": "return_pr_url",
+          "description": "Return created PR URL for user reference"
+        }
+      ]
     }
   }
 }
