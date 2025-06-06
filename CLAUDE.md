@@ -79,6 +79,7 @@
 ### 技術ガイドライン参照
 - **Storybookテスト**: `docs/DEVELOPMENT_GUIDE.md`の「テスト・品質管理ガイドライン」参照
 - **Firestore連携**: `docs/DEVELOPMENT_GUIDE.md`の「Firebase・Firestore統合ガイドライン」参照
+- **AI向けISSUE作成**: `docs/AI_ISSUE_WRITING_GUIDE.md`の「Claude Code Actions CI向けISSUE書き方ガイド」参照
 
 ### Storybookテスト関連の重要事項（VERY IMPORTANT）
 - **Firebase環境変数**: テスト用フォールバック値が設定済み（`src/lib/firebase.ts`）
@@ -126,6 +127,8 @@
 /sound            # 作業完了音声通知
 /plan             # 計画・相談・質問に答える（コード修正禁止）
 /todo             # 次にやるべきことを一覧で表示（TodoRead実行）
+/issue            # [内容] 単一のISSUEを作成（AI_ISSUE_WRITING_GUIDE参照）
+/issue-schedule   # 現在のTODOを複数のISSUEに分割して作成
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm build        # 型チェック兼ビルド
 ```
@@ -179,6 +182,7 @@ pnpm build        # 型チェック兼ビルド
 - `docs/HANDOVER.md` - 開発者引継ぎ情報
 - `docs/SPECIFICATION.md` - アプリ仕様書
 - `docs/CLAUDE_PERSONALITY.md` - AI設定詳細
+- `docs/AI_ISSUE_WRITING_GUIDE.md` - Claude Code Actions CI向けISSUE作成ガイド
 
 ---
 

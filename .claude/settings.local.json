@@ -45,7 +45,11 @@
       "Bash(curl:*)",
       "mcp__playwright__playwright_navigate",
       "mcp__playwright__playwright_screenshot",
-      "Bash(kill:*)"
+      "Bash(kill:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm test:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   }

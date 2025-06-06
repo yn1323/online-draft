@@ -2,10 +2,17 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
+import { createUser, checkUserNameExists, subscribeUsers } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { useAuth } from '@/src/hooks/useAuth';
 import { auth } from '@/src/lib/firebase';
 import { getDraftGroup } from '@/src/services/firestore/draftGroups';
+import {
+  currentUserAtom,
+  groupUsersAtom,
+  userRegistrationErrorAtom,
+  userRegistrationLoadingAtom,
+} from '@/src/stores/user';
 import {
   AVATAR_IMAGES,
   MOCK_USERS,
@@ -22,6 +29,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useAtom, useSetAtom } from 'jotai';
 import { signInAnonymously } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
@@ -43,6 +51,12 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const [groupLoading, setGroupLoading] = useState(true);
   const [groupError, setGroupError] = useState<string | null>(null);
   const { isAuthenticated, loading: authLoading } = useAuth();
+
+  // Jotai状態管理
+  const setCurrentUser = useSetAtom(currentUserAtom);
+  const [groupUsers, setGroupUsers] = useAtom(groupUsersAtom);
+  const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(userRegistrationLoadingAtom);
+  const [userRegistrationError, setUserRegistrationError] = useAtom(userRegistrationErrorAtom);
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
@@ -130,6 +144,39 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     fetchGroupData();
   }, [groupId]);
 
+  // リアルタイムユーザー一覧の監視
+  useEffect(() => {
+    if (!groupId) {
+      return;
+    }
+
+    // Storybook環境ではモックデータを使用
+    if (isStorybookEnvironment()) {
+      console.log('📚 Storybook環境のためモックユーザーを使用');
+      const mockUserDocuments = MOCK_USERS.map(user => ({
+        userId: user.userId,
+        groupId,
+        userName: user.userName,
+        avatar: user.avatarIndex,
+        deleteFlg: false,
+      }));
+      setGroupUsers(mockUserDocuments);
+      return;
+    }
+
+    console.log('🔄 リアルタイムユーザー監視開始...', { groupId });
+
+    const unsubscribe = subscribeUsers(groupId, (users) => {
+      console.log('👥 ユーザー一覧更新:', users);
+      setGroupUsers(users);
+    });
+
+    return () => {
+      console.log('🛑 ユーザー監視停止');
+      unsubscribe();
+    };
+  }, [groupId, setGroupUsers]);
+
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);
     // TODO: Firebase認証処理
@@ -139,16 +186,59 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   };
 
   const handleCreateUser = async (data: UserCreateForm) => {
-    setIsLoading(true);
-    try {
-      // TODO: Firebase ユーザー作成処理
-      console.log('Create new user:', data);
+    if (!groupId) {
+      console.error('❌ グループIDが指定されていません');
+      return;
+    }
+
+    // Storybook環境ではモック処理
+    if (isStorybookEnvironment()) {
+      console.log('📚 Storybook環境のためモック処理');
+      setIsLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      setUserRegistrationLoading(true);
+      setUserRegistrationError(null);
+      console.log('🔄 ユーザー作成開始:', data);
+
+      // 1. ユーザー名重複チェック
+      const nameExists = await checkUserNameExists(groupId, data.userName);
+      if (nameExists) {
+        setUserRegistrationError('そのユーザー名は既に使用されています');
+        return;
+      }
+
+      // 2. Firestoreにユーザー作成
+      const userId = await createUser({
+        groupId,
+        userName: data.userName,
+        avatar: data.avatarIndex,
+        deleteFlg: false,
+      });
+
+      // 3. Jotai状態に保存
+      const newUser = {
+        userId,
+        groupId,
+        userName: data.userName,
+        avatar: data.avatarIndex,
+        deleteFlg: false,
+      };
+      setCurrentUser(newUser);
+
+      console.log('✅ ユーザー作成成功:', newUser);
+      
+      // TODO: ドラフトページへのリダイレクト
       // router.push(`/draft/${groupId}`);
     } catch (error) {
-      console.error('User creation error:', error);
+      console.error('❌ ユーザー作成エラー:', error);
+      setUserRegistrationError('ユーザーの作成に失敗しました');
     } finally {
-      setIsLoading(false);
+      setUserRegistrationLoading(false);
     }
   };
 
@@ -245,7 +335,14 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
         >
           {step === 'select' && (
             <UserSelectStep
-              users={MOCK_USERS}
+              users={groupUsers
+                .filter(user => user.userId) // userIdが存在するもののみ
+                .map(user => ({
+                  userId: user.userId as string, // フィルター後は必ず存在
+                  userName: user.userName,
+                  avatarIndex: user.avatar,
+                  avatar: `/img/${user.avatar}.png`,
+                }))}
               onUserSelect={handleExistingUserLogin}
               onCreateNewUser={() => setStep('create')}
               isLoading={isLoading}
@@ -257,10 +354,29 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               avatars={AVATAR_IMAGES}
               onBack={() => setStep('select')}
               onSubmit={handleCreateUser}
-              isLoading={isLoading}
+              isLoading={userRegistrationLoading}
             />
           )}
         </Box>
+
+        {/* エラー表示 */}
+        {userRegistrationError && (
+          <Box
+            bg="red.50"
+            border="1px solid"
+            borderColor="red.200"
+            borderRadius="lg"
+            p={4}
+            _dark={{
+              bg: 'red.900',
+              borderColor: 'red.700',
+            }}
+          >
+            <Text fontSize="sm" color="red.700" _dark={{ color: 'red.300' }} fontWeight="medium">
+              ❌ {userRegistrationError}
+            </Text>
+          </Box>
+        )}
 
         {/* ヘルプテキスト - 改善版 */}
         <Box

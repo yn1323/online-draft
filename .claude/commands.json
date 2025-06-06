@@ -241,6 +241,131 @@
           "description": "Verify documentation accuracy and completeness"
         }
       ]
+    },
+    "issue": {
+      "description": "Create single AI-ready ISSUE following docs/AI_ISSUE_WRITING_GUIDE.md template",
+      "steps": [
+        {
+          "action": "read_guide",
+          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md",
+          "description": "Read AI ISSUE writing guide for best practices"
+        },
+        {
+          "action": "read_template",
+          "command": "read .github/ISSUE_TEMPLATE/ai-feature-request.md",
+          "description": "Read ISSUE template structure"
+        },
+        {
+          "action": "analyze_task_scope",
+          "description": "Analyze provided task content for scope minimization (1 feature, 2-3 files max)"
+        },
+        {
+          "action": "generate_issue_content",
+          "description": "Generate ISSUE content following template with specific technical constraints"
+        },
+        {
+          "action": "validate_issue_format",
+          "description": "Validate ISSUE follows AI_ISSUE_WRITING_GUIDE requirements"
+        },
+        {
+          "action": "create_github_issue",
+          "description": "Create GitHub ISSUE using gh cli with generated content"
+        }
+      ]
+    },
+    "issue-schedule": {
+      "description": "Split current TODOs into multiple AI-ready ISSUEs following scope minimization principles",
+      "steps": [
+        {
+          "action": "read_current_todos",
+          "description": "Read current TODO list using TodoRead"
+        },
+        {
+          "action": "read_guide",
+          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md", 
+          "description": "Read AI ISSUE writing guide for scope guidelines"
+        },
+        {
+          "action": "read_template",
+          "command": "read .github/ISSUE_TEMPLATE/ai-feature-request.md",
+          "description": "Read ISSUE template structure"
+        },
+        {
+          "action": "analyze_todo_dependencies",
+          "description": "Analyze TODO dependencies and group related tasks"
+        },
+        {
+          "action": "split_by_scope",
+          "description": "Split TODOs into minimal scopes (1 feature, 2-3 files max each)"
+        },
+        {
+          "action": "prioritize_issues",
+          "description": "Set priorities based on dependencies (High/Medium/Low)"
+        },
+        {
+          "action": "generate_multiple_issues",
+          "description": "Generate multiple ISSUE contents following template"
+        },
+        {
+          "action": "create_github_issues",
+          "description": "Create multiple GitHub ISSUEs using gh cli with appropriate labels"
+        }
+      ]
+    },
+    "todo": {
+      "description": "Display current TODO list and next actionable tasks",
+      "steps": [
+        {
+          "action": "read_current_todos",
+          "description": "Execute TodoRead to get current TODO list"
+        },
+        {
+          "action": "analyze_todo_status",
+          "description": "Analyze TODO status and identify next actionable items"
+        },
+        {
+          "action": "prioritize_next_tasks",
+          "description": "Prioritize pending tasks by importance and dependencies"
+        },
+        {
+          "action": "suggest_next_actions",
+          "description": "Suggest specific next actions with brief explanations"
+        }
+      ]
+    },
+    "plan": {
+      "description": "Planning and consultation mode - NO CODE MODIFICATIONS allowed",
+      "steps": [
+        {
+          "action": "analyze_current_state",
+          "description": "Analyze current project state and context"
+        },
+        {
+          "action": "understand_request",
+          "description": "Understand consultation/planning request thoroughly"
+        },
+        {
+          "action": "research_existing_code",
+          "description": "Research existing codebase for context (READ ONLY)"
+        },
+        {
+          "action": "provide_consultation",
+          "description": "Provide detailed consultation with multiple options and recommendations"
+        },
+        {
+          "action": "suggest_implementation_strategy",
+          "description": "Suggest implementation approach and best practices"
+        },
+        {
+          "action": "identify_potential_issues",
+          "description": "Identify potential challenges and mitigation strategies"
+        }
+      ],
+      "constraints": {
+        "no_code_modification": true,
+        "read_only_analysis": true,
+        "consultation_only": true
+      }
     }
   }
 }

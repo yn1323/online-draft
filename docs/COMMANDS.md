@@ -95,6 +95,8 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 /upload-all                # 自動化ワークフロー（refactor→doc-update→commit→push）
 /sound                     # 作業完了音声通知機能（levelup.mp3/smallMedal.mp3）
 /plan                      # 計画・相談・質問に答える（コード修正禁止）
+/issue [内容]              # AI向けISSUE作成（Claude Code Actions CI対応）
+/issue-schedule            # 現在のTODOを複数のISSUEに分割作成
 ```
 
 ### /plan コマンド仕様（計画・相談コマンド）
@@ -204,6 +206,66 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 - 音声ファイルが存在しない場合はエラーメッセージのみ表示
 - /soundは他のコマンドと組み合わせて使用可能
 - **VERY IMPORTANT**: /soundコマンドが含まれている場合、必ず作業の最後に適切な音声を再生すること
+
+### /issue コマンド仕様（AI向けISSUE作成）
+**/issueコマンドはClaude Code Actions CI向けのISSUE作成専用コマンドです：**
+
+**⚠️ VERY IMPORTANT: 必ず`docs/AI_ISSUE_WRITING_GUIDE.md`と`.github/ISSUE_TEMPLATE/ai-feature-request.md`を参照すること！**
+
+**基本機能**:
+- 単一のAI実装タスク用ISSUE作成
+- スコープ最小化（1機能、2-3ファイル、30分-1時間）
+- GitHub CLI(`gh`)を使用してISSUE自動作成
+
+**実行手順**:
+1. タスク内容のスコープ分析・最小化
+2. 技術制約の明記（Chakra UI v3、Jotai等）
+3. 対象ファイルパスの具体化
+4. 完了条件の明確化（lint/type-check/test成功）
+5. GitHub ISSUEとして登録
+
+**使用例**: 
+```bash
+/issue LobbyPageにFirestoreユーザー作成機能を追加
+/issue AvatarSelectorコンポーネントのStorybookテスト作成
+/issue useAuthフックのエラーハンドリング改善
+```
+
+**重要な制約**:
+- 1つのISSUEで1つの機能のみ（複数機能の混在禁止）
+- 修正対象ファイル数は2-3個まで
+- 技術制約（Chakra UI v3仕様、既存パターン踏襲）を必ず明記
+- ai-task, enhancementラベルを自動付与
+
+### /issue-schedule コマンド仕様（TODO分割ISSUE作成）
+**/issue-scheduleコマンドは現在のTODOを複数のAI実装用ISSUEに分割するコマンドです：**
+
+**⚠️ VERY IMPORTANT: TodoReadで現在のTODO状況を確認してから実行すること！**
+
+**基本機能**:
+- 現在のTODOリストを複数のISSUEに最適分割
+- 依存関係を分析して優先度設定（High/Medium/Low）
+- 各ISSUEのスコープを最小化（並行実行対応）
+- 複数のGitHub ISSUEを一括作成
+
+**実行手順**:
+1. TodoReadで現在のTODO読み取り
+2. タスク依存関係の分析・グループ化
+3. スコープ最小化による分割戦略立案
+4. 優先度設定（前提条件→独立機能→改善系）
+5. 複数ISSUEコンテンツ生成
+6. GitHub ISSUEとして一括登録
+
+**使用例**: 
+```bash
+/issue-schedule    # 現在のTODOを最適なISSUEに分割
+```
+
+**分割戦略**:
+- **High優先度**: 他タスクの前提となる機能（認証、データ構造等）
+- **Medium優先度**: 独立して実装可能な機能（UI、API連携等）  
+- **Low優先度**: UI改善・リファクタリング系
+- **競合回避**: 異なるファイルを対象にして並行実行可能
 
 ## 🔧 開発環境とツールの活用
 
