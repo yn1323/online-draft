@@ -27,28 +27,28 @@ export const Default: Story = {
     const canvas = within(canvasElement);
 
     // ローディング完了を待つ（グループ名が表示されるまで）
-    await expect(canvas.findByText('テストグループ 1')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('テストグループ 1')).toBeInTheDocument();
 
     // 基本的な要素の存在確認
-    await expect(canvas.findByText('ABC123')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText(/ラウンド: 3/)).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('ABC123')).toBeInTheDocument();
+    expect(await canvas.findByText(/ラウンド: 3/)).toBeInTheDocument();
     
     // ステップインジケーター
-    await expect(canvas.findByText('ユーザー選択')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('ユーザー選択')).toBeInTheDocument();
     
     // 既存ユーザー一覧
-    await expect(canvas.findByText('田中太郎')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText('山田花子')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText('登録済みのユーザーで参加')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('田中太郎')).toBeInTheDocument();
+    expect(await canvas.findByText('山田花子')).toBeInTheDocument();
+    expect(await canvas.findByText('登録済みのユーザーで参加')).toBeInTheDocument();
     
     // 新規ユーザー作成ボタン
-    await expect(canvas.findByText('新しいユーザーを作成')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('新しいユーザーを作成')).toBeInTheDocument();
     
     // ヘルプテキスト
-    await expect(canvas.findByText(/既存のユーザーを選択するか、新しいユーザーを作成して/)).resolves.toBeInTheDocument();
+    expect(await canvas.findByText(/既存のユーザーを選択するか、新しいユーザーを作成して/)).toBeInTheDocument();
     
     // グループ参加バッジ
-    await expect(canvas.findByText('グループに参加')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('グループに参加')).toBeInTheDocument();
   },
 };
 
@@ -60,14 +60,14 @@ export const LongGroupName: Story = {
     const canvas = within(canvasElement);
 
     // ローディング完了を待つ
-    await expect(canvas.findByText('非常に長いグループ名のテストケースです！これは表示の確認用')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('非常に長いグループ名のテストケースです！これは表示の確認用')).toBeInTheDocument();
 
     // 長いグループ名の表示確認
-    await expect(canvas.findByText('XYZ789')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText(/ラウンド: 5/)).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('XYZ789')).toBeInTheDocument();
+    expect(await canvas.findByText(/ラウンド: 5/)).toBeInTheDocument();
     
     // 対応するユーザー
-    await expect(canvas.findByText('Alice')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('Alice')).toBeInTheDocument();
   },
 };
 
@@ -79,14 +79,14 @@ export const ShortGroupId: Story = {
     const canvas = within(canvasElement);
 
     // ローディング完了を待つ
-    await expect(canvas.findByText('短ID')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('短ID')).toBeInTheDocument();
 
     // 短いIDの表示確認
-    await expect(canvas.findByText('12')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText(/ラウンド: 1/)).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('12')).toBeInTheDocument();
+    expect(await canvas.findByText(/ラウンド: 1/)).toBeInTheDocument();
     
     // 対応するユーザー
-    await expect(canvas.findByText('Bob')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('Bob')).toBeInTheDocument();
   },
 };
 
@@ -98,10 +98,10 @@ export const NonExistentGroup: Story = {
     const canvas = within(canvasElement);
 
     // エラー状態の表示を待つ
-    await expect(canvas.findByText('グループが見つかりません')).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('グループが見つかりません')).toBeInTheDocument();
 
     // エラー状態の確認
-    await expect(canvas.findByText('グループID: nonexistent')).resolves.toBeInTheDocument();
-    await expect(canvas.findByText(/指定されたグループID のグループは存在しないか/)).resolves.toBeInTheDocument();
+    expect(await canvas.findByText('グループID: nonexistent')).toBeInTheDocument();
+    expect(await canvas.findByText(/指定されたグループID のグループは存在しないか/)).toBeInTheDocument();
   },
 };
