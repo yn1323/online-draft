@@ -62,6 +62,19 @@
 
 ### Git・コミット関連の重要事項
 - **コミットメッセージは日本語で書く**（VERY IMPORTANT）
+- **コミットメッセージにprefixを必ずつける**（VERY IMPORTANT）:
+  - `feat:` 新機能追加
+  - `fix:` バグ修正
+  - `docs:` ドキュメント変更
+  - `style:` コードフォーマット変更（機能に影響しない）
+  - `refactor:` リファクタリング（機能変更なし）
+  - `test:` テスト追加・修正
+  - `chore:` ビルドプロセス・補助ツールの変更
+  - `perf:` パフォーマンス改善
+  - `ci:` CI設定変更
+  - `build:` ビルドシステム変更
+  - `revert:` コミットの取り消し
+  - `remove:` ファイル・機能削除
 
 ### 技術ガイドライン参照
 - **Storybookテスト**: `docs/DEVELOPMENT_GUIDE.md`の「テスト・品質管理ガイドライン」参照
@@ -111,6 +124,8 @@
 ```bash
 /refactor          # 品質チェック（lint→型→改行→doc）
 /sound            # 作業完了音声通知
+/plan             # 計画・相談・質問に答える（コード修正禁止）
+/todo             # 次にやるべきことを一覧で表示（TodoRead実行）
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm build        # 型チェック兼ビルド
 ```
