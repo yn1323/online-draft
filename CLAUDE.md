@@ -50,10 +50,19 @@
 - **ダークモード**: 必ずライト/ダーク両対応確認
 
 ### 認証関連作業時の注意事項
-- **useAuth**: `src/hooks/useAuth.ts`フック使用
+- **useAuth**: `src/hooks/auth/useAuth.ts`フック使用
 - **Firebase**: 匿名認証はFirebase Anonymous Auth
 - **状態管理**: Jotaiで認証状態をアプリ全体共有
 - **テストページ**: `/auth-test`で動作確認可能
+
+## 実装の注意事項（VERY IMPORTANT）
+- **Barrelエクスポート禁止**: index.tsでのre-export禁止、直接ファイルパスでimport必須
+
+### カスタムフック開発時の重要事項（VERY IMPORTANT）
+- **ディレクトリ構成**: 機能別分類必須（`src/hooks/auth/`, `src/hooks/data/`, `src/hooks/realtime/`, `src/hooks/ui/`）
+- **import方式**: 直接ファイルパス指定（例: `import { useAuth } from '@/src/hooks/auth/useAuth'`）
+- **export方式**: 各ファイルで直接named export、`export *`禁止
+- **Mock戦略**: カスタムフック内でのMock実装禁止、MSWによる統一Mock戦略
 
 ### リファクタリング時の必須項目
 - **コマンド順序**: `/refactor` → lint → 型チェック → ファイル末尾改行 → ドキュメント更新
@@ -91,6 +100,12 @@
 - **タイムアウト**: VRTテストは60秒に設定（`--testTimeout 60000`）
 - **キャッシュ問題**: `storybook-vrt.yml`は毎回クリーンビルドする設定
 - **MSW Service Worker**: VRT環境では相対パス`./mockServiceWorker.js`で指定必須
+
+### Firebase + Storybook Mock戦略（VERY IMPORTANT）
+- **HTTP API**: MSWでモック（getDraftGroup等）
+- **WebSocket/リアルタイム**: 環境分岐必須（onSnapshot等はMSWでモック不可）
+- **カスタムフック内分岐**: `isStorybookEnvironment()`でStorybook用モックデータ直接設定
+- **理由**: onSnapshotはWebSocketベースのためMSWでは完全にモック不可能
 
 ### 新機能実装時の制約
 - **レガシー参考**: 必ず`legacy/`内のコードを参考にして既存ロジック理解

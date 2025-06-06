@@ -1,7 +1,7 @@
 'use client';
 
 import { toaster } from '@/src/components/ui/toaster';
-import { useAuth } from '@/src/hooks/useAuth';
+import { useAuth } from '@/src/hooks/auth/useAuth';
 import { auth } from '@/src/lib/firebase';
 import { createDraftGroup } from '@/src/services/firestore/draftGroups';
 import { Box, Container, VStack } from '@chakra-ui/react';

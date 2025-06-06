@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/src/hooks/useAuth';
+import { useAuth } from '@/src/hooks/auth/useAuth';
 import { auth } from '@/src/lib/firebase';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import type { User } from 'firebase/auth';

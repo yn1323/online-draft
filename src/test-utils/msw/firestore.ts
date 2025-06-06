@@ -73,6 +73,60 @@ const mockGroups: Record<string, unknown> = {
   },
 };
 
+// テスト用のモックユーザーデータ
+const mockUsers: Record<string, unknown[]> = {
+  ABC123: [
+    {
+      name: 'projects/test/databases/(default)/documents/app/onlinedraft/user/user1',
+      fields: {
+        groupId: { stringValue: 'ABC123' },
+        userName: { stringValue: '田中太郎' },
+        avatar: { stringValue: '1' },
+        deleteFlg: { booleanValue: false },
+      },
+      createTime: '2024-01-01T10:00:00Z',
+      updateTime: '2024-01-01T10:00:00Z',
+    },
+    {
+      name: 'projects/test/databases/(default)/documents/app/onlinedraft/user/user2',
+      fields: {
+        groupId: { stringValue: 'ABC123' },
+        userName: { stringValue: '山田花子' },
+        avatar: { stringValue: '5' },
+        deleteFlg: { booleanValue: false },
+      },
+      createTime: '2024-01-01T10:01:00Z',
+      updateTime: '2024-01-01T10:01:00Z',
+    },
+  ],
+  XYZ789: [
+    {
+      name: 'projects/test/databases/(default)/documents/app/onlinedraft/user/user3',
+      fields: {
+        groupId: { stringValue: 'XYZ789' },
+        userName: { stringValue: 'Alice' },
+        avatar: { stringValue: '3' },
+        deleteFlg: { booleanValue: false },
+      },
+      createTime: '2024-01-01T11:00:00Z',
+      updateTime: '2024-01-01T11:00:00Z',
+    },
+  ],
+  '12': [
+    {
+      name: 'projects/test/databases/(default)/documents/app/onlinedraft/user/user4',
+      fields: {
+        groupId: { stringValue: '12' },
+        userName: { stringValue: 'Bob' },
+        avatar: { stringValue: '2' },
+        deleteFlg: { booleanValue: false },
+      },
+      createTime: '2024-01-01T12:00:00Z',
+      updateTime: '2024-01-01T12:00:00Z',
+    },
+  ],
+};
+
 export const firestoreHandlers = [
   // getDraftGroup のモック - グループ情報取得
   http.get(
@@ -98,6 +152,30 @@ export const firestoreHandlers = [
       return HttpResponse.json(mockGroup);
     },
   ),
+
+  // ユーザー一覧取得のモック
+  http.post('*/v1/projects/*/databases/(default)/documents:runQuery', async ({ request }) => {
+    // biome-ignore lint/suspicious/noExplicitAny: Firestore API構造は複雑でanyが必要
+    const body = await request.json() as any;
+    
+    // クエリからgroupIdを抽出
+    const structuredQuery = body.structuredQuery;
+    if (structuredQuery?.where?.compositeFilter?.filters) {
+      const groupIdFilter = structuredQuery.where.compositeFilter.filters.find(
+        // biome-ignore lint/suspicious/noExplicitAny: Firestore フィルター構造は複雑
+        (filter: any) => filter.fieldFilter?.field?.fieldPath === 'groupId'
+      );
+      
+      const groupId = groupIdFilter?.fieldFilter?.value?.stringValue;
+      const users = mockUsers[groupId] || [];
+      
+      return HttpResponse.json(
+        users.map((user) => ({ document: user }))
+      );
+    }
+    
+    return HttpResponse.json([]);
+  }),
 
   // Firestore Listen API (リアルタイム更新用)
   http.post('*/google.firestore.v1.Firestore/Listen/channel', () => {

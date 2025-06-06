@@ -2,23 +2,17 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
-import { createUser, checkUserNameExists, subscribeUsers } from '@/src/helpers/firebase/user';
+import { createUser, checkUserNameExists } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
-import { useAuth } from '@/src/hooks/useAuth';
-import { auth } from '@/src/lib/firebase';
-import { getDraftGroup } from '@/src/services/firestore/draftGroups';
+import { useAutoAuth } from '@/src/hooks/auth/useAutoAuth';
+import { useGroupData } from '@/src/hooks/data/useGroupData';
+import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
 import {
   currentUserAtom,
-  groupUsersAtom,
   userRegistrationErrorAtom,
   userRegistrationLoadingAtom,
 } from '@/src/stores/user';
-import {
-  AVATAR_IMAGES,
-  MOCK_USERS,
-  STORYBOOK_GROUP_DATA,
-  STORYBOOK_LOADING_DELAY,
-} from './mocks';
+import { AVATAR_IMAGES } from './mocks';
 import {
   Badge,
   Box,
@@ -30,8 +24,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useAtom, useSetAtom } from 'jotai';
-import { signInAnonymously } from 'firebase/auth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
 import UserSelectStep from '../UserSelectStep';
@@ -44,17 +37,14 @@ interface LobbyPageProps {
 export default function LobbyPage({ groupId }: LobbyPageProps) {
   const [step, setStep] = useState<Step>('select');
   const [isLoading, setIsLoading] = useState(false);
-  const [groupData, setGroupData] = useState<{
-    groupName: string;
-    round: number;
-  } | null>(null);
-  const [groupLoading, setGroupLoading] = useState(true);
-  const [groupError, setGroupError] = useState<string | null>(null);
-  const { isAuthenticated, loading: authLoading } = useAuth();
+
+  // カスタムフック
+  useAutoAuth(); // 自動匿名ログイン処理
+  const { groupData, groupLoading, groupError } = useGroupData(groupId);
+  const { groupUsers } = useRealtimeUsers(groupId);
 
   // Jotai状態管理
   const setCurrentUser = useSetAtom(currentUserAtom);
-  const [groupUsers, setGroupUsers] = useAtom(groupUsersAtom);
   const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(userRegistrationLoadingAtom);
   const [userRegistrationError, setUserRegistrationError] = useAtom(userRegistrationErrorAtom);
 
@@ -63,119 +53,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const helpBgColor = useColorModeValue('blue.50', 'blue.900');
   const helpBorderColor = useColorModeValue('blue.200', 'blue.700');
   const helpTextColor = useColorModeValue('blue.700', 'blue.300');
-
-  // ロビーページアクセス時の自動匿名ログイン
-  useEffect(() => {
-    if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のため自動ログインをスキップ');
-      return;
-    }
-
-    const autoLogin = async () => {
-      if (!authLoading && !isAuthenticated) {
-        try {
-          console.log('🔄 ロビーページ - 自動匿名ログイン開始...');
-          const userCredential = await signInAnonymously(auth);
-          console.log('✅ 自動ログイン成功:', {
-            uid: userCredential.user.uid,
-            isAnonymous: userCredential.user.isAnonymous,
-          });
-        } catch (error) {
-          console.error('❌ 自動ログインエラー:', error);
-        }
-      }
-    };
-
-    autoLogin();
-  }, [authLoading, isAuthenticated]);
-
-  // グループ情報の取得
-  useEffect(() => {
-    const fetchGroupData = async () => {
-      if (!groupId) {
-        return;
-      }
-
-      // Storybook環境では固定データを使用
-      if (isStorybookEnvironment()) {
-        console.log('📚 Storybook環境のためモックデータを使用');
-        setGroupLoading(true);
-
-        // 少し遅延を入れてローディング状態をテスト
-        setTimeout(() => {
-          const mockGroup = STORYBOOK_GROUP_DATA[groupId as keyof typeof STORYBOOK_GROUP_DATA];
-          if (mockGroup) {
-            setGroupData(mockGroup);
-          } else {
-            setGroupError('指定されたグループが見つかりません');
-          }
-          setGroupLoading(false);
-        }, STORYBOOK_LOADING_DELAY);
-        return;
-      }
-
-      try {
-        console.log('🔄 グループ情報取得開始...', { groupId });
-        setGroupLoading(true);
-        setGroupError(null);
-
-        const group = await getDraftGroup(groupId);
-
-        if (!group) {
-          setGroupError('指定されたグループが見つかりません');
-          console.error('❌ グループが存在しません:', { groupId });
-          return;
-        }
-
-        setGroupData({
-          groupName: group.groupName,
-          round: group.round,
-        });
-
-        console.log('✅ グループ情報取得成功:', group);
-      } catch (error) {
-        console.error('❌ グループ情報取得エラー:', error);
-        setGroupError('グループ情報の取得に失敗しました');
-      } finally {
-        setGroupLoading(false);
-      }
-    };
-
-    fetchGroupData();
-  }, [groupId]);
-
-  // リアルタイムユーザー一覧の監視
-  useEffect(() => {
-    if (!groupId) {
-      return;
-    }
-
-    // Storybook環境ではモックデータを使用
-    if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモックユーザーを使用');
-      const mockUserDocuments = MOCK_USERS.map(user => ({
-        userId: user.userId,
-        groupId,
-        userName: user.userName,
-        avatar: user.avatarIndex,
-        deleteFlg: false,
-      }));
-      setGroupUsers(mockUserDocuments);
-      return;
-    }
-
-    console.log('🔄 リアルタイムユーザー監視開始...', { groupId });
-
-    const unsubscribe = subscribeUsers(groupId, (users) => {
-      console.log('👥 ユーザー一覧更新:', users);
-      setGroupUsers(users);
-    });
-
-    return () => {
-      console.log('🛑 ユーザー監視停止');
-      unsubscribe();
-    };
-  }, [groupId, setGroupUsers]);
 
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);

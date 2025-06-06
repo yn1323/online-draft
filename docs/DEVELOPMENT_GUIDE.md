@@ -230,7 +230,7 @@ lobby/
 - **パーツレベル（components/）**: 単一の明確な機能を持つ独立したUI。複数箇所で使われる可能性があり、独立してテスト可能
 
 **設計思想:**
-- Atomic DesignやContainer/Presentationalパターンは使用しない
+- Atomic DesignやContainer/Presentationalパターンは控える
 - 純粋に機能・責務ベースでの分類
 - 実用性と保守性を重視した階層構造
 
