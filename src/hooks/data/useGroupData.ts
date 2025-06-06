@@ -55,7 +55,7 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
           if (mockGroup) {
             setGroupData(mockGroup);
           } else {
-            setGroupError('指定されたグループが見つかりません');
+            setGroupError('指定されたグループID のグループは存在しないか、削除されている可能性があります。');
           }
           setGroupLoading(false);
         }, STORYBOOK_LOADING_DELAY);

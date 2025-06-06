@@ -28,6 +28,8 @@
 - ✅ **完了**: Storybookテスト品質保証戦略の確立
 - ✅ **完了**: MSWハンドラー構造最適化（Firebase Auth/Firestore分離、共通化戦略）
 - ✅ **完了**: Storybook環境検出の共通化（isStorybookEnvironment ヘルパー）
+- ✅ **完了**: LobbyPageカスタムフックリファクタリング（useEffect複数問題解決）
+- ✅ **完了**: Storybookテスト強化（findBy使用、存在確認テスト実装）
 - 🔄 **進行中**: ユーザー登録機能の実装
 - ⏳ **次回**: リアルタイム同期、チャット機能
 
@@ -213,5 +215,5 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/7 - Claude Code Actions実行時のtest/lint/type-check無限ループ防止ルール追加
+**最終更新**: 2025/1/7 - LobbyPageカスタムフックリファクタリング＆Storybookテスト品質強化完了
 
