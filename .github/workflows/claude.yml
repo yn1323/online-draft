@@ -30,6 +30,7 @@ jobs:
               uses: actions/checkout@v4
               with:
                   fetch-depth: 1
+                  ref: refactor/develop
 
             - name: Run Claude Code
               id: claude
