@@ -3,7 +3,7 @@
  */
 
 import { type Page, expect } from '@playwright/test';
-import { selectors, getLocator } from '../utils/selectors';
+import { selectors } from '../utils/selectors';
 import { timeouts, testUrls } from '../utils/test-data';
 
 export class DraftOperations {
@@ -17,7 +17,7 @@ export class DraftOperations {
     await this.page.goto(testUrls.top);
     
     // ドラフト作成ボタンをクリック
-    const createButton = this.page.getByTestId(selectors.top.createDraftButton);
+    const createButton = this.page.getByRole('button', { name: 'ドラフトを作成' });
     await expect(createButton).toBeVisible();
     await createButton.click();
     
@@ -35,12 +35,12 @@ export class DraftOperations {
     await this.page.goto(testUrls.join);
     
     // コード入力フィールドに入力
-    const codeInput = this.page.getByTestId(selectors.join.codeInput);
+    const codeInput = this.page.getByLabel('参加コード');
     await expect(codeInput).toBeVisible();
     await codeInput.fill(code);
     
     // 参加ボタンをクリック
-    const submitButton = this.page.getByTestId(selectors.join.submitButton);
+    const submitButton = this.page.getByRole('button', { name: '参加' });
     await submitButton.click();
     
     // ロビーページへの遷移を待つ
@@ -57,12 +57,12 @@ export class DraftOperations {
     await this.page.goto(testUrls.join);
     
     // URL入力フィールドに入力
-    const urlInput = this.page.getByTestId(selectors.join.urlInput);
+    const urlInput = this.page.getByLabel('参加URL');
     await expect(urlInput).toBeVisible();
     await urlInput.fill(url);
     
     // 参加ボタンをクリック
-    const submitButton = this.page.getByTestId(selectors.join.submitButton);
+    const submitButton = this.page.getByRole('button', { name: '参加' });
     await submitButton.click();
     
     // ロビーページへの遷移を待つ
@@ -79,11 +79,11 @@ export class DraftOperations {
     await this.page.goto(testUrls.join);
     
     // 履歴リストが表示されるまで待つ
-    const recentList = this.page.getByTestId(selectors.join.recentMeetingsList);
+    const recentList = this.page.locator(selectors.join.recentMeetingsList);
     await expect(recentList).toBeVisible();
     
     // 特定のグループをクリック
-    const meetingItem = this.page.getByTestId(selectors.join.recentMeetingItem(groupId));
+    const meetingItem = this.page.locator(selectors.join.recentMeetingItem(groupId));
     await expect(meetingItem).toBeVisible();
     await meetingItem.click();
     
@@ -114,7 +114,7 @@ export class DraftOperations {
     
     // グループコードを表示している要素を探す
     // TODO: 実際の実装に合わせてセレクターを調整
-    const codeElement = this.page.locator('[data-testid="group-code"]');
+    const codeElement = this.page.locator('text=/\\d{4}/');
     const code = await codeElement.textContent();
     
     if (!code) {
@@ -134,7 +134,7 @@ export class DraftOperations {
    * グループ情報が正しく表示されているか確認
    */
   async verifyGroupInfo(expectedTitle?: string): Promise<void> {
-    const titleElement = this.page.getByTestId(selectors.lobby.groupInfo.title);
+    const titleElement = this.page.locator(selectors.lobby.groupInfo.title).first();
     await expect(titleElement).toBeVisible();
     
     if (expectedTitle) {
@@ -142,7 +142,7 @@ export class DraftOperations {
     }
     
     // 参加者リストが表示されているか確認
-    const participantList = this.page.getByTestId(selectors.lobby.groupInfo.participantList);
+    const participantList = this.page.locator(selectors.lobby.groupInfo.participantList);
     await expect(participantList).toBeVisible();
   }
 
@@ -150,7 +150,7 @@ export class DraftOperations {
    * エラーメッセージが表示されているか確認
    */
   async verifyErrorMessage(expectedMessage: string): Promise<void> {
-    const errorElement = this.page.getByTestId(selectors.common.errorMessage);
+    const errorElement = this.page.getByRole('alert');
     await expect(errorElement).toBeVisible();
     await expect(errorElement).toContainText(expectedMessage);
   }
@@ -159,7 +159,7 @@ export class DraftOperations {
    * ローディング状態が解消されるまで待つ
    */
   async waitForLoadingComplete(): Promise<void> {
-    const loading = this.page.getByTestId(selectors.common.loading);
+    const loading = this.page.getByRole('status', { name: '読み込み中' });
     
     // ローディングが表示されている場合は非表示になるまで待つ
     if (await loading.isVisible()) {

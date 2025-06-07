@@ -18,26 +18,24 @@ export class UserOperations {
     await expect(this.page).toHaveURL(/\/lobby\/[a-zA-Z0-9-]+/);
     
     // ユーザー選択ステップで「新規作成」ボタンをクリック
-    const createNewButton = this.page.getByTestId(selectors.lobby.userSelect.createNewButton);
+    const createNewButton = this.page.getByRole('button', { name: '新しいユーザーを作成' });
     await expect(createNewButton).toBeVisible();
     await createNewButton.click();
     
     // ユーザー作成ステップに遷移したことを確認
-    const createContainer = this.page.getByTestId(selectors.lobby.userCreate.container);
+    const createContainer = this.page.locator(selectors.lobby.userCreate.container);
     await expect(createContainer).toBeVisible();
     
     // 名前を入力
-    const nameInput = this.page.getByTestId(selectors.lobby.userCreate.nameInput);
+    const nameInput = this.page.getByLabel('ユーザー名');
     await nameInput.fill(user.name);
     
     // アバターを選択
-    const avatarOption = this.page.getByTestId(
-      selectors.lobby.userCreate.avatarOption(user.avatarId)
-    );
+    const avatarOption = this.page.getByRole('radio', { name: `アバター${user.avatarId}` });
     await avatarOption.click();
     
     // 確定ボタンをクリック
-    const confirmButton = this.page.getByTestId(selectors.lobby.userCreate.confirmButton);
+    const confirmButton = this.page.getByRole('button', { name: '作成' });
     await confirmButton.click();
     
     // ドラフトページへの遷移を待つ（または次のステップへ）
@@ -52,11 +50,12 @@ export class UserOperations {
     await expect(this.page).toHaveURL(/\/lobby\/[a-zA-Z0-9-]+/);
     
     // ユーザー選択ステップが表示されていることを確認
-    const selectContainer = this.page.getByTestId(selectors.lobby.userSelect.container);
+    const selectContainer = this.page.locator(selectors.lobby.userSelect.container);
     await expect(selectContainer).toBeVisible();
     
     // ユーザーリストから選択
-    const userItem = this.page.getByTestId(selectors.lobby.userSelect.userItem(userId));
+    // userIdではなくユーザー名でボタンを探す
+    const userItem = this.page.getByRole('button', { name: new RegExp(`.*を選択`) });
     await expect(userItem).toBeVisible();
     await userItem.click();
     
@@ -68,7 +67,7 @@ export class UserOperations {
    * 現在のステップを確認
    */
   async verifyCurrentStep(stepNumber: number): Promise<void> {
-    const stepIndicator = this.page.getByTestId(selectors.lobby.currentStep(stepNumber));
+    const stepIndicator = this.page.locator(selectors.lobby.currentStep(stepNumber));
     await expect(stepIndicator).toHaveAttribute('aria-current', 'step');
   }
 
@@ -76,7 +75,7 @@ export class UserOperations {
    * 参加者リストに特定のユーザーが表示されているか確認
    */
   async verifyUserInParticipantList(userName: string): Promise<void> {
-    const participantList = this.page.getByTestId(selectors.lobby.groupInfo.participantList);
+    const participantList = this.page.locator(selectors.lobby.groupInfo.participantList);
     await expect(participantList).toBeVisible();
     
     // 参加者リスト内にユーザー名が含まれているか確認
@@ -87,7 +86,7 @@ export class UserOperations {
    * 参加者数を確認
    */
   async verifyParticipantCount(expectedCount: number): Promise<void> {
-    const countElement = this.page.getByTestId(selectors.lobby.groupInfo.participantCount);
+    const countElement = this.page.locator(selectors.lobby.groupInfo.participantCount);
     await expect(countElement).toBeVisible();
     await expect(countElement).toContainText(expectedCount.toString());
   }
@@ -96,11 +95,9 @@ export class UserOperations {
    * アバター選択状態を確認
    */
   async verifyAvatarSelected(avatarId: number): Promise<void> {
-    const avatarOption = this.page.getByTestId(
-      selectors.lobby.userCreate.avatarOption(avatarId)
-    );
+    const avatarOption = this.page.getByRole('radio', { name: `アバター${avatarId}` });
     // 選択状態を示す属性やクラスを確認（実装に応じて調整）
-    await expect(avatarOption).toHaveAttribute('data-selected', 'true');
+    await expect(avatarOption).toBeChecked();
   }
 
   /**
@@ -108,7 +105,7 @@ export class UserOperations {
    */
   async verifyNameValidationError(errorMessage: string): Promise<void> {
     // 名前入力フィールド周辺のエラーメッセージを確認
-    const nameInput = this.page.getByTestId(selectors.lobby.userCreate.nameInput);
+    const nameInput = this.page.getByLabel('ユーザー名');
     const errorElement = nameInput.locator('..').locator('[role="alert"]');
     await expect(errorElement).toBeVisible();
     await expect(errorElement).toContainText(errorMessage);
@@ -125,7 +122,7 @@ export class UserOperations {
       }),
       // または次のステップへの遷移を待つ
       this.page.waitForSelector(
-        `[data-testid="${selectors.lobby.userSelect.container}"]`,
+        selectors.lobby.userSelect.container,
         { state: 'hidden', timeout: timeouts.medium }
       ),
     ]);
@@ -145,12 +142,12 @@ export class UserOperations {
    * 戻るボタンをクリック
    */
   async clickBackButton(): Promise<void> {
-    const backButton = this.page.getByTestId(selectors.lobby.userCreate.backButton);
+    const backButton = this.page.getByRole('button', { name: '戻る' });
     await expect(backButton).toBeVisible();
     await backButton.click();
     
     // ユーザー選択ステップに戻ったことを確認
-    const selectContainer = this.page.getByTestId(selectors.lobby.userSelect.container);
+    const selectContainer = this.page.locator(selectors.lobby.userSelect.container);
     await expect(selectContainer).toBeVisible();
   }
 }

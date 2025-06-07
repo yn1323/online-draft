@@ -1,99 +1,86 @@
 /**
- * E2Eテスト用のセレクター定義
- * data-testid属性を使用した要素選択の一元管理
+ * E2Eテスト用のアクセシブルなセレクター定義
+ * アクセシビリティを考慮し、role、aria-label、テキストコンテンツなどを優先的に使用
  */
 
 export const selectors = {
   // 共通要素
   common: {
-    themeToggle: 'theme-toggle',
-    loading: 'loading-spinner',
-    errorMessage: 'error-message',
+    themeToggle: 'button[aria-label="テーマ切り替え"]',
+    loading: '[role="status"][aria-label="読み込み中"]',
+    errorMessage: '[role="alert"]',
   },
 
   // TOPページ
   top: {
-    heroSection: 'hero-section',
-    createDraftButton: 'create-draft-button',
-    joinDraftButton: 'join-draft-button',
-    howToSection: 'how-to-section',
-    stepCard: (step: number) => `step-card-${step}`,
+    heroSection: 'section[aria-label="ヒーローセクション"]',
+    createDraftButton: 'button:has-text("ドラフトを作成")',
+    joinDraftButton: 'button:has-text("ドラフトに参加")',
+    howToSection: 'section[aria-label="使い方"]',
+    stepCard: (step: number) => `article[aria-label="ステップ${step}"]`,
   },
 
   // 参加ページ
   join: {
-    joinForm: 'join-form',
-    codeInput: 'join-code-input',
-    urlInput: 'join-url-input',
-    submitButton: 'join-submit-button',
-    recentMeetingsList: 'recent-meetings-list',
-    recentMeetingItem: (id: string) => `recent-meeting-${id}`,
-    joinHint: 'join-hint',
+    joinForm: 'form[aria-label="参加フォーム"]',
+    codeInput: 'input[aria-label="参加コード"]',
+    urlInput: 'input[aria-label="参加URL"]',
+    submitButton: 'button[type="submit"]:has-text("参加")',
+    recentMeetingsList: 'ul[aria-label="最近参加したドラフト"]',
+    recentMeetingItem: (id: string) => `li[aria-label*="${id}"]`,
+    joinHint: '[role="note"]',
   },
 
   // ロビーページ
   lobby: {
-    container: 'lobby-container',
-    stepIndicator: 'step-indicator',
-    currentStep: (step: number) => `step-${step}`,
+    container: 'main[aria-label="ロビー"]',
+    stepIndicator: 'nav[aria-label="ステップインジケーター"]',
+    currentStep: (step: number) => `[aria-label="ステップ${step}"][aria-current="step"]`,
     
     // ユーザー選択ステップ
     userSelect: {
-      container: 'user-select-container',
-      existingUserList: 'existing-user-list',
-      userItem: (id: string) => `user-item-${id}`,
-      createNewButton: 'create-new-user-button',
+      container: 'section[aria-label="ユーザー選択"]',
+      existingUserList: 'ul[aria-label="既存ユーザー一覧"]',
+      userItem: (name: string) => `button[aria-label="${name}を選択"]`,
+      createNewButton: 'button:has-text("新しいユーザーを作成")',
     },
     
     // ユーザー作成ステップ
     userCreate: {
-      container: 'user-create-container',
-      nameInput: 'user-name-input',
-      avatarSelector: 'avatar-selector',
-      avatarOption: (id: number) => `avatar-${id}`,
-      confirmButton: 'user-create-confirm',
-      backButton: 'user-create-back',
+      container: 'section[aria-label="ユーザー作成"]',
+      nameInput: 'input[aria-label="ユーザー名"]',
+      avatarSelector: '[role="radiogroup"][aria-label="アバター選択"]',
+      avatarOption: (id: number) => `[role="radio"][aria-label="アバター${id}"]`,
+      confirmButton: 'button:has-text("作成")',
+      backButton: 'button[aria-label="戻る"]',
     },
     
     // グループ情報
     groupInfo: {
-      title: 'group-title',
-      participantCount: 'participant-count',
-      participantList: 'participant-list',
-      participantItem: (id: string) => `participant-${id}`,
+      title: 'h1, h2',
+      participantCount: '[aria-label="参加者数"]',
+      participantList: 'ul[aria-label="参加者一覧"]',
+      participantItem: (name: string) => `li:has-text("${name}")`,
     },
   },
 
   // ドラフトページ（将来実装用）
   draft: {
-    container: 'draft-container',
-    chatArea: 'chat-area',
-    chatInput: 'chat-input',
-    chatSendButton: 'chat-send-button',
-    slotArea: 'slot-area',
-    slotItem: (index: number) => `slot-${index}`,
-    submitButton: 'draft-submit-button',
+    container: 'main[aria-label="ドラフト"]',
+    chatArea: 'section[aria-label="チャット"]',
+    chatInput: 'input[aria-label="メッセージ入力"]',
+    chatSendButton: 'button[aria-label="送信"]',
+    slotArea: 'section[aria-label="スロットエリア"]',
+    slotItem: (index: number) => `[role="listitem"][aria-label="スロット${index}"]`,
+    submitButton: 'button:has-text("確定")',
   },
 
   // モーダル・ダイアログ
   modal: {
-    container: 'modal-container',
-    closeButton: 'modal-close-button',
-    confirmButton: 'modal-confirm-button',
-    cancelButton: 'modal-cancel-button',
+    container: '[role="dialog"]',
+    closeButton: 'button[aria-label="閉じる"]',
+    confirmButton: 'button:has-text("確認")',
+    cancelButton: 'button:has-text("キャンセル")',
   },
 } as const;
 
-/**
- * data-testid属性セレクターを生成
- */
-export function getTestId(selector: string): string {
-  return `[data-testid="${selector}"]`;
-}
-
-/**
- * Playwrightのlocator用セレクターを生成
- */
-export function getLocator(selector: string): string {
-  return `data-testid=${selector}`;
-}
