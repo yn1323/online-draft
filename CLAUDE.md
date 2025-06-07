@@ -163,8 +163,9 @@ pnpm build        # 型チェック兼ビルド
 pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
 
 # 🔔 作業完了通知コマンド（MUST USE）
-pnpm notify success "作業完了！"     # 成功通知
-pnpm notify error "エラー発生"       # エラー通知  
+pnpm notify success "{作業内容}"     # 成功通知
+pnpm notify error "{エラー内容}"       # エラー通知  
+pnpm notify success "{回答しました！的な}"       # 質問への回答  
 pnpm notify type-check               # 型チェック完了
 pnpm notify lint                     # Lint完了
 pnpm notify test                     # テスト完了
@@ -173,6 +174,7 @@ pnpm notify build                    # ビルド完了
 pnpm notify storybook-vrt            # Storybook VRT完了
 pnpm notify all                      # 全チェック完了🎉（特別音付き）
 ```
+`brew instlal termina-notifier`のインストール、通知設定が必要
 
 ### 重要ファイル・パス
 - `src/components/features/lobby/` - ロビーページ（旧entry）
