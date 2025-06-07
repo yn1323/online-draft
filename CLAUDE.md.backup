@@ -378,10 +378,10 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 4. **ファイル末尾空行チェック** - 変更された`.ts/.tsx/.js/.jsx/.md`ファイルのみ末尾に改行追加
 5. **CLAUDE.md更新** - リファクタで発見した重要事項をドキュメントに反映
 
-**対象範囲**: 現在のブランチで変更されたファイルのみ（IMPORTANT）  
-**チェック対象拡張子**: `.ts`, `.tsx`, `.js`, `.jsx`, `.md`  
-**空行要件**: 対象ファイルの最後に必ず1つの改行を追加（VERY IMPORTANT）  
-**効率化**: 全ファイルではなく、`git status`で特定された変更ファイルのみを処理  
+**対象範囲**: 現在のブランチで変更されたファイルのみ（IMPORTANT）
+**チェック対象拡張子**: `.ts`, `.tsx`, `.js`, `.jsx`, `.md`
+**空行要件**: 対象ファイルの最後に必ず1つの改行を追加（VERY IMPORTANT）
+**効率化**: 全ファイルではなく、`git status`で特定された変更ファイルのみを処理
 **失敗時対応**: エラーが1つでもある場合は全て修正してから完了とする
 
 #### /upload-all コマンド仕様（自動化ワークフロー）
@@ -392,9 +392,9 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 3. **`/commit`実行** - 変更をコミット（適切なメッセージ生成）
 4. **`/push`実行** - PR作成・更新（日本語説明付き）
 
-**目的**: 開発サイクルの完全自動化によりワークフロー効率化  
-**適用場面**: 機能実装完了時、リファクタリング完了時、セッション終了時  
-**注意事項**: 各ステップでエラーが発生した場合は即座に停止し、手動対応を促す  
+**目的**: 開発サイクルの完全自動化によりワークフロー効率化
+**適用場面**: 機能実装完了時、リファクタリング完了時、セッション終了時
+**注意事項**: 各ステップでエラーが発生した場合は即座に停止し、手動対応を促す
 **効果**: 品質チェック→ドキュメント更新→バージョン管理の一貫したフロー確立
 
 #### /sound コマンド仕様（音声通知機能）（VERY IMPORTANT）
@@ -414,7 +414,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
    - **実行コマンド**: `afplay /Users/natani/Music/Effect/smallMedal.mp3`
    - **例**: エラー発生、確認待ち、選択肢の提示など
 
-**使用例**: 
+**使用例**:
 ```bash
 /refactor /sound     # リファクタリング完了時に音声通知
 /commit /sound       # コミット後に完了音を鳴らす
@@ -520,7 +520,7 @@ app/
 
 ### 基本制約
 - ❌ 明示的指示外の変更禁止
-- ❌ 技術スタックバージョンの勝手な変更禁止  
+- ❌ 技術スタックバージョンの勝手な変更禁止
 - ❌ UI/UX変更は事前承認必須 (レイアウト、色、フォント、間隔)
 
 ### コードスタイルルール
@@ -607,7 +607,7 @@ borderColor="border"        // テーマ対応ボーダー
   >
     <FiSun />
   </IconButton>
-  
+
   // ❌ エラーになる実装（v2では動作した）
   <IconButton variant="ghost" size="sm">
     <FiSun />
@@ -669,7 +669,7 @@ npm install
   - モバイル対応（常にアイコン表示）
 - **Storybook**: ライト・ダークモード両対応ストーリー
 - **レスポンシブ対応**: モバイル・PC両対応
-- **レスポンシブモーダルシステム**: 
+- **レスポンシブモーダルシステム**:
   - ResponsiveModal共通コンポーネント
   - PC: 中央配置Dialog、SP: Bottom Sheet
   - CreateDraftModal実装（Server Actions対応）
@@ -780,18 +780,18 @@ npm install
 // シンプルなuseEffect + onSnapshotパターン
 const useRealtimeGroup = (groupId: string) => {
   const [group, setGroup] = useAtom(groupAtom);
-  
+
   useEffect(() => {
     if (!groupId) return;
-    
+
     const unsubscribe = onSnapshot(
       doc(db, 'groups', groupId),
       (snapshot) => setGroup(snapshot.data() as Group)
     );
-    
+
     return () => unsubscribe();
   }, [groupId, setGroup]);
-  
+
   return group;
 };
 ```
@@ -1037,12 +1037,10 @@ const showLabel = !isMinimized && !isMobile;
   - 初見でも使い方がわかるデザイン
   - 「グループを作る」「グループに参加」が一目瞭然
   - 最近参加したグループへのクイックアクセス
-  
 - 🆕 **インタラクティブチュートリアル**
   - 初回利用時に自動表示
   - ステップバイステップで操作説明
   - いつでも見返せる「使い方」ボタン
-  
 - 🆕 **モバイルUI改善**
   - より見やすく、操作しやすく
   - タッチ操作の最適化
@@ -1080,7 +1078,7 @@ const showLabel = !isMinimized && !isMobile;
 - 🔄 JavaScript → **TypeScript 5**（型安全）
 
 ### 🎉 まとめ
-**「推しを選んで、かぶったら勝負！」** 
+**「推しを選んで、かぶったら勝負！」**
 
 深く考えない。好きなもの選ぶ。かぶったら笑う。
 それだけで楽しいドラフトアプリ！🍺✨
@@ -1126,7 +1124,7 @@ const showLabel = !isMinimized && !isMobile;
 - **型安全性**: Chakra UI v3のAPIに準拠した実装
 
 #### ロビーページリファクタリング実績（2025/1/6）
-- **修正項目**: 
+- **修正項目**:
   - 早期returnのブロック文化（lint規則準拠）
   - ファイル末尾改行の追加
 - **品質確認**: lint完了 + TypeScript型チェック完了
@@ -1145,7 +1143,7 @@ const showLabel = !isMinimized && !isMobile;
 - **今後の方針**: CSS transitionを活用したホバーエフェクトで十分なUX提供
 
 #### TypeScriptとChakra UI v3の型安全性
-- **解決した問題**: 
+- **解決した問題**:
   - `<Box as={Icon} size="20px" />` のsize属性エラー → `<Box as={Icon} />` に修正
   - `_dark`属性の重複エラー → 1つのオブジェクトに統合
 - **ベストプラクティス**: Chakra UI v3ではより厳密な型チェックが必要
@@ -1218,4 +1216,3 @@ const showLabel = !isMinimized && !isMobile;
 - **主要アクション**: 色と配置で明確に強調（新規作成ボタン）
 - **状態表示**: Badge、カウンター等で現在の状況を常に明示
 - **情報階層**: ステップインジケーター等で全体の流れを可視化
-

@@ -80,10 +80,8 @@ const chatMessagesAtom = atom<ChatMessage[]>([]);
 // Firebase onSnapshotと統合してリアルタイム性を実現
 const useRealtimeGroup = (groupId: string) => {
   const [group, setGroup] = useAtom(groupAtom);
-  
   useEffect(() => {
     if (!groupId) return;
-    
     const unsubscribe = onSnapshot(
       doc(db, 'groups', groupId),
       (snapshot) => setGroup(snapshot.data() as Group)
