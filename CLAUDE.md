@@ -18,6 +18,7 @@
 - [ ] **テストのエラーがないこと**: pnpm testで確認。単体テスト、StorybookともにこのコマンドでOK。エラーがあれば修正すること
 - [ ] **Storybookテストでエラーがないこと**: pnpm storybook:test-ci で確認（Storybookが6006で起動済みの場合）
 - [ ] **E2Eテストでエラーがないこと**: pnpm e2e で確認
+- [ ] **🔔 作業完了通知**: 各作業完了時にpnpm notifyで通知を送信すること（MUST）
 
 ### 現在のタスク状況 📍
 **Phase 3.5**: ユーザー登録機能とリアルタイム同期
@@ -131,6 +132,7 @@
 - **セレクター優先順位**: role+name → label → placeholder → text → CSS selector
 - **待機処理必須**: 状態変化・ネットワーク・要素出現の適切な待機
 - **環境差分配慮**: レスポンシブ・ダークモード・ブラウザ差分対応
+- **テスト網羅性バランス**: 成長段階プロジェクト向け（1操作3-5テスト、固定文字列チェック除外、VRTと役割分担）
 
 ## 🎭 Claude Code設定（VERY IMPORTANT）
 
@@ -159,6 +161,17 @@
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm build        # 型チェック兼ビルド
 pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
+
+# 🔔 作業完了通知コマンド（MUST USE）
+pnpm notify success "作業完了！"     # 成功通知
+pnpm notify error "エラー発生"       # エラー通知  
+pnpm notify type-check               # 型チェック完了
+pnpm notify lint                     # Lint完了
+pnpm notify test                     # テスト完了
+pnpm notify e2e                      # E2Eテスト完了
+pnpm notify build                    # ビルド完了
+pnpm notify storybook-vrt            # Storybook VRT完了
+pnpm notify all                      # 全チェック完了🎉（特別音付き）
 ```
 
 ### 重要ファイル・パス
