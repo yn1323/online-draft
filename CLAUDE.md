@@ -120,7 +120,7 @@
 ### コンポーネントディレクトリ構成（VERY IMPORTANT）
 - **features構成**: `src/components/features/<feature>/<ComponentName>/`
 - **ファイル構成**: `index.tsx`, `index.stories.tsx`, `actions.ts`, `index.test.tsx`
-- **命名規則**: 
+- **命名規則**:
   - feature: 小文字始まり (`auth`, `join`, `lobby`, `top`)
   - ComponentName: 大文字始まり (`AuthComponent`, `JoinPage`, `LobbyPage`)
 - **export**: 各feature配下に`index.tsx`でexport統一

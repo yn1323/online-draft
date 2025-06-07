@@ -210,7 +210,7 @@
   - モバイル対応（常にアイコン表示）
 - **Storybook**: ライト・ダークモード両対応ストーリー
 - **レスポンシブ対応**: モバイル・PC両対応
-- **レスポンシブモーダルシステム**: 
+- **レスポンシブモーダルシステム**:
   - ResponsiveModal共通コンポーネント
   - PC: 中央配置Dialog、SP: Bottom Sheet
   - CreateDraftModal実装（Server Actions対応）
@@ -275,7 +275,7 @@
 - **統一構成**: `src/components/features/<feature>/<ComponentName>/`形式
 - **ファイル規則**: `index.tsx`, `index.stories.tsx`, `actions.ts`, `index.test.tsx`
 - **命名規則**: feature(小文字) + ComponentName(大文字始まり)
-- **対象範囲**: 
+- **対象範囲**:
   - auth → AuthComponent
   - join → JoinPage + components配下
   - lobby → LobbyPage + UserCreateStep + UserSelectStep + components配下
@@ -285,7 +285,7 @@
 - **品質確認**: TypeScript型チェック + Lint完了
 
 ### ロビーページリファクタリング実績（2025/1/6）
-- **修正項目**: 
+- **修正項目**:
   - 早期returnのブロック文化（lint規則準拠）
   - ファイル末尾改行の追加
 - **品質確認**: lint完了 + TypeScript型チェック完了

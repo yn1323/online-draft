@@ -86,7 +86,7 @@ app/
 
 ### 基本制約
 - ❌ 明示的指示外の変更禁止
-- ❌ 技術スタックバージョンの勝手な変更禁止  
+- ❌ 技術スタックバージョンの勝手な変更禁止
 - ❌ UI/UX変更は事前承認必須 (レイアウト、色、フォント、間隔)
 
 ### コードスタイルルール
@@ -173,7 +173,7 @@ borderColor="border"        // テーマ対応ボーダー
   >
     <FiSun />
   </IconButton>
-  
+
   // ❌ エラーになる実装（v2では動作した）
   <IconButton variant="ghost" size="sm">
     <FiSun />
@@ -287,7 +287,7 @@ const meta: Meta<typeof LobbyPage> = {
 src/test-utils/
 ├── mocks/                    # 機能別モック
 │   ├── firebase-user.ts      # Firebase認証モック
-│   ├── jotai-store.ts        # 状態管理モック  
+│   ├── jotai-store.ts        # 状態管理モック
 │   ├── storybook-decorators.tsx  # デコレーター
 │   └── index.ts
 ├── msw/                     # MSWハンドラー（機能別分離）
@@ -368,7 +368,7 @@ export const Default: Story = {
   args: { groupId: 'ABC123' },
 };
 
-// 長いデータパターン  
+// 長いデータパターン
 export const LongGroupName: Story = {
   args: { groupId: 'XYZ789' },
 };

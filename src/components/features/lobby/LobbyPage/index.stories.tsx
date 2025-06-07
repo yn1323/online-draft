@@ -32,21 +32,21 @@ export const Default: Story = {
     // 基本的な要素の存在確認
     expect(await canvas.findByText('ABC123')).toBeInTheDocument();
     expect(await canvas.findByText(/ラウンド: 3/)).toBeInTheDocument();
-    
+
     // ステップインジケーター
     expect(await canvas.findByText('ユーザー選択')).toBeInTheDocument();
-    
+
     // 既存ユーザー一覧
     expect(await canvas.findByText('田中太郎')).toBeInTheDocument();
     expect(await canvas.findByText('山田花子')).toBeInTheDocument();
     expect(await canvas.findByText('登録済みのユーザーで参加')).toBeInTheDocument();
-    
+
     // 新規ユーザー作成ボタン
     expect(await canvas.findByText('新しいユーザーを作成')).toBeInTheDocument();
-    
+
     // ヘルプテキスト
     expect(await canvas.findByText(/既存のユーザーを選択するか、新しいユーザーを作成して/)).toBeInTheDocument();
-    
+
     // グループ参加バッジ
     expect(await canvas.findByText('グループに参加')).toBeInTheDocument();
   },
@@ -65,7 +65,7 @@ export const LongGroupName: Story = {
     // 長いグループ名の表示確認
     expect(await canvas.findByText('XYZ789')).toBeInTheDocument();
     expect(await canvas.findByText(/ラウンド: 5/)).toBeInTheDocument();
-    
+
     // 対応するユーザー
     expect(await canvas.findByText('Alice')).toBeInTheDocument();
   },
@@ -84,7 +84,7 @@ export const ShortGroupId: Story = {
     // 短いIDの表示確認
     expect(await canvas.findByText('12')).toBeInTheDocument();
     expect(await canvas.findByText(/ラウンド: 1/)).toBeInTheDocument();
-    
+
     // 対応するユーザー
     expect(await canvas.findByText('Bob')).toBeInTheDocument();
   },
