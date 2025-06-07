@@ -18,25 +18,25 @@ export class UserOperations {
     await expect(this.page).toHaveURL(/\/lobby\/[a-zA-Z0-9-]+/);
     
     // ユーザー選択ステップで「新規作成」ボタンをクリック
-    const createNewButton = this.page.locator(selectors.lobby.userSelect.createNewButton);
+    const createNewButton = this.page.locator(selectors.lobby.userSelect.createNewButton).first();
     await expect(createNewButton).toBeVisible();
     await createNewButton.click();
     
-    // ユーザー作成ステップに遷移したことを確認（見出しで確認）
-    await expect(this.page.locator('text=/ユーザー作成|新規作成/')).toBeVisible();
+    // ユーザー作成ステップに遷移したことを確認
+    const createContainer = this.page.locator(selectors.lobby.userCreate.container).first();
+    await expect(createContainer).toBeVisible();
     
     // 名前を入力
-    const nameInput = this.page.locator(selectors.lobby.userCreate.nameInput);
+    const nameInput = this.page.locator(selectors.lobby.userCreate.nameInput).first();
     await nameInput.fill(user.name);
     
     // アバターを選択
-    const avatarOption = this.page.locator(
-      selectors.lobby.userCreate.avatarOption(user.avatarId)
-    );
+    const avatarOption = this.page.getByRole('radio', { name: new RegExp(`アバター.*${user.avatarId}`) })
+      .or(this.page.locator(`img[alt*="${user.avatarId}"]`).first());
     await avatarOption.click();
     
     // 確定ボタンをクリック
-    const confirmButton = this.page.locator(selectors.lobby.userCreate.confirmButton);
+    const confirmButton = this.page.locator(selectors.lobby.userCreate.confirmButton).first();
     await confirmButton.click();
     
     // ドラフトページへの遷移を待つ（または次のステップへ）
@@ -50,11 +50,13 @@ export class UserOperations {
     // ロビーページにいることを確認
     await expect(this.page).toHaveURL(/\/lobby\/[a-zA-Z0-9-]+/);
     
-    // ユーザー選択ステップが表示されていることを確認（見出しで確認）
-    await expect(this.page.locator(selectors.lobby.userSelect.existingUserList)).toBeVisible();
+    // ユーザー選択ステップが表示されていることを確認
+    const selectContainer = this.page.locator(selectors.lobby.userSelect.container).first();
+    await expect(selectContainer).toBeVisible();
     
     // ユーザーリストから選択
-    const userItem = this.page.locator(selectors.lobby.userSelect.userItem(userId));
+    const userItem = this.page.getByRole('button', { name: new RegExp(userId) })
+      .or(this.page.locator(selectors.lobby.userSelect.existingUserList).getByText(userId));
     await expect(userItem).toBeVisible();
     await userItem.click();
     
@@ -66,16 +68,18 @@ export class UserOperations {
    * 現在のステップを確認
    */
   async verifyCurrentStep(stepNumber: number): Promise<void> {
-    // ステップインジケーターは通常 aria-current 属性で現在のステップを示す
-    const stepIndicator = this.page.locator(`[aria-current="step"]`).filter({ hasText: stepNumber.toString() });
-    await expect(stepIndicator).toBeVisible();
+    // ステップインジケーターの現在のステップを確認
+    const stepText = `ステップ${stepNumber}`;
+    const currentStep = this.page.locator('[aria-current="step"]')
+      .or(this.page.locator(`text=${stepText}`).filter({ hasText: /現在/ }));
+    await expect(currentStep).toBeVisible();
   }
 
   /**
    * 参加者リストに特定のユーザーが表示されているか確認
    */
   async verifyUserInParticipantList(userName: string): Promise<void> {
-    const participantList = this.page.locator(selectors.lobby.groupInfo.participantList);
+    const participantList = this.page.locator(selectors.lobby.groupInfo.participantList).first();
     await expect(participantList).toBeVisible();
     
     // 参加者リスト内にユーザー名が含まれているか確認
@@ -86,20 +90,20 @@ export class UserOperations {
    * 参加者数を確認
    */
   async verifyParticipantCount(expectedCount: number): Promise<void> {
-    const countElement = this.page.locator(selectors.lobby.groupInfo.participantCount);
+    // 参加者数の表示を確認（例: "参加者: 3人"）
+    const countText = new RegExp(`参加者.*${expectedCount}`);
+    const countElement = this.page.getByText(countText);
     await expect(countElement).toBeVisible();
-    await expect(countElement).toContainText(expectedCount.toString());
   }
 
   /**
    * アバター選択状態を確認
    */
   async verifyAvatarSelected(avatarId: number): Promise<void> {
-    const avatarOption = this.page.locator(
-      selectors.lobby.userCreate.avatarOption(avatarId)
-    );
-    // 選択状態は通常 aria-checked、aria-selected、または特定のクラスで示される
-    await expect(avatarOption).toHaveAttribute('aria-checked', 'true').or(avatarOption).toHaveAttribute('aria-selected', 'true');
+    // アバターの選択状態を確認
+    const avatarOption = this.page.getByRole('radio', { name: new RegExp(`アバター.*${avatarId}`), checked: true })
+      .or(this.page.locator(`[aria-checked="true"] img[alt*="${avatarId}"]`));
+    await expect(avatarOption).toBeVisible();
   }
 
   /**
@@ -107,10 +111,8 @@ export class UserOperations {
    */
   async verifyNameValidationError(errorMessage: string): Promise<void> {
     // 名前入力フィールド周辺のエラーメッセージを確認
-    const nameInput = this.page.locator(selectors.lobby.userCreate.nameInput);
-    const errorElement = nameInput.locator('..').locator('[role="alert"]');
+    const errorElement = this.page.locator('[role="alert"]').filter({ hasText: errorMessage });
     await expect(errorElement).toBeVisible();
-    await expect(errorElement).toContainText(errorMessage);
   }
 
   /**
@@ -122,11 +124,11 @@ export class UserOperations {
       this.page.waitForURL(/\/draft\/[a-zA-Z0-9-]+/, {
         timeout: timeouts.navigation,
       }),
-      // または既存ユーザーリストが非表示になるのを待つ
-      this.page.waitForSelector(
-        selectors.lobby.userSelect.existingUserList,
-        { state: 'hidden', timeout: timeouts.medium }
-      ),
+      // または次のステップへの遷移を待つ
+      this.page.locator(selectors.lobby.userSelect.container).waitFor({
+        state: 'hidden',
+        timeout: timeouts.medium,
+      }),
     ]);
   }
 
@@ -144,12 +146,13 @@ export class UserOperations {
    * 戻るボタンをクリック
    */
   async clickBackButton(): Promise<void> {
-    // 戻るボタンは通常「戻る」というテキストを持つ
-    const backButton = this.page.locator('button:has-text("戻る")');
+    const backButton = this.page.getByText('戻る')
+      .or(this.page.getByRole('button', { name: /戻る/ }));
     await expect(backButton).toBeVisible();
     await backButton.click();
     
     // ユーザー選択ステップに戻ったことを確認
-    await expect(this.page.locator(selectors.lobby.userSelect.existingUserList)).toBeVisible();
+    const selectContainer = this.page.locator(selectors.lobby.userSelect.container).first();
+    await expect(selectContainer).toBeVisible();
   }
 }

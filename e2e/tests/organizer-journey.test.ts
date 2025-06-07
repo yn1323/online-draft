@@ -62,7 +62,7 @@ test.describe('主催者シナリオ', () => {
       // または、ロビーページで待機状態になっていることを確認
       
       // 参加者リストが更新可能な状態であることを確認
-      const participantList = page.locator(selectors.lobby.groupInfo.participantList);
+      const participantList = page.locator(selectors.lobby.groupInfo.participantList).first();
       await expect(participantList).toBeVisible();
     });
   });
@@ -96,11 +96,12 @@ test.describe('主催者シナリオ', () => {
 
     // Step 2: 既存ユーザーが表示される場合は選択
     await test.step('既存ユーザーを選択または新規作成', async () => {
-      // ユーザー選択画面が表示されることを確認（見出しで確認）
-      await expect(page.locator('text=/ユーザー選択|参加者を選択/')).toBeVisible();
+      // ユーザー選択画面が表示されることを確認
+      const userSelectContainer = page.locator(selectors.lobby.userSelect.container).first();
+      await expect(userSelectContainer).toBeVisible();
       
       // 既存ユーザーリストを確認
-      const existingUserList = page.locator(selectors.lobby.userSelect.existingUserList);
+      const existingUserList = page.locator(selectors.lobby.userSelect.existingUserList).first();
       
       // 既存ユーザーがいる場合は選択、いない場合は新規作成
       if (await existingUserList.isVisible()) {

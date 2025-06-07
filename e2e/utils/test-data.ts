@@ -78,17 +78,6 @@ export const predefinedUsers = {
 };
 
 /**
- * テスト用のドラフトアイテム（将来実装用）
- */
-export const draftItems = [
-  { id: '1', name: 'アイテムA', category: 'カテゴリ1' },
-  { id: '2', name: 'アイテムB', category: 'カテゴリ1' },
-  { id: '3', name: 'アイテムC', category: 'カテゴリ2' },
-  { id: '4', name: 'アイテムD', category: 'カテゴリ2' },
-  { id: '5', name: 'アイテムE', category: 'カテゴリ3' },
-];
-
-/**
  * タイムアウト設定（ミリ秒）
  */
 export const timeouts = {

@@ -8,6 +8,8 @@ dotenv.config();
  */
 export default defineConfig({
   testDir: './e2e',
+  /* グローバルセットアップ */
+  globalSetup: require.resolve('./e2e/setup/global-setup'),
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
