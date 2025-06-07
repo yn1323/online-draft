@@ -16,7 +16,7 @@ jobs:
             (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
             (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
             (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-            (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude') || contains(github.event.issue.labels.*.name, 'claude:fix')))
+            (github.event_name == 'issues' && (contains(github.event.issue.body, '@claude') || contains(github.event.issue.title, '@claude') || contains(github.event.issue.labels.*.name, 'claude:start')))
 
         runs-on: ubuntu-latest
 
@@ -41,3 +41,15 @@ jobs:
                   claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
                   claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
                   claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+
+            - name: Remove claude:start label
+              if: always() && github.event_name == 'issues' && contains(github.event.issue.labels.*.name, 'claude:start')
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      await github.rest.issues.removeLabel({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: context.issue.number,
+                          name: 'claude:start'
+                      })
