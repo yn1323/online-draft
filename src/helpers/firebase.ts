@@ -70,6 +70,7 @@ export const createGroup = async (groupName: string) => {
     }
     const docRef = await addDoc(collection(db, 'app', 'onlinedraft', 'group'), {
       groupName,
+      createdAt: new Date(),
       round: 1,
       finishedRound: [],
       deleteFlg: false,
@@ -162,6 +163,7 @@ export const createUser = async ({
       groupId,
       userName,
       avatar,
+      createdAt: new Date(),
     })
     return docRef.id
   } catch (e) {
