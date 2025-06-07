@@ -17,7 +17,7 @@ export class DraftOperations {
     await this.page.goto(testUrls.top);
     
     // ドラフト作成ボタンをクリック
-    const createButton = this.page.getByRole('button', { name: 'ドラフトを作成' });
+    const createButton = this.page.locator(selectors.top.createDraftButton);
     await expect(createButton).toBeVisible();
     await createButton.click();
     
@@ -35,12 +35,12 @@ export class DraftOperations {
     await this.page.goto(testUrls.join);
     
     // コード入力フィールドに入力
-    const codeInput = this.page.getByLabel('参加コード');
+    const codeInput = this.page.locator(selectors.join.codeInput);
     await expect(codeInput).toBeVisible();
     await codeInput.fill(code);
     
     // 参加ボタンをクリック
-    const submitButton = this.page.getByRole('button', { name: '参加' });
+    const submitButton = this.page.locator(selectors.join.submitButton);
     await submitButton.click();
     
     // ロビーページへの遷移を待つ
@@ -57,12 +57,12 @@ export class DraftOperations {
     await this.page.goto(testUrls.join);
     
     // URL入力フィールドに入力
-    const urlInput = this.page.getByLabel('参加URL');
+    const urlInput = this.page.locator(selectors.join.urlInput);
     await expect(urlInput).toBeVisible();
     await urlInput.fill(url);
     
     // 参加ボタンをクリック
-    const submitButton = this.page.getByRole('button', { name: '参加' });
+    const submitButton = this.page.locator(selectors.join.submitButton);
     await submitButton.click();
     
     // ロビーページへの遷移を待つ
@@ -112,9 +112,8 @@ export class DraftOperations {
     // ロビーページにいることを確認
     await expect(this.page).toHaveURL(/\/lobby\/[a-zA-Z0-9-]+/);
     
-    // グループコードを表示している要素を探す
-    // TODO: 実際の実装に合わせてセレクターを調整
-    const codeElement = this.page.locator('text=/\\d{4}/');
+    // グループコードを表示している要素を探す（通常は見出しやコード表示エリアに含まれる）
+    const codeElement = this.page.locator('text=/\\d{4}/').first();
     const code = await codeElement.textContent();
     
     if (!code) {
@@ -150,16 +149,17 @@ export class DraftOperations {
    * エラーメッセージが表示されているか確認
    */
   async verifyErrorMessage(expectedMessage: string): Promise<void> {
-    const errorElement = this.page.getByRole('alert');
+    // エラーメッセージは通常role="alert"またはaria-live="polite"で実装される
+    const errorElement = this.page.locator('[role="alert"], [aria-live="polite"]').filter({ hasText: expectedMessage });
     await expect(errorElement).toBeVisible();
-    await expect(errorElement).toContainText(expectedMessage);
   }
 
   /**
    * ローディング状態が解消されるまで待つ
    */
   async waitForLoadingComplete(): Promise<void> {
-    const loading = this.page.getByRole('status', { name: '読み込み中' });
+    // ローディングインジケーターは通常role="status"やaria-busy="true"で実装される
+    const loading = this.page.locator('[role="status"][aria-busy="true"], [role="progressbar"]');
     
     // ローディングが表示されている場合は非表示になるまで待つ
     if (await loading.isVisible()) {

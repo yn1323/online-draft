@@ -6,7 +6,7 @@
 import { test, expect } from '@playwright/test';
 import { DraftOperations } from '../operations/draft-operations';
 import { UserOperations } from '../operations/user-operations';
-import { predefinedUsers, errorMessages, testUrls } from '../utils/test-data';
+import { predefinedUsers, testUrls } from '../utils/test-data';
 import { selectors } from '../utils/selectors';
 
 test.describe('参加者シナリオ', () => {
@@ -99,15 +99,15 @@ test.describe('参加者シナリオ', () => {
       await page.goto(testUrls.join);
       
       // コード入力
-      const codeInput = page.getByLabel('参加コード');
+      const codeInput = page.locator(selectors.join.codeInput);
       await codeInput.fill(invalidCode);
       
       // 参加ボタンをクリック
-      const submitButton = page.getByRole('button', { name: '参加' });
+      const submitButton = page.locator(selectors.join.submitButton);
       await submitButton.click();
       
       // エラーメッセージが表示されることを確認
-      await draftOps.verifyErrorMessage(errorMessages.invalidCode);
+      await draftOps.verifyErrorMessage('コードが無効です');
       
       // ページ遷移しないことを確認
       await expect(page).toHaveURL(testUrls.join);
@@ -163,16 +163,16 @@ test.describe('参加者シナリオ', () => {
     await page.goto(testUrls.join);
 
     await test.step('空のコードで参加を試みる', async () => {
-      const submitButton = page.getByRole('button', { name: '参加' });
+      const submitButton = page.locator(selectors.join.submitButton);
       await submitButton.click();
       
       // バリデーションエラーが表示されることを確認
-      const codeInput = page.getByLabel('参加コード');
+      const codeInput = page.locator(selectors.join.codeInput);
       await expect(codeInput).toHaveAttribute('aria-invalid', 'true');
     });
 
     await test.step('不正な形式のコードを入力', async () => {
-      const codeInput = page.getByLabel('参加コード');
+      const codeInput = page.locator(selectors.join.codeInput);
       
       // 3桁の数字
       await codeInput.fill('123');
@@ -188,11 +188,11 @@ test.describe('参加者シナリオ', () => {
     });
 
     await test.step('不正なURLを入力', async () => {
-      const urlInput = page.getByLabel('参加URL');
+      const urlInput = page.locator(selectors.join.urlInput);
       
       // 不正なURL形式
       await urlInput.fill('not-a-url');
-      const submitButton = page.getByRole('button', { name: '参加' });
+      const submitButton = page.locator(selectors.join.submitButton);
       await submitButton.click();
       
       await expect(urlInput).toHaveAttribute('aria-invalid', 'true');
@@ -203,8 +203,8 @@ test.describe('参加者シナリオ', () => {
     await page.goto(testUrls.join);
 
     await test.step('コード入力とURL入力を切り替える', async () => {
-      const codeInput = page.getByLabel('参加コード');
-      const urlInput = page.getByLabel('参加URL');
+      const codeInput = page.locator(selectors.join.codeInput);
+      const urlInput = page.locator(selectors.join.urlInput);
       
       // コードを入力
       await codeInput.fill('1234');

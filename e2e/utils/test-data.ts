@@ -89,28 +89,6 @@ export const draftItems = [
 ];
 
 /**
- * テスト用のチャットメッセージ
- */
-export const testMessages = {
-  greeting: 'こんにちは！よろしくお願いします',
-  ready: '準備OK!',
-  thinking: 'どれにしようかな...',
-  decided: '決めました！',
-  conflict: 'かぶっちゃった！',
-};
-
-/**
- * テスト用のエラーメッセージ
- */
-export const errorMessages = {
-  invalidCode: 'コードが無効です',
-  groupNotFound: 'グループが見つかりません',
-  connectionError: '接続エラーが発生しました',
-  nameRequired: '名前を入力してください',
-  avatarRequired: 'アバターを選択してください',
-};
-
-/**
  * タイムアウト設定（ミリ秒）
  */
 export const timeouts = {
