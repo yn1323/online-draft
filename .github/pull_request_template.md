@@ -29,6 +29,7 @@
 - [ ] `pnpm type-check` - TypeScriptエラーなし  
 - [ ] `pnpm test` - 単体テスト通過
 - [ ] `pnpm storybook:test-ci` - Storybookテスト通過
+- [ ] `pnpm e2e` - E2Eテスト通過
 - [ ] ライト/ダークモード両方で動作確認
 
 ## スクリーンショット
