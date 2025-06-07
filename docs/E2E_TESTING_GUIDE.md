@@ -116,7 +116,39 @@ C. ネットワーク: Firebase接続失敗 → エラーハンドリング確�
 - **Playwright**: 既存設定を活用
 - **Firebase Emulator**: テスト環境での独立実行
 - **MSW**: Storybook連携のAPIモック活用
-- **data-testid**: 確実で保守性の高い要素選択
+
+### セレクター戦略
+#### ❌ data-testidを避ける理由
+- **ユーザー視点重視**: 実際のユーザーが操作する方法でテスト
+- **堅牢性**: UIリファクタリングに強い、よりユーザーに近いテスト
+- **リアリティ**: data-testidは開発者向け「裏口」であり、現実的でない
+
+#### ✅ 推奨セレクター優先順位
+```typescript
+// 1. role + accessible name（最優先）
+page.getByRole('button', { name: 'ログイン' })
+page.getByRole('textbox', { name: 'ユーザー名' })
+
+// 2. label text
+page.getByLabelText('ユーザー名')
+page.getByLabelText('パスワード')
+
+// 3. placeholder text
+page.getByPlaceholderText('メールアドレスを入力')
+
+// 4. display text
+page.getByText('新規登録')
+page.getByText('ドラフトを作成')
+
+// 5. 最後の手段でCSS selector
+page.locator('input[type="email"]')
+```
+
+#### アクセシビリティ重視の設計
+- **aria-label**: ボタンや入力欄の適切なラベル設定
+- **aria-describedby**: 説明テキストとの関連付け
+- **role属性**: セマンティックな要素の明示
+- **スクリーンリーダー対応**: 視覚障害者にも優しい実装
 
 ### Firebase連携テスト
 ```typescript
@@ -152,25 +184,31 @@ export class DraftOperations {
 }
 ```
 
-### 共通セレクター管理
+### 共通操作ヘルパー
 ```typescript
-// utils/selectors.ts
-export const SELECTORS = {
-  // TOPページ
-  CREATE_DRAFT_BUTTON: '[data-testid="create-draft-button"]',
-  JOIN_DRAFT_BUTTON: '[data-testid="join-draft-button"]',
+// utils/test-helpers.ts
+export const TestHelpers = {
+  // ユーザー視点での操作
+  async clickCreateDraft(page: Page) {
+    await page.getByRole('button', { name: 'ドラフトを作成' }).click();
+  },
   
-  // 参加ページ
-  MEETING_INPUT: '[data-testid="meeting-input"]',
-  JOIN_BUTTON: '[data-testid="join-button"]',
+  async joinByCode(page: Page, code: string) {
+    await page.getByRole('button', { name: '参加する' }).click();
+    await page.getByPlaceholderText('参加コードを入力').fill(code);
+    await page.getByRole('button', { name: '参加' }).click();
+  },
   
-  // ロビーページ
-  USER_NAME_INPUT: '[data-testid="user-name-input"]',
-  SUBMIT_USER_BUTTON: '[data-testid="submit-user-button"]',
-  GROUP_CODE: '[data-testid="group-code"]',
+  async createUser(page: Page, name: string, avatarIndex: number) {
+    await page.getByLabelText('ユーザー名').fill(name);
+    await page.getByRole('button', { name: `アバター${avatarIndex}` }).click();
+    await page.getByRole('button', { name: 'ユーザー作成' }).click();
+  },
   
-  // アバター
-  AVATAR: (id: number) => `[data-testid="avatar-${id}"]`,
+  async waitForLobbyLoad(page: Page) {
+    await page.waitForURL('/lobby/*');
+    await page.getByText('参加者一覧').waitFor();
+  }
 } as const;
 ```
 
@@ -227,9 +265,32 @@ pnpm test:e2e:headless
 - **CI実行**: 10分以内（並列実行含む）
 
 ### 保守性
-- **data-testid**: UIコンポーネントの全インタラクティブ要素
+- **ユーザー視点セレクター**: アクセシビリティ対応とテスト品質の両立
 - **operations抽象化**: UI変更時の修正箇所最小化
-- **共通ユーティリティ**: 重複コードの削除
+- **共通ヘルパー**: 重複コードの削除と操作の統一化
+
+### 状態変化とタイミング
+#### 適切な待機処理
+```typescript
+// ❌ 悪い例：即座にクリック（レースコンディション）
+await page.click('button');
+await page.click('next-button'); // 危険
+
+// ✅ 良い例：状態変化を待機
+await page.getByRole('button', { name: '保存' }).click();
+await page.waitForLoadState('networkidle');
+await page.getByRole('button', { name: '次へ' }).click();
+
+// ✅ 良い例：要素の出現を待機
+await page.getByRole('button', { name: '送信' }).click();
+await page.getByText('送信完了').waitFor();
+```
+
+#### 環境差分への配慮
+- **レスポンシブ**: モバイル・デスクトップでの表示差分
+- **テーマ**: ダークモード・ライトモードでの見た目
+- **ネットワーク**: 実際の遅延を想定した待機処理
+- **ブラウザ**: Chrome, Firefox, Safari間の挙動差分
 
 ---
 

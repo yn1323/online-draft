@@ -126,6 +126,12 @@
   - ComponentName: 大文字始まり (`AuthComponent`, `JoinPage`, `LobbyPage`)
 - **export**: 各feature配下に`index.tsx`でexport統一
 
+### E2Eテスト重要方針（VERY IMPORTANT）
+- **data-testid禁止**: ユーザー視点でのテスト重視、アクセシビリティ対応必須
+- **セレクター優先順位**: role+name → label → placeholder → text → CSS selector
+- **待機処理必須**: 状態変化・ネットワーク・要素出現の適切な待機
+- **環境差分配慮**: レスポンシブ・ダークモード・ブラウザ差分対応
+
 ## 🎭 Claude Code設定（VERY IMPORTANT）
 
 ### キャラクター設定
