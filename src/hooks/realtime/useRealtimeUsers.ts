@@ -70,15 +70,11 @@ export const useRealtimeUsers = (groupId: string) => {
     }
 
     // 本番環境: Firebase onSnapshot（リアルタイム監視）
-    console.log('🔄 リアルタイムユーザー監視開始...', { groupId });
-
     const unsubscribe = subscribeUsers(groupId, (users) => {
-      console.log('👥 ユーザー一覧更新:', users);
       setGroupUsers(users);
     });
 
     return () => {
-      console.log('🛑 ユーザー監視停止');
       unsubscribe();
     };
   }, [groupId, setGroupUsers]);

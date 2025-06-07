@@ -57,7 +57,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);
     // TODO: Firebase認証処理
-    console.log('Login with existing user:', userId);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     // router.push(`/draft/${groupId}`);
   };
@@ -80,8 +79,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     try {
       setUserRegistrationLoading(true);
       setUserRegistrationError(null);
-      console.log('🔄 ユーザー作成開始:', data);
-
       // 1. ユーザー名重複チェック
       const nameExists = await checkUserNameExists(groupId, data.userName);
       if (nameExists) {
@@ -107,8 +104,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       };
       setCurrentUser(newUser);
 
-      console.log('✅ ユーザー作成成功:', newUser);
-      
       // TODO: ドラフトページへのリダイレクト
       // router.push(`/draft/${groupId}`);
     } catch (error) {

@@ -29,16 +29,9 @@ export function useAuth() {
       return;
     }
 
-    console.log('🔄 Firebase認証状態の監視を開始...');
-
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => {
-        console.log(
-          '🔥 認証状態変更:',
-          firebaseUser ? `UID: ${firebaseUser.uid}` : 'ログアウト',
-        );
-
         setUser(firebaseUser);
         setLoading(false);
         setError(null);
@@ -53,7 +46,6 @@ export function useAuth() {
     // 他サイト離脱時の自動ログアウト（Storybook環境以外）
     const handleBeforeUnload = async () => {
       if (auth.currentUser) {
-        console.log('🚪 他サイト離脱検知 - 自動ログアウト実行');
         try {
           await signOut(auth);
         } catch (error) {
@@ -65,7 +57,6 @@ export function useAuth() {
     window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      console.log('👋 Firebase認証状態の監視を停止');
       unsubscribe();
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };

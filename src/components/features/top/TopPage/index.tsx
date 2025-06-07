@@ -21,21 +21,15 @@ export const TopPage = () => {
     setIsLoading(true);
 
     try {
-      console.log('🔄 ドラフト作成開始...');
-
       // 認証チェック・自動ログイン
       if (!isAuthenticated) {
-        console.log('🔐 認証されていないため、自動ログイン実行...');
         await signInAnonymously(auth);
-        console.log('✅ 自動ログイン完了');
       }
 
       // Firestoreでグループ作成
       const result = await createDraftGroup({
         groupName: 'オンラインドラフト会議',
       });
-
-      console.log('✅ グループ作成成功:', result);
 
       // 成功通知
       toaster.create({

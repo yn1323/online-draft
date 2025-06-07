@@ -64,7 +64,6 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
 
       // 本番環境: Firebase getDraftGroup
       try {
-        console.log('🔄 グループ情報取得開始...', { groupId });
         setGroupLoading(true);
         setGroupError(null);
 
@@ -81,7 +80,6 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
           round: group.round,
         });
 
-        console.log('✅ グループ情報取得成功:', group);
       } catch (error) {
         console.error('❌ グループ情報取得エラー:', error);
         setGroupError('グループ情報の取得に失敗しました');
