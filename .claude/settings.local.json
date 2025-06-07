@@ -58,7 +58,8 @@
       "mcp__playwright__playwright_click",
       "Bash(pnpm add:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(touch:*)"
+      "Bash(touch:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": []
   }

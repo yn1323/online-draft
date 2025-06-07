@@ -30,6 +30,7 @@
 - ✅ **完了**: Storybook環境検出の共通化（isStorybookEnvironment ヘルパー）
 - ✅ **完了**: LobbyPageカスタムフックリファクタリング（useEffect複数問題解決）
 - ✅ **完了**: Storybookテスト強化（findBy使用、存在確認テスト実装）
+- ✅ **完了**: E2Eテスト戦略策定（ユーザーシナリオベーステスト・docs/E2E_TESTING_GUIDE.md）
 - 🔄 **進行中**: ユーザー登録機能の実装
 - ⏳ **次回**: リアルタイム同期、チャット機能
 
@@ -87,9 +88,10 @@
   - `revert:` コミットの取り消し
   - `remove:` ファイル・機能削除
 
-### 技術ガイドライン参照
+### 技術ガイドライン参照（IMPORTANT）
 - **Storybookテスト**: `docs/DEVELOPMENT_GUIDE.md`の「テスト・品質管理ガイドライン」参照
 - **Firestore連携**: `docs/DEVELOPMENT_GUIDE.md`の「Firebase・Firestore統合ガイドライン」参照
+- **E2Eテスト**: `docs/E2E_TESTING_GUIDE.md`の「ユーザーシナリオベーステスト戦略」参照
 - **AI向けISSUE作成**: `docs/AI_ISSUE_WRITING_GUIDE.md`の「Claude Code Actions CI向けISSUE書き方ガイド」参照
 
 ### Storybookテスト関連の重要事項（VERY IMPORTANT）
@@ -149,6 +151,7 @@
 /pr-make          # PRテンプレートベースでGitHub PR作成
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm build        # 型チェック兼ビルド
+pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
 ```
 
 ### 重要ファイル・パス
@@ -193,6 +196,7 @@ pnpm build        # 型チェック兼ビルド
 必要ならば下記も更新すること！！！！！（VERY VERY IMPORTANT！！！）
 詳細情報は以下に分割予定：
 - `docs/DEVELOPMENT_GUIDE.md` - 技術詳細・制約・ガイドライン
+- `docs/E2E_TESTING_GUIDE.md` - E2Eテスト戦略・ユーザーシナリオベーステスト
 - `docs/COMMANDS.md` - 開発コマンド詳細
 - `docs/PROJECT_STATUS.md` - フェーズ進捗・実装詳細
 - `docs/LEGACY_MIGRATION.md` - レガシーコード情報・移行方針
@@ -216,5 +220,5 @@ pnpm build        # 型チェック兼ビルド
 - 技術スタック変更時
 - 開発フロー改善時
 
-**最終更新**: 2025/1/7 - LobbyPageカスタムフックリファクタリング＆Storybookテスト品質強化完了
+**最終更新**: 2025/1/7 - E2Eテスト戦略策定完了（ユーザーシナリオベーステスト・docs/E2E_TESTING_GUIDE.md）
 
