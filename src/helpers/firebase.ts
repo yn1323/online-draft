@@ -351,7 +351,7 @@ export const createSelection = async ({
     }
     await setDoc(
       doc(db, 'app', 'onlinedraft', 'selection', userId),
-      { userId, selection },
+      { userId, selection, updatedAt: new Date() },
       { merge: true }
     )
   } catch (e) {
