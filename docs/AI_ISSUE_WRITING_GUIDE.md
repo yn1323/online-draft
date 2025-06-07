@@ -42,7 +42,7 @@ Claude Code ActionsでCIからブランチ作成・修正を行うためのISSUE
 
 ## ✅ 完了条件
 - [ ] pnpm lint エラー0
-- [ ] pnpm type-check エラー0  
+- [ ] pnpm type-check エラー0
 - [ ] pnpm test 成功
 - [ ] Storybookストーリー作成済み
 
@@ -100,7 +100,7 @@ Claude Code ActionsでCIからブランチ作成・修正を行うためのISSUE
 
 ### 優先度設定
 - **High**: 他タスクの前提となる機能
-- **Medium**: 独立して実装可能な機能  
+- **Medium**: 独立して実装可能な機能
 - **Low**: UI改善・リファクタリング
 
 ## 🎭 AIへの指示のコツ
@@ -124,7 +124,7 @@ Claude Code ActionsでCIからブランチ作成・修正を行うためのISSUE
 
 ### ❌ 曖昧な指示
 - "使いやすくして"
-- "エラーを修正して"  
+- "エラーを修正して"
 - "デザインを改善"
 
 ### ❌ 制約の記載漏れ
@@ -156,7 +156,7 @@ Claude Code ActionsでCIからブランチ作成・修正を行うためのISSUE
 ### 参考実装
 - `src/components/features/join/JoinForm/index.tsx` のFirestore呼び出しパターン
 
-### 完了条件  
+### 完了条件
 - ユーザー作成成功時にuser atomが更新される
 - 重複ユーザー名でエラー表示
 - pnpm lint/type-check/test すべて成功

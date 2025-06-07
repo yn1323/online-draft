@@ -108,7 +108,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       setCurrentUser(newUser);
 
       console.log('✅ ユーザー作成成功:', newUser);
-      
+
       // TODO: ドラフトページへのリダイレクト
       // router.push(`/draft/${groupId}`);
     } catch (error) {

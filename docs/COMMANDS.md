@@ -116,7 +116,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 - おすすめの実装順序やベストプラクティスを提案
 - 潜在的な課題とその対策を事前に指摘
 
-**使用例**: 
+**使用例**:
 ```bash
 /plan ユーザー登録機能の実装方針について相談したい
 /plan Firestoreのデータ構造はどうすべき？
@@ -158,10 +158,10 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 4. **ファイル末尾空行チェック** - 変更された`.ts/.tsx/.js/.jsx/.md`ファイルのみ末尾に改行追加
 5. **CLAUDE.md更新** - リファクタで発見した重要事項をドキュメントに反映
 
-**対象範囲**: 現在のブランチで変更されたファイルのみ（IMPORTANT）  
-**チェック対象拡張子**: `.ts`, `.tsx`, `.js`, `.jsx`, `.md`  
-**空行要件**: 対象ファイルの最後に必ず1つの改行を追加（VERY IMPORTANT）  
-**効率化**: 全ファイルではなく、`git status`で特定された変更ファイルのみを処理  
+**対象範囲**: 現在のブランチで変更されたファイルのみ（IMPORTANT）
+**チェック対象拡張子**: `.ts`, `.tsx`, `.js`, `.jsx`, `.md`
+**空行要件**: 対象ファイルの最後に必ず1つの改行を追加（VERY IMPORTANT）
+**効率化**: 全ファイルではなく、`git status`で特定された変更ファイルのみを処理
 **失敗時対応**: エラーが1つでもある場合は全て修正してから完了とする
 
 ### /upload-all コマンド仕様（自動化ワークフロー）
@@ -194,7 +194,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
    - **実行コマンド**: `afplay /Users/natani/Music/Effect/smallMedal.mp3`
    - **例**: エラー発生、確認待ち、選択肢の提示など
 
-**使用例**: 
+**使用例**:
 ```bash
 /refactor /sound     # リファクタリング完了時に音声通知
 /commit /sound       # コミット後に完了音を鳴らす
@@ -224,7 +224,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 4. 完了条件の明確化（lint/type-check/test成功）
 5. GitHub ISSUEとして登録
 
-**使用例**: 
+**使用例**:
 ```bash
 /issue LobbyPageにFirestoreユーザー作成機能を追加
 /issue AvatarSelectorコンポーネントのStorybookテスト作成
@@ -256,7 +256,7 @@ NEXT_PUBLIC_GTM_ID="GTM-XXXXXXX" (optional)
 5. 複数ISSUEコンテンツ生成
 6. GitHub ISSUEとして一括登録
 
-**使用例**: 
+**使用例**:
 ```bash
 /issue-schedule    # 現在のTODOを最適なISSUEに分割
 ```

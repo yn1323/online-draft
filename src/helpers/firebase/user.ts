@@ -28,7 +28,7 @@ export const createUser = async (userData: Omit<UserDocument, 'userId'>): Promis
       avatar: userData.avatar,
       deleteFlg: false,
     });
-    
+
     return docRef.id;
   } catch (error) {
     console.error('CREATEUSER:', error);
@@ -40,7 +40,7 @@ export const createUser = async (userData: Omit<UserDocument, 'userId'>): Promis
  * グループ内でのユーザー名重複をチェックする
  */
 export const checkUserNameExists = async (
-  groupId: string, 
+  groupId: string,
   userName: string
 ): Promise<boolean> => {
   try {
@@ -50,7 +50,7 @@ export const checkUserNameExists = async (
       where('userName', '==', userName),
       where('deleteFlg', '==', false)
     );
-    
+
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty;
   } catch (error) {
@@ -69,7 +69,7 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
       where('groupId', '==', groupId),
       where('deleteFlg', '==', false)
     );
-    
+
     const querySnapshot = await getDocs(q);
     
     return querySnapshot.docs.map((doc) => ({
@@ -101,7 +101,7 @@ export const subscribeUsers = (
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const users: UserDocument[] = [];
-      
+
       snapshot.forEach((doc) => {
         users.push({
           userId: doc.id,
@@ -111,7 +111,7 @@ export const subscribeUsers = (
           deleteFlg: doc.data().deleteFlg,
         });
       });
-      
+
       callback(users);
     });
 
