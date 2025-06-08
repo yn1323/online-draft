@@ -20,6 +20,9 @@ export const ChatLogSection = ({
       border="1px solid"
       borderColor="gray.200"
       boxShadow="0 4px 15px -3px rgba(0, 0, 0, 0.1)"
+      h={{ base: 'auto', lg: '400px' }}
+      display="flex"
+      flexDirection="column"
       _dark={{
         bgGradient: 'linear(to-br, gray.800/60, blue.900/40)',
         borderColor: 'gray.600',
@@ -31,13 +34,14 @@ export const ChatLogSection = ({
         fontWeight="bold"
         mb={4}
         color="gray.700"
+        flexShrink={0}
         _dark={{ color: 'gray.300' }}
       >
         💬 ログ・コメント
       </Text>
 
       <Box
-        h="300px"
+        flex={1}
         overflowY="auto"
         bg="white"
         borderRadius="md"
@@ -45,6 +49,7 @@ export const ChatLogSection = ({
         borderColor="gray.200"
         p={4}
         mb={3}
+        minH={0}
         _dark={{
           bg: 'gray.700',
           borderColor: 'gray.500',
@@ -69,7 +74,9 @@ export const ChatLogSection = ({
         </VStack>
       </Box>
 
-      <MessageInput onSendMessage={onSendMessage} />
+      <Box flexShrink={0}>
+        <MessageInput onSendMessage={onSendMessage} />
+      </Box>
     </Box>
   );
 };

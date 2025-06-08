@@ -10,6 +10,8 @@ import { RoundHistoryTable } from './components/RoundHistoryTable';
 import { ChatLogSection } from './components/ChatLogSection';
 import { ActionPanel } from './components/ActionPanel';
 import { InputModal } from './components/InputModal';
+import { TabNavigation } from './components/TabNavigation';
+import { FloatingActionButton } from './components/FloatingActionButton';
 
 interface DraftPageProps {
   roundNumber?: number;
@@ -162,14 +164,27 @@ export const DraftPage = ({
         groupName={groupName}
       />
 
-      {/* Main Layout - Balanced Strategy & Communication Design */}
+      {/* Main Layout - Responsive Design */}
+      {/* Mobile: Tab Navigation */}
+      <VStack 
+        gap={6} 
+        align="stretch" 
+        display={{ base: 'flex', lg: 'none' }}
+      >
+        <TabNavigation
+          roundNumber={roundNumber}
+          participants={participants}
+          pastRounds={pastRounds}
+          onRoundClick={handleRoundClick}
+        />
+      </VStack>
+
+      {/* Desktop: 2-Column Layout */}
       <Grid
-        templateColumns={{ 
-          base: '1fr', 
-          lg: '65fr 35fr' 
-        }}
+        templateColumns="65fr 35fr"
         gap={8}
         minH="70vh"
+        display={{ base: 'none', lg: 'grid' }}
       >
         {/* Left: Strategy Information (65%) */}
         <GridItem>
@@ -209,6 +224,9 @@ export const DraftPage = ({
         participants={participants}
         onSaveSelections={handleSaveSelections}
       />
+
+      {/* Floating Action Button - Mobile Only */}
+      <FloatingActionButton onClick={handleOpenInputModal} />
     </Container>
   );
 };
