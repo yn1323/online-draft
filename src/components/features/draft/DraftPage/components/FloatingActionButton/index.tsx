@@ -10,11 +10,9 @@ export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => 
   return (
     <Button
       position="fixed"
-      bottom={6}
-      right={6}
       size="lg"
-      h="56px"
-      minW="120px"
+      h={{ base: '52px', md: '56px' }}
+      minW={{ base: '110px', md: '120px' }}
       px={4}
       borderRadius="full"
       onClick={onClick}
@@ -25,6 +23,8 @@ export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => 
       boxShadow="0 8px 25px -8px rgba(59, 130, 246, 0.5)"
       zIndex={1000}
       display={{ base: 'flex', lg: 'none' }}
+      right={{ base: 4, md: 6 }}
+      bottom={{ base: 4, md: 6 }}
       transition="all 0.2s ease"
       _hover={{
         transform: 'translateY(-2px)',

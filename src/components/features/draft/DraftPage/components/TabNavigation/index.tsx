@@ -4,6 +4,7 @@ import { Box, HStack, Button, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { RoundHistoryTable } from '../RoundHistoryTable';
 import { ChatLogSection } from '../ChatLogSection';
+import { ConditionalFloatingButton } from '../ConditionalFloatingButton';
 
 interface TabNavigationProps {
   roundNumber: number;
@@ -24,6 +25,7 @@ interface TabNavigationProps {
     }[];
   }[];
   onRoundClick: (roundNumber: number) => void;
+  onOpenInputModal: () => void;
 }
 
 type TabType = 'rounds' | 'chat';
@@ -33,6 +35,7 @@ export const TabNavigation = ({
   participants,
   pastRounds,
   onRoundClick,
+  onOpenInputModal,
 }: TabNavigationProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('rounds');
 
@@ -45,6 +48,8 @@ export const TabNavigation = ({
         borderRadius="lg" 
         p={1}
         boxShadow="sm"
+        mx={0}
+        mb={4}
         _dark={{ bg: 'gray.800' }}
       >
         <Button
@@ -74,20 +79,26 @@ export const TabNavigation = ({
       </HStack>
 
       {/* Tab Content */}
-      <Box mt={4}>
+      <Box>
         {activeTab === 'rounds' && (
           <RoundHistoryTable
             roundNumber={roundNumber}
             participants={participants}
             pastRounds={pastRounds}
             onRoundClick={onRoundClick}
-            onOpenInputModal={() => {}} // SP版では使用しない
+            onOpenInputModal={onOpenInputModal}
           />
         )}
         {activeTab === 'chat' && (
           <ChatLogSection />
         )}
       </Box>
+      
+      {/* Conditional Floating Button */}
+      <ConditionalFloatingButton 
+        activeTab={activeTab} 
+        onClick={onOpenInputModal} 
+      />
     </VStack>
   );
 };

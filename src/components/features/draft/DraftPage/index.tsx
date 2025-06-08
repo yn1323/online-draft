@@ -138,7 +138,7 @@ export const DraftPage = ({
   return (
     <Container 
       maxW="1600px" 
-      p={4} 
+      p={{ base: 2, md: 3, lg: 4 }} 
       minH="100vh"
       position="relative"
       _before={{
@@ -167,7 +167,7 @@ export const DraftPage = ({
       {/* Main Layout - Responsive Design */}
       {/* Mobile: Tab Navigation */}
       <VStack 
-        gap={6} 
+        gap={{ base: 3, md: 4 }} 
         align="stretch" 
         display={{ base: 'flex', lg: 'none' }}
       >
@@ -176,6 +176,7 @@ export const DraftPage = ({
           participants={participants}
           pastRounds={pastRounds}
           onRoundClick={handleRoundClick}
+          onOpenInputModal={handleOpenInputModal}
         />
       </VStack>
 
@@ -225,8 +226,6 @@ export const DraftPage = ({
         onSaveSelections={handleSaveSelections}
       />
 
-      {/* Floating Action Button - Mobile Only */}
-      <FloatingActionButton onClick={handleOpenInputModal} />
     </Container>
   );
 };

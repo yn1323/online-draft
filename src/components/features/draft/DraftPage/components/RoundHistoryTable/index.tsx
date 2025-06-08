@@ -34,7 +34,7 @@ export const RoundHistoryTable = ({
 }: RoundHistoryTableProps) => {
   return (
     <Box
-      p={6}
+      p={{ base: 4, md: 5, lg: 6 }}
       borderRadius="xl"
       bgGradient="linear(135deg, purple.50, pink.50)"
       border="2px solid"
@@ -61,8 +61,13 @@ export const RoundHistoryTable = ({
       }}
     >
       {/* Header with Action Button */}
-      <Box position="relative" mb={6}>
-        <Text fontSize="xl" fontWeight="bold" color="purple.700" _dark={{ color: 'purple.200' }}>
+      <Box position="relative" mb={{ base: 4, md: 5, lg: 6 }}>
+        <Text 
+          fontSize={{ base: 'lg', md: 'xl' }} 
+          fontWeight="bold" 
+          color="purple.700" 
+          _dark={{ color: 'purple.200' }}
+        >
           📊 ラウンド ({pastRounds.length})
         </Text>
         
