@@ -15,7 +15,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-('../../../ui/responsive-modal');
 
 interface DraftPageProps {
   roundNumber: number;
@@ -84,7 +83,23 @@ export const DraftPage = ({
   }));
 
   return (
-    <Container maxW="container.xl" p={4}>
+    <Container 
+      maxW="container.xl" 
+      p={4} 
+      minH="100vh"
+      position="relative"
+      _before={{
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        bgGradient: 'linear(to-br, purple.50, blue.50, pink.50)',
+        opacity: 0.3,
+        zIndex: -1,
+      }}
+    >
       {/* Header */}
       <Flex justify="space-between" align="center" mb={6}>
         <Text fontSize="lg" fontWeight="bold">
@@ -108,9 +123,21 @@ export const DraftPage = ({
             <Box
               p={6}
               borderRadius="xl"
-              bg="purple.50"
+              bgGradient="linear(135deg, purple.50, pink.50)"
               border="2px solid"
-              borderColor="purple.200"
+              borderColor="purple.300"
+              boxShadow="0 10px 30px -10px rgba(128, 90, 213, 0.25)"
+              position="relative"
+              overflow="hidden"
+              _before={{
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '3px',
+                bgGradient: 'linear(to-r, purple.400, pink.400, purple.400)',
+              }}
             >
               <Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700">
                 📊 ラウンド ({pastRounds.length})
@@ -121,8 +148,9 @@ export const DraftPage = ({
                   textAlign="center"
                   bg="white"
                   borderRadius="lg"
-                  border="1px dashed"
-                  borderColor="purple.200"
+                  border="2px dashed"
+                  borderColor="purple.300"
+                  opacity={0.8}
                 >
                   <Text fontSize="md" color="purple.500" fontWeight="medium">
                     📝 ラウンドがまだ開始されていません
@@ -138,11 +166,25 @@ export const DraftPage = ({
                     templateColumns={`60px repeat(${participants.length}, 1fr)`}
                     gap={3}
                     p={3}
-                    bg="blue.100"
+                    bgGradient="linear(to-r, blue.100, cyan.100)"
                     border="2px solid"
-                    borderColor="blue.300"
+                    borderColor="blue.400"
                     borderRadius="lg"
                     alignItems="center"
+                    boxShadow="0 4px 20px -5px rgba(59, 130, 246, 0.35)"
+                    position="relative"
+                    _after={{
+                      content: '""',
+                      position: 'absolute',
+                      inset: '-2px',
+                      borderRadius: 'lg',
+                      padding: '2px',
+                      background: 'linear-gradient(45deg, blue.400, cyan.400, blue.400)',
+                      WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                      WebkitMaskComposite: 'xor',
+                      maskComposite: 'exclude',
+                      opacity: 0.5,
+                    }}
                   >
                     <Flex align="center" justify="center" h="full">
                       <Text fontWeight="bold" color="blue.800" fontSize="lg">
@@ -175,6 +217,12 @@ export const DraftPage = ({
                                   : 'gray.200'
                             }
                             minW="60px"
+                            position="relative"
+                            transition="all 0.3s ease"
+                            _hover={{
+                              transform: 'scale(1.05)',
+                              boxShadow: '0 4px 12px -4px rgba(0, 0, 0, 0.15)',
+                            }}
                           >
                             <Image
                               src={`/img/${participant.avatar}.png`}
@@ -200,20 +248,46 @@ export const DraftPage = ({
                             >
                               {participant.name}
                             </Text>
-                            <Text
-                              fontSize="xs"
-                              color={
-                                currentStatus?.status === 'completed'
-                                  ? 'green.600'
-                                  : currentStatus?.status === 'entered'
-                                    ? 'yellow.600'
-                                    : 'gray.500'
-                              }
-                            >
-                              {currentStatus
-                                ? statusEmoji[currentStatus.status]
-                                : statusEmoji.thinking}
-                            </Text>
+                            <Box position="relative" display="inline-block">
+                              {currentStatus?.status === 'thinking' && (
+                                <Box
+                                  position="absolute"
+                                  top="-2px"
+                                  right="-2px"
+                                  w="6px"
+                                  h="6px"
+                                  bg="gray.400"
+                                  borderRadius="full"
+                                  animation="pulse 2s ease-in-out infinite"
+                                />
+                              )}
+                              {currentStatus?.status === 'entered' && (
+                                <Box
+                                  position="absolute"
+                                  top="-2px"
+                                  right="-2px"
+                                  w="6px"
+                                  h="6px"
+                                  bg="yellow.400"
+                                  borderRadius="full"
+                                  animation="pulse 1.5s ease-in-out infinite"
+                                />
+                              )}
+                              <Text
+                                fontSize="xs"
+                                color={
+                                  currentStatus?.status === 'completed'
+                                    ? 'green.600'
+                                    : currentStatus?.status === 'entered'
+                                      ? 'yellow.600'
+                                      : 'gray.500'
+                                }
+                              >
+                                {currentStatus
+                                  ? statusEmoji[currentStatus.status]
+                                  : statusEmoji.thinking}
+                              </Text>
+                            </Box>
                           </Box>
                         </Box>
                       );
@@ -232,9 +306,15 @@ export const DraftPage = ({
                           p={3}
                           bg="white"
                           border="1px solid"
-                          borderColor="purple.100"
+                          borderColor="purple.200"
                           borderRadius="lg"
-                          _hover={{ bg: 'purple.25' }}
+                          transition="all 0.2s ease"
+                          _hover={{ 
+                            bg: 'purple.50',
+                            borderColor: 'purple.300',
+                            transform: 'translateY(-1px)',
+                            boxShadow: '0 4px 12px -4px rgba(128, 90, 213, 0.15)'
+                          }}
                           alignItems="center"
                         >
                           <Flex align="center" justify="center" h="full">
@@ -304,9 +384,10 @@ export const DraftPage = ({
             <Box
               p={4}
               borderRadius="lg"
-              bg="gray.50"
+              bgGradient="linear(to-br, gray.50, blue.50)"
               border="1px solid"
               borderColor="gray.200"
+              boxShadow="0 4px 15px -3px rgba(0, 0, 0, 0.1)"
             >
               <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
                 💬 ログ・コメント
@@ -343,15 +424,24 @@ export const DraftPage = ({
               {/* Main Action Button */}
               <Button
                 size="xl"
-                colorScheme="blue"
                 h="80px"
                 onClick={() => setIsInputModalOpen(true)}
                 fontSize="xl"
                 fontWeight="bold"
                 borderRadius="xl"
-                boxShadow="lg"
-                _hover={{ transform: 'translateY(-2px)', boxShadow: 'xl' }}
-                _active={{ transform: 'translateY(0)' }}
+                bgGradient="linear(135deg, blue.400, purple.500)"
+                color="white"
+                boxShadow="0 10px 30px -10px rgba(59, 130, 246, 0.5)"
+                transition="all 0.3s ease"
+                _hover={{
+                  bgGradient: 'linear(135deg, purple.500, blue.400)',
+                  transform: 'translateY(-3px) scale(1.02)',
+                  boxShadow: '0 15px 40px -10px rgba(59, 130, 246, 0.6)',
+                }}
+                _active={{
+                  transform: 'translateY(0) scale(0.98)',
+                  boxShadow: '0 5px 20px -10px rgba(59, 130, 246, 0.4)',
+                }}
               >
                 🎯 選択する！
               </Button>
@@ -361,9 +451,21 @@ export const DraftPage = ({
                 <Box
                   p={4}
                   borderRadius="lg"
-                  bg="green.50"
+                  bgGradient="linear(to-br, green.50, emerald.50)"
                   border="2px solid"
-                  borderColor="green.300"
+                  borderColor="green.400"
+                  boxShadow="0 8px 25px -8px rgba(34, 197, 94, 0.3)"
+                  position="relative"
+                  overflow="hidden"
+                  _before={{
+                    content: '""',
+                    position: 'absolute',
+                    top: '-50%',
+                    left: '-50%',
+                    width: '200%',
+                    height: '200%',
+                    background: 'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%)',
+                  }}
                 >
                   <Text
                     fontSize="sm"
