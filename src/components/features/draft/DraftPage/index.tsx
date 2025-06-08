@@ -83,82 +83,49 @@ export const DraftPage = ({
 				</Text>
 			</Flex>
 
-			{/* Main Layout */}
+			{/* Main Layout - Strategy First Design */}
 			<Grid
-				templateColumns={{ base: "1fr", md: "1fr 320px" }}
-				gap={6}
-				minH="60vh"
+				templateColumns={{ base: "1fr", lg: "2fr 1fr" }}
+				gap={8}
+				minH="70vh"
 			>
-				{/* Left: Strategy Information */}
+				{/* Left: Strategy Analysis Area (70%) */}
 				<GridItem>
 					<VStack gap={6} align="stretch">
-						{/* Current Round Status */}
-						<Box p={4} borderRadius="lg" bg="blue.50" border="1px solid" borderColor="blue.200">
-							<Text fontSize="lg" fontWeight="bold" mb={3} color="blue.700">
-								📝 Round {roundNumber}: {currentRoundTopic}
+						{/* Past Rounds - Main Strategy Information */}
+						<Box p={6} borderRadius="xl" bg="purple.50" border="2px solid" borderColor="purple.200">
+							<Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700">
+								🎯 戦略分析エリア - 過去のラウンド ({pastRounds.length})
 							</Text>
-							<Grid templateColumns="repeat(auto-fit, minmax(200px, 1fr))" gap={3}>
-								{currentRoundSelections.map((participant) => (
-									<Flex
-										key={participant.userId}
-										align="center"
-										gap={2}
-										p={2}
-										borderRadius="md"
-										bg="white"
-										border="1px solid"
-										borderColor="gray.200"
-									>
-										<Image
-											src={`/img/${participant.avatar}.png`}
-											alt={participant.userName}
-											width="30px"
-											height="30px"
-											borderRadius="full"
-											objectFit="cover"
-										/>
-										<VStack gap={0} align="start" flex={1}>
-											<Text fontSize="sm" fontWeight="medium" truncate>
-												{participant.userName}
-											</Text>
-											<Text fontSize="xs" color="gray.600" truncate>
-												{participant.item}
-											</Text>
-										</VStack>
-										<Text fontSize="sm">
-											{statusEmoji[participant.status]}
-										</Text>
-									</Flex>
-								))}
-							</Grid>
-						</Box>
-
-						{/* Past Rounds - Always Visible */}
-						<Box p={4} borderRadius="lg" bg="gray.50" border="1px solid" borderColor="gray.200">
-							<Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
-								📊 過去のラウンド ({pastRounds.length})
-							</Text>
-							<VStack gap={4} align="stretch">
+							<VStack gap={6} align="stretch">
 								{pastRounds.map((round) => (
 									<Box
 										key={round.roundNumber}
-										p={3}
-										borderRadius="md"
+										p={4}
+										borderRadius="lg"
 										bg="white"
 										border="1px solid"
-										borderColor="gray.200"
+										borderColor="purple.100"
+										boxShadow="sm"
 									>
-										<Text fontSize="sm" fontWeight="bold" mb={2} color="gray.800">
+										<Text fontSize="md" fontWeight="bold" mb={4} color="purple.800">
 											Round {round.roundNumber}: {round.topic}
 										</Text>
-										<Grid templateColumns="repeat(auto-fit, minmax(180px, 1fr))" gap={2}>
+										<Grid templateColumns="repeat(auto-fit, minmax(220px, 1fr))" gap={3}>
 											{round.selections.map((selection, index) => (
-												<Box key={index} p={2} borderRadius="sm" bg="gray.50">
-													<Text fontSize="xs" fontWeight="medium" color="gray.700">
+												<Box 
+													key={index} 
+													p={3} 
+													borderRadius="md" 
+													bg="purple.25"
+													border="1px solid"
+													borderColor="purple.100"
+												>
+													<Text fontSize="sm" fontWeight="bold" color="purple.900" mb={1}>
 														{selection.userName}: {selection.item}
 													</Text>
 													{selection.comment && (
-														<Text fontSize="xs" color="gray.500" mt={1}>
+														<Text fontSize="xs" color="purple.600" mt={2}>
 															💭 {selection.comment}
 														</Text>
 													)}
@@ -168,84 +135,105 @@ export const DraftPage = ({
 									</Box>
 								))}
 								{pastRounds.length === 0 && (
-									<Text fontSize="sm" color="gray.500" textAlign="center" py={4}>
-										過去のラウンドはありません
-									</Text>
+									<Box p={8} textAlign="center" bg="white" borderRadius="lg" border="1px dashed" borderColor="purple.200">
+										<Text fontSize="md" color="purple.500" fontWeight="medium">
+											📊 過去のラウンドはまだありません
+										</Text>
+										<Text fontSize="sm" color="purple.400" mt={2}>
+											ラウンドが進むと、ここに戦略分析情報が表示されます
+										</Text>
+									</Box>
 								)}
 							</VStack>
 						</Box>
 					</VStack>
 				</GridItem>
 
-				{/* Right: Input Button */}
+				{/* Right: Current Round & Actions (30%) */}
 				<GridItem>
 					<Box position="sticky" top={4}>
 						<VStack gap={4} align="stretch">
-							{/* Input Button */}
-							<Button
-								size="lg"
-								colorScheme="blue"
-								h="60px"
-								onClick={() => setIsInputModalOpen(true)}
-								fontSize="lg"
-							>
-								✏️ 選択を入力
-							</Button>
-
-							{/* Current User Selection Preview */}
-							{currentUserSelection && (
-								<Box p={3} borderRadius="md" bg="green.50" border="1px solid" borderColor="green.200">
-									<Text fontSize="sm" fontWeight="medium" color="green.700" mb={1}>
-										✅ あなたの選択
-									</Text>
-									<Text fontSize="md" fontWeight="bold">
-										{currentUserSelection}
-									</Text>
-									<Button
-										size="sm"
-										variant="ghost"
-										colorScheme="green"
-										onClick={() => setIsInputModalOpen(true)}
-										mt={2}
-									>
-										修正する
-									</Button>
-								</Box>
-							)}
-
-							{/* Participants Quick View */}
-							<Box p={3} borderRadius="md" bg="gray.50" border="1px solid" borderColor="gray.200">
-								<Text fontSize="sm" fontWeight="medium" mb={2} color="gray.700">
-									👥 参加者状況
+							{/* Current Round - Minimized */}
+							<Box p={4} borderRadius="lg" bg="blue.50" border="1px solid" borderColor="blue.200">
+								<Text fontSize="md" fontWeight="bold" mb={3} color="blue.700">
+									📝 Round {roundNumber}: {currentRoundTopic}
+								</Text>
+								<Text fontSize="sm" color="blue.600" mb={3}>
+									{participants.filter(p => p.status === "completed").length}/{participants.length} 完了
 								</Text>
 								<VStack gap={2} align="stretch">
-									{participants.map((participant) => (
+									{currentRoundSelections.slice(0, 3).map((participant) => (
 										<Flex
-											key={participant.id}
+											key={participant.userId}
 											align="center"
 											gap={2}
 											p={2}
 											borderRadius="sm"
 											bg="white"
+											border="1px solid"
+											borderColor="blue.100"
 										>
 											<Image
 												src={`/img/${participant.avatar}.png`}
-												alt={participant.name}
-												width="24px"
-												height="24px"
+												alt={participant.userName}
+												width="20px"
+												height="20px"
 												borderRadius="full"
 												objectFit="cover"
 											/>
-											<Text fontSize="xs" flex={1}>
-												{participant.name}
+											<Text fontSize="xs" flex={1} truncate>
+												{participant.userName}
 											</Text>
-											<Text fontSize="sm">
+											<Text fontSize="xs">
 												{statusEmoji[participant.status]}
 											</Text>
 										</Flex>
 									))}
+									{participants.length > 3 && (
+										<Text fontSize="xs" color="blue.500" textAlign="center">
+											他 {participants.length - 3} 人
+										</Text>
+									)}
 								</VStack>
 							</Box>
+
+							{/* Main Action Button */}
+							<Button
+								size="xl"
+								colorScheme="orange"
+								h="80px"
+								onClick={() => setIsInputModalOpen(true)}
+								fontSize="xl"
+								fontWeight="bold"
+								borderRadius="xl"
+								boxShadow="lg"
+								_hover={{ transform: "translateY(-2px)", boxShadow: "xl" }}
+								_active={{ transform: "translateY(0)" }}
+							>
+								🎯 戦略的選択！
+							</Button>
+
+							{/* Current User Selection Preview */}
+							{currentUserSelection && (
+								<Box p={4} borderRadius="lg" bg="green.50" border="2px solid" borderColor="green.300">
+									<Text fontSize="sm" fontWeight="bold" color="green.700" mb={2}>
+										✅ あなたの戦略選択
+									</Text>
+									<Text fontSize="lg" fontWeight="bold" color="green.800">
+										{currentUserSelection}
+									</Text>
+									<Button
+										size="sm"
+										variant="outline"
+										colorScheme="green"
+										onClick={() => setIsInputModalOpen(true)}
+										mt={3}
+										w="full"
+									>
+										戦略を変更
+									</Button>
+								</Box>
+							)}
 						</VStack>
 					</Box>
 				</GridItem>
