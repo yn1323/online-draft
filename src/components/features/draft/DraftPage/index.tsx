@@ -97,54 +97,88 @@ export const DraftPage = ({
 							<Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700">
 								🎯 戦略分析エリア - 過去のラウンド ({pastRounds.length})
 							</Text>
-							<VStack gap={6} align="stretch">
-								{pastRounds.map((round) => (
-									<Box
-										key={round.roundNumber}
-										p={4}
+							{pastRounds.length === 0 ? (
+								<Box p={8} textAlign="center" bg="white" borderRadius="lg" border="1px dashed" borderColor="purple.200">
+									<Text fontSize="md" color="purple.500" fontWeight="medium">
+										📊 過去のラウンドはまだありません
+									</Text>
+									<Text fontSize="sm" color="purple.400" mt={2}>
+										ラウンドが進むと、ここに戦略分析情報が表示されます
+									</Text>
+								</Box>
+							) : (
+								<VStack gap={4} align="stretch">
+									{/* Table Header */}
+									<Grid 
+										templateColumns={`60px repeat(${participants.length}, 1fr)`} 
+										gap={3} 
+										p={3} 
+										bg="purple.100" 
 										borderRadius="lg"
-										bg="white"
-										border="1px solid"
-										borderColor="purple.100"
-										boxShadow="sm"
+										fontWeight="bold"
+										fontSize="sm"
+										color="purple.800"
 									>
-										<Text fontSize="md" fontWeight="bold" mb={4} color="purple.800">
-											Round {round.roundNumber}: {round.topic}
-										</Text>
-										<Grid templateColumns="repeat(auto-fit, minmax(220px, 1fr))" gap={3}>
-											{round.selections.map((selection, index) => (
-												<Box 
-													key={index} 
-													p={3} 
-													borderRadius="md" 
-													bg="purple.25"
-													border="1px solid"
-													borderColor="purple.100"
-												>
-													<Text fontSize="sm" fontWeight="bold" color="purple.900" mb={1}>
-														{selection.userName}: {selection.item}
-													</Text>
-													{selection.comment && (
-														<Text fontSize="xs" color="purple.600" mt={2}>
-															💭 {selection.comment}
-														</Text>
-													)}
-												</Box>
-											))}
+										<Text textAlign="center">R</Text>
+										{participants.map((participant) => (
+											<VStack key={participant.id} gap={1}>
+												<Image
+													src={`/img/${participant.avatar}.png`}
+													alt={participant.name}
+													width="28px"
+													height="28px"
+													borderRadius="full"
+													objectFit="cover"
+												/>
+												<Text fontSize="xs" fontWeight="bold">{participant.name}</Text>
+											</VStack>
+										))}
+									</Grid>
+
+									{/* Table Body */}
+									{pastRounds.map((round) => (
+										<Grid
+											key={round.roundNumber}
+											templateColumns={`60px repeat(${participants.length}, 1fr)`}
+											gap={3}
+											p={3}
+											bg="white"
+											border="1px solid"
+											borderColor="purple.100"
+											borderRadius="lg"
+											_hover={{ bg: "purple.25" }}
+											alignItems="center"
+										>
+											<Text textAlign="center" fontWeight="bold" color="purple.800" fontSize="lg">
+												{round.roundNumber}
+											</Text>
+											{participants.map((participant) => {
+												const selection = round.selections.find(s => s.userId === participant.id);
+												return (
+													<Box key={participant.id} textAlign="center" px={2}>
+														{selection ? (
+															<VStack gap={1}>
+																<Text fontSize="sm" fontWeight="bold" color="gray.800" lineHeight="1.2">
+																	{selection.item}
+																</Text>
+																{selection.comment && (
+																	<Text fontSize="xs" color="gray.600" fontStyle="italic" lineHeight="1.2">
+																		💭 {selection.comment}
+																	</Text>
+																)}
+															</VStack>
+														) : (
+															<Text fontSize="sm" color="gray.400" fontWeight="medium">
+																未参加
+															</Text>
+														)}
+													</Box>
+												);
+											})}
 										</Grid>
-									</Box>
-								))}
-								{pastRounds.length === 0 && (
-									<Box p={8} textAlign="center" bg="white" borderRadius="lg" border="1px dashed" borderColor="purple.200">
-										<Text fontSize="md" color="purple.500" fontWeight="medium">
-											📊 過去のラウンドはまだありません
-										</Text>
-										<Text fontSize="sm" color="purple.400" mt={2}>
-											ラウンドが進むと、ここに戦略分析情報が表示されます
-										</Text>
-									</Box>
-								)}
-							</VStack>
+									))}
+								</VStack>
+							)}
 						</Box>
 					</VStack>
 				</GridItem>
@@ -161,12 +195,12 @@ export const DraftPage = ({
 								<Text fontSize="sm" color="blue.600" mb={3}>
 									{participants.filter(p => p.status === "completed").length}/{participants.length} 完了
 								</Text>
-								<VStack gap={2} align="stretch">
-									{currentRoundSelections.slice(0, 3).map((participant) => (
+								<VStack gap={3} align="stretch">
+									{currentRoundSelections.map((participant) => (
 										<Flex
 											key={participant.userId}
 											align="center"
-											gap={2}
+											gap={3}
 											p={2}
 											borderRadius="sm"
 											bg="white"
@@ -189,11 +223,6 @@ export const DraftPage = ({
 											</Text>
 										</Flex>
 									))}
-									{participants.length > 3 && (
-										<Text fontSize="xs" color="blue.500" textAlign="center">
-											他 {participants.length - 3} 人
-										</Text>
-									)}
 								</VStack>
 							</Box>
 
