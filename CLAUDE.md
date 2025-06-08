@@ -31,15 +31,16 @@
 - **User-First Design**: 技術制約よりユーザー体験優先
 
 ## 📍 現在のタスク状況
-**Phase 3.5**: ユーザー登録機能とリアルタイム同期
+**Phase 4**: ドラフトページ戦略UI完成
 - ✅ **完了**: 認証システム・ディレクトリ構成・Firestore基盤
 - ✅ **完了**: Storybookテスト品質保証戦略・E2Eテスト戦略
-- 🔄 **進行中**: ユーザー登録機能の実装
-- ⏳ **次回**: リアルタイム同期、チャット機能
+- ✅ **完了**: ドラフトページ戦略情報メインUI・モーダル入力システム
+- ⏳ **次回**: Firestore連携・リアルタイム同期・チャット機能
 
 ### 次回セッション開始時のTODO
-1. **ユーザー登録機能**: ロビーページFirestore連携・Jotai統合
-2. **リアルタイム同期**: onSnapshot使用・チャット機能
+1. **ドラフトページ実装**: 戦略情報メインUI完成・モーダル入力対応
+2. **リアルタイム同期**: Firestore連携・onSnapshot使用
+3. **チャット機能**: ドラフト中のコミュニケーション機能
 
 ## 🎭 Claude Code設定
 
@@ -81,6 +82,7 @@ pnpm notify all                      # 全チェック完了🎉
 - **認証**: `src/hooks/auth/useAuth.ts`
 - **ロビー**: `src/components/features/lobby/`
 - **参加**: `src/components/features/join/`
+- **ドラフト**: `src/components/features/draft/DraftPage/`
 - **テスト**: `src/test-utils/`、`e2e/operations/`
 
 ## 🎮 プロジェクト基本情報
@@ -96,10 +98,11 @@ pnpm notify all                      # 全チェック完了🎉
 - **開発**: Biome + Storybook + Playwright
 
 ### 現在の実装状況
-- ✅ TOPページ・参加ページ・ロビーページ
+- ✅ TOPページ・参加ページ・ロビーページ・ドラフトページUI
 - ✅ Firebase匿名認証・Firestoreグループ管理
 - ✅ Storybookテスト・E2Eテスト基盤
-- ⏳ ユーザー登録・リアルタイム同期機能
+- ✅ ドラフトページ戦略情報UI・モーダル入力システム
+- ⏳ Firestore連携・リアルタイム同期機能
 
 ## 📚 詳細ドキュメント
 
@@ -111,4 +114,4 @@ pnpm notify all                      # 全チェック完了🎉
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/1/8 - TOKEN最適化完了（70%削減）
+**最終更新**: 2025/1/8 - ドラフトページ戦略UI完成・モーダル入力対応
