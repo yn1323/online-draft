@@ -10,6 +10,7 @@ import {
 	Image,
 	Input,
 	Text,
+	Textarea,
 	VStack,
 } from "@chakra-ui/react";
 import { DialogRoot, DialogContent, DialogHeader, DialogTitle, DialogBody, DialogFooter, DialogCloseTrigger } from "@chakra-ui/react";
@@ -162,9 +163,18 @@ export const DraftPage = ({
 																	{selection.item}
 																</Text>
 																{selection.comment && (
-																	<Text fontSize="xs" color="gray.600" fontStyle="italic" lineHeight="1.2">
-																		💭 {selection.comment}
-																	</Text>
+																	<Box 
+																		mt={1} 
+																		p={2} 
+																		bg="purple.50" 
+																		borderRadius="sm" 
+																		border="1px solid" 
+																		borderColor="purple.100"
+																	>
+																		<Text fontSize="xs" color="purple.700" fontWeight="medium" lineHeight="1.3">
+																			🎯 {selection.comment}
+																		</Text>
+																	</Box>
 																)}
 															</VStack>
 														) : (
@@ -187,43 +197,48 @@ export const DraftPage = ({
 				<GridItem>
 					<Box position="sticky" top={4}>
 						<VStack gap={4} align="stretch">
-							{/* Current Round - Minimized */}
-							<Box p={4} borderRadius="lg" bg="blue.50" border="1px solid" borderColor="blue.200">
-								<Text fontSize="md" fontWeight="bold" mb={3} color="blue.700">
-									📝 Round {roundNumber}: {currentRoundTopic}
+							{/* Current Round - Compact but Informative */}
+							<Box p={3} borderRadius="md" bg="blue.50" border="1px solid" borderColor="blue.200">
+								<Flex justify="space-between" align="center" mb={3}>
+									<Text fontSize="sm" fontWeight="bold" color="blue.700">
+										Round {roundNumber}
+									</Text>
+									<Text fontSize="xs" color="blue.600">
+										{participants.filter(p => p.status === "completed").length}/{participants.length}
+									</Text>
+								</Flex>
+								<Text fontSize="xs" color="blue.500" textAlign="center" mb={3}>
+									{currentRoundTopic}
 								</Text>
-								<Text fontSize="sm" color="blue.600" mb={3}>
-									{participants.filter(p => p.status === "completed").length}/{participants.length} 完了
-								</Text>
-								<VStack gap={3} align="stretch">
+								
+								{/* Compact Status Display */}
+								<Flex wrap="wrap" gap={1} justify="center">
 									{currentRoundSelections.map((participant) => (
 										<Flex
 											key={participant.userId}
 											align="center"
-											gap={3}
-											p={2}
-											borderRadius="sm"
-											bg="white"
+											gap={1}
+											px={2}
+											py={1}
+											borderRadius="full"
+											bg={participant.status === "completed" ? "green.100" : "gray.100"}
 											border="1px solid"
-											borderColor="blue.100"
+											borderColor={participant.status === "completed" ? "green.200" : "gray.200"}
 										>
 											<Image
 												src={`/img/${participant.avatar}.png`}
 												alt={participant.userName}
-												width="20px"
-												height="20px"
+												width="16px"
+												height="16px"
 												borderRadius="full"
 												objectFit="cover"
 											/>
-											<Text fontSize="xs" flex={1} truncate>
-												{participant.userName}
-											</Text>
-											<Text fontSize="xs">
+											<Text fontSize="xs" color={participant.status === "completed" ? "green.700" : "gray.600"}>
 												{statusEmoji[participant.status]}
 											</Text>
 										</Flex>
 									))}
-								</VStack>
+								</Flex>
 							</Box>
 
 							{/* Main Action Button */}
@@ -293,15 +308,25 @@ export const DraftPage = ({
 								/>
 							</Box>
 							<Box>
-								<Text fontSize="sm" fontWeight="medium" mb={2}>
-									コメント（任意）
+								<Text fontSize="sm" fontWeight="medium" mb={2} color="purple.700">
+									🎯 戦略メモ（任意）
 								</Text>
-								<Input
+								<Textarea
 									value={comment}
 									onChange={(e) => setComment(e.target.value)}
-									placeholder="例: 最近人気だから"
-									maxLength={50}
+									placeholder="戦略的な選択理由を記録しましょう...&#10;例：&#10;・たけしさんは毎回定番を選ぶ傾向&#10;・みさきさんとかぶりやすいので差別化&#10;・前回のコメントから流行を先読み"
+									maxLength={150}
+									rows={4}
+									resize="none"
+									borderWidth={2}
+									_focus={{
+										borderColor: "purple.500",
+										boxShadow: "0 0 0 1px var(--chakra-colors-purple-500)",
+									}}
 								/>
+								<Text fontSize="xs" color="gray.500" mt={1} textAlign="right">
+									{comment.length}/150文字
+								</Text>
 							</Box>
 						</VStack>
 					</DialogBody>
