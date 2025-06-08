@@ -1,15 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TabNavigation } from './index';
-import { mockParticipants, mockPastRounds } from '../../mocks';
+import { RoundHistoryTable } from './index';
+import { mockParticipants, mockPastRounds } from '../../../mocks';
 
 const meta = {
-  title: 'Features/Draft/DraftPage/Components/TabNavigation',
-  component: TabNavigation,
+  title: 'Features/Draft/DraftPage/Components/RoundHistoryTable',
+  component: RoundHistoryTable,
   parameters: {
     layout: 'padded',
   },
   tags: ['autodocs'],
-} satisfies Meta<typeof TabNavigation>;
+} satisfies Meta<typeof RoundHistoryTable>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -25,7 +25,7 @@ export const Default: Story = {
   },
 };
 
-export const WithoutPastRounds: Story = {
+export const Empty: Story = {
   args: {
     roundNumber: 1,
     participants: mockParticipants,

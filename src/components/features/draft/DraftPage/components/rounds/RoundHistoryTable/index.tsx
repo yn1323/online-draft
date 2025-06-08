@@ -2,7 +2,7 @@ import { Box, Text, VStack, useBreakpointValue } from '@chakra-ui/react';
 import { useState, useMemo } from 'react';
 import { CurrentRoundRow } from '../CurrentRoundRow';
 import { PastRoundRow } from '../PastRoundRow';
-import { SelectionButton } from '../SelectionButton';
+import { SelectionButton } from '../../actions/SelectionButton';
 
 interface RoundHistoryTableProps {
   roundNumber: number;

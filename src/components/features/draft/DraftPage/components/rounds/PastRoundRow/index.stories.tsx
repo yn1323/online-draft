@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { PastRoundRow } from './index';
-import { mockParticipants } from '../../mocks';
+import { mockParticipants } from '../../../mocks';
 
 const meta = {
   title: 'Features/Draft/DraftPage/Components/PastRoundRow',

@@ -2,9 +2,9 @@
 
 import { Box, HStack, Button, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
-import { RoundHistoryTable } from '../RoundHistoryTable';
-import { ChatLogSection } from '../ChatLogSection';
-import { ConditionalFloatingButton } from '../ConditionalFloatingButton';
+import { RoundHistoryTable } from '../../rounds/RoundHistoryTable';
+import { ChatLogSection } from '../../chat/ChatLogSection';
+import { ConditionalFloatingButton } from '../../actions/ConditionalFloatingButton';
 
 interface TabNavigationProps {
   roundNumber: number;

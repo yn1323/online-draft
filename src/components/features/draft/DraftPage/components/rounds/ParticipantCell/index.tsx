@@ -1,5 +1,5 @@
 import { Box, Image, Text } from '@chakra-ui/react';
-import { statusEmoji } from '../../mocks';
+import { statusEmoji } from '../../../mocks';
 
 interface ParticipantCellProps {
   participant: {

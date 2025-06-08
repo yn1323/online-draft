@@ -5,14 +5,14 @@ import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { mockParticipants, mockPastRounds } from './mocks';
-import { DraftHeader } from './components/DraftHeader';
-import { RoundHistoryTable } from './components/RoundHistoryTable';
-import { ChatLogSection } from './components/ChatLogSection';
-import { ActionPanel } from './components/ActionPanel';
-import { InputModal } from './components/InputModal';
-import { TabNavigation } from './components/TabNavigation';
-import { FloatingActionButton } from './components/FloatingActionButton';
-import { OptionsModal } from './components/OptionsModal';
+import { DraftHeader } from './components/layout/DraftHeader';
+import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
+import { ChatLogSection } from './components/chat/ChatLogSection';
+import { ActionPanel } from './components/actions/ActionPanel';
+import { InputModal } from './components/modals/InputModal';
+import { TabNavigation } from './components/layout/TabNavigation';
+import { FloatingActionButton } from './components/actions/FloatingActionButton';
+import { OptionsModal } from './components/modals/OptionsModal';
 
 interface DraftPageProps {
   roundNumber?: number;
