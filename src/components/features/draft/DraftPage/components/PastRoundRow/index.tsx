@@ -1,6 +1,7 @@
 import { Grid, Flex, Text, Box, VStack, HStack, useBreakpointValue, IconButton } from '@chakra-ui/react';
 import { Collapsible } from '@chakra-ui/react';
 import { Tooltip } from '../../../../../ui/tooltip';
+import { COMPONENT_THEMES } from '@/src/constants/theme';
 
 interface PastRoundRowProps {
   round: {
@@ -26,6 +27,7 @@ interface PastRoundRowProps {
 
 export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = true, onToggleExpand }: PastRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const theme = COMPONENT_THEMES.pastRound;
 
   // SP用の縦型レイアウト（折りたたみ機能付き）
   if (isMobile) {
@@ -33,12 +35,12 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
       <Box
         bg="white"
         border="1px solid"
-        borderColor="green.200"
+        borderColor={theme.light.borderColor}
         borderRadius="lg"
         transition="all 0.2s ease"
         _dark={{
           bg: 'gray.800/80',
-          borderColor: 'green.600',
+          borderColor: theme.dark.borderColor,
         }}
       >
         {/* ヘッダー部分（常時表示 + アクションボタン） */}
@@ -68,9 +70,6 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
               _dark={{ color: 'green.200' }}
             >
               ラウンド {round.roundNumber}
-            </Text>
-            <Text fontSize="sm" color="green.600" _dark={{ color: 'green.400' }}>
-              📊 {round.selections.length}人参加
             </Text>
           </HStack>
           

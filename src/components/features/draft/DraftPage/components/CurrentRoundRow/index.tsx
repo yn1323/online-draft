@@ -1,5 +1,6 @@
 import { Grid, Flex, Text, Box, HStack, useBreakpointValue } from '@chakra-ui/react';
 import { ParticipantCell } from '../ParticipantCell';
+import { COMPONENT_THEMES } from '@/src/constants/theme';
 
 interface CurrentRoundRowProps {
   roundNumber: number;
@@ -13,21 +14,22 @@ interface CurrentRoundRowProps {
 
 export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const theme = COMPONENT_THEMES.currentRound;
 
   // SP用の縦型レイアウト
   if (isMobile) {
     return (
       <Box
         p={4}
-        bgGradient="linear(to-r, green.100, green.200)"
+        bgGradient={theme.light.bgGradient}
         border="2px solid"
-        borderColor="green.500"
+        borderColor={theme.light.borderColor}
         borderRadius="lg"
-        boxShadow="0 4px 20px -5px rgba(34, 197, 94, 0.25)"
+        boxShadow={theme.light.boxShadow}
         _dark={{
-          bgGradient: 'linear(to-r, green.800/40, green.900/40)',
-          borderColor: 'green.600',
-          boxShadow: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)',
+          bgGradient: theme.dark.bgGradient,
+          borderColor: theme.dark.borderColor,
+          boxShadow: theme.dark.boxShadow,
         }}
         position="relative"
         _after={{
@@ -36,7 +38,7 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
           inset: '-2px',
           borderRadius: 'lg',
           padding: '2px',
-          background: 'linear-gradient(45deg, green.500, green.600, green.500)',
+          background: theme.light.accent,
           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
@@ -44,16 +46,16 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
         }}
       >
         {/* ラウンド番号ヘッダー */}
-        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor="green.300" _dark={{ borderColor: 'green.700' }}>
+        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor={theme.light.borderBottom} _dark={{ borderColor: theme.dark.borderBottom }}>
           <Text
             fontWeight="bold"
-            color="green.700"
+            color={theme.light.textColor}
             fontSize="lg"
-            _dark={{ color: 'green.300' }}
+            _dark={{ color: theme.dark.textColor }}
           >
             現在のラウンド {roundNumber}
           </Text>
-          <Text fontSize="sm" color="green.600" _dark={{ color: 'green.500' }}>
+          <Text fontSize="sm" color={theme.light.textColor} _dark={{ color: theme.dark.textColor }}>
             ⚡ 進行中
           </Text>
         </HStack>
@@ -74,16 +76,16 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
       templateColumns={`60px repeat(${participants.length}, 1fr)`}
       gap={3}
       p={3}
-      bgGradient="linear(to-r, green.100, emerald.100)"
+      bgGradient={theme.light.bgGradient}
       border="2px solid"
-      borderColor="green.400"
+      borderColor={theme.light.borderColor}
       borderRadius="lg"
       alignItems="center"
-      boxShadow="0 4px 20px -5px rgba(34, 197, 94, 0.35)"
+      boxShadow={theme.light.boxShadow}
       _dark={{
-        bgGradient: 'linear(to-r, green.800/50, emerald.800/50)',
-        borderColor: 'green.500',
-        boxShadow: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)',
+        bgGradient: theme.dark.bgGradient,
+        borderColor: theme.dark.borderColor,
+        boxShadow: theme.dark.boxShadow,
       }}
       position="relative"
       _after={{
@@ -100,7 +102,7 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
       }}
     >
       <Flex align="center" justify="center" h="full">
-        <Text fontWeight="bold" color="green.700" fontSize="lg" _dark={{ color: 'green.300' }}>
+        <Text fontWeight="bold" color={theme.light.textColor} fontSize="lg" _dark={{ color: theme.dark.textColor }}>
           {roundNumber}
         </Text>
       </Flex>

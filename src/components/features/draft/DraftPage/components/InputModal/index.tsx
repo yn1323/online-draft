@@ -1,5 +1,6 @@
 import { Box, Input, Text, Textarea } from '@chakra-ui/react';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { COMPONENT_THEMES } from '@/src/constants/theme';
 
 interface InputModalProps {
   isOpen: boolean;
@@ -24,6 +25,8 @@ export const InputModal = ({
   onCommentChange,
   onSubmit,
 }: InputModalProps) => {
+  const inputTheme = COMPONENT_THEMES.input;
+  
   return (
     <ResponsiveModal
       isOpen={isOpen}
@@ -35,7 +38,7 @@ export const InputModal = ({
         },
         submit: {
           text: '決定',
-          colorPalette: 'green',
+          colorPalette: inputTheme.modalColorPalette,
           disabled: !selection.trim(),
           onClick: onSubmit,
         },
@@ -52,13 +55,13 @@ export const InputModal = ({
           placeholder="例: 鬼滅の刃"
           borderWidth={2}
           _focus={{
-            borderColor: 'green.500',
-            boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
+            borderColor: inputTheme.focusBorderColor,
+            boxShadow: inputTheme.focusBoxShadow,
           }}
         />
       </Box>
       <Box w="full">
-        <Text fontSize="sm" fontWeight="medium" mb={2} color="green.700">
+        <Text fontSize="sm" fontWeight="medium" mb={2} color={inputTheme.labelColor}>
           ひとこと（任意）
         </Text>
         <Textarea
@@ -70,8 +73,8 @@ export const InputModal = ({
           resize="none"
           borderWidth={2}
           _focus={{
-            borderColor: 'green.500',
-            boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
+            borderColor: inputTheme.focusBorderColor,
+            boxShadow: inputTheme.focusBoxShadow,
           }}
         />
         <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">

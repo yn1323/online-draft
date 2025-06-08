@@ -1,10 +1,13 @@
 import { Button } from '@chakra-ui/react';
+import { COMPONENT_THEMES } from '@/src/constants/theme';
 
 interface SelectionButtonProps {
   onClick: () => void;
 }
 
 export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
+  const buttonTheme = COMPONENT_THEMES.button.primary;
+  
   return (
     <Button
       size="md"
@@ -15,14 +18,14 @@ export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
       borderRadius="lg"
       variant="outline"
       borderWidth={2}
-      borderColor="green.400"
-      bg="green.50"
-      color="green.700"
+      borderColor={buttonTheme.borderColor}
+      bg={buttonTheme.bg}
+      color={buttonTheme.textColor}
       boxShadow="lg"
       transition="all 0.2s ease"
       _hover={{
-        bg: 'green.100',
-        borderColor: 'green.500',
+        bg: buttonTheme.hoverBg,
+        borderColor: buttonTheme.hoverBorder,
         transform: 'translateY(-2px)',
         boxShadow: 'xl',
       }}
@@ -30,7 +33,7 @@ export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
         transform: 'translateY(0)',
       }}
       _dark={{
-        borderColor: 'green.400',
+        borderColor: buttonTheme.borderColor,
         bg: 'gray.800',
         color: 'green.300',
         _hover: {
