@@ -64,7 +64,8 @@
       "Bash(osascript:*)",
       "Bash(brew install:*)",
       "Bash(terminal-notifier:*)",
-      "Bash(pnpm e2e:*)"
+      "Bash(pnpm e2e:*)",
+      "Bash(pnpm storybook:test-ci:*)"
     ],
     "deny": []
   }
