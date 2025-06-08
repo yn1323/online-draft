@@ -36,7 +36,7 @@ export async function selectExistingUser(page: Page, userName: string): Promise<
  * ユーザー名入力操作
  */
 export async function fillUserName(page: Page, userName: string): Promise<void> {
-  const nameInput = page.getByLabel('ユーザー名');
+  const nameInput = page.getByPlaceholder('名前を入力してください');
   await nameInput.clear();
   await nameInput.fill(userName);
 }
