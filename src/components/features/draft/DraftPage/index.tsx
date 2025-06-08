@@ -1,6 +1,7 @@
 'use client';
 
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { RoundDetailModal } from '../RoundDetailModal';
 import {
   Box,
   Button,
@@ -40,6 +41,12 @@ interface DraftPageProps {
   }[];
   currentRoundTopic?: string;
   logCount?: number;
+  onUpdateSelections?: (roundNumber: number, selections: {
+    userId: string;
+    userName: string;
+    item: string;
+    comment?: string;
+  }[]) => void;
 }
 
 const statusEmoji = {
@@ -57,15 +64,48 @@ export const DraftPage = ({
   onSubmitSelection,
   pastRounds = [],
   currentRoundTopic = '今回のお題',
+  onUpdateSelections,
 }: DraftPageProps) => {
   const [selection, setSelection] = useState(currentUserSelection);
   const [comment, setComment] = useState('');
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
+  const [roundDetailModal, setRoundDetailModal] = useState<{
+    isOpen: boolean;
+    selectedRound: number | null;
+  }>({
+    isOpen: false,
+    selectedRound: null,
+  });
 
   const handleSubmit = () => {
     if (selection.trim()) {
       onSubmitSelection(selection.trim(), comment.trim() || undefined);
       setIsInputModalOpen(false);
+    }
+  };
+
+  const handleRoundClick = (roundNumber: number) => {
+    setRoundDetailModal({
+      isOpen: true,
+      selectedRound: roundNumber,
+    });
+  };
+
+  const handleCloseRoundDetail = () => {
+    setRoundDetailModal({
+      isOpen: false,
+      selectedRound: null,
+    });
+  };
+
+  const handleSaveSelections = (roundNumber: number, selections: {
+    userId: string;
+    userName: string;
+    item: string;
+    comment?: string;
+  }[]) => {
+    if (onUpdateSelections) {
+      onUpdateSelections(roundNumber, selections);
     }
   };
 
@@ -350,6 +390,8 @@ export const DraftPage = ({
                           borderColor="purple.200"
                           borderRadius="lg"
                           transition="all 0.2s ease"
+                          cursor="pointer"
+                          onClick={() => handleRoundClick(round.roundNumber)}
                           _hover={{ 
                             bg: 'purple.50',
                             borderColor: 'purple.300',
@@ -627,6 +669,15 @@ export const DraftPage = ({
           </Text>
         </Box>
       </ResponsiveModal>
+
+      {/* Round Detail Modal */}
+      <RoundDetailModal
+        isOpen={roundDetailModal.isOpen}
+        onClose={handleCloseRoundDetail}
+        roundData={roundDetailModal.selectedRound ? pastRounds.find(r => r.roundNumber === roundDetailModal.selectedRound) || null : null}
+        participants={participants}
+        onSaveSelections={handleSaveSelections}
+      />
     </Container>
   );
 };

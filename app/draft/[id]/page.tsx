@@ -66,6 +66,17 @@ export default function DraftPageRoute() {
     // 実際の実装では、ここでFirestoreに保存
   };
 
+  const handleUpdateSelections = (roundNumber: number, selections: {
+    userId: string;
+    userName: string;
+    item: string;
+    comment?: string;
+  }[]) => {
+    console.log('ラウンド', roundNumber, 'の選択を更新:', selections);
+    // 実際の実装では、ここでFirestoreに保存
+    // 今回はコンソールログのみ
+  };
+
   return (
     <DraftPage
       roundNumber={3}
@@ -77,6 +88,7 @@ export default function DraftPageRoute() {
       pastRounds={mockPastRounds}
       currentRoundTopic="好きなゲーム"
       logCount={5}
+      onUpdateSelections={handleUpdateSelections}
     />
   );
 }
