@@ -60,9 +60,8 @@ export async function selectAvatar(page: Page, avatarIndex?: string): Promise<vo
     throw new Error(`Invalid avatar index: ${testAvatarIndex}. Must be between 1 and 18.`);
   }
   
-  // アバターグリッドから選択
-  const avatarGrid = page.locator(SELECTORS.USER.AVATAR_GRID);
-  const avatarButton = avatarGrid.locator(`img[alt="Avatar ${testAvatarIndex}"]`);
+  // アバターを直接選択（親要素のBoxがクリック可能）
+  const avatarButton = page.locator(`img[alt="Avatar ${testAvatarIndex}"]`).locator('..');
   await avatarButton.click();
 }
 

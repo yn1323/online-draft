@@ -37,8 +37,8 @@ test.describe('ドラフト作成モーダル', () => {
     // ロビーページに遷移することを確認
     await page.waitForURL('/lobby/*');
     
-    // ドラフト名が表示されることを確認
-    await expect(page.getByText('テストドラフト')).toBeVisible();
+    // ドラフト名が表示されることを確認（heading要素で限定）
+    await expect(page.getByRole('heading', { name: 'テストドラフト' })).toBeVisible();
   });
 
   test('Firebase接続エラー時の適切なハンドリング', async ({ page }) => {

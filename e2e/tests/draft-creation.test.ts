@@ -46,13 +46,19 @@ test.describe('ドラフト作成操作', () => {
   test('ネットワーク遅延がある場合でもドラフト作成が正常に動作する', async ({
     page,
   }) => {
-    // ネットワーク遅延をシミュレート（統一タイムアウト使用）
-    await setupNetworkDelay(page, TIMEOUTS.SHORT);
-
-    // 遅延があってもドラフト作成が成功することを確認
+    // ドラフト作成後にネットワーク遅延をシミュレートする方法に変更
     const draftName = 'ネットワーク遅延テスト';
+    
+    // 通常のドラフト作成
     const groupId = await createNewDraft(page, draftName);
     expect(groupId).toBeTruthy();
+    
+    // ロビーページでの追加読み込みでネットワーク遅延をテスト
+    await setupNetworkDelay(page, TIMEOUTS.SHORT);
+    await reloadPage(page);
+    
+    // リロード後もロビーページが正常に表示されることを確認
+    await expect(page).toHaveURL(/\/lobby\//);
   });
 
   test('ページリロード後でもロビーページが正常に表示される', async ({

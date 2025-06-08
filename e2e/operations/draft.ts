@@ -43,7 +43,8 @@ export async function createNewDraft(page: Page, draftName?: string): Promise<st
 export async function joinByCode(page: Page, code?: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByText('会議に参加');
+  // ActionCardはasChildでリンクになっているため、link roleで取得
+  const joinButton = page.getByRole('link', { name: '会議に参加' });
   await joinButton.click();
   
   await page.waitForURL('/join', { timeout: TIMEOUTS.NAVIGATION });
@@ -53,7 +54,8 @@ export async function joinByCode(page: Page, code?: string): Promise<void> {
   const codeInput = page.getByPlaceholder('ABC123 または招待リンク');
   await codeInput.fill(testCode);
   
-  const submitButton = page.getByText('参加する');
+  // メインの参加ボタン（グループに参加する）を特定
+  const submitButton = page.getByRole('button', { name: 'グループに参加する' });
   await submitButton.click();
   
   await page.waitForURL(`/lobby/${testCode}`, { timeout: TIMEOUTS.NAVIGATION });
@@ -74,7 +76,7 @@ export async function joinByDirectUrl(page: Page, groupId: string): Promise<void
 export async function joinByHistory(page: Page, groupId: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByText('会議に参加');
+  const joinButton = page.getByRole('link', { name: '会議に参加' });
   await joinButton.click();
   
   await page.waitForURL('/join');

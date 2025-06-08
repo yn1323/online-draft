@@ -25,10 +25,10 @@ export const SELECTORS = {
   
   // ユーザー作成
   USER: {
-    NAME_INPUT: 'input[placeholder*="名前"], input[aria-label*="名前"]',
+    NAME_INPUT: 'input[placeholder*="名前を入力してください"]',
     AVATAR_GRID: '[role="grid"], [role="radiogroup"]',
     AVATAR_OPTION: 'img[alt*="Avatar"]',
-    CONTINUE_BUTTON: 'button:has-text("続ける"), button:has-text("次へ")',
+    CONTINUE_BUTTON: 'button:has-text("作成して参加")',
   },
   
   // モーダル
