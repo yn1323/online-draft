@@ -7,6 +7,9 @@ const meta = {
   parameters: {
     layout: 'padded',
   },
+  argTypes: {
+    onOpenOptions: { action: 'open options' },
+  },
   tags: ['autodocs'],
 } satisfies Meta<typeof DraftHeader>;
 
@@ -15,8 +18,18 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    roundNumber: 3,
-    totalRounds: 5,
     groupName: 'ドラフト会議 TEST',
+  },
+};
+
+export const LongName: Story = {
+  args: {
+    groupName: '第3回 推しキャラクター最強決定戦ドラフト大会',
+  },
+};
+
+export const ShortName: Story = {
+  args: {
+    groupName: 'お試し',
   },
 };

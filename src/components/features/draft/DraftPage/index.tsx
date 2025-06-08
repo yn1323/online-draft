@@ -12,6 +12,7 @@ import { ActionPanel } from './components/ActionPanel';
 import { InputModal } from './components/InputModal';
 import { TabNavigation } from './components/TabNavigation';
 import { FloatingActionButton } from './components/FloatingActionButton';
+import { OptionsModal } from './components/OptionsModal';
 
 interface DraftPageProps {
   roundNumber?: number;
@@ -73,10 +74,11 @@ export const DraftPage = ({
     selectedRound: null,
     selectedUserId: null,
   });
+  const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
   // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
   const roundNumber = propRoundNumber ?? 3;
-  const totalRounds = propTotalRounds ?? 5;
+  const _totalRounds = propTotalRounds ?? 5;
   const groupName = propGroupName ?? `ドラフト会議 ${draftId}`;
   const participants = propParticipants ?? mockParticipants;
   const currentUserSelection = propCurrentUserSelection ?? internalCurrentUserSelection;
@@ -135,6 +137,23 @@ export const DraftPage = ({
     setIsInputModalOpen(true);
   };
 
+  const handleOpenOptions = () => {
+    setIsOptionsModalOpen(true);
+  };
+
+  const handleLeaveDraft = () => {
+    // TOPページに戻る
+    window.location.href = '/';
+  };
+
+  const handleOpenSettings = () => {
+    console.log('設定画面を開く（今後実装）');
+  };
+
+  const handleOpenHelp = () => {
+    console.log('ヘルプ画面を開く（今後実装）');
+  };
+
   return (
     <Container 
       maxW="1600px" 
@@ -159,9 +178,8 @@ export const DraftPage = ({
     >
       {/* Header */}
       <DraftHeader 
-        roundNumber={roundNumber}
-        totalRounds={totalRounds}
         groupName={groupName}
+        onOpenOptions={handleOpenOptions}
       />
 
       {/* Main Layout - Responsive Design */}
@@ -232,6 +250,15 @@ export const DraftPage = ({
           onSaveSelection={handleSaveUserSelection}
         />
       )}
+
+      {/* Options Modal */}
+      <OptionsModal
+        isOpen={isOptionsModalOpen}
+        onClose={() => setIsOptionsModalOpen(false)}
+        onLeaveDraft={handleLeaveDraft}
+        onOpenSettings={handleOpenSettings}
+        onOpenHelp={handleOpenHelp}
+      />
 
     </Container>
   );
