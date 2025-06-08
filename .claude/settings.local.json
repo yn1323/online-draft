@@ -59,7 +59,12 @@
       "Bash(pnpm add:*)",
       "mcp__ide__getDiagnostics",
       "Bash(touch:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(pnpm notify:*)",
+      "Bash(osascript:*)",
+      "Bash(brew install:*)",
+      "Bash(terminal-notifier:*)",
+      "Bash(pnpm e2e:*)"
     ],
     "deny": []
   }

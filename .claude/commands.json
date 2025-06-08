@@ -218,27 +218,39 @@
       ]
     },
     "doc-update": {
-      "description": "Update CLAUDE.md documentation with design decisions, specifications, and important rules from conversation context",
+      "description": "Comprehensive documentation optimization: analyze @CLAUDE.md @docs/ for redundancy, inconsistency, and verbosity, then optimize with design pattern naming and phased execution",
       "steps": [
         {
-          "action": "analyze_conversation_context",
-          "description": "Analyze recent conversation for design decisions, specifications, and rules"
+          "action": "comprehensive_analysis",
+          "description": "Analyze @CLAUDE.md @docs/ for: redundancy/duplication, inconsistency/contradiction, verbosity/unclear expressions, TOKEN optimization opportunities"
         },
         {
-          "action": "identify_key_information",
-          "description": "Identify important patterns: architecture decisions, coding standards, UI/UX guidelines, workflow rules"
+          "action": "identify_optimization_targets",
+          "description": "Identify files for: integration/deletion, simplification with design pattern naming, enforcement level standardization (NEVER/YOU MUST/IMPORTANT)"
         },
         {
-          "action": "categorize_documentation",
-          "description": "Categorize information into appropriate sections: design, implementation, rules, workflows"
+          "action": "create_optimization_plan",
+          "description": "Create phased optimization plan: Phase 1 (integration/deletion), Phase 2 (simplification), Phase 3 (CLAUDE.md optimization)"
         },
         {
-          "action": "update_claude_md",
-          "description": "Update CLAUDE.md with structured documentation following established format"
+          "action": "execute_phase_1",
+          "description": "Phase 1: Integrate duplicate content and delete redundant files with progress notification"
         },
         {
-          "action": "verify_documentation",
-          "description": "Verify documentation accuracy and completeness"
+          "action": "execute_phase_2", 
+          "description": "Phase 2: Simplify documentation using design pattern naming (Feature-First Design, Progressive Enhancement, etc.) with progress notification"
+        },
+        {
+          "action": "execute_phase_3",
+          "description": "Phase 3: Optimize CLAUDE.md with proper enforcement levels and minimal cross-references with progress notification"
+        },
+        {
+          "action": "measure_optimization_results",
+          "description": "Measure and report: line reduction count, TOKEN optimization percentage, improved readability metrics"
+        },
+        {
+          "action": "update_conversation_context",
+          "description": "Update documentation with recent conversation insights: design decisions, technical learnings, workflow improvements"
         }
       ]
     },

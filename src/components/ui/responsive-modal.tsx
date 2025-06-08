@@ -40,6 +40,7 @@ interface ResponsiveModalProps {
       type?: 'button' | 'submit';
       disabled?: boolean;
       loading?: boolean;
+      onClick?: () => void;
     };
   };
 }
@@ -113,6 +114,7 @@ export const ResponsiveModal = ({
                   loading={actions.submit.loading}
                   size="lg"
                   flex={1}
+                  onClick={actions.submit.onClick}
                 >
                   {actions.submit.text}
                 </Button>
@@ -157,6 +159,7 @@ export const ResponsiveModal = ({
                 colorPalette={actions.submit.colorPalette || 'blue'}
                 disabled={actions.submit.disabled}
                 loading={actions.submit.loading}
+                onClick={actions.submit.onClick}
               >
                 {actions.submit.text}
               </Button>
