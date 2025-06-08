@@ -1,12 +1,12 @@
 # E2Eテスト戦略ガイド
 
 ## 🎯 設計思想
-**操作ベースE2E設計** - ユーザー操作単位でテスト分割
+**Essential E2E Tests** - 主要ユーザージャーニーの必須テスト
 
 ### 基本原則
 - **User-Centric Testing原則**: data-testid禁止、role+name優先
 - **Operations抽象化パターン**: tests/でassertion、operations/で複雑操作
-- **境界モックテスト戦略**: MSW + Firebase Emulator
+- **最小実用テスト**: 正常系+バックエンドエラーのみ
 
 ## 📁 ディレクトリ構成
 ```
@@ -16,10 +16,11 @@ e2e/
 └── utils/          # 共通ヘルパー
 ```
 
-## 🎬 主要操作フロー
-1. **draft-creation.test.ts**: TOPページ→ドラフト作成→ロビー遷移
-2. **join-by-code.test.ts**: 参加ページ→コード入力→ロビー遷移
-3. **user-creation.test.ts**: ロビー→ユーザー作成→参加者一覧
+## 🎬 Essential E2E Tests構成
+1. **draft-creation.test.ts**: ドラフト作成フロー（5ケース）
+2. **join-by-code.test.ts**: コード参加フロー（3ケース）
+3. **user-creation.test.ts**: ユーザー登録フロー（2ケース）
+4. **modal-validation.test.ts**: モーダル操作（2ケース）
 
 ## 🛠 技術実装
 ### セレクター優先順位
@@ -45,12 +46,11 @@ export async function createNewDraft(page: Page): Promise<string> {
 }
 ```
 
-## 📊 テスト網羅性バランス
-**成長段階プロジェクト向け**：1操作3-5テスト
-- **基本フロー**: 主要操作パターン
-- **データ一意性**: 動的生成データ確認
-- **ネットワーク耐性**: 遅延・切断対応
-- **除外**: 固定文字列（VRT対応）、詳細エラー
+## 📊 Essential E2E Tests戦略
+**最小実用テスト**：合計12ケース
+- **正常フロー**: 主要操作パターンのみ
+- **バックエンドエラー**: Firebase接続失敗等の軽量確認
+- **除外範囲**: フロントエンドバリデーション、ブラウザ戻る、パフォーマンス
 
 ## 🔧 環境設定
 ```bash

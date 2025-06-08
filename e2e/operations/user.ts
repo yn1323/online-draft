@@ -50,7 +50,8 @@ export async function selectAvatar(page: Page, avatarIndex: number): Promise<voi
     throw new Error(`Invalid avatar index: ${avatarIndex}. Must be between 1 and 18.`);
   }
   
-  const avatarButton = page.locator(`img[src*="${avatarIndex}.png"]`);
+  // より具体的なセレクターでアバターを特定
+  const avatarButton = page.getByRole('img', { name: `Avatar ${avatarIndex}` });
   await avatarButton.click();
 }
 
@@ -58,7 +59,7 @@ export async function selectAvatar(page: Page, avatarIndex: number): Promise<voi
  * ユーザー作成実行操作
  */
 export async function submitUserCreation(page: Page): Promise<void> {
-  const submitButton = page.getByRole('button', { name: '作成して参加' });
+  const submitButton = page.getByText('作成して参加');
   await submitButton.click();
 }
 

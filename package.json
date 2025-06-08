@@ -16,6 +16,7 @@
     "storybook:test-ci": "pnpm dlx concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"pnpm storybook dev -p 6016\" \"pnpm dlx wait-on tcp:127.0.0.1:6016 && pnpm storybook:test --url http://127.0.0.1:6016 --testTimeout 15000\"",
     "vrt": "reg-suit run",
     "e2e": "playwright test",
+    "e2e:no-report": "playwright test --reporter=line",
     "e2e:ui": "playwright test --ui",
     "e2e:debug": "playwright test --debug",
     "e2e:report": "playwright show-report",

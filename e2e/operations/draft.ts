@@ -42,7 +42,7 @@ export async function createNewDraft(page: Page, draftName?: string): Promise<st
 export async function joinByCode(page: Page, code: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByRole('button', { name: '会議に参加' });
+  const joinButton = page.getByText('会議に参加');
   await joinButton.click();
   
   await page.waitForURL('/join');
@@ -50,7 +50,7 @@ export async function joinByCode(page: Page, code: string): Promise<void> {
   const codeInput = page.getByPlaceholder('ABC123 または招待リンク');
   await codeInput.fill(code);
   
-  const submitButton = page.getByRole('button', { name: '参加する' });
+  const submitButton = page.getByText('参加する');
   await submitButton.click();
   
   await page.waitForURL(`/lobby/${code}`);
@@ -71,7 +71,7 @@ export async function joinByDirectUrl(page: Page, groupId: string): Promise<void
 export async function joinByHistory(page: Page, groupId: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByRole('button', { name: '会議に参加' });
+  const joinButton = page.getByText('会議に参加');
   await joinButton.click();
   
   await page.waitForURL('/join');

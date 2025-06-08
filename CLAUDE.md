@@ -8,13 +8,20 @@
 - NEVER: data-testid使用
 
 ### YOU MUST（必須事項）
-- YOU MUST: ファイル末尾改行
-- YOU MUST: 実コンポーネントでStorybookテスト
-- YOU MUST: lint/type-check成功後コミット
+1. 作業完了前にCIを実行してエラーが0件になっていること
+  - ファイル末尾改行
+  - 単体テスト: `pnpm test`
+  - linter: `pnpm lint`
+  - 型チェック: `pnpm type-check`
+  - Storybookテスト: `pnpm storybook:test-ci`
+  - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
+2. 作業完了時、通知を行うこと
+  - `pnpm notify ...`
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠
 - IMPORTANT: 3ステップ以上でTodoWrite使用
+- IMPORTANT: 作業開始前に計画することを好む
 
 ## 🏗 設計思想
 - **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`
@@ -64,7 +71,7 @@
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
 
-# 🔔 作業完了通知コマンド（YOU MUST USE）
+# 🔔 作業完了通知コマンド（YOU MUST
 pnpm notify success "{作業内容}"     # 成功通知
 pnpm notify type-check               # 型チェック完了
 pnpm notify all                      # 全チェック完了🎉
