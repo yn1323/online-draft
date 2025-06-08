@@ -2,6 +2,7 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import { Box, SimpleGrid, Text, useBreakpointValue } from '@chakra-ui/react';
+import { GRID_COLUMNS } from '@/src/constants/ui/layouts';
 import Image from 'next/image';
 import { FiCheck } from 'react-icons/fi';
 
@@ -27,7 +28,7 @@ export default function AvatarSelector({
   const selectedBg = useColorModeValue('green.50', 'green.900');
   const selectedBorderColor = useColorModeValue('green.500', 'green.300');
   const hoverBorderColor = useColorModeValue('gray.300', 'gray.500');
-  const gridColumns = useBreakpointValue({ base: 4, sm: 5, md: 6 });
+  const gridColumns = useBreakpointValue(GRID_COLUMNS.avatarSelector);
 
   return (
     <Box>
