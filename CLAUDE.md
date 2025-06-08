@@ -22,6 +22,7 @@
 - IMPORTANT: Chakra UI v3 Modern API準拠
 - IMPORTANT: 3ステップ以上でTodoWrite使用
 - IMPORTANT: 作業開始前に計画することを好む
+- IMPORTANT: モーダルは @src/components/ui/responsive-modal.tsx を利用すること
 
 ## 🏗 設計思想
 - **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`

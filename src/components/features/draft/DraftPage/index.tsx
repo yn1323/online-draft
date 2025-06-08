@@ -38,9 +38,9 @@ interface DraftPageProps {
 }
 
 const statusEmoji = {
-	thinking: "⏳",
-	entered: "⏳", 
-	completed: "✅",
+	thinking: "⚫", // オフライン
+	entered: "✏️", // 未入力（オンライン）
+	completed: "✅", // 完了
 };
 
 export const DraftPage = ({
@@ -120,7 +120,9 @@ export const DraftPage = ({
 										fontSize="sm"
 										color="purple.800"
 									>
-										<Text textAlign="center">R</Text>
+										<Flex align="center" justify="center" h="full">
+											<Text fontWeight="bold">R</Text>
+										</Flex>
 										{participants.map((participant) => (
 											<VStack key={participant.id} gap={1}>
 												<Image
@@ -150,9 +152,11 @@ export const DraftPage = ({
 											_hover={{ bg: "purple.25" }}
 											alignItems="center"
 										>
-											<Text textAlign="center" fontWeight="bold" color="purple.800" fontSize="lg">
-												{round.roundNumber}
-											</Text>
+											<Flex align="center" justify="center" h="full">
+												<Text fontWeight="bold" color="purple.800" fontSize="lg">
+													{round.roundNumber}
+												</Text>
+											</Flex>
 											{participants.map((participant) => {
 												const selection = round.selections.find(s => s.userId === participant.id);
 												return (
@@ -195,8 +199,11 @@ export const DraftPage = ({
 								border="1px solid" 
 								borderColor="gray.200"
 								p={3}
+								display="flex"
+								alignItems="center"
+								justifyContent="center"
 							>
-								<VStack gap={2} align="stretch">
+								<VStack gap={2}>
 									<Text fontSize="sm" color="gray.500" textAlign="center">
 										📝 コメントやログがここに表示されます
 									</Text>
@@ -228,14 +235,8 @@ export const DraftPage = ({
 										</Text>
 									</Box>
 								</Flex>
-								<Text fontSize="sm" color="blue.600" textAlign="center" mb={3} fontWeight="medium">
-									🎯 {currentRoundTopic}
-								</Text>
 								
 								{/* Participants Status Display */}
-								<Text fontSize="xs" color="blue.600" mb={2} textAlign="center" fontWeight="medium">
-									👥 みんなの状況
-								</Text>
 								<Flex wrap="wrap" gap={2} justify="center">
 									{currentRoundSelections.map((participant) => (
 										<Box
