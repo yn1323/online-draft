@@ -2,21 +2,15 @@
  * リアルタイム同期サービス
  */
 
+import type { ParticipantPresence } from '@/src/types/draft';
+
 export interface RealtimeSubscription {
   unsubscribe: () => void;
 }
 
-export interface UserPresence {
-  userId: string;
-  userName: string;
-  status: 'online' | 'away' | 'offline';
-  lastSeen: Date;
-  currentRound?: number;
-}
-
 export interface GroupPresence {
   groupId: string;
-  users: UserPresence[];
+  users: ParticipantPresence[];
   lastUpdated: Date;
 }
 
@@ -26,7 +20,7 @@ export interface GroupPresence {
 export const updateUserPresence = async (
   _groupId: string,
   _userId: string,
-  _presence: Partial<UserPresence>
+  _presence: Partial<ParticipantPresence>
 ): Promise<void> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -37,7 +31,7 @@ export const updateUserPresence = async (
  */
 export const subscribeToUserPresence = (
   _groupId: string,
-  _callback: (users: UserPresence[]) => void
+  _callback: (users: ParticipantPresence[]) => void
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -94,11 +88,10 @@ export const subscribeToGroupState = (
 export const connectUser = async (
   groupId: string,
   userId: string,
-  userName: string
+  _userName: string
 ): Promise<void> => {
   await updateUserPresence(groupId, userId, {
     userId,
-    userName,
     status: 'online',
     lastSeen: new Date(),
   });

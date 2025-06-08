@@ -2,20 +2,7 @@
  * ドラフトラウンド操作サービス
  */
 
-export interface RoundData {
-  roundNumber: number;
-  topic: string;
-  status: 'waiting' | 'active' | 'completed';
-  startTime?: Date;
-  endTime?: Date;
-  selections: {
-    userId: string;
-    userName: string;
-    item: string;
-    comment?: string;
-    timestamp: Date;
-  }[];
-}
+import type { Round, CreateGroupRequest, JoinGroupRequest } from '@/src/types/draft';
 
 export interface CreateRoundRequest {
   groupId: string;
@@ -26,13 +13,13 @@ export interface CreateRoundRequest {
 export interface UpdateRoundRequest {
   groupId: string;
   roundNumber: number;
-  updates: Partial<RoundData>;
+  updates: Partial<Round>;
 }
 
 /**
  * ラウンド作成
  */
-export const createRound = async (_request: CreateRoundRequest): Promise<RoundData> => {
+export const createRound = async (_request: CreateRoundRequest): Promise<Round> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -40,7 +27,7 @@ export const createRound = async (_request: CreateRoundRequest): Promise<RoundDa
 /**
  * ラウンド取得
  */
-export const getRound = async (_groupId: string, _roundNumber: number): Promise<RoundData | null> => {
+export const getRound = async (_groupId: string, _roundNumber: number): Promise<Round | null> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -48,7 +35,7 @@ export const getRound = async (_groupId: string, _roundNumber: number): Promise<
 /**
  * ラウンド更新
  */
-export const updateRound = async (request: UpdateRoundRequest): Promise<RoundData> => {
+export const updateRound = async (request: UpdateRoundRequest): Promise<Round> => {
   // TODO: Firestore実装
   console.log('updateRound called with:', request);
   throw new Error('Not implemented');
@@ -57,7 +44,7 @@ export const updateRound = async (request: UpdateRoundRequest): Promise<RoundDat
 /**
  * ラウンド一覧取得
  */
-export const getRounds = async (_groupId: string): Promise<RoundData[]> => {
+export const getRounds = async (_groupId: string): Promise<Round[]> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -65,7 +52,7 @@ export const getRounds = async (_groupId: string): Promise<RoundData[]> => {
 /**
  * ラウンド開始
  */
-export const startRound = async (groupId: string, roundNumber: number): Promise<RoundData> => {
+export const startRound = async (groupId: string, roundNumber: number): Promise<Round> => {
   return updateRound({
     groupId,
     roundNumber,
@@ -79,7 +66,7 @@ export const startRound = async (groupId: string, roundNumber: number): Promise<
 /**
  * ラウンド終了
  */
-export const endRound = async (groupId: string, roundNumber: number): Promise<RoundData> => {
+export const endRound = async (groupId: string, roundNumber: number): Promise<Round> => {
   return updateRound({
     groupId,
     roundNumber,

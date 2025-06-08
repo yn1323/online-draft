@@ -2,37 +2,12 @@
  * ドラフト選択処理サービス
  */
 
-export interface SelectionData {
-  userId: string;
-  userName: string;
-  groupId: string;
-  roundNumber: number;
-  item: string;
-  comment?: string;
-  timestamp: Date;
-  status: 'draft' | 'submitted' | 'confirmed';
-}
-
-export interface SubmitSelectionRequest {
-  userId: string;
-  userName: string;
-  groupId: string;
-  roundNumber: number;
-  item: string;
-  comment?: string;
-}
-
-export interface UpdateSelectionRequest {
-  userId: string;
-  groupId: string;
-  roundNumber: number;
-  updates: Partial<Pick<SelectionData, 'item' | 'comment' | 'status'>>;
-}
+import type { Selection, SubmitSelectionRequest, UpdateSelectionRequest } from '@/src/types/draft';
 
 /**
  * 選択提出
  */
-export const submitSelection = async (_request: SubmitSelectionRequest): Promise<SelectionData> => {
+export const submitSelection = async (_request: SubmitSelectionRequest): Promise<Selection> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -40,7 +15,7 @@ export const submitSelection = async (_request: SubmitSelectionRequest): Promise
 /**
  * 選択更新
  */
-export const updateSelection = async (request: UpdateSelectionRequest): Promise<SelectionData> => {
+export const updateSelection = async (request: UpdateSelectionRequest): Promise<Selection> => {
   // TODO: Firestore実装
   console.log('updateSelection called with:', request);
   throw new Error('Not implemented');
@@ -53,7 +28,7 @@ export const getUserSelection = async (
   _groupId: string,
   _roundNumber: number,
   _userId: string
-): Promise<SelectionData | null> => {
+): Promise<Selection | null> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -64,7 +39,7 @@ export const getUserSelection = async (
 export const getRoundSelections = async (
   _groupId: string,
   _roundNumber: number
-): Promise<SelectionData[]> => {
+): Promise<Selection[]> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -75,7 +50,7 @@ export const getRoundSelections = async (
 export const getUserAllSelections = async (
   _groupId: string,
   _userId: string
-): Promise<SelectionData[]> => {
+): Promise<Selection[]> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
 };
@@ -96,16 +71,13 @@ export const deleteSelection = async (
  * 選択確認
  */
 export const confirmSelection = async (
-  groupId: string,
-  roundNumber: number,
-  userId: string
-): Promise<SelectionData> => {
+  _groupId: string,
+  _roundNumber: number,
+  _userId: string
+): Promise<Selection> => {
   return updateSelection({
-    userId,
-    groupId,
-    roundNumber,
-    updates: {
-      status: 'confirmed',
-    },
+    selectionId: '', // TODO: 実際のselectionIdを取得
+    item: '',
+    comment: '',
   });
 };

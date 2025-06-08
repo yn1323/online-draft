@@ -2,23 +2,7 @@
  * ドラフトチャット処理サービス
  */
 
-export interface ChatMessage {
-  id: string;
-  groupId: string;
-  userId: string;
-  userName: string;
-  userAvatar: string;
-  content: string;
-  timestamp: Date;
-  type: 'user' | 'system';
-  metadata?: {
-    roundNumber?: number;
-    selectionChange?: {
-      before: string;
-      after: string;
-    };
-  };
-}
+import type { ChatMessage } from '@/src/types/draft';
 
 export interface SendMessageRequest {
   groupId: string;

@@ -4,14 +4,7 @@
 
 import { auth } from '@/src/lib/firebase';
 import { signInAnonymously, signOut as firebaseSignOut, type User } from 'firebase/auth';
-
-export interface AuthUser {
-  uid: string;
-  displayName?: string;
-  email?: string;
-  photoURL?: string;
-  isAnonymous: boolean;
-}
+import type { AuthUser } from '@/src/types/auth';
 
 /**
  * Firebase Userを内部AuthUserに変換
