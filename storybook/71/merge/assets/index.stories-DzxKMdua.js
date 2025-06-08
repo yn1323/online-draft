@@ -1,0 +1,5 @@
+import{M as a}from"./index-BfEbuitJ.js";import"./create-recipe-context-oy0ofMwS.js";import"./jsx-runtime-Bw5QeaCk.js";import"./index-BXymfbzT.js";import"./index-ZS65BhKO.js";import"./iconBase-BtwG8oUN.js";import"./index-DTSGLcC3.js";import"./index-CF7rHh45.js";import"./_interop_require_wildcard-BpaVepTj.js";import"./add-base-path-DRvWOwpu.js";import"./segment-DQKAVVpM.js";import"./router-context.shared-runtime-CTsxCgvG.js";import"./use-merged-ref-0PvjutYQ.js";import"./button-DFylk1V_.js";import"./box-D1Z_KUxa.js";import"./v-stack-DNelLgfG.js";import"./stack-BRg6br_m.js";import"./text-DkCoEBoG.js";import"./simple-grid-qwmDqksS.js";import"./grid-CQT4z8bD.js";const m=()=>{console.log("Create draft clicked")},E={title:"Features/Top/MainActionsSection",component:a,parameters:{layout:"centered"}},t={args:{onCreateDraft:m}};var r,o,e;t.parameters={...t.parameters,docs:{...(r=t.parameters)==null?void 0:r.docs,source:{originalSource:`{
+  args: {
+    onCreateDraft: mockOnCreateDraft
+  }
+}`,...(e=(o=t.parameters)==null?void 0:o.docs)==null?void 0:e.source}}};const F=["Default"];export{t as Default,F as __namedExportsOrder,E as default};
