@@ -8,17 +8,17 @@ export const UserId = process.env.TEST_USER_ID ?? '';
 export const SELECTORS = {
   // ドラフト作成
   DRAFT: {
-    CREATE_BUTTON: 'button:has-text("ドラフト会議を作成")',
-    NAME_INPUT: 'input[placeholder*="ドラフト名"], input[aria-label*="ドラフト名"]',
+    CREATE_BUTTON: 'button:has-text("ドラフトを作る")',
+    NAME_INPUT: 'input[placeholder*="例: 〇〇ドラフト会議"]',
     DESCRIPTION_INPUT: 'textarea[placeholder*="説明"], textarea[aria-label*="説明"]',
-    START_BUTTON: 'button:has-text("開始")',
+    START_BUTTON: 'button:has-text("作成する")',
   },
   
   // 参加
   JOIN: {
-    CODE_INPUT: 'input[placeholder*="会議ID"], input[placeholder*="URL"]',
+    CODE_INPUT: 'input[placeholder*="ABC123"], input[placeholder*="招待リンク"]',
     URL_INPUT: 'input[placeholder*="URL"]',
-    JOIN_BUTTON: 'button:has-text("参加")',
+    JOIN_BUTTON: 'button:has-text("参加する")',
     NAME_INPUT: 'input[placeholder*="名前"], input[aria-label*="ユーザー名"]',
     AVATAR_SELECTOR: '[role="grid"] img[alt*="Avatar"], [role="radiogroup"] img[alt*="Avatar"]',
   },
@@ -76,11 +76,12 @@ export const TEST_DATA = {
 
 // タイムアウト設定
 export const TIMEOUTS = {
-  SHORT: 2000,
+  SHORT: 1000,
   MEDIUM: 5000,
   LONG: 10000,
-  NAVIGATION: 15000,
-  MODAL_ANIMATION: 500,
+  NAVIGATION: 30000,
+  MODAL_ANIMATION: 1000,
+  NETWORK_DELAY: 30000,
 } as const;
 
 // 待機設定
