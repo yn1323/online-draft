@@ -6,21 +6,23 @@ import { goBack, reloadPage } from '../operations/navigation';
  * ドラフト作成操作のE2Eテスト
  *
  * テスト対象操作:
- * TOPページ → 「ドラフトを作る」ボタン → Firebase自動認証 → ロビーページ遷移
+ * TOPページ → 「ドラフトを作る」ボタン → モーダル入力 → Firebase自動認証 → ロビーページ遷移
  */
 
 test.describe('ドラフト作成操作', () => {
   test('ドラフト作成ボタンクリックでロビーページに遷移する', async ({
     page,
   }) => {
-    // ドラフト作成操作を実行
-    const groupId = await createNewDraft(page);
+    // カスタムドラフト名でドラフト作成操作を実行
+    const customDraftName = 'E2Eテストドラフト';
+    const groupId = await createNewDraft(page, customDraftName);
 
     // groupIdが有効な形式であることを確認
     expect(groupId).toBeTruthy();
     expect(groupId).toMatch(/^[a-zA-Z0-9_-]+$/); // 有効なFirestore ID形式
 
-    // 動的な情報が表示されることを確認（要素が分かれているのでgroupIdのみチェック）
+    // 入力したドラフト名とgroupIdが表示されることを確認
+    await expect(page.getByText(customDraftName)).toBeVisible();
     await expect(page.getByText(groupId)).toBeVisible();
   });
 
@@ -29,7 +31,8 @@ test.describe('ドラフト作成操作', () => {
 
     // 3回ドラフト作成を実行
     for (let i = 0; i < 3; i++) {
-      const groupId = await createNewDraft(page);
+      const draftName = `テストドラフト${i + 1}`;
+      const groupId = await createNewDraft(page, draftName);
 
       // 一意なgroupIdが生成されることを確認
       expect(groupIds.has(groupId)).toBe(false);
@@ -46,7 +49,8 @@ test.describe('ドラフト作成操作', () => {
     await setupNetworkDelay(page, 100);
 
     // 遅延があってもドラフト作成が成功することを確認
-    const groupId = await createNewDraft(page);
+    const draftName = 'ネットワーク遅延テスト';
+    const groupId = await createNewDraft(page, draftName);
     expect(groupId).toBeTruthy();
   });
 
@@ -54,7 +58,8 @@ test.describe('ドラフト作成操作', () => {
     page,
   }) => {
     // ドラフト作成
-    await createNewDraft(page);
+    const draftName = 'リロードテスト';
+    await createNewDraft(page, draftName);
     const lobbyUrl = page.url();
 
     // ページをリロード
@@ -66,7 +71,8 @@ test.describe('ドラフト作成操作', () => {
 
   test('ブラウザの戻るボタンでTOPページに戻れる', async ({ page }) => {
     // ドラフト作成
-    await createNewDraft(page);
+    const draftName = '戻るボタンテスト';
+    await createNewDraft(page, draftName);
 
     // ブラウザの戻るボタンを押す
     await goBack(page);

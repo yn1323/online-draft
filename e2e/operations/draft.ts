@@ -6,14 +6,28 @@ import type { Page } from '@playwright/test';
 
 /**
  * ドラフト作成操作
- * TOPページ → ドラフト作成ボタン → ロビーページ遷移
+ * TOPページ → ドラフト作成ボタン → モーダル入力 → ロビーページ遷移
  */
-export async function createNewDraft(page: Page): Promise<string> {
+export async function createNewDraft(page: Page, draftName?: string): Promise<string> {
   await page.goto('/');
   
   const createDraftButton = page.getByRole('button', { name: 'ドラフトを作る' });
   await createDraftButton.click();
   
+  // モーダルが表示されることを確認
+  const modal = page.getByRole('dialog', { name: 'ドラフトを作成' });
+  await modal.waitFor({ state: 'visible' });
+  
+  // ドラフト名を入力（指定がない場合はデフォルト値を使用）
+  const inputName = draftName || `テストドラフト${Date.now()}`;
+  const nameInput = page.getByPlaceholder('例: 〇〇ドラフト会議');
+  await nameInput.fill(inputName);
+  
+  // 作成ボタンをクリック
+  const createButton = page.getByRole('button', { name: '作成する' });
+  await createButton.click();
+  
+  // ロビーページに遷移するまで待機
   await page.waitForURL('/lobby/*');
   
   // URLからgroupIdを抽出して返却
