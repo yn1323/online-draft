@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint app src",
+    "lint": "biome lint app src e2e",
     "lint:fix": "biome check --write app src",
     "test": "vitest",
     "type-check": "tsc",

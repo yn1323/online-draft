@@ -1,4 +1,6 @@
 import { expect, test } from '@playwright/test';
+import { createNewDraft, setupNetworkDelay } from '../operations/draft';
+import { goBack, reloadPage } from '../operations/navigation';
 
 /**
  * ドラフト作成操作のE2Eテスト
@@ -11,23 +13,10 @@ test.describe('ドラフト作成操作', () => {
   test('ドラフト作成ボタンクリックでロビーページに遷移する', async ({
     page,
   }) => {
-    // TOPページに移動
-    await page.goto('/');
+    // ドラフト作成操作を実行
+    const groupId = await createNewDraft(page);
 
-    // ドラフト作成ボタンを取得
-    const createDraftButton = page.getByRole('button', {
-      name: 'ドラフトを作る',
-    });
-
-    // ドラフト作成ボタンをクリック
-    await createDraftButton.click();
-
-    // ロビーページに遷移することを確認
-    await page.waitForURL('/lobby/*');
-
-    // URLからgroupIdを取得
-    const url = page.url();
-    const groupId = url.split('/lobby/')[1];
+    // groupIdが有効な形式であることを確認
     expect(groupId).toBeTruthy();
     expect(groupId).toMatch(/^[a-zA-Z0-9_-]+$/); // 有効なFirestore ID形式
 
@@ -40,17 +29,7 @@ test.describe('ドラフト作成操作', () => {
 
     // 3回ドラフト作成を実行
     for (let i = 0; i < 3; i++) {
-      await page.goto('/');
-
-      // ドラフト作成ボタンをクリック
-      await page.getByRole('button', { name: 'ドラフトを作る' }).click();
-
-      // ロビーページに遷移するまで待機
-      await page.waitForURL('/lobby/*');
-
-      // groupIdを取得
-      const url = page.url();
-      const groupId = url.split('/lobby/')[1];
+      const groupId = await createNewDraft(page);
 
       // 一意なgroupIdが生成されることを確認
       expect(groupIds.has(groupId)).toBe(false);
@@ -64,36 +43,22 @@ test.describe('ドラフト作成操作', () => {
     page,
   }) => {
     // ネットワーク遅延をシミュレート
-    await page.route('**', async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 100)); // 100ms遅延
-      await route.continue();
-    });
+    await setupNetworkDelay(page, 100);
 
-    await page.goto('/');
-
-    // ドラフト作成ボタンをクリック
-    const createDraftButton = page.getByRole('button', {
-      name: 'ドラフトを作る',
-    });
-    await createDraftButton.click();
-
-    // 遅延があってもロビーページに遷移することを確認（タイムアウト延長）
-    await page.waitForURL('/lobby/*', { timeout: 10000 });
+    // 遅延があってもドラフト作成が成功することを確認
+    const groupId = await createNewDraft(page);
+    expect(groupId).toBeTruthy();
   });
 
   test('ページリロード後でもロビーページが正常に表示される', async ({
     page,
   }) => {
     // ドラフト作成
-    await page.goto('/');
-    await page.getByRole('button', { name: 'ドラフトを作る' }).click();
-    await page.waitForURL('/lobby/*');
-
-    // 現在のURLを保存
+    await createNewDraft(page);
     const lobbyUrl = page.url();
 
     // ページをリロード
-    await page.reload();
+    await reloadPage(page);
 
     // URLが変わらないことを確認
     expect(page.url()).toBe(lobbyUrl);
@@ -101,12 +66,10 @@ test.describe('ドラフト作成操作', () => {
 
   test('ブラウザの戻るボタンでTOPページに戻れる', async ({ page }) => {
     // ドラフト作成
-    await page.goto('/');
-    await page.getByRole('button', { name: 'ドラフトを作る' }).click();
-    await page.waitForURL('/lobby/*');
+    await createNewDraft(page);
 
     // ブラウザの戻るボタンを押す
-    await page.goBack();
+    await goBack(page);
 
     // TOPページに戻ることを確認
     await expect(page).toHaveURL('/');
