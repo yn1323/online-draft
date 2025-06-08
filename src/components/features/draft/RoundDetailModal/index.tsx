@@ -189,7 +189,7 @@ export const RoundDetailModal = ({
                     objectFit="cover"
                   />
                   <Text fontWeight="bold" color="gray.800" _dark={{ color: 'gray.200' }}>
-                    👤 {participant.name}
+                    {participant.name}
                   </Text>
                 </HStack>
                 <Button
@@ -214,6 +214,20 @@ export const RoundDetailModal = ({
                       onChange={(e) => updateTempData(participant.id, 'item', e.target.value)}
                       placeholder="選択を入力..."
                       size="sm"
+                      borderWidth={2}
+                      borderColor="gray.300"
+                      _focus={{
+                        borderColor: 'blue.500',
+                        boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)',
+                      }}
+                      _dark={{
+                        borderColor: 'gray.600',
+                        bg: 'gray.700',
+                        _focus: {
+                          borderColor: 'blue.400',
+                          boxShadow: '0 0 0 1px var(--chakra-colors-blue-400)',
+                        },
+                      }}
                     />
                   ) : (
                     <Text fontSize="lg" fontWeight="bold" color="gray.800" _dark={{ color: 'gray.200' }}>
@@ -234,6 +248,20 @@ export const RoundDetailModal = ({
                       rows={2}
                       resize="none"
                       size="sm"
+                      borderWidth={2}
+                      borderColor="gray.300"
+                      _focus={{
+                        borderColor: 'purple.500',
+                        boxShadow: '0 0 0 1px var(--chakra-colors-purple-500)',
+                      }}
+                      _dark={{
+                        borderColor: 'gray.600',
+                        bg: 'gray.700',
+                        _focus: {
+                          borderColor: 'purple.400',
+                          boxShadow: '0 0 0 1px var(--chakra-colors-purple-400)',
+                        },
+                      }}
                     />
                   ) : (
                     <Text 
