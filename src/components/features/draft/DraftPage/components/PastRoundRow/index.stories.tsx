@@ -32,3 +32,53 @@ export const Default: Story = {
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
   },
 };
+
+// 競馬の馬名を使った長い選択肢のケース
+const horseRaceRound = {
+  roundNumber: 2,
+  topic: '好きな競走馬',
+  selections: [
+    { userId: '1', userName: 'たけし', item: 'キングカメハメハ', comment: '無敗の三冠馬' },
+    { userId: '2', userName: 'みさき', item: 'メイショウサムソン', comment: '最強世代の覇者' },
+    { userId: '3', userName: 'ひろし', item: 'ゴールドシップ' },
+    { userId: '4', userName: 'あやか', item: 'ジャスタウェイ', comment: 'ドバイ制覇' },
+  ],
+};
+
+export const LongHorseNames: Story = {
+  name: '長い馬名の表示',
+  args: {
+    round: horseRaceRound,
+    participants: mockParticipants,
+    onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+  },
+};
+
+// 6人参加の超長い馬名ケース
+const sixParticipantsRound = {
+  roundNumber: 3,
+  topic: '印象に残った競走馬',
+  selections: [
+    { userId: '1', userName: 'たけし', item: 'ウインバリアシオン', comment: '奇跡の復活' },
+    { userId: '2', userName: 'みさき', item: 'フサイチコンコルド', comment: '天皇賞春3連覇' },
+    { userId: '3', userName: 'ひろし', item: 'サクラローレル' },
+    { userId: '4', userName: 'あやか', item: 'タイキシャトル', comment: '最強の三冠馬' },
+    { userId: '5', userName: 'けんじ', item: 'エルコンドルパサー', comment: '日本ダービー感動' },
+    { userId: '6', userName: 'ゆき', item: 'グラスワンダー', comment: '逃げ切りの美学' },
+  ],
+};
+
+const sixParticipants = [
+  ...mockParticipants,
+  { id: '5', name: 'けんじ', avatar: '🦊', status: 'completed' as const },
+  { id: '6', name: 'ゆき', avatar: '🐰', status: 'completed' as const },
+];
+
+export const SixParticipantsLongNames: Story = {
+  name: '6人参加×長い馬名',
+  args: {
+    round: sixParticipantsRound,
+    participants: sixParticipants,
+    onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+  },
+};
