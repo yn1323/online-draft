@@ -63,7 +63,8 @@
       "Bash(pnpm notify:*)",
       "Bash(osascript:*)",
       "Bash(brew install:*)",
-      "Bash(terminal-notifier:*)"
+      "Bash(terminal-notifier:*)",
+      "Bash(pnpm e2e:*)"
     ],
     "deny": []
   }
