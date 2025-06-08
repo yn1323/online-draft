@@ -1,6 +1,7 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { CurrentRoundRow } from '../CurrentRoundRow';
 import { PastRoundRow } from '../PastRoundRow';
+import { SelectionButton } from '../SelectionButton';
 
 interface RoundHistoryTableProps {
   roundNumber: number;
@@ -21,13 +22,15 @@ interface RoundHistoryTableProps {
     }[];
   }[];
   onRoundClick: (roundNumber: number) => void;
+  onOpenInputModal: () => void;
 }
 
 export const RoundHistoryTable = ({ 
   roundNumber, 
   participants, 
   pastRounds, 
-  onRoundClick 
+  onRoundClick,
+  onOpenInputModal
 }: RoundHistoryTableProps) => {
   return (
     <Box
@@ -57,9 +60,23 @@ export const RoundHistoryTable = ({
         },
       }}
     >
-      <Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700" _dark={{ color: 'purple.200' }}>
-        📊 ラウンド ({pastRounds.length})
-      </Text>
+      {/* Header with Action Button */}
+      <Box position="relative" mb={6}>
+        <Text fontSize="xl" fontWeight="bold" color="purple.700" _dark={{ color: 'purple.200' }}>
+          📊 ラウンド ({pastRounds.length})
+        </Text>
+        
+        {/* Selection Button - PC Only, positioned absolutely */}
+        <Box
+          position="absolute"
+          top="-8px"
+          right={0}
+          display={{ base: 'none', lg: 'block' }}
+          zIndex={2}
+        >
+          <SelectionButton onClick={onOpenInputModal} />
+        </Box>
+      </Box>
       {pastRounds.length === 0 ? (
         <Box
           p={8}

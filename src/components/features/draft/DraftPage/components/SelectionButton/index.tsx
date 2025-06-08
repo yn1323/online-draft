@@ -7,12 +7,12 @@ interface SelectionButtonProps {
 export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
   return (
     <Button
-      size="xl"
-      h="80px"
+      size="md"
+      h="48px"
       onClick={onClick}
-      fontSize="xl"
+      fontSize="md"
       fontWeight="bold"
-      borderRadius="xl"
+      borderRadius="lg"
       variant="outline"
       borderWidth={2}
       borderColor="blue.400"

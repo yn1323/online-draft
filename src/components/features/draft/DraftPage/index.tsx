@@ -135,7 +135,7 @@ export const DraftPage = ({
 
   return (
     <Container 
-      maxW="container.xl" 
+      maxW="1600px" 
       p={4} 
       minH="100vh"
       position="relative"
@@ -162,34 +162,29 @@ export const DraftPage = ({
         groupName={groupName}
       />
 
-      {/* Main Layout - Strategy First Design */}
+      {/* Main Layout - Balanced Strategy & Communication Design */}
       <Grid
-        templateColumns={{ base: '1fr', lg: '2fr 1fr' }}
+        templateColumns={{ 
+          base: '1fr', 
+          lg: '65fr 35fr' 
+        }}
         gap={8}
         minH="70vh"
       >
-        {/* Left: Past Rounds Information (70%) */}
+        {/* Left: Strategy Information (65%) */}
         <GridItem>
-          <VStack gap={6} align="stretch">
-            {/* Past Rounds Information */}
-            <RoundHistoryTable
-              roundNumber={roundNumber}
-              participants={participants}
-              pastRounds={pastRounds}
-              onRoundClick={handleRoundClick}
-            />
-
-            {/* Chat/Log Section */}
-            <ChatLogSection />
-          </VStack>
-        </GridItem>
-
-        {/* Right: Actions Only (30%) */}
-        <GridItem>
-          <ActionPanel
-            currentUserSelection={currentUserSelection}
+          <RoundHistoryTable
+            roundNumber={roundNumber}
+            participants={participants}
+            pastRounds={pastRounds}
+            onRoundClick={handleRoundClick}
             onOpenInputModal={handleOpenInputModal}
           />
+        </GridItem>
+
+        {/* Right: Communication (35%) */}
+        <GridItem>
+          <ChatLogSection />
         </GridItem>
       </Grid>
 

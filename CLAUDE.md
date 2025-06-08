@@ -26,22 +26,24 @@
 
 ## 🏗 設計思想
 - **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`
+- **適度な粒度分割**: 巨大ファイル回避・コロケーション重視・再利用性向上
 - **Progressive Enhancement開発**: 動くもの→段階的改善
 - **リアルタイム状態同期パターン**: Jotai + Firebase onSnapshot
 - **Direct Import原則**: Barrelエクスポート禁止
 - **User-First Design**: 技術制約よりユーザー体験優先
 
 ## 📍 現在のタスク状況
-**Phase 5**: ドラフトページUI/UX完全最適化完了
+**Phase 6**: ChatLogSection大規模リファクタリング完了
 - ✅ **完了**: 認証システム・ディレクトリ構成・Firestore基盤
 - ✅ **完了**: Storybookテスト品質保証戦略・E2Eテスト戦略
 - ✅ **完了**: ドラフトページUI統合・ResponsiveModal対応・ユーザビリティ最適化
+- ✅ **完了**: ChatLogSectionリファクタリング・コンポーネント分割・テスト拡充
 - ⏳ **次回**: Firestore連携・リアルタイム同期・状態管理実装
 
 ### 次回セッション開始時のTODO
 1. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
 2. **状態管理強化**: 参加者ステータス・選択データの管理
-3. **チャット機能基盤**: ログ表示エリアの実装
+3. **チャット機能実装**: LogItem・MessageInput活用した機能実装
 
 ## 🎭 Claude Code設定
 
@@ -81,6 +83,7 @@ pnpm notify all                      # 全チェック完了🎉
 
 ### 重要パス
 - **ドラフト**: `src/components/features/draft/DraftPage/` (UI完成)
+- **チャットログ**: `src/components/features/draft/DraftPage/components/ChatLogSection/` (リファクタ完了)
 - **認証**: `src/hooks/auth/useAuth.ts`
 - **UI共通**: `src/components/ui/responsive-modal.tsx`
 
@@ -102,6 +105,7 @@ pnpm notify all                      # 全チェック完了🎉
 ### 技術構成・実装状況
 - ✅ **UI**: Next.js 15 + Chakra UI v3 + ResponsiveModal完成
 - ✅ **ページ**: TOP・参加・ロビー・ドラフトUI完成
+- ✅ **コンポーネント**: 適度な粒度分割・再利用性向上・32スイート67テスト完了
 - ✅ **テスト**: Storybook・E2Eテスト基盤
 - ⏳ **次回**: Firestore連携・リアルタイム同期実装
 
@@ -115,4 +119,4 @@ pnpm notify all                      # 全チェック完了🎉
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/1/8 - ドラフトページUI/UX完全最適化・統合レイアウト・ResponsiveModal実装完了
+**最終更新**: 2025/1/8 - ChatLogSection大規模リファクタリング・コンポーネント分割・テスト拡充完了
