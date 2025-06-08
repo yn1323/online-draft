@@ -404,6 +404,7 @@ export const DraftPage = ({
                                         color="purple.600"
                                         fontStyle="italic"
                                         lineHeight="1.2"
+                                        _dark={{ color: 'purple.300' }}
                                       >
                                         💬{' '}
                                         {selection.comment.length > 8
@@ -417,6 +418,7 @@ export const DraftPage = ({
                                     fontSize="sm"
                                     color="gray.400"
                                     fontWeight="medium"
+                                    _dark={{ color: 'gray.500' }}
                                   >
                                     未参加
                                   </Text>
@@ -490,26 +492,15 @@ export const DraftPage = ({
                 fontSize="xl"
                 fontWeight="bold"
                 borderRadius="xl"
-                bgGradient="linear(135deg, blue.400, purple.500)"
-                color="white"
-                boxShadow="0 10px 30px -10px rgba(59, 130, 246, 0.5)"
-                transition="all 0.3s ease"
+                colorPalette="blue"
+                boxShadow="lg"
+                transition="all 0.2s ease"
                 _hover={{
-                  bgGradient: 'linear(135deg, purple.500, blue.400)',
-                  transform: 'translateY(-3px) scale(1.02)',
-                  boxShadow: '0 15px 40px -10px rgba(59, 130, 246, 0.6)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: 'xl',
                 }}
                 _active={{
-                  transform: 'translateY(0) scale(0.98)',
-                  boxShadow: '0 5px 20px -10px rgba(59, 130, 246, 0.4)',
-                }}
-                _dark={{
-                  bgGradient: 'linear(135deg, blue.500, purple.600)',
-                  boxShadow: '0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3)',
-                  _hover: {
-                    bgGradient: 'linear(135deg, purple.600, blue.500)',
-                    boxShadow: '0 0 40px rgba(59, 130, 246, 0.8), 0 0 80px rgba(59, 130, 246, 0.4)',
-                  },
+                  transform: 'translateY(0)',
                 }}
               >
                 🎯 選択する！
