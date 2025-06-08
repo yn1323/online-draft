@@ -98,14 +98,18 @@ export const DraftPage = ({
         bgGradient: 'linear(to-br, purple.50, blue.50, pink.50)',
         opacity: 0.3,
         zIndex: -1,
+        _dark: {
+          bgGradient: 'linear(to-br, purple.900/30, blue.900/30, pink.900/30)',
+          opacity: 0.5,
+        },
       }}
     >
       {/* Header */}
       <Flex justify="space-between" align="center" mb={6}>
-        <Text fontSize="lg" fontWeight="bold">
+        <Text fontSize="lg" fontWeight="bold" _dark={{ color: 'white' }}>
           Round {roundNumber}/{totalRounds}
         </Text>
-        <Text fontSize="md" color="gray.600">
+        <Text fontSize="md" color="gray.600" _dark={{ color: 'gray.300' }}>
           {groupName}
         </Text>
       </Flex>
@@ -129,6 +133,11 @@ export const DraftPage = ({
               boxShadow="0 10px 30px -10px rgba(128, 90, 213, 0.25)"
               position="relative"
               overflow="hidden"
+              _dark={{
+                bgGradient: 'linear(135deg, purple.900/40, pink.900/40)',
+                borderColor: 'purple.600',
+                boxShadow: '0 0 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(168, 85, 247, 0.1)',
+              }}
               _before={{
                 content: '""',
                 position: 'absolute',
@@ -137,9 +146,12 @@ export const DraftPage = ({
                 right: 0,
                 height: '3px',
                 bgGradient: 'linear(to-r, purple.400, pink.400, purple.400)',
+                _dark: {
+                  bgGradient: 'linear(to-r, purple.300, pink.300, purple.300)',
+                },
               }}
             >
-              <Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700">
+              <Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700" _dark={{ color: 'purple.200' }}>
                 📊 ラウンド ({pastRounds.length})
               </Text>
               {pastRounds.length === 0 ? (
@@ -151,11 +163,16 @@ export const DraftPage = ({
                   border="2px dashed"
                   borderColor="purple.300"
                   opacity={0.8}
+                  _dark={{
+                    bg: 'gray.800',
+                    borderColor: 'purple.600',
+                    opacity: 0.9,
+                  }}
                 >
-                  <Text fontSize="md" color="purple.500" fontWeight="medium">
+                  <Text fontSize="md" color="purple.500" fontWeight="medium" _dark={{ color: 'purple.300' }}>
                     📝 ラウンドがまだ開始されていません
                   </Text>
-                  <Text fontSize="sm" color="purple.400" mt={2}>
+                  <Text fontSize="sm" color="purple.400" mt={2} _dark={{ color: 'purple.400' }}>
                     ラウンドが開始されると、各ラウンドの情報が表示されます
                   </Text>
                 </Box>
@@ -172,6 +189,11 @@ export const DraftPage = ({
                     borderRadius="lg"
                     alignItems="center"
                     boxShadow="0 4px 20px -5px rgba(59, 130, 246, 0.35)"
+                    _dark={{
+                      bgGradient: 'linear(to-r, blue.800/50, cyan.800/50)',
+                      borderColor: 'blue.500',
+                      boxShadow: '0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2)',
+                    }}
                     position="relative"
                     _after={{
                       content: '""',
@@ -187,7 +209,7 @@ export const DraftPage = ({
                     }}
                   >
                     <Flex align="center" justify="center" h="full">
-                      <Text fontWeight="bold" color="blue.800" fontSize="lg">
+                      <Text fontWeight="bold" color="blue.800" fontSize="lg" _dark={{ color: 'blue.200' }}>
                         {roundNumber}
                       </Text>
                     </Flex>
@@ -223,6 +245,18 @@ export const DraftPage = ({
                               transform: 'scale(1.05)',
                               boxShadow: '0 4px 12px -4px rgba(0, 0, 0, 0.15)',
                             }}
+                            _dark={{
+                              bg: currentStatus?.status === 'completed'
+                                ? 'green.800/50'
+                                : currentStatus?.status === 'entered'
+                                  ? 'yellow.800/50'
+                                  : 'gray.700/50',
+                              borderColor: currentStatus?.status === 'completed'
+                                ? 'green.500'
+                                : currentStatus?.status === 'entered'
+                                  ? 'yellow.500'
+                                  : 'gray.500',
+                            }}
                           >
                             <Image
                               src={`/img/${participant.avatar}.png`}
@@ -245,6 +279,13 @@ export const DraftPage = ({
                               }
                               fontWeight="medium"
                               lineHeight="1.2"
+                              _dark={{
+                                color: currentStatus?.status === 'completed'
+                                  ? 'green.300'
+                                  : currentStatus?.status === 'entered'
+                                    ? 'yellow.300'
+                                    : 'gray.300',
+                              }}
                             >
                               {participant.name}
                             </Text>
@@ -315,6 +356,15 @@ export const DraftPage = ({
                             transform: 'translateY(-1px)',
                             boxShadow: '0 4px 12px -4px rgba(128, 90, 213, 0.15)'
                           }}
+                          _dark={{
+                            bg: 'gray.800/80',
+                            borderColor: 'purple.700',
+                            _hover: {
+                              bg: 'purple.900/40',
+                              borderColor: 'purple.600',
+                              boxShadow: '0 4px 12px -4px rgba(168, 85, 247, 0.25)',
+                            },
+                          }}
                           alignItems="center"
                         >
                           <Flex align="center" justify="center" h="full">
@@ -322,6 +372,7 @@ export const DraftPage = ({
                               fontWeight="bold"
                               color="purple.800"
                               fontSize="lg"
+                              _dark={{ color: 'purple.200' }}
                             >
                               {round.roundNumber}
                             </Text>
@@ -343,6 +394,7 @@ export const DraftPage = ({
                                       fontWeight="bold"
                                       color="gray.800"
                                       lineHeight="1.2"
+                                      _dark={{ color: 'gray.200' }}
                                     >
                                       {selection.item}
                                     </Text>
@@ -388,8 +440,13 @@ export const DraftPage = ({
               border="1px solid"
               borderColor="gray.200"
               boxShadow="0 4px 15px -3px rgba(0, 0, 0, 0.1)"
+              _dark={{
+                bgGradient: 'linear(to-br, gray.800/60, blue.900/40)',
+                borderColor: 'gray.600',
+                boxShadow: '0 4px 15px -3px rgba(0, 0, 0, 0.3)',
+              }}
             >
-              <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+              <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700" _dark={{ color: 'gray.300' }}>
                 💬 ログ・コメント
               </Text>
               <Box
@@ -403,12 +460,16 @@ export const DraftPage = ({
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
+                _dark={{
+                  bg: 'gray.800',
+                  borderColor: 'gray.600',
+                }}
               >
                 <VStack gap={2}>
-                  <Text fontSize="sm" color="gray.500" textAlign="center">
+                  <Text fontSize="sm" color="gray.500" textAlign="center" _dark={{ color: 'gray.400' }}>
                     📝 コメントやログがここに表示されます
                   </Text>
-                  <Text fontSize="sm" color="gray.500" textAlign="center">
+                  <Text fontSize="sm" color="gray.500" textAlign="center" _dark={{ color: 'gray.400' }}>
                     （チャット機能は後で実装予定）
                   </Text>
                 </VStack>
@@ -442,6 +503,14 @@ export const DraftPage = ({
                   transform: 'translateY(0) scale(0.98)',
                   boxShadow: '0 5px 20px -10px rgba(59, 130, 246, 0.4)',
                 }}
+                _dark={{
+                  bgGradient: 'linear(135deg, blue.500, purple.600)',
+                  boxShadow: '0 0 30px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.3)',
+                  _hover: {
+                    bgGradient: 'linear(135deg, purple.600, blue.500)',
+                    boxShadow: '0 0 40px rgba(59, 130, 246, 0.8), 0 0 80px rgba(59, 130, 246, 0.4)',
+                  },
+                }}
               >
                 🎯 選択する！
               </Button>
@@ -457,6 +526,11 @@ export const DraftPage = ({
                   boxShadow="0 8px 25px -8px rgba(34, 197, 94, 0.3)"
                   position="relative"
                   overflow="hidden"
+                  _dark={{
+                    bgGradient: 'linear(to-br, green.900/50, emerald.900/50)',
+                    borderColor: 'green.500',
+                    boxShadow: '0 0 25px rgba(34, 197, 94, 0.4), 0 0 50px rgba(34, 197, 94, 0.2)',
+                  }}
                   _before={{
                     content: '""',
                     position: 'absolute',
@@ -465,6 +539,9 @@ export const DraftPage = ({
                     width: '200%',
                     height: '200%',
                     background: 'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%)',
+                    _dark: {
+                      background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%)',
+                    },
                   }}
                 >
                   <Text
@@ -472,10 +549,11 @@ export const DraftPage = ({
                     fontWeight="bold"
                     color="green.700"
                     mb={2}
+                    _dark={{ color: 'green.300' }}
                   >
                     ✅ あなたの選択
                   </Text>
-                  <Text fontSize="lg" fontWeight="bold" color="green.800">
+                  <Text fontSize="lg" fontWeight="bold" color="green.800" _dark={{ color: 'green.200' }}>
                     {currentUserSelection}
                   </Text>
                   <Button
@@ -485,6 +563,14 @@ export const DraftPage = ({
                     onClick={() => setIsInputModalOpen(true)}
                     mt={3}
                     w="full"
+                    _dark={{
+                      borderColor: 'green.400',
+                      color: 'green.300',
+                      _hover: {
+                        bg: 'green.900/30',
+                        borderColor: 'green.300',
+                      },
+                    }}
                   >
                     選択を変更
                   </Button>
