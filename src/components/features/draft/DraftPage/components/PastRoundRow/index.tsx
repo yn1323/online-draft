@@ -1,4 +1,5 @@
-import { Grid, Flex, Text, Box, VStack, HStack, useBreakpointValue } from '@chakra-ui/react';
+import { Grid, Flex, Text, Box, VStack, HStack, useBreakpointValue, IconButton } from '@chakra-ui/react';
+import { Collapsible } from '@chakra-ui/react';
 import { Tooltip } from '../../../../../ui/tooltip';
 
 interface PastRoundRowProps {
@@ -19,123 +20,174 @@ interface PastRoundRowProps {
     status: 'thinking' | 'entered' | 'completed';
   }[];
   onRoundClick: (roundNumber: number) => void;
+  isExpanded?: boolean;
+  onToggleExpand?: () => void;
 }
 
-export const PastRoundRow = ({ round, participants, onRoundClick }: PastRoundRowProps) => {
+export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = true, onToggleExpand }: PastRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // SP用の縦型レイアウト
+  // SP用の縦型レイアウト（折りたたみ機能付き）
   if (isMobile) {
     return (
       <Box
-        p={4}
         bg="white"
         border="1px solid"
         borderColor="purple.200"
         borderRadius="lg"
         transition="all 0.2s ease"
-        cursor="pointer"
-        onClick={() => onRoundClick(round.roundNumber)}
-        _hover={{ 
-          bg: 'purple.50',
-          borderColor: 'purple.300',
-          transform: 'translateY(-1px)',
-          boxShadow: '0 4px 12px -4px rgba(128, 90, 213, 0.15)'
-        }}
         _dark={{
           bg: 'gray.800/80',
           borderColor: 'purple.700',
-          _hover: {
-            bg: 'purple.900/40',
-            borderColor: 'purple.600',
-            boxShadow: '0 4px 12px -4px rgba(168, 85, 247, 0.25)',
-          },
         }}
       >
-        {/* ラウンド番号ヘッダー */}
-        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor="purple.100" _dark={{ borderColor: 'purple.800' }}>
-          <Text
-            fontWeight="bold"
-            color="purple.800"
-            fontSize="lg"
-            _dark={{ color: 'purple.200' }}
+        {/* ヘッダー部分（常時表示 + アクションボタン） */}
+        <HStack
+          justify="space-between"
+          align="center"
+          p={4}
+        >
+          {/* 左側：ラウンド情報（折りたたみ領域） */}
+          <HStack 
+            gap={2} 
+            flex={1}
+            cursor="pointer"
+            onClick={onToggleExpand}
+            _hover={{ 
+              bg: 'purple.50',
+              _dark: { bg: 'purple.900/40' }
+            }}
+            borderRadius="md"
+            p={2}
+            mx={-2}
           >
-            ラウンド {round.roundNumber}
-          </Text>
-          <Text fontSize="sm" color="purple.600" _dark={{ color: 'purple.400' }}>
-            📊 {round.selections.length}人参加
-          </Text>
+            <Text
+              fontWeight="bold"
+              color="purple.800"
+              fontSize="lg"
+              _dark={{ color: 'purple.200' }}
+            >
+              ラウンド {round.roundNumber}
+            </Text>
+            <Text fontSize="sm" color="purple.600" _dark={{ color: 'purple.400' }}>
+              📊 {round.selections.length}人参加
+            </Text>
+          </HStack>
+          
+          {/* 右側：アクションボタン */}
+          <HStack gap={1}>
+            {/* 詳細モーダルボタン */}
+            <IconButton
+              aria-label="ラウンド詳細を見る"
+              size="sm"
+              variant="ghost"
+              colorPalette="blue"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRoundClick(round.roundNumber);
+              }}
+            >
+              <Text fontSize="sm">✏️</Text>
+            </IconButton>
+            
+            {/* 折りたたみボタン */}
+            {onToggleExpand && (
+              <IconButton
+                aria-label={isExpanded ? '詳細を閉じる' : '詳細を見る'}
+                size="sm"
+                variant="ghost"
+                colorPalette="purple"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onToggleExpand();
+                }}
+              >
+                <Text fontSize="lg">
+                  {isExpanded ? '▲' : '▼'}
+                </Text>
+              </IconButton>
+            )}
+          </HStack>
         </HStack>
 
-        {/* 参加者の選択一覧 */}
-        <VStack gap={3} align="stretch">
-          {participants.map((participant) => {
-            const selection = round.selections.find(
-              (s) => s.userId === participant.id,
-            );
-            return (
-              <HStack
-                key={participant.id}
-                justify="space-between"
-                align="center"
-                p={2}
-                bg="purple.25"
-                borderRadius="md"
-                _dark={{ bg: 'purple.900/20' }}
-              >
-                <HStack gap={2} flex={1} alignItems="center">
-                  <Text fontSize="lg">{participant.avatar}</Text>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="medium"
-                    color="gray.700"
-                    _dark={{ color: 'gray.300' }}
-                    minW="fit-content"
+        {/* 詳細部分（折りたたみ対応） */}
+        <Collapsible.Root open={isExpanded}>
+          <Collapsible.Content>
+          <Box px={4} pb={4}>
+            <Box h="1px" bg="purple.100" mb={3} _dark={{ bg: 'purple.800' }} />
+            
+            {/* 参加者の選択一覧 */}
+            <VStack gap={3} align="stretch">
+              {participants.map((participant) => {
+                const selection = round.selections.find(
+                  (s) => s.userId === participant.id,
+                );
+                return (
+                  <HStack
+                    key={participant.id}
+                    justify="space-between"
+                    align="center"
+                    p={2}
+                    bg="purple.25"
+                    borderRadius="md"
+                    _dark={{ bg: 'purple.900/20' }}
                   >
-                    {participant.name}
-                  </Text>
-                </HStack>
-                
-                <Box flex={2} textAlign="right">
-                  {selection ? (
-                    <VStack gap={1} align="flex-end">
+                    <HStack gap={2} flex={1} alignItems="center">
+                      <Text fontSize="lg">{participant.avatar}</Text>
                       <Text
                         fontSize="sm"
-                        fontWeight="bold"
-                        color="gray.800"
-                        _dark={{ color: 'gray.200' }}
-                        lineHeight="1.2"
-                        wordBreak="break-all"
+                        fontWeight="medium"
+                        color="gray.700"
+                        _dark={{ color: 'gray.300' }}
+                        minW="fit-content"
                       >
-                        {selection.item}
+                        {participant.name}
                       </Text>
-                      {selection.comment && (
+                    </HStack>
+                    
+                    <Box flex={2} textAlign="right">
+                      {selection ? (
+                        <VStack gap={1} align="flex-end">
+                          <Text
+                            fontSize="sm"
+                            fontWeight="bold"
+                            color="gray.800"
+                            _dark={{ color: 'gray.200' }}
+                            lineHeight="1.2"
+                            wordBreak="break-all"
+                          >
+                            {selection.item}
+                          </Text>
+                          {selection.comment && (
+                            <Text
+                              fontSize="xs"
+                              color="purple.600"
+                              fontStyle="italic"
+                              _dark={{ color: 'purple.300' }}
+                              lineHeight="1.2"
+                            >
+                              💬 {selection.comment}
+                            </Text>
+                          )}
+                        </VStack>
+                      ) : (
                         <Text
-                          fontSize="xs"
-                          color="purple.600"
-                          fontStyle="italic"
-                          _dark={{ color: 'purple.300' }}
-                          lineHeight="1.2"
+                          fontSize="sm"
+                          color="gray.400"
+                          fontWeight="medium"
+                          _dark={{ color: 'gray.500' }}
                         >
-                          💬 {selection.comment}
+                          未参加
                         </Text>
                       )}
-                    </VStack>
-                  ) : (
-                    <Text
-                      fontSize="sm"
-                      color="gray.400"
-                      fontWeight="medium"
-                      _dark={{ color: 'gray.500' }}
-                    >
-                      未参加
-                    </Text>
-                  )}
-                </Box>
-              </HStack>
-            );
-          })}
-        </VStack>
+                    </Box>
+                  </HStack>
+                );
+              })}
+            </VStack>
+          </Box>
+          </Collapsible.Content>
+        </Collapsible.Root>
       </Box>
     );
   }

@@ -82,3 +82,36 @@ export const SixParticipantsLongNames: Story = {
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
   },
 };
+
+// 折りたたみ機能のテスト
+export const CollapsedState: Story = {
+  name: 'SP版折りたたみ状態（✏️編集ボタン付き）',
+  args: {
+    round: horseRaceRound,
+    participants: mockParticipants,
+    onRoundClick: (roundNumber: number) => console.log('詳細モーダル開く:', roundNumber),
+    isExpanded: false,
+    onToggleExpand: () => console.log('折りたたみトグル'),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+};
+
+export const ExpandedState: Story = {
+  name: 'SP版展開状態（✏️編集ボタン付き）',
+  args: {
+    round: horseRaceRound,
+    participants: mockParticipants,
+    onRoundClick: (roundNumber: number) => console.log('詳細モーダル開く:', roundNumber),
+    isExpanded: true,
+    onToggleExpand: () => console.log('折りたたみトグル'),
+  },
+  parameters: {
+    viewport: {
+      defaultViewport: 'mobile1',
+    },
+  },
+};

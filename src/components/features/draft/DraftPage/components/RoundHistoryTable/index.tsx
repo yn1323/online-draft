@@ -1,4 +1,5 @@
-import { Box, Text, VStack } from '@chakra-ui/react';
+import { Box, Text, VStack, useBreakpointValue } from '@chakra-ui/react';
+import { useState, useMemo } from 'react';
 import { CurrentRoundRow } from '../CurrentRoundRow';
 import { PastRoundRow } from '../PastRoundRow';
 import { SelectionButton } from '../SelectionButton';
@@ -32,6 +33,31 @@ export const RoundHistoryTable = ({
   onRoundClick,
   onOpenInputModal
 }: RoundHistoryTableProps) => {
+  const isMobile = useBreakpointValue({ base: true, md: false });
+  
+  // SP版折りたたみ状態管理（最新2ラウンドのみデフォルト展開）
+  const [expandedRounds, setExpandedRounds] = useState<Set<number>>(() => {
+    if (pastRounds.length === 0) { 
+      return new Set(); 
+    }
+    const latestRounds = pastRounds
+      .slice(-2) // 最新2ラウンド
+      .map(round => round.roundNumber);
+    return new Set(latestRounds);
+  });
+
+  // 折りたたみトグル関数
+  const toggleRound = (roundNumber: number) => {
+    setExpandedRounds(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(roundNumber)) {
+        newSet.delete(roundNumber);
+      } else {
+        newSet.add(roundNumber);
+      }
+      return newSet;
+    });
+  };
   return (
     <Box
       p={{ base: 4, md: 5, lg: 6 }}
@@ -116,6 +142,8 @@ export const RoundHistoryTable = ({
               round={round}
               participants={participants}
               onRoundClick={onRoundClick}
+              isExpanded={isMobile ? expandedRounds.has(round.roundNumber) : true}
+              onToggleExpand={isMobile ? () => toggleRound(round.roundNumber) : undefined}
             />
           ))}
         </VStack>

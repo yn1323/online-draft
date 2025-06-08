@@ -185,7 +185,7 @@ export const RoundDetailModal = ({
                     alt={participant.name}
                     width="32px"
                     height="32px"
-                    borderRadius="full"
+                    borderRadius="md"
                     objectFit="cover"
                   />
                   <Text fontWeight="bold" color="gray.800" _dark={{ color: 'gray.200' }}>
