@@ -9,11 +9,34 @@
 | Test | Vitest + Playwright + Storybook | ✅ |
 | Linting | Biome | ✅ |
 
-## 🏗 設計思想
-- **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`
-- **Progressive Enhancement開発**: 動くもの→段階的改善
-- **リアルタイム状態同期パターン**: Jotai + Firebase onSnapshot
-- **Direct Import原則**: Barrelエクスポート禁止
+## 🏗 設計思想・アーキテクチャ
+
+### Layered Feature Architecture（階層化機能アーキテクチャ）
+複数の確立されたパターンを組み合わせた独自アーキテクチャ：
+
+1. **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`
+2. **Vertical Slice Architecture**: 機能ごとの垂直分割
+3. **Progressive Enhancement**: 動くもの→段階的改善
+4. **Direct Import原則**: Barrelエクスポート禁止・明示的依存関係
+5. **Accessibility-First Testing**: role/ARIA/テキストベーステスト
+
+### ディレクトリ構造
+```
+src/
+├── components/
+│   ├── features/<feature>/<Component>/     # 機能別コンポーネント
+│   ├── atoms/                              # 共通原子コンポーネント
+│   └── ui/                                 # 基盤UIコンポーネント
+├── types/                                  # 機能別型定義システム
+│   ├── common/                             # 基盤型
+│   ├── firestore/, draft/, auth/, ui/     # 機能別型
+├── constants/                              # 統一定数管理
+│   ├── ui/, app/, api/, validation/       # 機能別定数
+├── services/                               # ビジネスロジック分離
+│   ├── draft/, auth/, realtime/           # 機能別サービス
+└── hooks/                                  # 機能別カスタムフック
+    ├── draft/, lobby/, auth/, ui/         # 機能別フック
+```
 
 ## 🔒 重要制約
 

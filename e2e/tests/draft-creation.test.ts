@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { createNewDraft, setupNetworkDelay } from '../operations/draft';
 import { goBack, reloadPage } from '../operations/navigation';
+import { TEST_DATA, TIMEOUTS } from '../constants';
 
 /**
  * ドラフト作成操作のE2Eテスト
@@ -13,16 +14,16 @@ test.describe('ドラフト作成操作', () => {
   test('ドラフト作成ボタンクリックでロビーページに遷移する', async ({
     page,
   }) => {
-    // カスタムドラフト名でドラフト作成操作を実行
-    const customDraftName = 'E2Eテストドラフト';
-    const groupId = await createNewDraft(page, customDraftName);
+    // 統一テストデータでドラフト作成操作を実行
+    const draftName = TEST_DATA.DRAFT_ROOM.NAME;
+    const groupId = await createNewDraft(page, draftName);
 
     // groupIdが有効な形式であることを確認
     expect(groupId).toBeTruthy();
     expect(groupId).toMatch(/^[a-zA-Z0-9_-]+$/); // 有効なFirestore ID形式
 
     // 入力したドラフト名とgroupIdが表示されることを確認
-    await expect(page.getByText(customDraftName)).toBeVisible();
+    await expect(page.getByText(draftName)).toBeVisible();
     await expect(page.getByText(groupId)).toBeVisible();
   });
 
@@ -45,8 +46,8 @@ test.describe('ドラフト作成操作', () => {
   test('ネットワーク遅延がある場合でもドラフト作成が正常に動作する', async ({
     page,
   }) => {
-    // ネットワーク遅延をシミュレート
-    await setupNetworkDelay(page, 100);
+    // ネットワーク遅延をシミュレート（統一タイムアウト使用）
+    await setupNetworkDelay(page, TIMEOUTS.SHORT);
 
     // 遅延があってもドラフト作成が成功することを確認
     const draftName = 'ネットワーク遅延テスト';
