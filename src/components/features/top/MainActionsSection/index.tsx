@@ -3,7 +3,7 @@
 import { SimpleGrid } from '@chakra-ui/react';
 import { IoEnter } from 'react-icons/io5';
 import { MdAdd } from 'react-icons/md';
-import ActionCard from '../components/ActionCard';
+import ActionCard from '../components/cards/ActionCard';
 
 type MainActionsSectionProps = {
   onCreateDraft: () => void;

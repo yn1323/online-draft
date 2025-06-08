@@ -2,8 +2,8 @@
 
 import { Box, Heading, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { MdCreate, MdPlayArrow, MdShare } from 'react-icons/md';
-import StepCard from '../components/StepCard';
-import UseCaseGrid from '../components/UseCaseGrid';
+import StepCard from '../components/cards/StepCard';
+import UseCaseGrid from '../components/grids/UseCaseGrid';
 
 export default function HowToSection() {
   return (

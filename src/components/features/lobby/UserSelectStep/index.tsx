@@ -3,7 +3,7 @@
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { FiUserPlus } from 'react-icons/fi';
-import ExistingUserList from '../components/ExistingUserList';
+import ExistingUserList from '../components/selectors/ExistingUserList';
 
 interface User {
   userId: string;

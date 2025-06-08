@@ -14,7 +14,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { FiChevronLeft } from 'react-icons/fi';
-import AvatarSelector from '../components/AvatarSelector';
+import AvatarSelector from '../components/selectors/AvatarSelector';
 
 interface Avatar {
   index: string;
