@@ -90,21 +90,21 @@ export const DraftPage = ({
 				gap={8}
 				minH="70vh"
 			>
-				{/* Left: Strategy Analysis Area (70%) */}
+				{/* Left: Past Rounds Information (70%) */}
 				<GridItem>
 					<VStack gap={6} align="stretch">
-						{/* Past Rounds - Main Strategy Information */}
+						{/* Past Rounds Information */}
 						<Box p={6} borderRadius="xl" bg="purple.50" border="2px solid" borderColor="purple.200">
 							<Text fontSize="xl" fontWeight="bold" mb={6} color="purple.700">
-								🎯 戦略分析エリア - 過去のラウンド ({pastRounds.length})
+								📊 これまでのラウンド ({pastRounds.length})
 							</Text>
 							{pastRounds.length === 0 ? (
 								<Box p={8} textAlign="center" bg="white" borderRadius="lg" border="1px dashed" borderColor="purple.200">
 									<Text fontSize="md" color="purple.500" fontWeight="medium">
-										📊 過去のラウンドはまだありません
+										📝 まだ過去のラウンドはありません
 									</Text>
 									<Text fontSize="sm" color="purple.400" mt={2}>
-										ラウンドが進むと、ここに戦略分析情報が表示されます
+										ラウンドが進むと、みんなの選択が見られます
 									</Text>
 								</Box>
 							) : (
@@ -163,18 +163,9 @@ export const DraftPage = ({
 																	{selection.item}
 																</Text>
 																{selection.comment && (
-																	<Box 
-																		mt={1} 
-																		p={2} 
-																		bg="purple.50" 
-																		borderRadius="sm" 
-																		border="1px solid" 
-																		borderColor="purple.100"
-																	>
-																		<Text fontSize="xs" color="purple.700" fontWeight="medium" lineHeight="1.3">
-																			🎯 {selection.comment}
-																		</Text>
-																	</Box>
+																	<Text fontSize="xs" color="purple.600" mt={1} fontStyle="italic" lineHeight="1.3">
+																		💬 {selection.comment.length > 10 ? `${selection.comment.slice(0, 10)}...` : selection.comment}
+																	</Text>
 																)}
 															</VStack>
 														) : (
@@ -190,6 +181,31 @@ export const DraftPage = ({
 								</VStack>
 							)}
 						</Box>
+
+						{/* Chat/Log Section */}
+						<Box p={4} borderRadius="lg" bg="gray.50" border="1px solid" borderColor="gray.200">
+							<Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700">
+								💬 ログ・コメント
+							</Text>
+							<Box 
+								h="200px" 
+								overflowY="auto" 
+								bg="white" 
+								borderRadius="md" 
+								border="1px solid" 
+								borderColor="gray.200"
+								p={3}
+							>
+								<VStack gap={2} align="stretch">
+									<Text fontSize="sm" color="gray.500" textAlign="center">
+										📝 コメントやログがここに表示されます
+									</Text>
+									<Text fontSize="sm" color="gray.500" textAlign="center">
+										（チャット機能は後で実装予定）
+									</Text>
+								</VStack>
+							</Box>
+						</Box>
 					</VStack>
 				</GridItem>
 
@@ -197,46 +213,63 @@ export const DraftPage = ({
 				<GridItem>
 					<Box position="sticky" top={4}>
 						<VStack gap={4} align="stretch">
-							{/* Current Round - Compact but Informative */}
-							<Box p={3} borderRadius="md" bg="blue.50" border="1px solid" borderColor="blue.200">
+							{/* Current Round Status */}
+							<Box p={4} borderRadius="lg" bg="blue.50" border="2px solid" borderColor="blue.200">
 								<Flex justify="space-between" align="center" mb={3}>
-									<Text fontSize="sm" fontWeight="bold" color="blue.700">
+									<Text fontSize="md" fontWeight="bold" color="blue.700">
 										Round {roundNumber}
 									</Text>
-									<Text fontSize="xs" color="blue.600">
-										{participants.filter(p => p.status === "completed").length}/{participants.length}
-									</Text>
+									<Box textAlign="right">
+										<Text fontSize="xs" color="blue.600" fontWeight="medium">
+											選択完了
+										</Text>
+										<Text fontSize="lg" fontWeight="bold" color="blue.700">
+											{participants.filter(p => p.status === "completed").length}/{participants.length}
+										</Text>
+									</Box>
 								</Flex>
-								<Text fontSize="xs" color="blue.500" textAlign="center" mb={3}>
-									{currentRoundTopic}
+								<Text fontSize="sm" color="blue.600" textAlign="center" mb={3} fontWeight="medium">
+									🎯 {currentRoundTopic}
 								</Text>
 								
-								{/* Compact Status Display */}
-								<Flex wrap="wrap" gap={1} justify="center">
+								{/* Participants Status Display */}
+								<Text fontSize="xs" color="blue.600" mb={2} textAlign="center" fontWeight="medium">
+									👥 みんなの状況
+								</Text>
+								<Flex wrap="wrap" gap={2} justify="center">
 									{currentRoundSelections.map((participant) => (
-										<Flex
+										<Box
 											key={participant.userId}
-											align="center"
-											gap={1}
-											px={2}
-											py={1}
-											borderRadius="full"
-											bg={participant.status === "completed" ? "green.100" : "gray.100"}
+											textAlign="center"
+											p={2}
+											borderRadius="md"
+											bg={participant.status === "completed" ? "green.100" : participant.status === "entered" ? "yellow.100" : "gray.100"}
 											border="1px solid"
-											borderColor={participant.status === "completed" ? "green.200" : "gray.200"}
+											borderColor={participant.status === "completed" ? "green.200" : participant.status === "entered" ? "yellow.200" : "gray.200"}
+											minW="60px"
 										>
 											<Image
 												src={`/img/${participant.avatar}.png`}
 												alt={participant.userName}
-												width="16px"
-												height="16px"
+												width="24px"
+												height="24px"
 												borderRadius="full"
 												objectFit="cover"
+												mx="auto"
+												mb={1}
 											/>
-											<Text fontSize="xs" color={participant.status === "completed" ? "green.700" : "gray.600"}>
+											<Text 
+												fontSize="xs" 
+												color={participant.status === "completed" ? "green.700" : participant.status === "entered" ? "yellow.700" : "gray.600"}
+												fontWeight="medium"
+												lineHeight="1.2"
+											>
+												{participant.userName}
+											</Text>
+											<Text fontSize="xs" color={participant.status === "completed" ? "green.600" : participant.status === "entered" ? "yellow.600" : "gray.500"}>
 												{statusEmoji[participant.status]}
 											</Text>
-										</Flex>
+										</Box>
 									))}
 								</Flex>
 							</Box>
@@ -244,7 +277,7 @@ export const DraftPage = ({
 							{/* Main Action Button */}
 							<Button
 								size="xl"
-								colorScheme="orange"
+								colorScheme="blue"
 								h="80px"
 								onClick={() => setIsInputModalOpen(true)}
 								fontSize="xl"
@@ -254,14 +287,14 @@ export const DraftPage = ({
 								_hover={{ transform: "translateY(-2px)", boxShadow: "xl" }}
 								_active={{ transform: "translateY(0)" }}
 							>
-								🎯 戦略的選択！
+								🎯 選択する！
 							</Button>
 
 							{/* Current User Selection Preview */}
 							{currentUserSelection && (
 								<Box p={4} borderRadius="lg" bg="green.50" border="2px solid" borderColor="green.300">
 									<Text fontSize="sm" fontWeight="bold" color="green.700" mb={2}>
-										✅ あなたの戦略選択
+										✅ あなたの選択
 									</Text>
 									<Text fontSize="lg" fontWeight="bold" color="green.800">
 										{currentUserSelection}
@@ -274,7 +307,7 @@ export const DraftPage = ({
 										mt={3}
 										w="full"
 									>
-										戦略を変更
+										選択を変更
 									</Button>
 								</Box>
 							)}
@@ -284,8 +317,8 @@ export const DraftPage = ({
 			</Grid>
 
 			{/* Input Modal */}
-			<DialogRoot open={isInputModalOpen} onOpenChange={(details) => setIsInputModalOpen(details.open)}>
-				<DialogContent maxW="md">
+			<DialogRoot open={isInputModalOpen} onOpenChange={(details) => setIsInputModalOpen(details.open)} placement="center">
+				<DialogContent maxW="md" m={4}>
 					<DialogHeader>
 						<DialogTitle>Round {roundNumber}: {currentRoundTopic}</DialogTitle>
 					</DialogHeader>
@@ -309,12 +342,12 @@ export const DraftPage = ({
 							</Box>
 							<Box>
 								<Text fontSize="sm" fontWeight="medium" mb={2} color="purple.700">
-									🎯 戦略メモ（任意）
+									💬 ひとこと（任意）
 								</Text>
 								<Textarea
 									value={comment}
 									onChange={(e) => setComment(e.target.value)}
-									placeholder="戦略的な選択理由を記録しましょう...&#10;例：&#10;・たけしさんは毎回定番を選ぶ傾向&#10;・みさきさんとかぶりやすいので差別化&#10;・前回のコメントから流行を先読み"
+									placeholder="選択理由やコメントを記録できます...&#10;例：&#10;・最近ハマってる作品&#10;・みんなと違うものを選んでみた&#10;・前回の話題から思いついた"
 									maxLength={150}
 									rows={4}
 									resize="none"

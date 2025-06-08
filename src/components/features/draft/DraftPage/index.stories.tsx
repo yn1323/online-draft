@@ -48,10 +48,10 @@ const mockPastRounds = [
 		roundNumber: 1,
 		topic: "好きな食べ物",
 		selections: [
-			{ userId: "1", userName: "たけし", item: "ラーメン", comment: "深夜に食べたくなる" },
-			{ userId: "2", userName: "みさき", item: "寿司", comment: "新鮮なネタが最高" },
+			{ userId: "1", userName: "たけし", item: "ラーメン", comment: "深夜に食べたくなる定番" },
+			{ userId: "2", userName: "みさき", item: "寿司", comment: "新鮮なネタ" },
 			{ userId: "3", userName: "ひろし", item: "カレー" },
-			{ userId: "4", userName: "あやか", item: "ピザ", comment: "みんなでシェアできる" },
+			{ userId: "4", userName: "あやか", item: "ピザ", comment: "シェア" },
 		],
 	},
 ];
