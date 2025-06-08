@@ -153,7 +153,7 @@ export default function ExistingUserList({
             onClick={() => onUserSelect(user.userId)}
             loading={isLoading}
           >
-            <Box borderRadius="full" overflow="hidden">
+            <Box borderRadius="md" overflow="hidden">
               <Image
                 src={user.avatar}
                 alt={user.userName}

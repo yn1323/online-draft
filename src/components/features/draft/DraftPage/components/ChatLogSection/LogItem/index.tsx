@@ -49,7 +49,7 @@ export const LogItem = ({ log }: LogItemProps) => {
             alt={log.user.name}
             w="32px"
             h="32px"
-            borderRadius="full"
+            borderRadius="md"
             objectFit="cover"
           />
           <VStack gap={1} align={log.isMyMessage ? 'end' : 'start'}>

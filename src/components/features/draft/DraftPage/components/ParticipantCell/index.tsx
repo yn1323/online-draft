@@ -71,7 +71,7 @@ export const ParticipantCell = ({ participant }: ParticipantCellProps) => {
           alt={participant.name}
           width="24px"
           height="24px"
-          borderRadius="full"
+          borderRadius="md"
           objectFit="cover"
           mx="auto"
           mb={1}
