@@ -1,6 +1,17 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
+import { LogItem, type LogMessage } from './LogItem';
+import { MessageInput } from './MessageInput';
+import { mockLogs } from './mocks';
 
-export const ChatLogSection = () => {
+interface ChatLogSectionProps {
+  logs?: LogMessage[];
+  onSendMessage?: (message: string) => void;
+}
+
+export const ChatLogSection = ({
+  logs = mockLogs,
+  onSendMessage,
+}: ChatLogSectionProps = {}) => {
   return (
     <Box
       p={4}
@@ -15,34 +26,50 @@ export const ChatLogSection = () => {
         boxShadow: '0 4px 15px -3px rgba(0, 0, 0, 0.3)',
       }}
     >
-      <Text fontSize="lg" fontWeight="bold" mb={4} color="gray.700" _dark={{ color: 'gray.300' }}>
+      <Text
+        fontSize="lg"
+        fontWeight="bold"
+        mb={4}
+        color="gray.700"
+        _dark={{ color: 'gray.300' }}
+      >
         💬 ログ・コメント
       </Text>
+
       <Box
-        h="200px"
+        h="300px"
         overflowY="auto"
         bg="white"
         borderRadius="md"
         border="1px solid"
         borderColor="gray.200"
-        p={3}
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
+        p={4}
+        mb={3}
         _dark={{
-          bg: 'gray.800',
-          borderColor: 'gray.600',
+          bg: 'gray.700',
+          borderColor: 'gray.500',
+        }}
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '4px',
+          },
+          '&::-webkit-scrollbar-track': {
+            bg: 'gray.100',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            bg: 'gray.300',
+            borderRadius: '999px',
+          },
         }}
       >
-        <VStack gap={2}>
-          <Text fontSize="sm" color="gray.500" textAlign="center" _dark={{ color: 'gray.400' }}>
-            📝 コメントやログがここに表示されます
-          </Text>
-          <Text fontSize="sm" color="gray.500" textAlign="center" _dark={{ color: 'gray.400' }}>
-            （チャット機能は後で実装予定）
-          </Text>
+        <VStack gap={0} align="stretch">
+          {logs.map((log) => (
+            <LogItem key={log.id} log={log} />
+          ))}
         </VStack>
       </Box>
+
+      <MessageInput onSendMessage={onSendMessage} />
     </Box>
   );
 };
