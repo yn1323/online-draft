@@ -10,14 +10,14 @@ export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) =
     <Box
       p={4}
       borderRadius="lg"
-      bgGradient="linear(to-br, green.50, emerald.50)"
+      bgGradient="linear(to-br, green.50, green.100)"
       border="2px solid"
       borderColor="green.400"
       boxShadow="0 8px 25px -8px rgba(34, 197, 94, 0.3)"
       position="relative"
       overflow="hidden"
       _dark={{
-        bgGradient: 'linear(to-br, green.900/50, emerald.900/50)',
+        bgGradient: 'linear(to-br, green.900/40, green.800/40)',
         borderColor: 'green.500',
         boxShadow: '0 0 25px rgba(34, 197, 94, 0.4), 0 0 50px rgba(34, 197, 94, 0.2)',
       }}
@@ -49,7 +49,7 @@ export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) =
       <Button
         size="sm"
         variant="outline"
-        colorScheme="green"
+        colorPalette="green"
         onClick={onEdit}
         mt={3}
         w="full"

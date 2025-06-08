@@ -62,26 +62,34 @@ export const RoundDetailModal = ({
   }
 
   const toggleEditMode = (userId: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       editMode: {
         ...prev.editMode,
         [userId]: !prev.editMode[userId],
       },
-      tempData: prev.editMode[userId] 
-        ? prev.tempData 
+      tempData: prev.editMode[userId]
+        ? prev.tempData
         : {
             ...prev.tempData,
             [userId]: {
-              item: roundData.selections.find(s => s.userId === userId)?.item || '',
-              comment: roundData.selections.find(s => s.userId === userId)?.comment || '',
+              item:
+                roundData.selections.find((s) => s.userId === userId)?.item ||
+                '',
+              comment:
+                roundData.selections.find((s) => s.userId === userId)
+                  ?.comment || '',
             },
           },
     }));
   };
 
-  const updateTempData = (userId: string, field: 'item' | 'comment', value: string) => {
-    setState(prev => ({
+  const updateTempData = (
+    userId: string,
+    field: 'item' | 'comment',
+    value: string,
+  ) => {
+    setState((prev) => ({
       ...prev,
       tempData: {
         ...prev.tempData,
@@ -94,37 +102,44 @@ export const RoundDetailModal = ({
   };
 
   const hasChanges = () => {
-    return Object.keys(state.tempData).some(userId => {
-      const original = roundData.selections.find(s => s.userId === userId);
+    return Object.keys(state.tempData).some((userId) => {
+      const original = roundData.selections.find((s) => s.userId === userId);
       const temp = state.tempData[userId];
-      return temp && (
-        temp.item !== (original?.item || '') ||
-        temp.comment !== (original?.comment || '')
+      return (
+        temp &&
+        (temp.item !== (original?.item || '') ||
+          temp.comment !== (original?.comment || ''))
       );
     });
   };
 
   const handleSave = () => {
-    const updatedSelections = participants.map(participant => {
-      const tempData = state.tempData[participant.id];
-      const originalSelection = roundData.selections.find(s => s.userId === participant.id);
-      
-      if (tempData) {
-        return {
-          userId: participant.id,
-          userName: participant.name,
-          item: tempData.item,
-          comment: tempData.comment,
-        };
-      }
-      
-      return originalSelection || {
-        userId: participant.id,
-        userName: participant.name,
-        item: '',
-        comment: '',
-      };
-    }).filter(selection => selection.item.trim() !== '');
+    const updatedSelections = participants
+      .map((participant) => {
+        const tempData = state.tempData[participant.id];
+        const originalSelection = roundData.selections.find(
+          (s) => s.userId === participant.id,
+        );
+
+        if (tempData) {
+          return {
+            userId: participant.id,
+            userName: participant.name,
+            item: tempData.item,
+            comment: tempData.comment,
+          };
+        }
+
+        return (
+          originalSelection || {
+            userId: participant.id,
+            userName: participant.name,
+            item: '',
+            comment: '',
+          }
+        );
+      })
+      .filter((selection) => selection.item.trim() !== '');
 
     onSaveSelections(roundData.roundNumber, updatedSelections);
     setState({ editMode: {}, tempData: {} });
@@ -139,11 +154,15 @@ export const RoundDetailModal = ({
   return (
     <ResponsiveModal
       isOpen={isOpen}
-      onClose={hasChanges() ? () => {
-        if (confirm('未保存の変更があります。閉じますか？')) {
-          handleCancel();
-        }
-      } : handleCancel}
+      onClose={
+        hasChanges()
+          ? () => {
+              if (confirm('未保存の変更があります。閉じますか？')) {
+                handleCancel();
+              }
+            }
+          : handleCancel
+      }
       title={`ラウンド ${roundData.roundNumber}: ${roundData.topic}`}
       actions={{
         cancel: {
@@ -152,18 +171,20 @@ export const RoundDetailModal = ({
         },
         submit: {
           text: '保存',
-          colorPalette: 'blue',
+          colorPalette: 'green',
           disabled: !hasChanges(),
           onClick: handleSave,
         },
       }}
     >
       <VStack gap={4} align="stretch" w="full">
-        {participants.map(participant => {
-          const selection = roundData.selections.find(s => s.userId === participant.id);
+        {participants.map((participant) => {
+          const selection = roundData.selections.find(
+            (s) => s.userId === participant.id,
+          );
           const isEditing = state.editMode[participant.id];
           const tempData = state.tempData[participant.id];
-          
+
           return (
             <Box
               key={participant.id}
@@ -188,14 +209,18 @@ export const RoundDetailModal = ({
                     borderRadius="md"
                     objectFit="cover"
                   />
-                  <Text fontWeight="bold" color="gray.800" _dark={{ color: 'gray.200' }}>
+                  <Text
+                    fontWeight="bold"
+                    color="gray.800"
+                    _dark={{ color: 'gray.200' }}
+                  >
                     {participant.name}
                   </Text>
                 </HStack>
                 <Button
                   size="sm"
                   variant="outline"
-                  colorPalette={isEditing ? 'red' : 'blue'}
+                  colorPalette={isEditing ? 'red' : 'green'}
                   onClick={() => toggleEditMode(participant.id)}
                 >
                   {isEditing ? 'キャンセル' : '編集'}
@@ -205,45 +230,76 @@ export const RoundDetailModal = ({
               {/* 選択表示・編集 */}
               <VStack gap={3} align="stretch">
                 <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={1} color="gray.600" _dark={{ color: 'gray.400' }}>
-                    選択
-                  </Text>
+                  {isEditing && (
+                    <Text
+                      fontSize="sm"
+                      fontWeight="medium"
+                      mb={1}
+                      color="gray.600"
+                      _dark={{ color: 'gray.400' }}
+                    >
+                      選択
+                    </Text>
+                  )}
+
                   {isEditing ? (
                     <Input
                       value={tempData?.item || ''}
-                      onChange={(e) => updateTempData(participant.id, 'item', e.target.value)}
+                      onChange={(e) =>
+                        updateTempData(participant.id, 'item', e.target.value)
+                      }
                       placeholder="選択を入力..."
                       size="sm"
                       borderWidth={2}
                       borderColor="gray.300"
                       _focus={{
-                        borderColor: 'blue.500',
-                        boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)',
+                        borderColor: 'green.500',
+                        boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
                       }}
                       _dark={{
                         borderColor: 'gray.600',
                         bg: 'gray.700',
                         _focus: {
-                          borderColor: 'blue.400',
-                          boxShadow: '0 0 0 1px var(--chakra-colors-blue-400)',
+                          borderColor: 'green.400',
+                          boxShadow: '0 0 0 1px var(--chakra-colors-green-400)',
                         },
                       }}
                     />
                   ) : (
-                    <Text fontSize="lg" fontWeight="bold" color="gray.800" _dark={{ color: 'gray.200' }}>
+                    <Text
+                      fontSize="lg"
+                      fontWeight="bold"
+                      color="gray.800"
+                      _dark={{ color: 'gray.200' }}
+                    >
                       {selection?.item || '未選択'}
                     </Text>
                   )}
                 </Box>
 
                 <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={1} color="purple.600" _dark={{ color: 'purple.300' }}>
-                    💬 コメント
-                  </Text>
+                  {isEditing && (
+                    <Text
+                      fontSize="sm"
+                      fontWeight="medium"
+                      mb={1}
+                      color="green.600"
+                      _dark={{ color: 'green.300' }}
+                    >
+                      コメント
+                    </Text>
+                  )}
+
                   {isEditing ? (
                     <Textarea
                       value={tempData?.comment || ''}
-                      onChange={(e) => updateTempData(participant.id, 'comment', e.target.value)}
+                      onChange={(e) =>
+                        updateTempData(
+                          participant.id,
+                          'comment',
+                          e.target.value,
+                        )
+                      }
                       placeholder="コメントを入力..."
                       rows={2}
                       resize="none"
@@ -251,26 +307,26 @@ export const RoundDetailModal = ({
                       borderWidth={2}
                       borderColor="gray.300"
                       _focus={{
-                        borderColor: 'purple.500',
-                        boxShadow: '0 0 0 1px var(--chakra-colors-purple-500)',
+                        borderColor: 'green.500',
+                        boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
                       }}
                       _dark={{
                         borderColor: 'gray.600',
                         bg: 'gray.700',
                         _focus: {
-                          borderColor: 'purple.400',
-                          boxShadow: '0 0 0 1px var(--chakra-colors-purple-400)',
+                          borderColor: 'green.400',
+                          boxShadow: '0 0 0 1px var(--chakra-colors-green-400)',
                         },
                       }}
                     />
                   ) : (
-                    <Text 
-                      fontSize="sm" 
-                      color="purple.600" 
+                    <Text
+                      fontSize="sm"
+                      color="green.600"
                       fontStyle={selection?.comment ? 'italic' : 'normal'}
-                      _dark={{ color: 'purple.300' }}
+                      _dark={{ color: 'green.300' }}
                     >
-                      {selection?.comment || 'コメントなし'}
+                      {selection?.comment || '（コメントなし）'}
                     </Text>
                   )}
                 </Box>

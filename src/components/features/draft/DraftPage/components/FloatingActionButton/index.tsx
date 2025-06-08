@@ -19,8 +19,8 @@ export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => 
       fontSize="sm"
       fontWeight="bold"
       variant="solid"
-      colorPalette="blue"
-      boxShadow="0 8px 25px -8px rgba(59, 130, 246, 0.5)"
+      colorPalette="green"
+      boxShadow="0 8px 25px -8px rgba(34, 197, 94, 0.5)"
       zIndex={1000}
       display={{ base: 'flex', lg: 'none' }}
       right={{ base: 4, md: 6 }}
@@ -28,15 +28,15 @@ export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => 
       transition="all 0.2s ease"
       _hover={{
         transform: 'translateY(-2px)',
-        boxShadow: '0 12px 35px -8px rgba(59, 130, 246, 0.6)',
+        boxShadow: '0 12px 35px -8px rgba(34, 197, 94, 0.6)',
       }}
       _active={{
         transform: 'translateY(0)',
       }}
       _dark={{
-        boxShadow: '0 8px 25px -8px rgba(96, 165, 250, 0.4)',
+        boxShadow: '0 8px 25px -8px rgba(34, 197, 94, 0.4)',
         _hover: {
-          boxShadow: '0 12px 35px -8px rgba(96, 165, 250, 0.5)',
+          boxShadow: '0 12px 35px -8px rgba(34, 197, 94, 0.5)',
         },
       }}
     >

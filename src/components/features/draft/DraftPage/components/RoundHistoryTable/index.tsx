@@ -62,16 +62,16 @@ export const RoundHistoryTable = ({
     <Box
       p={{ base: 4, md: 5, lg: 6 }}
       borderRadius="xl"
-      bgGradient="linear(135deg, purple.50, pink.50)"
+      bgGradient="linear(135deg, green.50, teal.50)"
       border="2px solid"
-      borderColor="purple.300"
-      boxShadow="0 10px 30px -10px rgba(128, 90, 213, 0.25)"
+      borderColor="green.300"
+      boxShadow="0 10px 30px -10px rgba(34, 197, 94, 0.25)"
       position="relative"
       overflow="hidden"
       _dark={{
-        bgGradient: 'linear(135deg, purple.900/40, pink.900/40)',
-        borderColor: 'purple.600',
-        boxShadow: '0 0 30px rgba(168, 85, 247, 0.3), 0 0 60px rgba(168, 85, 247, 0.1)',
+        bgGradient: 'linear(135deg, green.900/40, teal.900/40)',
+        borderColor: 'green.600',
+        boxShadow: '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
       }}
       _before={{
         content: '""',
@@ -80,9 +80,9 @@ export const RoundHistoryTable = ({
         left: 0,
         right: 0,
         height: '3px',
-        bgGradient: 'linear(to-r, purple.400, pink.400, purple.400)',
+        bgGradient: 'linear(to-r, green.400, teal.400, green.400)',
         _dark: {
-          bgGradient: 'linear(to-r, purple.300, pink.300, purple.300)',
+          bgGradient: 'linear(to-r, green.300, teal.300, green.300)',
         },
       }}
     >
@@ -91,8 +91,8 @@ export const RoundHistoryTable = ({
         <Text 
           fontSize={{ base: 'lg', md: 'xl' }} 
           fontWeight="bold" 
-          color="purple.700" 
-          _dark={{ color: 'purple.200' }}
+          color="green.700" 
+          _dark={{ color: 'green.200' }}
         >
           📊 ラウンド ({pastRounds.length})
         </Text>
@@ -115,18 +115,18 @@ export const RoundHistoryTable = ({
           bg="white"
           borderRadius="lg"
           border="2px dashed"
-          borderColor="purple.300"
+          borderColor="green.300"
           opacity={0.8}
           _dark={{
             bg: 'gray.800',
-            borderColor: 'purple.600',
+            borderColor: 'green.600',
             opacity: 0.9,
           }}
         >
-          <Text fontSize="md" color="purple.500" fontWeight="medium" _dark={{ color: 'purple.300' }}>
+          <Text fontSize="md" color="green.500" fontWeight="medium" _dark={{ color: 'green.300' }}>
             📝 ラウンドがまだ開始されていません
           </Text>
-          <Text fontSize="sm" color="purple.400" mt={2} _dark={{ color: 'purple.400' }}>
+          <Text fontSize="sm" color="green.400" mt={2} _dark={{ color: 'green.400' }}>
             ラウンドが開始されると、各ラウンドの情報が表示されます
           </Text>
         </Box>

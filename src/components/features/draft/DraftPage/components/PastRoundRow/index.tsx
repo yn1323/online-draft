@@ -33,12 +33,12 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
       <Box
         bg="white"
         border="1px solid"
-        borderColor="purple.200"
+        borderColor="green.200"
         borderRadius="lg"
         transition="all 0.2s ease"
         _dark={{
           bg: 'gray.800/80',
-          borderColor: 'purple.700',
+          borderColor: 'green.600',
         }}
       >
         {/* ヘッダー部分（常時表示 + アクションボタン） */}
@@ -54,8 +54,8 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
             cursor="pointer"
             onClick={onToggleExpand}
             _hover={{ 
-              bg: 'purple.50',
-              _dark: { bg: 'purple.900/40' }
+              bg: 'green.50',
+              _dark: { bg: 'green.900/40' }
             }}
             borderRadius="md"
             p={2}
@@ -63,13 +63,13 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
           >
             <Text
               fontWeight="bold"
-              color="purple.800"
+              color="green.800"
               fontSize="lg"
-              _dark={{ color: 'purple.200' }}
+              _dark={{ color: 'green.200' }}
             >
               ラウンド {round.roundNumber}
             </Text>
-            <Text fontSize="sm" color="purple.600" _dark={{ color: 'purple.400' }}>
+            <Text fontSize="sm" color="green.600" _dark={{ color: 'green.400' }}>
               📊 {round.selections.length}人参加
             </Text>
           </HStack>
@@ -81,7 +81,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
               aria-label="ラウンド詳細を見る"
               size="sm"
               variant="ghost"
-              colorPalette="blue"
+              colorPalette="green"
               onClick={(e) => {
                 e.stopPropagation();
                 onRoundClick(round.roundNumber);
@@ -96,7 +96,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
                 aria-label={isExpanded ? '詳細を閉じる' : '詳細を見る'}
                 size="sm"
                 variant="ghost"
-                colorPalette="purple"
+                colorPalette="green"
                 onClick={(e) => {
                   e.stopPropagation();
                   onToggleExpand();
@@ -114,7 +114,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
         <Collapsible.Root open={isExpanded}>
           <Collapsible.Content>
           <Box px={4} pb={4}>
-            <Box h="1px" bg="purple.100" mb={3} _dark={{ bg: 'purple.800' }} />
+            <Box h="1px" bg="green.100" mb={3} _dark={{ bg: 'green.800' }} />
             
             {/* 参加者の選択一覧 */}
             <VStack gap={3} align="stretch">
@@ -128,9 +128,9 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
                     justify="space-between"
                     align="center"
                     p={2}
-                    bg="purple.25"
+                    bg="green.25"
                     borderRadius="md"
-                    _dark={{ bg: 'purple.900/20' }}
+                    _dark={{ bg: 'green.900/20' }}
                   >
                     <HStack gap={2} flex={1} alignItems="center">
                       <Text fontSize="lg">{participant.avatar}</Text>
@@ -161,12 +161,12 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
                           {selection.comment && (
                             <Text
                               fontSize="xs"
-                              color="purple.600"
+                              color="green.600"
                               fontStyle="italic"
-                              _dark={{ color: 'purple.300' }}
+                              _dark={{ color: 'green.300' }}
                               lineHeight="1.2"
                             >
-                              💬 {selection.comment}
+                              {selection.comment}
                             </Text>
                           )}
                         </VStack>
@@ -200,24 +200,24 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
       p={3}
       bg="white"
       border="1px solid"
-      borderColor="purple.200"
+      borderColor="green.200"
       borderRadius="lg"
       transition="all 0.2s ease"
       cursor="pointer"
       onClick={() => onRoundClick(round.roundNumber)}
       _hover={{ 
-        bg: 'purple.50',
-        borderColor: 'purple.300',
+        bg: 'green.50',
+        borderColor: 'green.300',
         transform: 'translateY(-1px)',
-        boxShadow: '0 4px 12px -4px rgba(128, 90, 213, 0.15)'
+        boxShadow: '0 4px 12px -4px rgba(34, 197, 94, 0.15)'
       }}
       _dark={{
         bg: 'gray.800/80',
-        borderColor: 'purple.700',
+        borderColor: 'green.700',
         _hover: {
-          bg: 'purple.900/40',
-          borderColor: 'purple.600',
-          boxShadow: '0 4px 12px -4px rgba(168, 85, 247, 0.25)',
+          bg: 'green.900/40',
+          borderColor: 'green.600',
+          boxShadow: '0 4px 12px -4px rgba(34, 197, 94, 0.25)',
         },
       }}
       alignItems="center"
@@ -225,9 +225,9 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
       <Flex align="center" justify="center" h="full">
         <Text
           fontWeight="bold"
-          color="purple.800"
+          color="green.800"
           fontSize="lg"
-          _dark={{ color: 'purple.200' }}
+          _dark={{ color: 'green.200' }}
         >
           {round.roundNumber}
         </Text>
@@ -265,16 +265,15 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
                   <Tooltip content={selection.comment} disabled={selection.comment.length <= 8}>
                     <Text
                       fontSize="xs"
-                      color="purple.600"
+                      color="green.600"
                       fontStyle="italic"
                       lineHeight="1.2"
-                      _dark={{ color: 'purple.300' }}
+                      _dark={{ color: 'green.300' }}
                       overflow="hidden"
                       textOverflow="ellipsis"
                       whiteSpace="nowrap"
                       cursor="help"
                     >
-                      💬{' '}
                       {selection.comment.length > 8
                         ? `${selection.comment.slice(0, 8)}...`
                         : selection.comment}

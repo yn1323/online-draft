@@ -1,4 +1,4 @@
-import { Grid, Flex, Text, Box, HStack, VStack, useBreakpointValue } from '@chakra-ui/react';
+import { Grid, Flex, Text, Box, HStack, useBreakpointValue } from '@chakra-ui/react';
 import { ParticipantCell } from '../ParticipantCell';
 
 interface CurrentRoundRowProps {
@@ -19,15 +19,15 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
     return (
       <Box
         p={4}
-        bgGradient="linear(to-r, blue.100, cyan.100)"
+        bgGradient="linear(to-r, green.100, green.200)"
         border="2px solid"
-        borderColor="blue.400"
+        borderColor="green.500"
         borderRadius="lg"
-        boxShadow="0 4px 20px -5px rgba(59, 130, 246, 0.35)"
+        boxShadow="0 4px 20px -5px rgba(34, 197, 94, 0.25)"
         _dark={{
-          bgGradient: 'linear(to-r, blue.800/50, cyan.800/50)',
-          borderColor: 'blue.500',
-          boxShadow: '0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2)',
+          bgGradient: 'linear(to-r, green.800/40, green.900/40)',
+          borderColor: 'green.600',
+          boxShadow: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)',
         }}
         position="relative"
         _after={{
@@ -36,7 +36,7 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
           inset: '-2px',
           borderRadius: 'lg',
           padding: '2px',
-          background: 'linear-gradient(45deg, blue.400, cyan.400, blue.400)',
+          background: 'linear-gradient(45deg, green.500, green.600, green.500)',
           WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
@@ -44,16 +44,16 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
         }}
       >
         {/* ラウンド番号ヘッダー */}
-        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor="blue.200" _dark={{ borderColor: 'blue.600' }}>
+        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor="green.300" _dark={{ borderColor: 'green.700' }}>
           <Text
             fontWeight="bold"
-            color="blue.800"
+            color="green.700"
             fontSize="lg"
-            _dark={{ color: 'blue.200' }}
+            _dark={{ color: 'green.300' }}
           >
             現在のラウンド {roundNumber}
           </Text>
-          <Text fontSize="sm" color="blue.600" _dark={{ color: 'blue.400' }}>
+          <Text fontSize="sm" color="green.600" _dark={{ color: 'green.500' }}>
             ⚡ 進行中
           </Text>
         </HStack>
@@ -74,16 +74,16 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
       templateColumns={`60px repeat(${participants.length}, 1fr)`}
       gap={3}
       p={3}
-      bgGradient="linear(to-r, blue.100, cyan.100)"
+      bgGradient="linear(to-r, green.100, emerald.100)"
       border="2px solid"
-      borderColor="blue.400"
+      borderColor="green.400"
       borderRadius="lg"
       alignItems="center"
-      boxShadow="0 4px 20px -5px rgba(59, 130, 246, 0.35)"
+      boxShadow="0 4px 20px -5px rgba(34, 197, 94, 0.35)"
       _dark={{
-        bgGradient: 'linear(to-r, blue.800/50, cyan.800/50)',
-        borderColor: 'blue.500',
-        boxShadow: '0 0 20px rgba(59, 130, 246, 0.5), 0 0 40px rgba(59, 130, 246, 0.2)',
+        bgGradient: 'linear(to-r, green.800/50, emerald.800/50)',
+        borderColor: 'green.500',
+        boxShadow: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)',
       }}
       position="relative"
       _after={{
@@ -92,7 +92,7 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
         inset: '-2px',
         borderRadius: 'lg',
         padding: '2px',
-        background: 'linear-gradient(45deg, blue.400, cyan.400, blue.400)',
+        background: 'linear-gradient(45deg, green.500, green.600, green.500)',
         WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
         WebkitMaskComposite: 'xor',
         maskComposite: 'exclude',
@@ -100,7 +100,7 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
       }}
     >
       <Flex align="center" justify="center" h="full">
-        <Text fontWeight="bold" color="blue.800" fontSize="lg" _dark={{ color: 'blue.200' }}>
+        <Text fontWeight="bold" color="green.700" fontSize="lg" _dark={{ color: 'green.300' }}>
           {roundNumber}
         </Text>
       </Flex>

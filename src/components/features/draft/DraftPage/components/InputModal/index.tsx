@@ -35,7 +35,7 @@ export const InputModal = ({
         },
         submit: {
           text: '決定',
-          colorPalette: 'blue',
+          colorPalette: 'green',
           disabled: !selection.trim(),
           onClick: onSubmit,
         },
@@ -52,14 +52,14 @@ export const InputModal = ({
           placeholder="例: 鬼滅の刃"
           borderWidth={2}
           _focus={{
-            borderColor: 'blue.500',
-            boxShadow: '0 0 0 1px var(--chakra-colors-blue-500)',
+            borderColor: 'green.500',
+            boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
           }}
         />
       </Box>
       <Box w="full">
-        <Text fontSize="sm" fontWeight="medium" mb={2} color="purple.700">
-          💬 ひとこと（任意）
+        <Text fontSize="sm" fontWeight="medium" mb={2} color="green.700">
+          ひとこと（任意）
         </Text>
         <Textarea
           value={comment}
@@ -70,8 +70,8 @@ export const InputModal = ({
           resize="none"
           borderWidth={2}
           _focus={{
-            borderColor: 'purple.500',
-            boxShadow: '0 0 0 1px var(--chakra-colors-purple-500)',
+            borderColor: 'green.500',
+            boxShadow: '0 0 0 1px var(--chakra-colors-green-500)',
           }}
         />
         <Text fontSize="xs" color="gray.500" mt={1} textAlign="right">

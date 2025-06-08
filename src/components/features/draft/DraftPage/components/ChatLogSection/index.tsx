@@ -16,10 +16,10 @@ export const ChatLogSection = ({
     <Box
       p={{ base: 4, md: 5, lg: 6 }}
       borderRadius="xl"
-      bgGradient="linear(135deg, blue.50, cyan.50)"
+      bgGradient="linear(135deg, green.50, green.100)"
       border="2px solid"
-      borderColor="blue.300"
-      boxShadow="0 10px 30px -10px rgba(59, 130, 246, 0.25)"
+      borderColor="green.300"
+      boxShadow="0 10px 30px -10px rgba(34, 197, 94, 0.25)"
       h={{ 
         base: 'calc(100vh - 140px)', 
         md: 'calc(100vh - 150px)',
@@ -31,9 +31,9 @@ export const ChatLogSection = ({
       position="relative"
       overflow="hidden"
       _dark={{
-        bgGradient: 'linear(135deg, blue.900/40, cyan.900/40)',
-        borderColor: 'blue.600',
-        boxShadow: '0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.1)',
+        bgGradient: 'linear(135deg, green.900/40, green.800/40)',
+        borderColor: 'green.600',
+        boxShadow: '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
       }}
       _before={{
         content: '""',
@@ -42,9 +42,9 @@ export const ChatLogSection = ({
         left: 0,
         right: 0,
         height: '3px',
-        bgGradient: 'linear(to-r, blue.400, cyan.400, blue.400)',
+        bgGradient: 'linear(to-r, green.400, green.500, green.400)',
         _dark: {
-          bgGradient: 'linear(to-r, blue.300, cyan.300, blue.300)',
+          bgGradient: 'linear(to-r, green.300, green.400, green.300)',
         },
       }}
     >
@@ -52,9 +52,9 @@ export const ChatLogSection = ({
         fontSize={{ base: 'lg', md: 'xl' }}
         fontWeight="bold"
         mb={{ base: 4, md: 5, lg: 6 }}
-        color="blue.700"
+        color="green.700"
         flexShrink={0}
-        _dark={{ color: 'blue.200' }}
+        _dark={{ color: 'green.300' }}
       >
         💬 ログ・コメント
       </Text>
