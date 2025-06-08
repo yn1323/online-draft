@@ -20,6 +20,7 @@ export const Default: Story = {
     participants: mockParticipants,
     pastRounds: mockPastRounds,
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
   },
 };
@@ -30,6 +31,7 @@ export const Empty: Story = {
     participants: mockParticipants,
     pastRounds: [],
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
   },
 };

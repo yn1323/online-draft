@@ -1,6 +1,6 @@
 'use client';
 
-import { RoundDetailModal } from '../RoundDetailModal';
+import { UserRoundDetailModal } from '../UserRoundDetailModal';
 import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
@@ -54,7 +54,6 @@ export const DraftPage = ({
   onSubmitSelection: propOnSubmitSelection,
   pastRounds: propPastRounds,
   currentRoundTopic: propCurrentRoundTopic,
-  onUpdateSelections: propOnUpdateSelections,
 }: DraftPageProps = {}) => {
   // useParamsでルートパラメータを取得
   const params = useParams();
@@ -65,12 +64,14 @@ export const DraftPage = ({
   const [selection, setSelection] = useState('');
   const [comment, setComment] = useState('');
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
-  const [roundDetailModal, setRoundDetailModal] = useState<{
+  const [userRoundDetailModal, setUserRoundDetailModal] = useState<{
     isOpen: boolean;
     selectedRound: number | null;
+    selectedUserId: string | null;
   }>({
     isOpen: false,
     selectedRound: null,
+    selectedUserId: null,
   });
 
   // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
@@ -89,16 +90,6 @@ export const DraftPage = ({
     // 実際の実装では、ここでFirestoreに保存
   });
 
-  const handleUpdateSelections = propOnUpdateSelections ?? ((roundNumber: number, selections: {
-    userId: string;
-    userName: string;
-    item: string;
-    comment?: string;
-  }[]) => {
-    console.log('ラウンド', roundNumber, 'の選択を更新:', selections);
-    // 実際の実装では、ここでFirestoreに保存
-    // 今回はコンソールログのみ
-  });
 
   const handleSubmit = () => {
     if (selection.trim()) {
@@ -108,26 +99,35 @@ export const DraftPage = ({
   };
 
   const handleRoundClick = (roundNumber: number) => {
-    setRoundDetailModal({
+    // 従来のラウンド全体クリック（必要に応じて削除可能）
+    console.log('ラウンド全体クリック:', roundNumber);
+  };
+
+  const handleUserClick = (roundNumber: number, userId: string) => {
+    setUserRoundDetailModal({
       isOpen: true,
       selectedRound: roundNumber,
+      selectedUserId: userId,
     });
   };
 
-  const handleCloseRoundDetail = () => {
-    setRoundDetailModal({
+  const handleCloseUserRoundDetail = () => {
+    setUserRoundDetailModal({
       isOpen: false,
       selectedRound: null,
+      selectedUserId: null,
     });
   };
 
-  const handleSaveSelections = (roundNumber: number, selections: {
+  const handleSaveUserSelection = (roundNumber: number, selection: {
     userId: string;
     userName: string;
     item: string;
     comment?: string;
-  }[]) => {
-    handleUpdateSelections(roundNumber, selections);
+  }) => {
+    console.log('ユーザー選択保存:', { roundNumber, selection });
+    // 実際の実装では、ここでFirestoreに保存
+    // 今回はコンソールログのみ
   };
 
   const handleOpenInputModal = () => {
@@ -176,6 +176,7 @@ export const DraftPage = ({
           participants={participants}
           pastRounds={pastRounds}
           onRoundClick={handleRoundClick}
+          onUserClick={handleUserClick}
           onOpenInputModal={handleOpenInputModal}
         />
       </VStack>
@@ -194,6 +195,7 @@ export const DraftPage = ({
             participants={participants}
             pastRounds={pastRounds}
             onRoundClick={handleRoundClick}
+            onUserClick={handleUserClick}
             onOpenInputModal={handleOpenInputModal}
           />
         </GridItem>
@@ -217,14 +219,19 @@ export const DraftPage = ({
         onSubmit={handleSubmit}
       />
 
-      {/* Round Detail Modal */}
-      <RoundDetailModal
-        isOpen={roundDetailModal.isOpen}
-        onClose={handleCloseRoundDetail}
-        roundData={roundDetailModal.selectedRound ? pastRounds.find(r => r.roundNumber === roundDetailModal.selectedRound) || null : null}
-        participants={participants}
-        onSaveSelections={handleSaveSelections}
-      />
+      {/* User Round Detail Modal */}
+      {userRoundDetailModal.selectedRound && userRoundDetailModal.selectedUserId && (
+        <UserRoundDetailModal
+          isOpen={userRoundDetailModal.isOpen}
+          onClose={handleCloseUserRoundDetail}
+          roundNumber={userRoundDetailModal.selectedRound}
+          participant={participants.find(p => p.id === userRoundDetailModal.selectedUserId) || participants[0]}
+          initialSelection={pastRounds
+            .find(r => r.roundNumber === userRoundDetailModal.selectedRound)
+            ?.selections.find(s => s.userId === userRoundDetailModal.selectedUserId)}
+          onSaveSelection={handleSaveUserSelection}
+        />
+      )}
 
     </Container>
   );

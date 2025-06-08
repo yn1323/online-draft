@@ -23,6 +23,7 @@ interface RoundHistoryTableProps {
     }[];
   }[];
   onRoundClick: (roundNumber: number) => void;
+  onUserClick: (roundNumber: number, userId: string) => void;
   onOpenInputModal: () => void;
 }
 
@@ -31,6 +32,7 @@ export const RoundHistoryTable = ({
   participants, 
   pastRounds, 
   onRoundClick,
+  onUserClick,
   onOpenInputModal
 }: RoundHistoryTableProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -142,6 +144,7 @@ export const RoundHistoryTable = ({
               round={round}
               participants={participants}
               onRoundClick={onRoundClick}
+              onUserClick={onUserClick}
               isExpanded={isMobile ? expandedRounds.has(round.roundNumber) : true}
               onToggleExpand={isMobile ? () => toggleRound(round.roundNumber) : undefined}
             />

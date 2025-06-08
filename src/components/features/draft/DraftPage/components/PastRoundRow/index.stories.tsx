@@ -30,6 +30,7 @@ export const Default: Story = {
     round: sampleRound,
     participants: mockParticipants,
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
   },
 };
 
@@ -51,6 +52,7 @@ export const LongHorseNames: Story = {
     round: horseRaceRound,
     participants: mockParticipants,
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
   },
 };
 
@@ -80,6 +82,7 @@ export const SixParticipantsLongNames: Story = {
     round: sixParticipantsRound,
     participants: sixParticipants,
     onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
   },
 };
 
@@ -90,6 +93,7 @@ export const CollapsedState: Story = {
     round: horseRaceRound,
     participants: mockParticipants,
     onRoundClick: (roundNumber: number) => console.log('詳細モーダル開く:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
     isExpanded: false,
     onToggleExpand: () => console.log('折りたたみトグル'),
   },
@@ -106,6 +110,7 @@ export const ExpandedState: Story = {
     round: horseRaceRound,
     participants: mockParticipants,
     onRoundClick: (roundNumber: number) => console.log('詳細モーダル開く:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
     isExpanded: true,
     onToggleExpand: () => console.log('折りたたみトグル'),
   },

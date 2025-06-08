@@ -102,8 +102,8 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
       }}
     >
       <Flex align="center" justify="center" h="full">
-        <Text fontWeight="bold" color={theme.light.textColor} fontSize="lg" _dark={{ color: theme.dark.textColor }}>
-          {roundNumber}
+        <Text fontWeight="bold" color={theme.light.textColor} fontSize="sm" _dark={{ color: theme.dark.textColor }}>
+          Next
         </Text>
       </Flex>
       {participants.map((participant) => (

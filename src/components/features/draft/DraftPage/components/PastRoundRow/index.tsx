@@ -1,6 +1,5 @@
 import { Grid, Flex, Text, Box, VStack, HStack, useBreakpointValue, IconButton } from '@chakra-ui/react';
 import { Collapsible } from '@chakra-ui/react';
-import { Tooltip } from '../../../../../ui/tooltip';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
 
 interface PastRoundRowProps {
@@ -21,11 +20,12 @@ interface PastRoundRowProps {
     status: 'thinking' | 'entered' | 'completed';
   }[];
   onRoundClick: (roundNumber: number) => void;
+  onUserClick: (roundNumber: number, userId: string) => void;
   isExpanded?: boolean;
   onToggleExpand?: () => void;
 }
 
-export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = true, onToggleExpand }: PastRoundRowProps) => {
+export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, isExpanded = true, onToggleExpand }: PastRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const theme = COMPONENT_THEMES.pastRound;
 
@@ -129,6 +129,14 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
                     p={2}
                     bg="green.25"
                     borderRadius="md"
+                    cursor="pointer"
+                    transition="all 0.2s ease"
+                    onClick={() => onUserClick(round.roundNumber, participant.id)}
+                    _hover={{
+                      bg: 'green.100',
+                      transform: 'translateY(-1px)',
+                      _dark: { bg: 'green.800/40' }
+                    }}
                     _dark={{ bg: 'green.900/20' }}
                   >
                     <HStack gap={2} flex={1} alignItems="center">
@@ -202,22 +210,9 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
       borderColor="green.200"
       borderRadius="lg"
       transition="all 0.2s ease"
-      cursor="pointer"
-      onClick={() => onRoundClick(round.roundNumber)}
-      _hover={{ 
-        bg: 'green.50',
-        borderColor: 'green.300',
-        transform: 'translateY(-1px)',
-        boxShadow: '0 4px 12px -4px rgba(34, 197, 94, 0.15)'
-      }}
       _dark={{
         bg: 'gray.800/80',
         borderColor: 'green.700',
-        _hover: {
-          bg: 'green.900/40',
-          borderColor: 'green.600',
-          boxShadow: '0 4px 12px -4px rgba(34, 197, 94, 0.25)',
-        },
       }}
       alignItems="center"
     >
@@ -240,55 +235,66 @@ export const PastRoundRow = ({ round, participants, onRoundClick, isExpanded = t
             key={participant.id}
             textAlign="center"
             px={1}
+            cursor="pointer"
+            borderRadius="md"
+            transition="all 0.2s ease"
+            onClick={(e) => {
+              e.stopPropagation();
+              onUserClick(round.roundNumber, participant.id);
+            }}
+            _hover={{
+              bg: 'green.50',
+              transform: 'translateY(-1px)',
+              _dark: { bg: 'green.900/40' }
+            }}
+            p={2}
+            mx={-1}
           >
             {selection ? (
-              <VStack gap={0.5}>
-                <Tooltip content={selection.item} disabled={selection.item.length <= 6}>
-                  <Text
-                    fontSize="sm"
-                    fontWeight="bold"
-                    color="gray.800"
-                    lineHeight="1.2"
-                    _dark={{ color: 'gray.200' }}
-                    overflow="hidden"
-                    textOverflow="ellipsis"
-                    whiteSpace="nowrap"
-                    cursor="help"
-                  >
-                    {selection.item.length > 6
-                      ? `${selection.item.slice(0, 6)}...`
-                      : selection.item}
-                  </Text>
-                </Tooltip>
-                {selection.comment && (
-                  <Tooltip content={selection.comment} disabled={selection.comment.length <= 8}>
-                    <Text
-                      fontSize="xs"
-                      color="green.600"
-                      fontStyle="italic"
-                      lineHeight="1.2"
-                      _dark={{ color: 'green.300' }}
-                      overflow="hidden"
-                      textOverflow="ellipsis"
-                      whiteSpace="nowrap"
-                      cursor="help"
-                    >
-                      {selection.comment.length > 8
+              <VStack gap={0.5} minH="44px" justify="center">
+                <Text
+                  fontSize="sm"
+                  fontWeight="bold"
+                  color="gray.800"
+                  lineHeight="1.2"
+                  _dark={{ color: 'gray.200' }}
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                >
+                  {selection.item.length > 6
+                    ? `${selection.item.slice(0, 6)}...`
+                    : selection.item}
+                </Text>
+                <Text
+                  fontSize="xs"
+                  color="green.600"
+                  fontStyle="italic"
+                  lineHeight="1.2"
+                  _dark={{ color: 'green.300' }}
+                  overflow="hidden"
+                  textOverflow="ellipsis"
+                  whiteSpace="nowrap"
+                  opacity={selection.comment ? 1 : 0}
+                >
+                  {selection.comment 
+                    ? (selection.comment.length > 8
                         ? `${selection.comment.slice(0, 8)}...`
-                        : selection.comment}
-                    </Text>
-                  </Tooltip>
-                )}
+                        : selection.comment)
+                    : 'placeholder'}
+                </Text>
               </VStack>
             ) : (
-              <Text
-                fontSize="sm"
-                color="gray.400"
-                fontWeight="medium"
-                _dark={{ color: 'gray.500' }}
-              >
-                未参加
-              </Text>
+              <Box minH="44px" display="flex" alignItems="center" justifyContent="center">
+                <Text
+                  fontSize="sm"
+                  color="gray.400"
+                  fontWeight="medium"
+                  _dark={{ color: 'gray.500' }}
+                >
+                  未参加
+                </Text>
+              </Box>
             )}
           </Box>
         );

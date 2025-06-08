@@ -25,6 +25,7 @@ interface TabNavigationProps {
     }[];
   }[];
   onRoundClick: (roundNumber: number) => void;
+  onUserClick: (roundNumber: number, userId: string) => void;
   onOpenInputModal: () => void;
 }
 
@@ -35,6 +36,7 @@ export const TabNavigation = ({
   participants,
   pastRounds,
   onRoundClick,
+  onUserClick,
   onOpenInputModal,
 }: TabNavigationProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('rounds');
@@ -86,6 +88,7 @@ export const TabNavigation = ({
             participants={participants}
             pastRounds={pastRounds}
             onRoundClick={onRoundClick}
+            onUserClick={onUserClick}
             onOpenInputModal={onOpenInputModal}
           />
         )}
