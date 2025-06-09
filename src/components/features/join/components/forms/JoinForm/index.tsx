@@ -7,7 +7,6 @@ import { IoEnter } from 'react-icons/io5';
 
 import { FormButton } from '@/src/components/atoms/buttons/FormButton';
 import { ThemeInput } from '@/src/components/atoms/inputs/ThemeInput';
-import { ThemeText } from '@/src/components/atoms/typography/ThemeText';
 import {
   type JoinMeetingForm,
   joinMeetingSchema,
@@ -53,7 +52,7 @@ export default function JoinForm({
         borderColor: 'blue.700',
       }}
     >
-      <VStack gap={4}>
+      <VStack gap={4} align="stretch">
         <ThemeInput
           label="参加コード"
           placeholder="ABC123 または招待リンク"
@@ -80,7 +79,7 @@ export default function JoinForm({
         >
           <HStack gap={2}>
             <IoEnter size={18} aria-hidden="true" />
-            <ThemeText>参加する</ThemeText>
+            参加する
           </HStack>
         </FormButton>
       </VStack>
