@@ -8,7 +8,7 @@ on:
       - "type-check"
       - "test"
       - "storybook-test"
-      - "e2e"
+      - "Playwright Tests"
     types:
       - completed
     # 全ブランチ監視（branches指定なし）
@@ -16,7 +16,10 @@ on:
 jobs:
   notify-ci-result:
     runs-on: ubuntu-latest
-    # すべてのブランチで通知実行（条件なし）
+    # PRまたはデフォルトブランチの場合のみ実行
+    if: >
+      github.event.workflow_run.event == 'pull_request' ||
+      github.event.workflow_run.head_branch == github.event.repository.default_branch
     
     steps:
       - name: Checkout
@@ -42,7 +45,7 @@ jobs:
               'type-check',
               'test',
               'storybook-test',
-              'e2e'
+              'Playwright Tests'
             ];
             
             console.log(`Checking workflows for commit: ${headSha}`);
