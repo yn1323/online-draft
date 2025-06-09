@@ -2,7 +2,7 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import { Text, type TextProps } from '@chakra-ui/react';
-import { forwardRef, type ComponentProps, type ElementRef } from 'react';
+import { type ComponentProps, type ElementRef, forwardRef } from 'react';
 
 export interface ThemeTextProps extends TextProps {
   variant?: 'body' | 'caption' | 'label' | 'helper' | 'error' | 'success';

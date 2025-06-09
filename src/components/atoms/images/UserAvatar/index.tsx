@@ -40,7 +40,10 @@ export const UserAvatar = forwardRef<HTMLImageElement, UserAvatarProps>(
     const [hasError, setHasError] = useState(false);
 
     // サイズプリセット
-    const sizeMap: Record<'xs' | 'sm' | 'md' | 'lg' | 'xl', AvatarSizeConfig> & { custom: Record<string, never> } = {
+    const sizeMap: Record<
+      'xs' | 'sm' | 'md' | 'lg' | 'xl',
+      AvatarSizeConfig
+    > & { custom: Record<string, never> } = {
       xs: { width: '24px', height: '24px', fontSize: 'xs' },
       sm: { width: '32px', height: '32px', fontSize: 'sm' },
       md: { width: '48px', height: '48px', fontSize: 'md' },
@@ -56,7 +59,7 @@ export const UserAvatar = forwardRef<HTMLImageElement, UserAvatarProps>(
       }
       return sizeMap[size as keyof typeof sizeMap] as AvatarSizeConfig;
     };
-    
+
     const avatarSize = getSizeConfig();
 
     // ボーダースタイル

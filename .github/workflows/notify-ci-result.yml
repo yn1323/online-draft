@@ -3,12 +3,12 @@ name: CI結果通知
 on:
   workflow_run:
     workflows:
-      - "Build"
-      - "Lint"
-      - "Type Check"
-      - "Unit Test"
-      - "Storybook Test"
-      - "E2E Test"
+      - "build"
+      - "lint"
+      - "type-check"
+      - "test"
+      - "storybook-test"
+      - "Playwright Tests"
     types:
       - completed
     # 全ブランチ監視（branches指定なし）
@@ -40,11 +40,12 @@ jobs:
             
             // 必要なワークフロー名
             const requiredWorkflows = [
-              'Build',
-              'Lint', 
-              'Type Check',
-              'Unit Test',
-              'Storybook Test'
+              'build',
+              'lint', 
+              'type-check',
+              'test',
+              'storybook-test',
+              'Playwright Tests'
             ];
             
             console.log(`Checking workflows for commit: ${headSha}`);
