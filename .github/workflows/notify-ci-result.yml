@@ -1,9 +1,15 @@
-name: CI結果通知(テスト)
+name: CI結果通知
 
 on:
   workflow_run:
     workflows:
       - "build"
+      - "e2e"
+      - "lint"
+      - "storybook-test"
+      - "type-check"
+      - "unit-test"
+      - "storybook-vrt"
     types:
       - completed
 
@@ -11,25 +17,133 @@ jobs:
   notify-ci-result:
     runs-on: ubuntu-latest
     steps:
-      - name: Simple Test
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check CI status and notify
+        id: check-ci
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const headSha = context.payload.workflow_run.head_sha;
+            const cacheKey = `ci-error-${headSha}`;
+            
+            console.log(`🔍 Checking CI for commit: ${headSha}`);
+            
+            // 該当コミットの全チェック取得
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: headSha,
+              per_page: 100
+            });
+            
+            console.log(`📋 Found ${checkRuns.check_runs.length} check runs`);
+            
+            // 自身（notify-ci-result）を除外
+            const relevantChecks = checkRuns.check_runs.filter(check => 
+              !check.name.includes('notify-ci-result')
+            );
+            
+            console.log(`📋 Relevant checks: ${relevantChecks.length}`);
+            
+            // CI状況分析
+            let hasError = false;
+            let allCompleted = true;
+            let allSuccess = true;
+            
+            for (const check of relevantChecks) {
+              console.log(`  ${check.name}: ${check.status} - ${check.conclusion}`);
+              
+              if (check.status !== 'completed') {
+                allCompleted = false;
+              } else if (check.conclusion === 'failure') {
+                hasError = true;
+                allSuccess = false;
+              } else if (check.conclusion !== 'success' && check.conclusion !== 'neutral') {
+                allSuccess = false;
+              }
+            }
+            
+            console.log(`📊 Status: completed=${allCompleted}, success=${allSuccess}, hasError=${hasError}`);
+            
+            // キャッシュから既通知チェック
+            let errorNotified = false;
+            try {
+              const cacheResponse = await github.rest.actions.getActionsCacheUsage({
+                owner,
+                repo
+              });
+              console.log('📦 Cache checked');
+            } catch (error) {
+              console.log('📦 Cache check failed, proceeding...');
+            }
+            
+            core.setOutput('head_sha', headSha);
+            core.setOutput('cache_key', cacheKey);
+            
+            // 判定ロジック
+            if (hasError && !errorNotified) {
+              console.log('❌ Error detected, will notify');
+              core.setOutput('notify_type', 'error');
+              core.setOutput('should_notify', 'true');
+            } else if (allCompleted && allSuccess) {
+              console.log('✅ All CI completed successfully, will notify');
+              core.setOutput('notify_type', 'success');
+              core.setOutput('should_notify', 'true');
+            } else {
+              console.log('⏳ CI not ready for notification');
+              core.setOutput('should_notify', 'false');
+            }
+
+      - name: Cache error notification
+        if: steps.check-ci.outputs.notify_type == 'error'
+        uses: actions/cache@v4
+        with:
+          path: /tmp/ci-error-marker
+          key: ${{ steps.check-ci.outputs.cache_key }}
+
+      - name: Create cache marker
+        if: steps.check-ci.outputs.notify_type == 'error'
         run: |
-          echo "✅ Build workflow completed!"
-          echo "Event: ${{ github.event.workflow_run.event }}"
-          echo "Head branch: ${{ github.event.workflow_run.head_branch }}"
-          echo "Conclusion: ${{ github.event.workflow_run.conclusion }}"
-          
-      - name: Test Slack notification
+          mkdir -p /tmp
+          echo "error-notified" > /tmp/ci-error-marker
+
+      - name: Setup Node.js and pnpm
+        if: steps.check-ci.outputs.should_notify == 'true'
+        uses: ./.github/actions/setup
+
+      - name: Notify error
+        if: steps.check-ci.outputs.notify_type == 'error'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          echo "Testing Slack notification..."
-          if [ "${{ github.event.workflow_run.conclusion }}" = "success" ]; then
-            MESSAGE="✅ Build succeeded! Branch: ${{ github.event.workflow_run.head_branch }}"
+          prNumber="${{ github.event.workflow_run.pull_requests[0].number }}"
+          branchName="${{ github.event.workflow_run.head_branch }}"
+          
+          if [ -n "$prNumber" ]; then
+            context="PR #$prNumber"
           else
-            MESSAGE="❌ Build failed! Branch: ${{ github.event.workflow_run.head_branch }}"
+            context="Branch: $branchName"
           fi
           
-          echo "Sending message: $MESSAGE"
-          curl -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\"$MESSAGE\"}" \
-            $SLACK_WEBHOOK_URL
+          pnpm notify:slack error "CI失敗 ❌" "$context - 1つ以上のCIが失敗しました"
+
+      - name: Notify success
+        if: steps.check-ci.outputs.notify_type == 'success'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          prNumber="${{ github.event.workflow_run.pull_requests[0].number }}"
+          branchName="${{ github.event.workflow_run.head_branch }}"
+          
+          if [ -n "$prNumber" ]; then
+            context="PR #$prNumber"
+          else
+            context="Branch: $branchName"
+          fi
+          
+          pnpm notify:slack success "CI完了 🎉" "$context - 全チェック通過！"
