@@ -21,9 +21,41 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Record setup start
+        run: echo "SETUP_START=$(date +%s)" >> $GITHUB_ENV
+        
       - name: Setup
         uses: ./.github/actions/setup
-      - name: Setup Playwright
-        uses: ./.github/actions/playwright
+        
+      - name: Measure setup time
+        run: |
+          SETUP_END=$(date +%s)
+          SETUP_TIME=$((SETUP_END - SETUP_START))
+          echo "⚡ Unit Test Setup Time: ${SETUP_TIME}s" >> $GITHUB_STEP_SUMMARY
+          
+      - name: Cache Vitest
+        uses: actions/cache@v4
+        with:
+          path: |
+            node_modules/.vitest
+            .vitest
+          key: ${{ runner.os }}-vitest-${{ hashFiles('vitest.config.mts', 'src/**/*.{test,spec}.{ts,tsx}') }}
+          restore-keys: |
+            ${{ runner.os }}-vitest-
+            
+      - name: Record test start
+        run: echo "TEST_START=$(date +%s)" >> $GITHUB_ENV
+        
       - name: Run Test
         run: pnpm vitest run --shard=${{ matrix.shard }}
+        
+      - name: Measure test time
+        run: |
+          TEST_END=$(date +%s)
+          TEST_TIME=$((TEST_END - TEST_START))
+          echo "🧪 Unit Test (shard ${{ matrix.shard }}) Time: ${TEST_TIME}s" >> $GITHUB_STEP_SUMMARY
+          if [ "$TEST_TIME" -lt 60 ]; then
+            echo "🎯 高速テスト実行: キャッシュ効果良好!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "🔄 テスト実行: 通常時間" >> $GITHUB_STEP_SUMMARY
+          fi
