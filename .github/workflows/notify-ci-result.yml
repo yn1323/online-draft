@@ -8,7 +8,7 @@ on:
       - "quick-checks"
       - "storybook-test"
       - "unit-test"
-      - "storybook-vrt"
+      - "VRT Main"
     types:
       - completed
 

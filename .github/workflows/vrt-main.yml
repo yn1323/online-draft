@@ -1,0 +1,44 @@
+name: VRT Main
+
+on:
+  pull_request:
+    types: [ opened, reopened, synchronize, edited ]
+
+jobs:
+  # Phase 1: Prepare expected (base branch) screenshots
+  prepare_expected:
+    uses: ./.github/workflows/vrt-prepare.yml
+    with:
+      branch_type: expected
+      ref: ${{ github.base_ref }}
+      artifact_prefix: expected
+    secrets: inherit
+
+  # Phase 2: Prepare actual (PR branch) screenshots  
+  prepare_actual:
+    uses: ./.github/workflows/vrt-prepare.yml
+    with:
+      branch_type: actual
+      ref: ${{ github.head_ref }}
+      artifact_prefix: actual
+    secrets: inherit
+
+  # Phase 3: Compare screenshots and generate report
+  compare_screenshots:
+    needs: [prepare_expected, prepare_actual]
+    uses: ./.github/workflows/vrt-compare.yml
+    with:
+      expected_prefix: expected
+      actual_prefix: actual
+      pr_ref: ${{ github.head_ref }}
+    secrets: inherit
+
+  # Phase 4: Deploy to GitHub Pages with PR comment
+  deploy_results:
+    needs: [prepare_actual, compare_screenshots]
+    uses: ./.github/workflows/vrt-deploy.yml
+    with:
+      branch_name: ${{ github.ref_name }}
+      storybook_artifact: actual-storybook-static
+      report_artifact: vrt-report
+    secrets: inherit
