@@ -24,25 +24,67 @@
 - IMPORTANT: 作業開始前に計画することを好む
 - IMPORTANT: モーダルは @src/components/ui/responsive-modal.tsx を利用すること
 
-## 🏗 設計思想
-- **Feature-First Atomic Design**: `src/components/features/<feature>/<Component>/`
+## 🏗 設計思想・アーキテクチャパターン
+
+### **Layered Feature Architecture（階層化機能アーキテクチャ）**
+この設計は複数の確立されたパターンを組み合わせた独自アーキテクチャです：
+
+#### **1. Feature-First Atomic Design**
+- `src/components/features/<feature>/<Component>/` 構造
+- **Atomic Design + Domain-Driven Design** の融合
+- 機能単位でのコンポーネント責任分離
+
+#### **2. Vertical Slice Architecture（垂直スライス）**
+- 機能ごとに types/constants/services/hooks を垂直分割
+- 横断的関心事（ui/, common/）と機能別関心事の適切な分離
+- **Conway's Law** を意識した組織構造との整合
+
+#### **3. Progressive Enhancement Development**
+- 動くもの→段階的改善の **Incremental Architecture**
+- **MVP → MMP** (Minimum Marketable Product) への進化戦略
+
+#### **4. Direct Import + Explicit Dependencies**
+- **Barrel Export禁止** による明示的依存関係
+- **Tree Shaking最適化** とバンドルサイズ削減
+- Import地獄回避とIDEサポート向上
+
+#### **5. Accessibility-First Testing**
+- **data-testid禁止** → role/ARIA/テキストベース
+- **Testing Trophy** パターン（E2E > Integration > Unit）
+- ユーザー視点のテスト設計
+
+### **核心設計原則**
 - **適度な粒度分割**: 巨大ファイル回避・コロケーション重視・再利用性向上
-- **Progressive Enhancement開発**: 動くもの→段階的改善
 - **リアルタイム状態同期パターン**: Jotai + Firebase onSnapshot
-- **Direct Import原則**: Barrelエクスポート禁止
 - **User-First Design**: 技術制約よりユーザー体験優先
+- **Composition over Inheritance**: React的思考での設計
 
 ## 📍 現在のタスク状況
-**Phase 6**: ChatLogSection大規模リファクタリング完了
-- ✅ **完了**: 認証システム・ディレクトリ構成・Firestore基盤
-- ✅ **完了**: Storybookテスト品質保証戦略・E2Eテスト戦略
-- ✅ **完了**: ドラフトページUI統合・ResponsiveModal対応・ユーザビリティ最適化
-- ✅ **完了**: ChatLogSectionリファクタリング・コンポーネント分割・テスト拡充
-- ⏳ **次回**: Firestore連携・リアルタイム同期・状態管理実装
+**Phase 1-3: 超大規模リファクタリング完了** 🎉
+- ✅ **Phase 1**: DraftPage機能別分割・atoms作成・UI定数統一
+- ✅ **Phase 2**: hooks機能別分割・features統一・services分離
+- ✅ **Phase 3**: 型定義機能別分割・constants統一・テスト構成最適化
+- ⏳ **次回 Phase 6**: Firestore連携・リアルタイム同期・状態管理実装
+
+### **Phase 1-3 達成成果**
+#### **Phase 1: Component Architecture**
+- **DraftPage分割**: layout/rounds/chat/actions/modals の機能別構造
+- **Atoms作成**: StatusBadge・ThemeCard・AnimatedButton（共通コンポーネント）
+- **UI Constants**: colors/animations/breakpoints の統一定数化
+
+#### **Phase 2: System Architecture** 
+- **Hooks分割**: draft/lobby 配下での機能別フック配置
+- **Features統一**: forms/inputs/cards の標準化
+- **Services分離**: draft/auth/realtime のビジネスロジック分離
+
+#### **Phase 3: Foundation Architecture**
+- **Type System**: common/firestore/draft/auth/ui の型安全性確立
+- **Constants System**: マジックナンバー撲滅・機能別定数管理
+- **Test System**: アクセシビリティベーステスト・カバレッジ設定
 
 ### 次回セッション開始時のTODO
 1. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
-2. **状態管理強化**: 参加者ステータス・選択データの管理
+2. **状態管理強化**: 参加者ステータス・選択データの管理  
 3. **チャット機能実装**: LogItem・MessageInput活用した機能実装
 
 ## 🎭 Claude Code設定
@@ -81,10 +123,12 @@ pnpm notify type-check               # 型チェック完了
 pnpm notify all                      # 全チェック完了🎉
 ```
 
-### 重要パス
-- **ドラフト**: `src/components/features/draft/DraftPage/` (UI完成)
-- **チャットログ**: `src/components/features/draft/DraftPage/components/ChatLogSection/` (リファクタ完了)
-- **認証**: `src/hooks/auth/useAuth.ts`
+### 重要パス（更新）
+- **ドラフト**: `src/components/features/draft/DraftPage/` (機能別分割完了)
+- **Atoms**: `src/components/atoms/` (StatusBadge/ThemeCard/AnimatedButton)  
+- **Types**: `src/types/` (機能別型定義システム完備)
+- **Constants**: `src/constants/` (ui/app/api/validation 統一)
+- **Services**: `src/services/` (draft/auth/realtime 分離済み)
 - **UI共通**: `src/components/ui/responsive-modal.tsx`
 
 ## 🎮 プロジェクト基本情報
@@ -102,11 +146,14 @@ pnpm notify all                      # 全チェック完了🎉
 - **User-First Design**: 技術制約よりユーザー体験を最優先
 - **レスポンシブ最適化**: ResponsiveModalでデバイス別最適表示
 
-### 技術構成・実装状況
+### 技術構成・実装状況（更新）
 - ✅ **UI**: Next.js 15 + Chakra UI v3 + ResponsiveModal完成
-- ✅ **ページ**: TOP・参加・ロビー・ドラフトUI完成
-- ✅ **コンポーネント**: 適度な粒度分割・再利用性向上・32スイート67テスト完了
-- ✅ **テスト**: Storybook・E2Eテスト基盤
+- ✅ **Architecture**: Layered Feature Architecture確立
+- ✅ **Components**: 機能別分割・Atoms抽出・再利用性向上
+- ✅ **Type System**: 機能別型定義（common/firestore/draft/auth/ui）
+- ✅ **Constants**: マジックナンバー撲滅・統一定数管理
+- ✅ **Services**: ビジネスロジック分離（draft/auth/realtime）
+- ✅ **Testing**: アクセシビリティベース・カバレッジ設定・Storybook38個
 - ⏳ **次回**: Firestore連携・リアルタイム同期実装
 
 ## 📚 詳細ドキュメント
@@ -119,4 +166,4 @@ pnpm notify all                      # 全チェック完了🎉
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/1/8 - ChatLogSection大規模リファクタリング・コンポーネント分割・テスト拡充完了
+**最終更新**: 2025/1/9 - Phase 1-3 超大規模リファクタリング完了・Layered Feature Architecture確立

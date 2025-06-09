@@ -28,7 +28,7 @@ import { useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
 import UserSelectStep from '../UserSelectStep';
-import StepIndicator, { type Step } from '../components/StepIndicator';
+import StepIndicator, { type Step } from '../components/indicators/StepIndicator';
 
 interface LobbyPageProps {
   groupId: string;

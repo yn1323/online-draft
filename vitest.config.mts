@@ -23,6 +23,7 @@ const sharedConfig = defineConfig({
   resolve: resolveAlias,
 });
 
+// Storybookテスト統合は相性が悪いため無効化
 // const storybookConfig = defineConfig({
 //   plugins: [
 //     storybookTest({
@@ -30,8 +31,7 @@ const sharedConfig = defineConfig({
 //     }),
 //   ],
 //   test: {
-//     // GHAでエラーになるようなら数字を変更してください
-//     testTimeout: 100000,
+//     testTimeout: 15000,
 //     globals: true,
 //     name: 'storybook',
 //     setupFiles: ['.storybook/vitest.setup.ts'],
@@ -39,16 +39,6 @@ const sharedConfig = defineConfig({
 //       enabled: true,
 //       headless: true,
 //       provider: 'playwright',
-//       instances: [
-//         {
-//           browser: 'chromium',
-//         },
-//       ],
-//     },
-//     server: {
-//       fs: {
-//         allow: ['..'],
-//       },
 //     },
 //   },
 //   resolve: resolveAlias,
@@ -59,10 +49,32 @@ const vitestConfig = defineConfig({
     globals: true,
     name: 'vitest',
     setupFiles: ['./src/configs/vitest/vitest-setup.ts'],
-    include: ['./src/**/*.test.ts'],
+    include: ['./src/**/*.{test,spec}.{ts,tsx}'], // tsx追加でコンポーネントテスト対応
+    exclude: ['./src/**/*.stories.{ts,tsx}', './src/test-utils/**/*.{ts,tsx}'], // Storybook・test-utilsは除外
     env: {
       NEXT_PUBLIC_SUPABASE_URL: 'https://example.com',
       NEXT_PUBLIC_SUPABASE_ANON_KEY: 'example',
+    },
+    // カバレッジ設定追加
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      exclude: [
+        '**/*.stories.{ts,tsx}',
+        '**/test-utils/**',
+        '**/types/**',
+        '**/constants/**',
+        '**/*.d.ts',
+        'src/lib/firebase*.ts', // Firebase設定は除外
+      ],
+      thresholds: {
+        global: {
+          branches: 60,
+          functions: 60,
+          lines: 60,
+          statements: 60,
+        },
+      },
     },
   },
   resolve: resolveAlias,

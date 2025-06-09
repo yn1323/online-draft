@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { SELECTORS, TEST_DATA, TIMEOUTS } from '../constants';
 
 /**
  * ドラフト作成・参加機能のoperations
@@ -15,11 +16,11 @@ export async function createNewDraft(page: Page, draftName?: string): Promise<st
   await createDraftButton.click();
   
   // モーダルが表示されることを確認
-  const modal = page.getByRole('dialog', { name: 'ドラフトを作成' });
-  await modal.waitFor({ state: 'visible' });
+  const modal = page.locator(SELECTORS.MODAL.CONTAINER);
+  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MODAL_ANIMATION });
   
-  // ドラフト名を入力（指定がない場合はデフォルト値を使用）
-  const inputName = draftName || `テストドラフト${Date.now()}`;
+  // ドラフト名を入力（指定がない場合はテスト用デフォルト値を使用）
+  const inputName = draftName || TEST_DATA.DRAFT_ROOM.NAME;
   const nameInput = page.getByPlaceholder('例: 〇〇ドラフト会議');
   await nameInput.fill(inputName);
   
@@ -28,7 +29,7 @@ export async function createNewDraft(page: Page, draftName?: string): Promise<st
   await createButton.click();
   
   // ロビーページに遷移するまで待機
-  await page.waitForURL('/lobby/*');
+  await page.waitForURL('/lobby/*', { timeout: TIMEOUTS.NAVIGATION });
   
   // URLからgroupIdを抽出して返却
   const url = page.url();
@@ -39,21 +40,25 @@ export async function createNewDraft(page: Page, draftName?: string): Promise<st
  * コード参加操作
  * TOPページ → 参加ボタン → 参加ページ → コード入力 → ロビーページ遷移
  */
-export async function joinByCode(page: Page, code: string): Promise<void> {
+export async function joinByCode(page: Page, code?: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByText('会議に参加');
+  // ActionCardはasChildでリンクになっているため、link roleで取得
+  const joinButton = page.getByRole('link', { name: '会議に参加' });
   await joinButton.click();
   
-  await page.waitForURL('/join');
+  await page.waitForURL('/join', { timeout: TIMEOUTS.NAVIGATION });
   
+  // テスト用コードを使用（指定がない場合）
+  const testCode = code || TEST_DATA.SAMPLE_CODES[0];
   const codeInput = page.getByPlaceholder('ABC123 または招待リンク');
-  await codeInput.fill(code);
+  await codeInput.fill(testCode);
   
-  const submitButton = page.getByText('参加する');
+  // メインの参加ボタン（グループに参加する）を特定
+  const submitButton = page.getByRole('button', { name: 'グループに参加する' });
   await submitButton.click();
   
-  await page.waitForURL(`/lobby/${code}`);
+  await page.waitForURL(`/lobby/${testCode}`, { timeout: TIMEOUTS.NAVIGATION });
 }
 
 /**
@@ -71,7 +76,7 @@ export async function joinByDirectUrl(page: Page, groupId: string): Promise<void
 export async function joinByHistory(page: Page, groupId: string): Promise<void> {
   await page.goto('/');
   
-  const joinButton = page.getByText('会議に参加');
+  const joinButton = page.getByRole('link', { name: '会議に参加' });
   await joinButton.click();
   
   await page.waitForURL('/join');
@@ -86,7 +91,7 @@ export async function joinByHistory(page: Page, groupId: string): Promise<void> 
 /**
  * ネットワーク遅延をシミュレート
  */
-export async function setupNetworkDelay(page: Page, delayMs = 100): Promise<void> {
+export async function setupNetworkDelay(page: Page, delayMs = TIMEOUTS.SHORT): Promise<void> {
   await page.route('**', async (route) => {
     await new Promise(resolve => setTimeout(resolve, delayMs));
     await route.continue();

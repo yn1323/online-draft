@@ -5,9 +5,9 @@ import { useState } from 'react';
 
 import { toaster } from '@/src/components/ui/toaster';
 import type { JoinMeetingForm } from '@/src/constants/schemas';
-import JoinForm from '../components/JoinForm';
-import JoinHint from '../components/JoinHint';
-import RecentMeetingsList from '../components/RecentMeetingsList';
+import JoinForm from '../components/forms/JoinForm';
+import JoinHint from '../components/hints/JoinHint';
+import RecentMeetingsList from '../components/lists/RecentMeetingsList';
 import { joinMeeting } from './actions';
 
 // 仮の履歴データ（後でlocalStorageやAPIから取得）
