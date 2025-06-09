@@ -17,6 +17,10 @@ jobs:
   notify-ci-result:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for CI stabilization
+        run: sleep 5
+        # CI完了直後の状態不安定（特にstorybook-test）とGitHub API反映遅延を回避
+
       - name: Checkout
         uses: actions/checkout@v4
 
