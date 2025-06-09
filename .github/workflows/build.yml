@@ -3,6 +3,12 @@ name: build
 on:
   - push
 
+env:
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+  NEXT_PUBLIC_GTM_ID: ${{ secrets.NEXT_PUBLIC_GTM_ID }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,12 +17,32 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Record setup start
+        run: echo "SETUP_START=$(date +%s)" >> $GITHUB_ENV
+        
       - name: Setup
         uses: ./.github/actions/setup
+        
+      - name: Measure setup time
+        run: |
+          SETUP_END=$(date +%s)
+          SETUP_TIME=$((SETUP_END - SETUP_START))
+          echo "⚡ Setup Time: ${SETUP_TIME}s" >> $GITHUB_STEP_SUMMARY
+          echo "📊 Cache効果測定中..." >> $GITHUB_STEP_SUMMARY
+          
+      - name: Record build start
+        run: echo "BUILD_START=$(date +%s)" >> $GITHUB_ENV
+        
       - name: Build
-        env:
-          NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
-          NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
-          NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
-          NEXT_PUBLIC_GTM_ID: ${{ secrets.NEXT_PUBLIC_GTM_ID }}
         run: pnpm build
+        
+      - name: Measure build time
+        run: |
+          BUILD_END=$(date +%s)
+          BUILD_TIME=$((BUILD_END - BUILD_START))
+          echo "🏗️ Build Time: ${BUILD_TIME}s" >> $GITHUB_STEP_SUMMARY
+          if [ "$BUILD_TIME" -lt 15 ]; then
+            echo "🎯 Next.jsキャッシュ効果: 高速ビルド!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "🔄 Next.jsキャッシュ: 初回 or キャッシュミス" >> $GITHUB_STEP_SUMMARY
+          fi
