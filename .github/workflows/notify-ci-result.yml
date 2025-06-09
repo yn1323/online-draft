@@ -11,7 +11,7 @@ on:
       - "e2e"
     types:
       - completed
-    # 全ブランチ監視（branches指定なし）
+    # 全ブランチ監視（branches指定なし
 
 jobs:
   notify-ci-result:
