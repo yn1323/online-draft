@@ -5,9 +5,8 @@ on:
     workflows:
       - "build"
       - "e2e"
-      - "lint"
+      - "quick-checks"
       - "storybook-test"
-      - "type-check"
       - "unit-test"
       - "storybook-vrt"
     types:
