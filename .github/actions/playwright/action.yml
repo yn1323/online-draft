@@ -1,5 +1,5 @@
-name: Playwright setup from cache
-description: Playwright setup from cache
+name: Playwright setup with advanced caching
+description: Setup Playwright with multi-layer caching strategy for browsers, test results, and config
 
 inputs:
   DATABASE_URL:
@@ -24,20 +24,51 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Setup Playwright cache
+    - name: Cache Playwright browsers
       id: playwright-cache
       uses: actions/cache@v4
       with:
-        path: /home/runner/.cache
-        key: ${{ runner.os }}-playwright-cache-${{ hashFiles('**/.storybook/test-runner.ts') }}
-        restore-keys: ${{ runner.os }}-playwright-cache-
+        path: |
+          /home/runner/.cache/ms-playwright
+          ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('package.json', 'playwright.config.ts', '.storybook/test-runner.ts') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-${{ hashFiles('package.json') }}-
+          ${{ runner.os }}-playwright-
+          
+    - name: Cache Playwright test results
+      uses: actions/cache@v4
+      with:
+        path: |
+          test-results
+          playwright-report
+        key: ${{ runner.os }}-playwright-results-${{ hashFiles('e2e/**/*.ts', 'playwright.config.ts') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-results-
+          
+    - name: Cache Playwright config
+      uses: actions/cache@v4
+      with:
+        path: |
+          .playwright
+          playwright-state.json
+        key: ${{ runner.os }}-playwright-config-${{ hashFiles('playwright.config.ts') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-config-
+          
     - name: Install Playwright browsers if cache miss
       shell: bash
       if: steps.playwright-cache.outputs.cache-hit != 'true'
-      run: pnpm exec playwright install --with-deps
-    - name: Verify and ensure Playwright browsers
+      run: |
+        echo "⏬ Installing Playwright browsers (cache miss)..."
+        pnpm exec playwright install --with-deps
+        
+    - name: Verify Playwright browsers
       shell: bash
-      run: pnpm exec playwright install --with-deps chromium
+      run: |
+        echo "🔍 Verifying Playwright installation..."
+        pnpm exec playwright install --with-deps chromium
+        echo "✅ Playwright browsers ready"
       env:
         DATABASE_URL: ${{ inputs.DATABASE_URL }}
         DIRECT_URL: ${{ inputs.DIRECT_URL }}
