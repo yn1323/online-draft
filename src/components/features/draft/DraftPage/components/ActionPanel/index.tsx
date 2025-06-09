@@ -7,7 +7,10 @@ interface ActionPanelProps {
   onOpenInputModal: () => void;
 }
 
-export const ActionPanel = ({ currentUserSelection, onOpenInputModal }: ActionPanelProps) => {
+export const ActionPanel = ({
+  currentUserSelection,
+  onOpenInputModal,
+}: ActionPanelProps) => {
   return (
     <Box position="sticky" top={4}>
       <VStack gap={4} align="stretch">
@@ -16,9 +19,9 @@ export const ActionPanel = ({ currentUserSelection, onOpenInputModal }: ActionPa
 
         {/* Current User Selection Preview */}
         {currentUserSelection && (
-          <SelectionPreview 
-            selection={currentUserSelection} 
-            onEdit={onOpenInputModal} 
+          <SelectionPreview
+            selection={currentUserSelection}
+            onEdit={onOpenInputModal}
           />
         )}
       </VStack>

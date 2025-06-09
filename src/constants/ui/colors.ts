@@ -3,7 +3,16 @@
  * コンポーネント間でのカラーパレット算出ロジック統一
  */
 
-export type ColorScheme = 'blue' | 'green' | 'purple' | 'orange' | 'teal' | 'pink' | 'red' | 'yellow' | 'gray';
+export type ColorScheme =
+  | 'blue'
+  | 'green'
+  | 'purple'
+  | 'orange'
+  | 'teal'
+  | 'pink'
+  | 'red'
+  | 'yellow'
+  | 'gray';
 
 export interface ThemeColors {
   light: {
@@ -239,7 +248,9 @@ export const getThemeColors = (colorScheme: ColorScheme): ThemeColors => {
 /**
  * 簡易カラー取得（従来の分散ロジック用の後方互換性）
  */
-export const getIconBg = (colorScheme: ColorScheme): { light: string; dark: string } => {
+export const getIconBg = (
+  colorScheme: ColorScheme,
+): { light: string; dark: string } => {
   const colors = getThemeColors(colorScheme);
   return {
     light: colors.light.iconBg,

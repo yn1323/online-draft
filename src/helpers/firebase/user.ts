@@ -6,7 +6,7 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-import { db, DEV_COLLECTION } from '../../lib/firebase';
+import { DEV_COLLECTION, db } from '../../lib/firebase';
 import type { UserDocument } from '../../types/firestore';
 
 /**
@@ -20,7 +20,9 @@ const getUserCollection = () => {
 /**
  * ユーザーを作成する
  */
-export const createUser = async (userData: Omit<UserDocument, 'userId'>): Promise<string> => {
+export const createUser = async (
+  userData: Omit<UserDocument, 'userId'>,
+): Promise<string> => {
   try {
     const docRef = await addDoc(getUserCollection(), {
       groupId: userData.groupId,
@@ -41,14 +43,14 @@ export const createUser = async (userData: Omit<UserDocument, 'userId'>): Promis
  */
 export const checkUserNameExists = async (
   groupId: string,
-  userName: string
+  userName: string,
 ): Promise<boolean> => {
   try {
     const q = query(
       getUserCollection(),
       where('groupId', '==', groupId),
       where('userName', '==', userName),
-      where('deleteFlg', '==', false)
+      where('deleteFlg', '==', false),
     );
 
     const querySnapshot = await getDocs(q);
@@ -67,11 +69,11 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
     const q = query(
       getUserCollection(),
       where('groupId', '==', groupId),
-      where('deleteFlg', '==', false)
+      where('deleteFlg', '==', false),
     );
 
     const querySnapshot = await getDocs(q);
-    
+
     return querySnapshot.docs.map((doc) => ({
       userId: doc.id,
       groupId: doc.data().groupId,
@@ -90,13 +92,13 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
  */
 export const subscribeUsers = (
   groupId: string,
-  callback: (users: UserDocument[]) => void
+  callback: (users: UserDocument[]) => void,
 ): (() => void) => {
   try {
     const q = query(
       getUserCollection(),
       where('groupId', '==', groupId),
-      where('deleteFlg', '==', false)
+      where('deleteFlg', '==', false),
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {

@@ -8,10 +8,10 @@ import { Box, Container, VStack } from '@chakra-ui/react';
 import { signInAnonymously } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { CreateDraftModal } from '../components/modals/CreateDraftModal';
 import HeroSection from '../HeroSection';
 import HowToSection from '../HowToSection';
 import MainActionsSection from '../MainActionsSection';
+import { CreateDraftModal } from '../components/modals/CreateDraftModal';
 
 export const TopPage = () => {
   const [isLoading, setIsLoading] = useState(false);

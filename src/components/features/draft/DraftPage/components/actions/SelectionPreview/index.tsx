@@ -5,7 +5,10 @@ interface SelectionPreviewProps {
   onEdit: () => void;
 }
 
-export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) => {
+export const SelectionPreview = ({
+  selection,
+  onEdit,
+}: SelectionPreviewProps) => {
   return (
     <Box
       p={4}
@@ -19,7 +22,8 @@ export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) =
       _dark={{
         bgGradient: 'linear(to-br, green.900/40, green.800/40)',
         borderColor: 'green.500',
-        boxShadow: '0 0 25px rgba(34, 197, 94, 0.4), 0 0 50px rgba(34, 197, 94, 0.2)',
+        boxShadow:
+          '0 0 25px rgba(34, 197, 94, 0.4), 0 0 50px rgba(34, 197, 94, 0.2)',
       }}
       _before={{
         content: '""',
@@ -28,9 +32,11 @@ export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) =
         left: '-50%',
         width: '200%',
         height: '200%',
-        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%)',
+        background:
+          'radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%)',
         _dark: {
-          background: 'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%)',
+          background:
+            'radial-gradient(circle, rgba(34, 197, 94, 0.2) 0%, transparent 70%)',
         },
       }}
     >
@@ -43,7 +49,12 @@ export const SelectionPreview = ({ selection, onEdit }: SelectionPreviewProps) =
       >
         ✅ あなたの選択
       </Text>
-      <Text fontSize="lg" fontWeight="bold" color="green.800" _dark={{ color: 'green.200' }}>
+      <Text
+        fontSize="lg"
+        fontWeight="bold"
+        color="green.800"
+        _dark={{ color: 'green.200' }}
+      >
         {selection}
       </Text>
       <Button

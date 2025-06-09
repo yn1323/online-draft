@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { TabNavigation } from './index';
 import { mockParticipants, mockPastRounds } from '../../../mocks';
+import { TabNavigation } from './index';
 
 const meta = {
   title: 'Features/Draft/DraftPage/Components/TabNavigation',
@@ -19,8 +19,10 @@ export const Default: Story = {
     roundNumber: 3,
     participants: mockParticipants,
     pastRounds: mockPastRounds,
-    onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
-    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
+    onRoundClick: (roundNumber: number) =>
+      console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) =>
+      console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
   },
 };
@@ -30,8 +32,10 @@ export const WithoutPastRounds: Story = {
     roundNumber: 1,
     participants: mockParticipants,
     pastRounds: [],
-    onRoundClick: (roundNumber: number) => console.log('Round clicked:', roundNumber),
-    onUserClick: (roundNumber: number, userId: string) => console.log('User clicked:', roundNumber, userId),
+    onRoundClick: (roundNumber: number) =>
+      console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) =>
+      console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
   },
 };

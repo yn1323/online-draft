@@ -1,7 +1,7 @@
-import { handlers } from '@/src/test-utils/msw';
 import { withAuthenticatedUser } from '@/src/test-utils/mocks';
-import { expect, within } from '@storybook/test';
+import { handlers } from '@/src/test-utils/msw';
 import type { Meta, StoryObj } from '@storybook/react';
+import { expect, within } from '@storybook/test';
 import LobbyPage from './index';
 
 const meta: Meta<typeof LobbyPage> = {
@@ -39,13 +39,19 @@ export const Default: Story = {
     // 既存ユーザー一覧
     expect(await canvas.findByText('田中太郎')).toBeInTheDocument();
     expect(await canvas.findByText('山田花子')).toBeInTheDocument();
-    expect(await canvas.findByText('登録済みのユーザーで参加')).toBeInTheDocument();
+    expect(
+      await canvas.findByText('登録済みのユーザーで参加'),
+    ).toBeInTheDocument();
 
     // 新規ユーザー作成ボタン
     expect(await canvas.findByText('新しいユーザーを作成')).toBeInTheDocument();
 
     // ヘルプテキスト
-    expect(await canvas.findByText(/既存のユーザーを選択するか、新しいユーザーを作成して/)).toBeInTheDocument();
+    expect(
+      await canvas.findByText(
+        /既存のユーザーを選択するか、新しいユーザーを作成して/,
+      ),
+    ).toBeInTheDocument();
 
     // グループ参加バッジ
     expect(await canvas.findByText('グループに参加')).toBeInTheDocument();
@@ -60,7 +66,11 @@ export const LongGroupName: Story = {
     const canvas = within(canvasElement);
 
     // ローディング完了を待つ
-    expect(await canvas.findByText('非常に長いグループ名のテストケースです！これは表示の確認用')).toBeInTheDocument();
+    expect(
+      await canvas.findByText(
+        '非常に長いグループ名のテストケースです！これは表示の確認用',
+      ),
+    ).toBeInTheDocument();
 
     // 長いグループ名の表示確認
     expect(await canvas.findByText('XYZ789')).toBeInTheDocument();
@@ -98,10 +108,16 @@ export const NonExistentGroup: Story = {
     const canvas = within(canvasElement);
 
     // エラー状態の表示を待つ
-    expect(await canvas.findByText('グループが見つかりません')).toBeInTheDocument();
+    expect(
+      await canvas.findByText('グループが見つかりません'),
+    ).toBeInTheDocument();
 
     // エラー状態の確認
-    expect(await canvas.findByText('グループID: nonexistent')).toBeInTheDocument();
-    expect(await canvas.findByText(/指定されたグループID のグループは存在しないか/)).toBeInTheDocument();
+    expect(
+      await canvas.findByText('グループID: nonexistent'),
+    ).toBeInTheDocument();
+    expect(
+      await canvas.findByText(/指定されたグループID のグループは存在しないか/),
+    ).toBeInTheDocument();
   },
 };

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CurrentRoundRow } from './index';
 import { mockParticipants } from '../../../mocks';
+import { CurrentRoundRow } from './index';
 
 const meta = {
   title: 'Features/Draft/DraftPage/Components/CurrentRoundRow',

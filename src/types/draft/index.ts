@@ -175,7 +175,13 @@ export interface UpdateSelectionRequest {
 
 // リアルタイム更新
 export interface RealtimeEvent {
-  type: 'round_start' | 'round_end' | 'selection_submitted' | 'participant_joined' | 'participant_left' | 'message_sent';
+  type:
+    | 'round_start'
+    | 'round_end'
+    | 'selection_submitted'
+    | 'participant_joined'
+    | 'participant_left'
+    | 'message_sent';
   payload: unknown;
   timestamp: Timestamp;
 }

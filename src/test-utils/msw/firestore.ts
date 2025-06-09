@@ -154,28 +154,30 @@ export const firestoreHandlers = [
   ),
 
   // ユーザー一覧取得のモック
-  http.post('*/v1/projects/*/databases/(default)/documents:runQuery', async ({ request }) => {
-    // biome-ignore lint/suspicious/noExplicitAny: Firestore API構造は複雑でanyが必要
-    const body = await request.json() as any;
+  http.post(
+    '*/v1/projects/*/databases/(default)/documents:runQuery',
+    async ({ request }) => {
+      // biome-ignore lint/suspicious/noExplicitAny: Firestore API構造は複雑でanyが必要
+      const body = (await request.json()) as any;
 
-    // クエリからgroupIdを抽出
-    const structuredQuery = body.structuredQuery;
-    if (structuredQuery?.where?.compositeFilter?.filters) {
-      const groupIdFilter = structuredQuery.where.compositeFilter.filters.find(
-        // biome-ignore lint/suspicious/noExplicitAny: Firestore フィルター構造は複雑
-        (filter: any) => filter.fieldFilter?.field?.fieldPath === 'groupId'
-      );
+      // クエリからgroupIdを抽出
+      const structuredQuery = body.structuredQuery;
+      if (structuredQuery?.where?.compositeFilter?.filters) {
+        const groupIdFilter =
+          structuredQuery.where.compositeFilter.filters.find(
+            // biome-ignore lint/suspicious/noExplicitAny: Firestore フィルター構造は複雑
+            (filter: any) => filter.fieldFilter?.field?.fieldPath === 'groupId',
+          );
 
-      const groupId = groupIdFilter?.fieldFilter?.value?.stringValue;
-      const users = mockUsers[groupId] || [];
+        const groupId = groupIdFilter?.fieldFilter?.value?.stringValue;
+        const users = mockUsers[groupId] || [];
 
-      return HttpResponse.json(
-        users.map((user) => ({ document: user }))
-      );
-    }
+        return HttpResponse.json(users.map((user) => ({ document: user })));
+      }
 
-    return HttpResponse.json([]);
-  }),
+      return HttpResponse.json([]);
+    },
+  ),
 
   // Firestore Listen API (リアルタイム更新用)
   http.post('*/google.firestore.v1.Firestore/Listen/channel', () => {

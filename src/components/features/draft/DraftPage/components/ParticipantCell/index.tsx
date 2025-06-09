@@ -112,10 +112,7 @@ export const ParticipantCell = ({ participant }: ParticipantCellProps) => {
               animation="pulse 1.5s ease-in-out infinite"
             />
           )}
-          <Text
-            fontSize="xs"
-            color={colors.textColor}
-          >
+          <Text fontSize="xs" color={colors.textColor}>
             {statusEmoji[participant.status]}
           </Text>
         </Box>

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { HStack, VStack } from '@chakra-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { StatusBadge } from './index';
 
 const meta = {
@@ -12,7 +12,14 @@ const meta = {
   argTypes: {
     status: {
       control: 'select',
-      options: ['thinking', 'entered', 'completed', 'pending', 'active', 'done'],
+      options: [
+        'thinking',
+        'entered',
+        'completed',
+        'pending',
+        'active',
+        'done',
+      ],
     },
     variant: {
       control: 'select',

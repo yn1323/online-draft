@@ -7,9 +7,9 @@ interface ConditionalFloatingButtonProps {
   onClick: () => void;
 }
 
-export const ConditionalFloatingButton = ({ 
-  activeTab, 
-  onClick 
+export const ConditionalFloatingButton = ({
+  activeTab,
+  onClick,
 }: ConditionalFloatingButtonProps) => {
   // ログタブでは表示しない
   if (activeTab === 'chat') {

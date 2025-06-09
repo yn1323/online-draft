@@ -15,7 +15,7 @@ export const MessageInput = ({
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const message = formData.get('message') as string;
-    
+
     if (message.trim() && onSendMessage) {
       onSendMessage(message.trim());
       (e.target as HTMLFormElement).reset();

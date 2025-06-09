@@ -7,13 +7,13 @@ export const DRAFT_CONFIG = {
   DEFAULT_ROUND: 1,
   DEFAULT_TOTAL_ROUNDS: 5,
   DEFAULT_CURRENT_ROUND: 3, // Storybook用
-  
+
   /** 制限値 */
   MAX_ROUNDS: 10,
   MIN_ROUNDS: 1,
   MAX_PARTICIPANTS: 8,
   MIN_PARTICIPANTS: 2,
-  
+
   /** タイミング設定 */
   TIMINGS: {
     SLOT_TIME: 3000,

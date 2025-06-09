@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 /**
  * ドラフト状態管理フック
@@ -22,7 +22,7 @@ export const useDraftState = (initialState?: Partial<DraftState>) => {
   });
 
   const updateSelection = useCallback((selection: string, comment?: string) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selection,
       comment: comment || '',
@@ -31,7 +31,7 @@ export const useDraftState = (initialState?: Partial<DraftState>) => {
   }, []);
 
   const nextRound = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       roundNumber: Math.min(prev.roundNumber + 1, prev.totalRounds),
       selection: '',
@@ -40,7 +40,7 @@ export const useDraftState = (initialState?: Partial<DraftState>) => {
   }, []);
 
   const resetSelection = useCallback(() => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       selection: '',
       comment: '',

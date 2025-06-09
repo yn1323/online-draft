@@ -10,7 +10,7 @@ import {
   Textarea,
   VStack,
 } from '@chakra-ui/react';
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 type RoundSelection = {
   userId: string;
@@ -63,9 +63,9 @@ export const UserRoundDetailModal = ({
     const currentComment = comment.trim();
     const originalItem = initialSelection?.item || '';
     const originalComment = initialSelection?.comment || '';
-    
+
     setHasChanges(
-      currentItem !== originalItem || currentComment !== originalComment
+      currentItem !== originalItem || currentComment !== originalComment,
     );
   }, [item, comment, initialSelection]);
 
@@ -122,7 +122,6 @@ export const UserRoundDetailModal = ({
       }}
     >
       <VStack gap={6} align="stretch" w="full">
-
         {/* ユーザー情報 */}
         <HStack gap={3} justify="center">
           <Image

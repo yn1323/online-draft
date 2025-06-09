@@ -1,6 +1,6 @@
-import { Box, Input, Text, Textarea } from '@chakra-ui/react';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
+import { Box, Input, Text, Textarea } from '@chakra-ui/react';
 
 interface InputModalProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export const InputModal = ({
   onSubmit,
 }: InputModalProps) => {
   const inputTheme = COMPONENT_THEMES.input;
-  
+
   return (
     <ResponsiveModal
       isOpen={isOpen}
@@ -61,7 +61,12 @@ export const InputModal = ({
         />
       </Box>
       <Box w="full">
-        <Text fontSize="sm" fontWeight="medium" mb={2} color={inputTheme.labelColor}>
+        <Text
+          fontSize="sm"
+          fontWeight="medium"
+          mb={2}
+          color={inputTheme.labelColor}
+        >
           ひとこと（任意）
         </Text>
         <Textarea

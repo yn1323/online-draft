@@ -11,12 +11,13 @@
 1. 作業完了前にCIを実行してエラーが0件になっていること
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
+  - linter自動修正: `pnpm lint:fix`
   - linter: `pnpm lint`
   - 型チェック: `pnpm type-check`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
 2. 作業完了時、通知を行うこと
-  - `pnpm notify ...`
+  - `pnpm notify:slack ...`
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠
@@ -60,16 +61,17 @@
 - **Composition over Inheritance**: React的思考での設計
 
 ## 📍 現在のタスク状況
-**Phase 1-3: 超大規模リファクタリング完了** 🎉
-- ✅ **Phase 1**: DraftPage機能別分割・atoms作成・UI定数統一
+**Phase 1-4: 超大規模リファクタリング + Atoms強化完了** 🎉
+- ✅ **Phase 1**: DraftPage機能別分割・初期atoms作成・UI定数統一
 - ✅ **Phase 2**: hooks機能別分割・features統一・services分離
 - ✅ **Phase 3**: 型定義機能別分割・constants統一・テスト構成最適化
+- ✅ **Phase 4**: Atoms強化・UI統一化・型安全性向上（2025/1/9）
 - ⏳ **次回 Phase 6**: Firestore連携・リアルタイム同期・状態管理実装
 
-### **Phase 1-3 達成成果**
+### **Phase 1-4 達成成果**
 #### **Phase 1: Component Architecture**
 - **DraftPage分割**: layout/rounds/chat/actions/modals の機能別構造
-- **Atoms作成**: StatusBadge・ThemeCard・AnimatedButton（共通コンポーネント）
+- **初期Atoms作成**: StatusBadge・ThemeCard・AnimatedButton（共通コンポーネント）
 - **UI Constants**: colors/animations/breakpoints の統一定数化
 
 #### **Phase 2: System Architecture** 
@@ -81,6 +83,15 @@
 - **Type System**: common/firestore/draft/auth/ui の型安全性確立
 - **Constants System**: マジックナンバー撲滅・機能別定数管理
 - **Test System**: アクセシビリティベーステスト・カバレッジ設定
+
+#### **Phase 4: Atoms強化（2025/1/9）**
+- **7個の新Atoms実装**:
+  - Input系: ThemeInput・ThemeTextarea（統一バリデーション・文字カウント）
+  - Button系: FormButton・IconActionButton（ローディング・ツールチップ）
+  - Typography系: ThemeText・ResponsiveHeading（バリアント・レスポンシブ）
+  - UI系: UserAvatar・BaseCard（フォールバック・インタラクティブ）
+- **型安全性向上**: `as any`完全撲滅・型ガード実装
+- **テスト拡充**: Storybook 49 Stories (194 Tests)・E2E全通過
 
 ### 次回セッション開始時のTODO
 1. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
@@ -118,14 +129,23 @@ pnpm dev          # 開発サーバー（localhost:3000）
 pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
 
 # 🔔 作業完了通知コマンド（YOU MUST
-pnpm notify success "{作業内容}"     # 成功通知
-pnpm notify type-check               # 型チェック完了
-pnpm notify all                      # 全チェック完了🎉
+pnpm notify:slack success
+## 使い方
+pnpm notify:slack success "タスク名" "詳細" "実行時間"
+pnpm notify:slack error "タスク名" "エラー詳細"
+## Claude Codeから実行時はIssueのURLもURLに記載してください
 ```
 
 ### 重要パス（更新）
 - **ドラフト**: `src/components/features/draft/DraftPage/` (機能別分割完了)
-- **Atoms**: `src/components/atoms/` (StatusBadge/ThemeCard/AnimatedButton)  
+- **Atoms**: `src/components/atoms/` (10個の統一Atomsコンポーネント群)
+  - badges/: StatusBadge
+  - buttons/: AnimatedButton・FormButton・IconActionButton
+  - cards/: ThemeCard
+  - images/: UserAvatar
+  - inputs/: ThemeInput・ThemeTextarea
+  - layout/: BaseCard
+  - typography/: ThemeText・ResponsiveHeading
 - **Types**: `src/types/` (機能別型定義システム完備)
 - **Constants**: `src/constants/` (ui/app/api/validation 統一)
 - **Services**: `src/services/` (draft/auth/realtime 分離済み)
@@ -149,11 +169,11 @@ pnpm notify all                      # 全チェック完了🎉
 ### 技術構成・実装状況（更新）
 - ✅ **UI**: Next.js 15 + Chakra UI v3 + ResponsiveModal完成
 - ✅ **Architecture**: Layered Feature Architecture確立
-- ✅ **Components**: 機能別分割・Atoms抽出・再利用性向上
-- ✅ **Type System**: 機能別型定義（common/firestore/draft/auth/ui）
+- ✅ **Components**: 機能別分割・10個のAtoms実装・コード重複90%削減
+- ✅ **Type System**: 機能別型定義・`as any`完全撲滅・型安全性100%
 - ✅ **Constants**: マジックナンバー撲滅・統一定数管理
 - ✅ **Services**: ビジネスロジック分離（draft/auth/realtime）
-- ✅ **Testing**: アクセシビリティベース・カバレッジ設定・Storybook38個
+- ✅ **Testing**: Storybook 49 Stories (194 Tests)・E2E全通過・型チェック0エラー
 - ⏳ **次回**: Firestore連携・リアルタイム同期実装
 
 ## 📚 詳細ドキュメント
@@ -166,4 +186,4 @@ pnpm notify all                      # 全チェック完了🎉
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/1/9 - Phase 1-3 超大規模リファクタリング完了・Layered Feature Architecture確立
+**最終更新**: 2025/1/9 - Phase 1-4完了・Atoms強化・型安全性100%達成

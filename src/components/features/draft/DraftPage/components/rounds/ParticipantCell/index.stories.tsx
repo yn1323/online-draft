@@ -19,9 +19,30 @@ export const AllStatuses: Story = {
   },
   render: () => (
     <div style={{ display: 'flex', gap: '16px' }}>
-      <ParticipantCell participant={{ id: '1', name: 'たけし', avatar: '1', status: 'thinking' }} />
-      <ParticipantCell participant={{ id: '2', name: 'みさき', avatar: '2', status: 'entered' }} />
-      <ParticipantCell participant={{ id: '3', name: 'ひろし', avatar: '3', status: 'completed' }} />
+      <ParticipantCell
+        participant={{
+          id: '1',
+          name: 'たけし',
+          avatar: '1',
+          status: 'thinking',
+        }}
+      />
+      <ParticipantCell
+        participant={{
+          id: '2',
+          name: 'みさき',
+          avatar: '2',
+          status: 'entered',
+        }}
+      />
+      <ParticipantCell
+        participant={{
+          id: '3',
+          name: 'ひろし',
+          avatar: '3',
+          status: 'completed',
+        }}
+      />
     </div>
   ),
 };

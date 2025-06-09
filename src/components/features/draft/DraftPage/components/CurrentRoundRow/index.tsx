@@ -1,6 +1,13 @@
-import { Grid, Flex, Text, Box, HStack, useBreakpointValue } from '@chakra-ui/react';
-import { ParticipantCell } from '../ParticipantCell';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
+import {
+  Box,
+  Flex,
+  Grid,
+  HStack,
+  Text,
+  useBreakpointValue,
+} from '@chakra-ui/react';
+import { ParticipantCell } from '../ParticipantCell';
 
 interface CurrentRoundRowProps {
   roundNumber: number;
@@ -12,7 +19,10 @@ interface CurrentRoundRowProps {
   }[];
 }
 
-export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowProps) => {
+export const CurrentRoundRow = ({
+  roundNumber,
+  participants,
+}: CurrentRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const theme = COMPONENT_THEMES.currentRound;
 
@@ -39,14 +49,23 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
           borderRadius: 'lg',
           padding: '2px',
           background: theme.light.accent,
-          WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+          WebkitMask:
+            'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
           WebkitMaskComposite: 'xor',
           maskComposite: 'exclude',
           opacity: 0.5,
         }}
       >
         {/* ラウンド番号ヘッダー */}
-        <HStack justify="space-between" align="center" mb={3} pb={2} borderBottom="1px solid" borderColor={theme.light.borderBottom} _dark={{ borderColor: theme.dark.borderBottom }}>
+        <HStack
+          justify="space-between"
+          align="center"
+          mb={3}
+          pb={2}
+          borderBottom="1px solid"
+          borderColor={theme.light.borderBottom}
+          _dark={{ borderColor: theme.dark.borderBottom }}
+        >
           <Text
             fontWeight="bold"
             color={theme.light.textColor}
@@ -55,7 +74,11 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
           >
             現在のラウンド {roundNumber}
           </Text>
-          <Text fontSize="sm" color={theme.light.textColor} _dark={{ color: theme.dark.textColor }}>
+          <Text
+            fontSize="sm"
+            color={theme.light.textColor}
+            _dark={{ color: theme.dark.textColor }}
+          >
             ⚡ 進行中
           </Text>
         </HStack>
@@ -95,14 +118,20 @@ export const CurrentRoundRow = ({ roundNumber, participants }: CurrentRoundRowPr
         borderRadius: 'lg',
         padding: '2px',
         background: 'linear-gradient(45deg, green.500, green.600, green.500)',
-        WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+        WebkitMask:
+          'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
         WebkitMaskComposite: 'xor',
         maskComposite: 'exclude',
         opacity: 0.5,
       }}
     >
       <Flex align="center" justify="center" h="full">
-        <Text fontWeight="bold" color={theme.light.textColor} fontSize="lg" _dark={{ color: theme.dark.textColor }}>
+        <Text
+          fontWeight="bold"
+          color={theme.light.textColor}
+          fontSize="lg"
+          _dark={{ color: theme.dark.textColor }}
+        >
           {roundNumber}
         </Text>
       </Flex>

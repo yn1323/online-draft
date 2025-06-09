@@ -1,7 +1,9 @@
 'use client';
 
+import { ThemeInput } from '@/src/components/atoms/inputs/ThemeInput';
+import { ThemeText } from '@/src/components/atoms/typography/ThemeText';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
-import { Input, Text, VStack } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
 import { useState } from 'react';
 
 interface CreateDraftModalProps {
@@ -76,25 +78,22 @@ export const CreateDraftModal = ({
       }}
     >
       <VStack gap={4} align="stretch" width="100%">
-        <Text fontSize="sm" color="fg.muted">
+        <ThemeText variant="helper">
           ドラフト会議の名前を入力してください
-        </Text>
-        <Input
+        </ThemeText>
+        <ThemeInput
           placeholder="例: 〇〇ドラフト会議"
           value={groupName}
           onChange={(e) => setGroupName(e.target.value)}
           onKeyDown={handleKeyDown}
           maxLength={48}
+          showCharacterCount={true}
           disabled={isLoading}
           autoFocus
+          errorText={error}
+          invalid={!!error}
         />
-        {error && (
-          <Text fontSize="sm" color="red.500">
-            {error}
-          </Text>
-        )}
       </VStack>
     </ResponsiveModal>
   );
 };
-

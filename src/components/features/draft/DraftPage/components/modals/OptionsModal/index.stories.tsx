@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { OptionsModal } from './index';
-import { useState } from 'react';
 import { Button, VStack } from '@chakra-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import { OptionsModal } from './index';
 
 const meta: Meta<typeof OptionsModal> = {
   title: 'Features/Draft/DraftPage/Components/OptionsModal',

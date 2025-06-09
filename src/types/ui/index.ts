@@ -5,7 +5,15 @@
 import type { ReactNode } from 'react';
 
 // カラーパレット
-export type ColorScheme = 'blue' | 'green' | 'purple' | 'orange' | 'red' | 'teal' | 'pink' | 'gray';
+export type ColorScheme =
+  | 'blue'
+  | 'green'
+  | 'purple'
+  | 'orange'
+  | 'red'
+  | 'teal'
+  | 'pink'
+  | 'gray';
 export type ColorMode = 'light' | 'dark' | 'system';
 
 // サイズ
@@ -23,7 +31,13 @@ export type AnimationType = 'lift' | 'bounce' | 'pulse' | 'glow' | 'scale';
 export type TransitionDuration = 'fast' | 'normal' | 'slow';
 
 // ステータス
-export type Status = 'waiting' | 'thinking' | 'submitted' | 'confirmed' | 'conflict' | 'winner';
+export type Status =
+  | 'waiting'
+  | 'thinking'
+  | 'submitted'
+  | 'confirmed'
+  | 'conflict'
+  | 'winner';
 export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
 
 // レスポンシブ
@@ -160,7 +174,13 @@ export interface NotificationConfig {
   title: string;
   description?: string;
   duration?: number;
-  placement?: 'top' | 'bottom' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+  placement?:
+    | 'top'
+    | 'bottom'
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right';
   closable?: boolean;
   onClose?: () => void;
 }

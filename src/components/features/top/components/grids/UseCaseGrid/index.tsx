@@ -1,8 +1,8 @@
 'use client';
 
-import { HStack, SimpleGrid, Text } from '@chakra-ui/react';
 import { SAMPLE_DATA } from '@/src/constants/app/sample-data';
 import { GRID_COLUMNS } from '@/src/constants/ui/layouts';
+import { HStack, SimpleGrid, Text } from '@chakra-ui/react';
 
 export default function UseCaseGrid() {
   return (

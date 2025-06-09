@@ -23,7 +23,9 @@ export interface GetMessagesOptions {
 /**
  * メッセージ送信
  */
-export const sendMessage = async (request: SendMessageRequest): Promise<ChatMessage> => {
+export const sendMessage = async (
+  request: SendMessageRequest,
+): Promise<ChatMessage> => {
   // TODO: Firestore実装
   console.log('sendMessage called with:', request);
   throw new Error('Not implemented');
@@ -34,7 +36,7 @@ export const sendMessage = async (request: SendMessageRequest): Promise<ChatMess
  */
 export const getMessages = async (
   _groupId: string,
-  _options: GetMessagesOptions = {}
+  _options: GetMessagesOptions = {},
 ): Promise<{
   messages: ChatMessage[];
   nextCursor?: string;
@@ -49,7 +51,7 @@ export const getMessages = async (
 export const sendSystemMessage = async (
   groupId: string,
   content: string,
-  metadata?: ChatMessage['metadata']
+  metadata?: ChatMessage['metadata'],
 ): Promise<ChatMessage> => {
   return sendMessage({
     groupId,
@@ -68,13 +70,11 @@ export const sendSystemMessage = async (
 export const sendRoundStartMessage = async (
   groupId: string,
   roundNumber: number,
-  topic: string
+  topic: string,
 ): Promise<ChatMessage> => {
-  return sendSystemMessage(
-    groupId,
-    `Round ${roundNumber} 開始: ${topic}`,
-    { roundNumber }
-  );
+  return sendSystemMessage(groupId, `Round ${roundNumber} 開始: ${topic}`, {
+    roundNumber,
+  });
 };
 
 /**
@@ -85,16 +85,12 @@ export const sendSelectionChangeMessage = async (
   userName: string,
   roundNumber: number,
   before: string,
-  after: string
+  after: string,
 ): Promise<ChatMessage> => {
-  return sendSystemMessage(
-    groupId,
-    `${userName}が選択を変更しました`,
-    {
-      roundNumber,
-      selectionChange: { before, after },
-    }
-  );
+  return sendSystemMessage(groupId, `${userName}が選択を変更しました`, {
+    roundNumber,
+    selectionChange: { before, after },
+  });
 };
 
 /**
@@ -103,11 +99,9 @@ export const sendSelectionChangeMessage = async (
 export const sendSelectionCompleteMessage = async (
   groupId: string,
   userName: string,
-  roundNumber: number
+  roundNumber: number,
 ): Promise<ChatMessage> => {
-  return sendSystemMessage(
-    groupId,
-    `${userName}が選択を完了しました`,
-    { roundNumber }
-  );
+  return sendSystemMessage(groupId, `${userName}が選択を完了しました`, {
+    roundNumber,
+  });
 };

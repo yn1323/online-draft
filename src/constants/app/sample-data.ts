@@ -9,7 +9,7 @@ export const SAMPLE_DATA = {
     { id: 'def456', name: '映画選びドラフト', lastJoined: '1日前' },
     { id: 'ghi789', name: '週末の予定ドラフト', lastJoined: '3日前' },
   ],
-  
+
   /** 使用例一覧 */
   USE_CASES: [
     { emoji: '🍕', text: '今日のお昼ご飯選び' },
@@ -19,7 +19,7 @@ export const SAMPLE_DATA = {
     { emoji: '🎵', text: 'カラオケの選曲会議' },
     { emoji: '📚', text: '読書会の本選び' },
   ],
-  
+
   /** How-toステップ */
   HOW_TO_STEPS: [
     {
@@ -41,7 +41,7 @@ export const SAMPLE_DATA = {
       emoji: '🎉',
     },
   ],
-  
+
   /** サンプルトピック */
   SAMPLE_TOPICS: [
     'お昼ご飯',
@@ -53,7 +53,7 @@ export const SAMPLE_DATA = {
     'デートスポット',
     'プレゼント選び',
   ],
-  
+
   /** サンプル馬名（legacy互換） */
   SAMPLE_HORSES: [
     'アイリスクォーツ',
@@ -67,7 +67,7 @@ export const SAMPLE_DATA = {
     'マヤノトップガン',
     'オペラオー',
   ],
-  
+
   /** デモ用参加者 */
   DEMO_PARTICIPANTS: [
     { name: 'あかり', avatar: '1', status: 'online' as const },
@@ -75,7 +75,7 @@ export const SAMPLE_DATA = {
     { name: 'みどり', avatar: '3', status: 'submitted' as const },
     { name: 'ひろし', avatar: '4', status: 'confirmed' as const },
   ],
-  
+
   /** デモ用ラウンドデータ */
   DEMO_ROUNDS: [
     {
@@ -93,9 +93,21 @@ export const SAMPLE_DATA = {
       topic: '今日の映画',
       status: 'completed' as const,
       selections: [
-        { participant: 'あかり', item: 'スパイダーマン', result: 'conflict' as const },
-        { participant: 'たろう', item: 'スパイダーマン', result: 'conflict' as const },
-        { participant: 'みどり', item: 'アベンジャーズ', result: 'normal' as const },
+        {
+          participant: 'あかり',
+          item: 'スパイダーマン',
+          result: 'conflict' as const,
+        },
+        {
+          participant: 'たろう',
+          item: 'スパイダーマン',
+          result: 'conflict' as const,
+        },
+        {
+          participant: 'みどり',
+          item: 'アベンジャーズ',
+          result: 'normal' as const,
+        },
       ],
     },
     {

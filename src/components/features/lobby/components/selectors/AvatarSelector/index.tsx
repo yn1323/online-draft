@@ -1,8 +1,8 @@
 'use client';
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
-import { Box, SimpleGrid, Text, useBreakpointValue } from '@chakra-ui/react';
 import { GRID_COLUMNS } from '@/src/constants/ui/layouts';
+import { Box, SimpleGrid, Text, useBreakpointValue } from '@chakra-ui/react';
 import Image from 'next/image';
 import { FiCheck } from 'react-icons/fi';
 
