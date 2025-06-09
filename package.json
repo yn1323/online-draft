@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome lint app src e2e scripts",
-    "lint:fix": "biome check --write app src",
+    "lint:fix": "biome check --write app src e2e scripts",
     "test": "vitest",
     "type-check": "tsc",
     "storybook": "storybook dev -p 6006",
