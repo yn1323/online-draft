@@ -1,14 +1,18 @@
 'use client';
 
-import { Badge, type BadgeProps } from '@chakra-ui/react';
 import { STATUS_CONFIG } from '@/src/constants/app/draft';
+import { Badge, type BadgeProps } from '@chakra-ui/react';
 
 export interface StatusBadgeProps extends Omit<BadgeProps, 'colorPalette'> {
   status: keyof typeof STATUS_CONFIG;
   variant?: 'solid' | 'outline' | 'subtle';
 }
 
-export const StatusBadge = ({ status, variant = 'solid', ...props }: StatusBadgeProps) => {
+export const StatusBadge = ({
+  status,
+  variant = 'solid',
+  ...props
+}: StatusBadgeProps) => {
   const config = STATUS_CONFIG[status];
 
   return (

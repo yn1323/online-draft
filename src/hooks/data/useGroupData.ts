@@ -19,7 +19,10 @@ interface UseGroupDataResult {
 const getMockGroupData = (groupId: string): GroupData | null => {
   const mockGroupData: Record<string, GroupData> = {
     ABC123: { groupName: 'テストグループ 1', round: 3 },
-    XYZ789: { groupName: '非常に長いグループ名のテストケースです！これは表示の確認用', round: 5 },
+    XYZ789: {
+      groupName: '非常に長いグループ名のテストケースです！これは表示の確認用',
+      round: 5,
+    },
     '12': { groupName: '短ID', round: 1 },
     LOADING_TEST: { groupName: 'ローディングテスト用グループ', round: 2 },
   };
@@ -55,7 +58,9 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
           if (mockGroup) {
             setGroupData(mockGroup);
           } else {
-            setGroupError('指定されたグループID のグループは存在しないか、削除されている可能性があります。');
+            setGroupError(
+              '指定されたグループID のグループは存在しないか、削除されている可能性があります。',
+            );
           }
           setGroupLoading(false);
         }, STORYBOOK_LOADING_DELAY);

@@ -1,6 +1,15 @@
-import { Grid, Flex, Text, Box, VStack, HStack, useBreakpointValue, IconButton } from '@chakra-ui/react';
-import { Collapsible } from '@chakra-ui/react';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
+import {
+  Box,
+  Flex,
+  Grid,
+  HStack,
+  IconButton,
+  Text,
+  VStack,
+  useBreakpointValue,
+} from '@chakra-ui/react';
+import { Collapsible } from '@chakra-ui/react';
 
 interface PastRoundRowProps {
   round: {
@@ -25,7 +34,14 @@ interface PastRoundRowProps {
   onToggleExpand?: () => void;
 }
 
-export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, isExpanded = true, onToggleExpand }: PastRoundRowProps) => {
+export const PastRoundRow = ({
+  round,
+  participants,
+  onRoundClick,
+  onUserClick,
+  isExpanded = true,
+  onToggleExpand,
+}: PastRoundRowProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const theme = COMPONENT_THEMES.pastRound;
 
@@ -44,20 +60,16 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
         }}
       >
         {/* ヘッダー部分（常時表示 + アクションボタン） */}
-        <HStack
-          justify="space-between"
-          align="center"
-          p={4}
-        >
+        <HStack justify="space-between" align="center" p={4}>
           {/* 左側：ラウンド情報（折りたたみ領域） */}
-          <HStack 
-            gap={2} 
+          <HStack
+            gap={2}
             flex={1}
             cursor="pointer"
             onClick={onToggleExpand}
-            _hover={{ 
+            _hover={{
               bg: 'green.50',
-              _dark: { bg: 'green.900/40' }
+              _dark: { bg: 'green.900/40' },
             }}
             borderRadius="md"
             p={2}
@@ -72,7 +84,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
               ラウンド {round.roundNumber}
             </Text>
           </HStack>
-          
+
           {/* 右側：アクションボタン */}
           <HStack gap={1}>
             {/* 詳細モーダルボタン */}
@@ -88,7 +100,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
             >
               <Text fontSize="sm">✏️</Text>
             </IconButton>
-            
+
             {/* 折りたたみボタン */}
             {onToggleExpand && (
               <IconButton
@@ -101,9 +113,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
                   onToggleExpand();
                 }}
               >
-                <Text fontSize="lg">
-                  {isExpanded ? '▲' : '▼'}
-                </Text>
+                <Text fontSize="lg">{isExpanded ? '▲' : '▼'}</Text>
               </IconButton>
             )}
           </HStack>
@@ -112,87 +122,89 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
         {/* 詳細部分（折りたたみ対応） */}
         <Collapsible.Root open={isExpanded}>
           <Collapsible.Content>
-          <Box px={4} pb={4}>
-            <Box h="1px" bg="green.100" mb={3} _dark={{ bg: 'green.800' }} />
-            
-            {/* 参加者の選択一覧 */}
-            <VStack gap={3} align="stretch">
-              {participants.map((participant) => {
-                const selection = round.selections.find(
-                  (s) => s.userId === participant.id,
-                );
-                return (
-                  <HStack
-                    key={participant.id}
-                    justify="space-between"
-                    align="center"
-                    p={2}
-                    bg="green.25"
-                    borderRadius="md"
-                    cursor="pointer"
-                    transition="all 0.2s ease"
-                    onClick={() => onUserClick(round.roundNumber, participant.id)}
-                    _hover={{
-                      bg: 'green.100',
-                      transform: 'translateY(-1px)',
-                      _dark: { bg: 'green.800/40' }
-                    }}
-                    _dark={{ bg: 'green.900/20' }}
-                  >
-                    <HStack gap={2} flex={1} alignItems="center">
-                      <Text fontSize="lg">{participant.avatar}</Text>
-                      <Text
-                        fontSize="sm"
-                        fontWeight="medium"
-                        color="gray.700"
-                        _dark={{ color: 'gray.300' }}
-                        minW="fit-content"
-                      >
-                        {participant.name}
-                      </Text>
-                    </HStack>
-                    
-                    <Box flex={2} textAlign="right">
-                      {selection ? (
-                        <VStack gap={1} align="flex-end">
-                          <Text
-                            fontSize="sm"
-                            fontWeight="bold"
-                            color="gray.800"
-                            _dark={{ color: 'gray.200' }}
-                            lineHeight="1.2"
-                            wordBreak="break-all"
-                          >
-                            {selection.item}
-                          </Text>
-                          {selection.comment && (
-                            <Text
-                              fontSize="xs"
-                              color="green.600"
-                              fontStyle="italic"
-                              _dark={{ color: 'green.300' }}
-                              lineHeight="1.2"
-                            >
-                              {selection.comment}
-                            </Text>
-                          )}
-                        </VStack>
-                      ) : (
+            <Box px={4} pb={4}>
+              <Box h="1px" bg="green.100" mb={3} _dark={{ bg: 'green.800' }} />
+
+              {/* 参加者の選択一覧 */}
+              <VStack gap={3} align="stretch">
+                {participants.map((participant) => {
+                  const selection = round.selections.find(
+                    (s) => s.userId === participant.id,
+                  );
+                  return (
+                    <HStack
+                      key={participant.id}
+                      justify="space-between"
+                      align="center"
+                      p={2}
+                      bg="green.25"
+                      borderRadius="md"
+                      cursor="pointer"
+                      transition="all 0.2s ease"
+                      onClick={() =>
+                        onUserClick(round.roundNumber, participant.id)
+                      }
+                      _hover={{
+                        bg: 'green.100',
+                        transform: 'translateY(-1px)',
+                        _dark: { bg: 'green.800/40' },
+                      }}
+                      _dark={{ bg: 'green.900/20' }}
+                    >
+                      <HStack gap={2} flex={1} alignItems="center">
+                        <Text fontSize="lg">{participant.avatar}</Text>
                         <Text
                           fontSize="sm"
-                          color="gray.400"
                           fontWeight="medium"
-                          _dark={{ color: 'gray.500' }}
+                          color="gray.700"
+                          _dark={{ color: 'gray.300' }}
+                          minW="fit-content"
                         >
-                          未参加
+                          {participant.name}
                         </Text>
-                      )}
-                    </Box>
-                  </HStack>
-                );
-              })}
-            </VStack>
-          </Box>
+                      </HStack>
+
+                      <Box flex={2} textAlign="right">
+                        {selection ? (
+                          <VStack gap={1} align="flex-end">
+                            <Text
+                              fontSize="sm"
+                              fontWeight="bold"
+                              color="gray.800"
+                              _dark={{ color: 'gray.200' }}
+                              lineHeight="1.2"
+                              wordBreak="break-all"
+                            >
+                              {selection.item}
+                            </Text>
+                            {selection.comment && (
+                              <Text
+                                fontSize="xs"
+                                color="green.600"
+                                fontStyle="italic"
+                                _dark={{ color: 'green.300' }}
+                                lineHeight="1.2"
+                              >
+                                {selection.comment}
+                              </Text>
+                            )}
+                          </VStack>
+                        ) : (
+                          <Text
+                            fontSize="sm"
+                            color="gray.400"
+                            fontWeight="medium"
+                            _dark={{ color: 'gray.500' }}
+                          >
+                            未参加
+                          </Text>
+                        )}
+                      </Box>
+                    </HStack>
+                  );
+                })}
+              </VStack>
+            </Box>
           </Collapsible.Content>
         </Collapsible.Root>
       </Box>
@@ -245,7 +257,7 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
             _hover={{
               bg: 'green.50',
               transform: 'translateY(-1px)',
-              _dark: { bg: 'green.900/40' }
+              _dark: { bg: 'green.900/40' },
             }}
             p={2}
             mx={-1}
@@ -277,15 +289,20 @@ export const PastRoundRow = ({ round, participants, onRoundClick, onUserClick, i
                   whiteSpace="nowrap"
                   opacity={selection.comment ? 1 : 0}
                 >
-                  {selection.comment 
-                    ? (selection.comment.length > 8
-                        ? `${selection.comment.slice(0, 8)}...`
-                        : selection.comment)
+                  {selection.comment
+                    ? selection.comment.length > 8
+                      ? `${selection.comment.slice(0, 8)}...`
+                      : selection.comment
                     : 'placeholder'}
                 </Text>
               </VStack>
             ) : (
-              <Box minH="44px" display="flex" alignItems="center" justifyContent="center">
+              <Box
+                minH="44px"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
                 <Text
                   fontSize="sm"
                   color="gray.400"

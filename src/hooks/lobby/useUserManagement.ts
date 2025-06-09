@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 /**
  * ユーザー管理フック
@@ -15,27 +15,28 @@ export const useUserManagement = (initialUsers: User[] = []) => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
 
   const addUser = useCallback((user: User) => {
-    setUsers(prev => {
-      const exists = prev.find(u => u.id === user.id);
+    setUsers((prev) => {
+      const exists = prev.find((u) => u.id === user.id);
       if (exists) {
-        return prev.map(u => u.id === user.id ? user : u);
+        return prev.map((u) => (u.id === user.id ? user : u));
       }
       return [...prev, user];
     });
   }, []);
 
-  const removeUser = useCallback((userId: string) => {
-    setUsers(prev => prev.filter(u => u.id !== userId));
-    if (selectedUserId === userId) {
-      setSelectedUserId(null);
-    }
-  }, [selectedUserId]);
+  const removeUser = useCallback(
+    (userId: string) => {
+      setUsers((prev) => prev.filter((u) => u.id !== userId));
+      if (selectedUserId === userId) {
+        setSelectedUserId(null);
+      }
+    },
+    [selectedUserId],
+  );
 
   const updateUser = useCallback((userId: string, updates: Partial<User>) => {
-    setUsers(prev => 
-      prev.map(u => 
-        u.id === userId ? { ...u, ...updates } : u
-      )
+    setUsers((prev) =>
+      prev.map((u) => (u.id === userId ? { ...u, ...updates } : u)),
     );
   }, []);
 
@@ -43,9 +44,12 @@ export const useUserManagement = (initialUsers: User[] = []) => {
     setSelectedUserId(userId);
   }, []);
 
-  const getUser = useCallback((userId: string) => {
-    return users.find(u => u.id === userId);
-  }, [users]);
+  const getUser = useCallback(
+    (userId: string) => {
+      return users.find((u) => u.id === userId);
+    },
+    [users],
+  );
 
   const getSelectedUser = useCallback(() => {
     return selectedUserId ? getUser(selectedUserId) : null;

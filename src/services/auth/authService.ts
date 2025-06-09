@@ -3,8 +3,12 @@
  */
 
 import { auth } from '@/src/lib/firebase';
-import { signInAnonymously, signOut as firebaseSignOut, type User } from 'firebase/auth';
 import type { AuthUser } from '@/src/types/auth';
+import {
+  type User,
+  signOut as firebaseSignOut,
+  signInAnonymously,
+} from 'firebase/auth';
 
 /**
  * Firebase Userを内部AuthUserに変換
@@ -55,7 +59,9 @@ export const getCurrentUser = (): AuthUser | null => {
 /**
  * 認証状態監視
  */
-export const onAuthStateChanged = (callback: (user: AuthUser | null) => void) => {
+export const onAuthStateChanged = (
+  callback: (user: AuthUser | null) => void,
+) => {
   return auth.onAuthStateChanged((user) => {
     callback(user ? convertFirebaseUser(user) : null);
   });

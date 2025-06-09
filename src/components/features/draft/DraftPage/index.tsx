@@ -1,18 +1,18 @@
 'use client';
 
-import { UserRoundDetailModal } from '../UserRoundDetailModal';
 import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
-import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { mockParticipants, mockPastRounds } from './mocks';
-import { DraftHeader } from './components/layout/DraftHeader';
-import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
-import { ChatLogSection } from './components/chat/ChatLogSection';
+import { useState } from 'react';
+import { UserRoundDetailModal } from '../UserRoundDetailModal';
 import { ActionPanel } from './components/actions/ActionPanel';
-import { InputModal } from './components/modals/InputModal';
-import { TabNavigation } from './components/layout/TabNavigation';
 import { FloatingActionButton } from './components/actions/FloatingActionButton';
+import { ChatLogSection } from './components/chat/ChatLogSection';
+import { DraftHeader } from './components/layout/DraftHeader';
+import { TabNavigation } from './components/layout/TabNavigation';
+import { InputModal } from './components/modals/InputModal';
 import { OptionsModal } from './components/modals/OptionsModal';
+import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
+import { mockParticipants, mockPastRounds } from './mocks';
 
 interface DraftPageProps {
   roundNumber?: number;
@@ -38,12 +38,15 @@ interface DraftPageProps {
   }[];
   currentRoundTopic?: string;
   logCount?: number;
-  onUpdateSelections?: (roundNumber: number, selections: {
-    userId: string;
-    userName: string;
-    item: string;
-    comment?: string;
-  }[]) => void;
+  onUpdateSelections?: (
+    roundNumber: number,
+    selections: {
+      userId: string;
+      userName: string;
+      item: string;
+      comment?: string;
+    }[],
+  ) => void;
 }
 
 export const DraftPage = ({
@@ -61,7 +64,8 @@ export const DraftPage = ({
   const draftId = params?.id as string;
 
   // 内部状態の初期化
-  const [internalCurrentUserSelection, setInternalCurrentUserSelection] = useState('');
+  const [internalCurrentUserSelection, setInternalCurrentUserSelection] =
+    useState('');
   const [selection, setSelection] = useState('');
   const [comment, setComment] = useState('');
   const [isInputModalOpen, setIsInputModalOpen] = useState(false);
@@ -81,17 +85,19 @@ export const DraftPage = ({
   const _totalRounds = propTotalRounds ?? 5;
   const groupName = propGroupName ?? `ドラフト会議 ${draftId}`;
   const participants = propParticipants ?? mockParticipants;
-  const currentUserSelection = propCurrentUserSelection ?? internalCurrentUserSelection;
+  const currentUserSelection =
+    propCurrentUserSelection ?? internalCurrentUserSelection;
   const pastRounds = propPastRounds ?? mockPastRounds;
   const currentRoundTopic = propCurrentRoundTopic ?? '好きなゲーム';
 
   // イベントハンドラーの設定
-  const handleSubmitSelection = propOnSubmitSelection ?? ((selection: string, comment?: string) => {
-    console.log('選択:', selection, 'コメント:', comment);
-    setInternalCurrentUserSelection(selection);
-    // 実際の実装では、ここでFirestoreに保存
-  });
-
+  const handleSubmitSelection =
+    propOnSubmitSelection ??
+    ((selection: string, comment?: string) => {
+      console.log('選択:', selection, 'コメント:', comment);
+      setInternalCurrentUserSelection(selection);
+      // 実際の実装では、ここでFirestoreに保存
+    });
 
   const handleSubmit = () => {
     if (selection.trim()) {
@@ -121,12 +127,15 @@ export const DraftPage = ({
     });
   };
 
-  const handleSaveUserSelection = (roundNumber: number, selection: {
-    userId: string;
-    userName: string;
-    item: string;
-    comment?: string;
-  }) => {
+  const handleSaveUserSelection = (
+    roundNumber: number,
+    selection: {
+      userId: string;
+      userName: string;
+      item: string;
+      comment?: string;
+    },
+  ) => {
     console.log('ユーザー選択保存:', { roundNumber, selection });
     // 実際の実装では、ここでFirestoreに保存
     // 今回はコンソールログのみ
@@ -155,9 +164,9 @@ export const DraftPage = ({
   };
 
   return (
-    <Container 
-      maxW="1600px" 
-      p={{ base: 2, md: 3, lg: 4 }} 
+    <Container
+      maxW="1600px"
+      p={{ base: 2, md: 3, lg: 4 }}
       minH="100vh"
       position="relative"
       _before={{
@@ -177,16 +186,13 @@ export const DraftPage = ({
       }}
     >
       {/* Header */}
-      <DraftHeader 
-        groupName={groupName}
-        onOpenOptions={handleOpenOptions}
-      />
+      <DraftHeader groupName={groupName} onOpenOptions={handleOpenOptions} />
 
       {/* Main Layout - Responsive Design */}
       {/* Mobile: Tab Navigation */}
-      <VStack 
-        gap={{ base: 3, md: 4 }} 
-        align="stretch" 
+      <VStack
+        gap={{ base: 3, md: 4 }}
+        align="stretch"
         display={{ base: 'flex', lg: 'none' }}
       >
         <TabNavigation
@@ -238,18 +244,25 @@ export const DraftPage = ({
       />
 
       {/* User Round Detail Modal */}
-      {userRoundDetailModal.selectedRound && userRoundDetailModal.selectedUserId && (
-        <UserRoundDetailModal
-          isOpen={userRoundDetailModal.isOpen}
-          onClose={handleCloseUserRoundDetail}
-          roundNumber={userRoundDetailModal.selectedRound}
-          participant={participants.find(p => p.id === userRoundDetailModal.selectedUserId) || participants[0]}
-          initialSelection={pastRounds
-            .find(r => r.roundNumber === userRoundDetailModal.selectedRound)
-            ?.selections.find(s => s.userId === userRoundDetailModal.selectedUserId)}
-          onSaveSelection={handleSaveUserSelection}
-        />
-      )}
+      {userRoundDetailModal.selectedRound &&
+        userRoundDetailModal.selectedUserId && (
+          <UserRoundDetailModal
+            isOpen={userRoundDetailModal.isOpen}
+            onClose={handleCloseUserRoundDetail}
+            roundNumber={userRoundDetailModal.selectedRound}
+            participant={
+              participants.find(
+                (p) => p.id === userRoundDetailModal.selectedUserId,
+              ) || participants[0]
+            }
+            initialSelection={pastRounds
+              .find((r) => r.roundNumber === userRoundDetailModal.selectedRound)
+              ?.selections.find(
+                (s) => s.userId === userRoundDetailModal.selectedUserId,
+              )}
+            onSaveSelection={handleSaveUserSelection}
+          />
+        )}
 
       {/* Options Modal */}
       <OptionsModal
@@ -259,7 +272,6 @@ export const DraftPage = ({
         onOpenSettings={handleOpenSettings}
         onOpenHelp={handleOpenHelp}
       />
-
     </Container>
   );
 };

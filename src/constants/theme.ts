@@ -18,7 +18,7 @@ export const THEME_COLORS = {
     800: 'green.800',
     900: 'green.900',
   },
-  
+
   // ボーダー色
   border: {
     light: 'green.200',
@@ -27,14 +27,14 @@ export const THEME_COLORS = {
     strong: 'green.500',
     dark: 'green.600',
   },
-  
+
   // テキスト色
   text: {
     primary: 'green.700',
     secondary: 'green.600',
     emphasis: 'green.800',
   },
-  
+
   // ダークモード対応
   dark: {
     bg: 'green.800/40',
@@ -56,7 +56,7 @@ export const THEME_GRADIENTS = {
     accent: 'linear(to-r, green.400, green.500, green.400)',
     subtle: 'linear(to-br, green.50, green.100)',
   },
-  
+
   // ダークモード
   dark: {
     primary: 'linear(to-r, green.800/40, green.900/40)',
@@ -74,7 +74,7 @@ export const THEME_SHADOWS = {
   button: '0 8px 25px -8px rgba(34, 197, 94, 0.5)',
   buttonHover: '0 12px 35px -8px rgba(34, 197, 94, 0.6)',
   modal: '0 10px 30px -10px rgba(34, 197, 94, 0.25)',
-  
+
   // ダークモード用シャドウ
   dark: {
     card: '0 0 20px rgba(34, 197, 94, 0.5), 0 0 40px rgba(34, 197, 94, 0.2)',
@@ -105,7 +105,7 @@ export const COMPONENT_THEMES = {
       accent: THEME_GRADIENTS.dark.accent,
     },
   },
-  
+
   // 過去ラウンド表示
   pastRound: {
     light: {
@@ -125,7 +125,7 @@ export const COMPONENT_THEMES = {
       separatorColor: THEME_COLORS.primary[800],
     },
   },
-  
+
   // チャットログセクション
   chatLog: {
     light: {
@@ -143,7 +143,7 @@ export const COMPONENT_THEMES = {
       topBorder: THEME_GRADIENTS.dark.accent,
     },
   },
-  
+
   // ボタン系
   button: {
     primary: {
@@ -164,7 +164,7 @@ export const COMPONENT_THEMES = {
       darkHoverBoxShadow: THEME_SHADOWS.dark.buttonHover,
     },
   },
-  
+
   // インプット・モーダル系
   input: {
     focusBorderColor: THEME_COLORS.border.strong,
@@ -180,7 +180,7 @@ export const getThemeValue = (light: string, dark: string) => ({
   _dark: { value: dark },
 });
 
-export const getComponentTheme = (component: keyof typeof COMPONENT_THEMES) => 
+export const getComponentTheme = (component: keyof typeof COMPONENT_THEMES) =>
   COMPONENT_THEMES[component];
 
 // 📝 使用例コメント

@@ -1,5 +1,5 @@
-import { Button } from '@chakra-ui/react';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
+import { Button } from '@chakra-ui/react';
 
 interface SelectionButtonProps {
   onClick: () => void;
@@ -7,7 +7,7 @@ interface SelectionButtonProps {
 
 export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
   const buttonTheme = COMPONENT_THEMES.button.primary;
-  
+
   return (
     <Button
       size="md"

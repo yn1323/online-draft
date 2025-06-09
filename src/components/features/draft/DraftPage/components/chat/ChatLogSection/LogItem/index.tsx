@@ -1,11 +1,4 @@
-import {
-  Box,
-  Flex,
-  HStack,
-  Image,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Flex, HStack, Image, Text, VStack } from '@chakra-ui/react';
 import { formatTime, getSystemLogStyle } from './utils';
 
 export interface LogMessage {
@@ -80,7 +73,7 @@ export const LogItem = ({ log }: LogItemProps) => {
   }
 
   const style = getSystemLogStyle(
-    log.type as 'system' | 'draft_result' | 'selection_change'
+    log.type as 'system' | 'draft_result' | 'selection_change',
   );
 
   if (log.type === 'selection_change' && log.selectionChange) {

@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { UserRoundDetailModal } from './index';
-import { useState } from 'react';
 import { Button, VStack } from '@chakra-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
+import { useState } from 'react';
+import { UserRoundDetailModal } from './index';
 
 const meta: Meta<typeof UserRoundDetailModal> = {
   title: 'Features/Draft/UserRoundDetailModal',
@@ -39,12 +39,15 @@ interface WrapperProps {
     item: string;
     comment?: string;
   };
-  onSaveSelection?: (roundNumber: number, selection: {
-    userId: string;
-    userName: string;
-    item: string;
-    comment?: string;
-  }) => void;
+  onSaveSelection?: (
+    roundNumber: number,
+    selection: {
+      userId: string;
+      userName: string;
+      item: string;
+      comment?: string;
+    },
+  ) => void;
 }
 
 // 基本的なコンポーネント（ラッパー）
@@ -76,7 +79,7 @@ const sampleParticipant = {
 };
 
 export const Default: Story = {
-  render: (args) => <UserRoundDetailModalWrapper {...args as WrapperProps} />,
+  render: (args) => <UserRoundDetailModalWrapper {...(args as WrapperProps)} />,
   args: {
     roundNumber: 3,
     participant: sampleParticipant,
@@ -90,7 +93,7 @@ export const Default: Story = {
 };
 
 export const EmptySelection: Story = {
-  render: (args) => <UserRoundDetailModalWrapper {...args as WrapperProps} />,
+  render: (args) => <UserRoundDetailModalWrapper {...(args as WrapperProps)} />,
   args: {
     roundNumber: 1,
     participant: sampleParticipant,
@@ -99,7 +102,7 @@ export const EmptySelection: Story = {
 };
 
 export const LongContent: Story = {
-  render: (args) => <UserRoundDetailModalWrapper {...args as WrapperProps} />,
+  render: (args) => <UserRoundDetailModalWrapper {...(args as WrapperProps)} />,
   args: {
     roundNumber: 5,
     participant: {
@@ -111,13 +114,14 @@ export const LongContent: Story = {
       userId: 'user2',
       userName: '佐藤花子',
       item: '夏目漱石の「こころ」',
-      comment: '高校生の時に読んで、人間関係の複雑さや心の動きについて深く考えさせられました。特に先生と私の関係性が印象的で、今でも人との関わり方の参考にしています。',
+      comment:
+        '高校生の時に読んで、人間関係の複雑さや心の動きについて深く考えさせられました。特に先生と私の関係性が印象的で、今でも人との関わり方の参考にしています。',
     },
   },
 };
 
 export const DifferentAvatar: Story = {
-  render: (args) => <UserRoundDetailModalWrapper {...args as WrapperProps} />,
+  render: (args) => <UserRoundDetailModalWrapper {...(args as WrapperProps)} />,
   args: {
     roundNumber: 2,
     participant: {

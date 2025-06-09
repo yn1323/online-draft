@@ -1,5 +1,5 @@
+import { HStack, Text, VStack } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { HStack, VStack, Text } from '@chakra-ui/react';
 import { AnimatedButton } from './index';
 
 const meta = {
@@ -54,7 +54,11 @@ export const AllAnimations: Story = {
         {(['lift', 'bounce', 'pulse', 'glow', 'scale'] as const).map(
           (animationType) => (
             <VStack key={animationType} gap={2}>
-              <Text fontSize="sm" color="gray.600" _dark={{ color: 'gray.300' }}>
+              <Text
+                fontSize="sm"
+                color="gray.600"
+                _dark={{ color: 'gray.300' }}
+              >
                 {animationType}
               </Text>
               <AnimatedButton
@@ -66,7 +70,7 @@ export const AllAnimations: Story = {
                 ボタン
               </AnimatedButton>
             </VStack>
-          )
+          ),
         )}
       </VStack>
     </VStack>
@@ -143,11 +147,7 @@ export const DisabledState: Story = {
         無効状態
       </Text>
       <HStack gap={4}>
-        <AnimatedButton
-          animationType="lift"
-          colorPalette="gray"
-          disabled
-        >
+        <AnimatedButton animationType="lift" colorPalette="gray" disabled>
           無効なボタン
         </AnimatedButton>
         <AnimatedButton

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 /**
  * ステップナビゲーションフック
@@ -14,7 +14,12 @@ export interface StepNavigation {
 export const useStepNavigation = (initialStep: LobbyStep = 'user-select') => {
   const [currentStep, setCurrentStep] = useState<LobbyStep>(initialStep);
 
-  const stepOrder: LobbyStep[] = ['user-select', 'user-create', 'waiting', 'ready'];
+  const stepOrder: LobbyStep[] = [
+    'user-select',
+    'user-create',
+    'waiting',
+    'ready',
+  ];
 
   const getCurrentStepIndex = useCallback(() => {
     return stepOrder.indexOf(currentStep);

@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "biome lint app src e2e",
+    "lint": "biome lint app src e2e scripts",
     "lint:fix": "biome check --write app src",
     "test": "vitest",
     "type-check": "tsc",
@@ -22,7 +22,8 @@
     "e2e:report": "playwright show-report",
     "e2e:codegen": "playwright codegen",
     "upload-secrets": "tsx scripts/upload-secrets.ts",
-    "notify": "tsx scripts/notify-completion.ts"
+    "notify:desktop": "tsx scripts/notify-desktop.ts",
+    "notify:slack": "tsx scripts/notify-slack.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.19.2",

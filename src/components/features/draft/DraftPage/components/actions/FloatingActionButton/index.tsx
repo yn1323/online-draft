@@ -1,15 +1,17 @@
 'use client';
 
-import { Button } from '@chakra-ui/react';
 import { COMPONENT_THEMES } from '@/src/constants/theme';
+import { Button } from '@chakra-ui/react';
 
 interface FloatingActionButtonProps {
   onClick: () => void;
 }
 
-export const FloatingActionButton = ({ onClick }: FloatingActionButtonProps) => {
+export const FloatingActionButton = ({
+  onClick,
+}: FloatingActionButtonProps) => {
   const buttonTheme = COMPONENT_THEMES.button.floating;
-  
+
   return (
     <Button
       position="fixed"

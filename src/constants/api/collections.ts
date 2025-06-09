@@ -12,12 +12,12 @@ export const FIREBASE_CONFIG = {
     MESSAGES: 'messages',
     DEV_TEST: 'yn1323test', // legacy互換
   },
-  
+
   /** API設定 */
   ENDPOINTS: {
     BASE_URL: process.env.NODE_ENV === 'production' ? '' : '',
   },
-  
+
   /** 環境設定 */
   ENV: {
     IS_PRODUCTION: process.env.NODE_ENV === 'production',
@@ -48,14 +48,14 @@ export const API_CONSTANTS = {
     NOT_FOUND: 404,
     INTERNAL_SERVER_ERROR: 500,
   },
-  
+
   /** リクエストタイムアウト */
   TIMEOUTS: {
     DEFAULT: 10000,
     UPLOAD: 30000,
     DOWNLOAD: 60000,
   },
-  
+
   /** ページネーション */
   PAGINATION: {
     DEFAULT_PAGE_SIZE: 20,

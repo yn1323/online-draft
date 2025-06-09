@@ -117,7 +117,8 @@ export const ThemeCard = ({
           _dark: {
             bgGradient: theme.dark.bgGradient,
             borderColor: theme.dark.borderColor,
-            boxShadow: '0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.1)',
+            boxShadow:
+              '0 0 30px rgba(59, 130, 246, 0.3), 0 0 60px rgba(59, 130, 246, 0.1)',
           },
         };
       case 'outline':

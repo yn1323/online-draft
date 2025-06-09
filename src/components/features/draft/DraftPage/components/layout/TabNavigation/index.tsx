@@ -1,10 +1,10 @@
 'use client';
 
-import { Box, HStack, Button, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
-import { RoundHistoryTable } from '../../rounds/RoundHistoryTable';
-import { ChatLogSection } from '../../chat/ChatLogSection';
 import { ConditionalFloatingButton } from '../../actions/ConditionalFloatingButton';
+import { ChatLogSection } from '../../chat/ChatLogSection';
+import { RoundHistoryTable } from '../../rounds/RoundHistoryTable';
 
 interface TabNavigationProps {
   roundNumber: number;
@@ -44,10 +44,10 @@ export const TabNavigation = ({
   return (
     <VStack gap={0} align="stretch">
       {/* Tab Navigation */}
-      <HStack 
-        gap={0} 
-        bg="white" 
-        borderRadius="lg" 
+      <HStack
+        gap={0}
+        bg="white"
+        borderRadius="lg"
         p={1}
         boxShadow="sm"
         mx={0}
@@ -92,15 +92,13 @@ export const TabNavigation = ({
             onOpenInputModal={onOpenInputModal}
           />
         )}
-        {activeTab === 'chat' && (
-          <ChatLogSection />
-        )}
+        {activeTab === 'chat' && <ChatLogSection />}
       </Box>
-      
+
       {/* Conditional Floating Button */}
-      <ConditionalFloatingButton 
-        activeTab={activeTab} 
-        onClick={onOpenInputModal} 
+      <ConditionalFloatingButton
+        activeTab={activeTab}
+        onClick={onOpenInputModal}
       />
     </VStack>
   );

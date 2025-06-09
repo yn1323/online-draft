@@ -65,7 +65,8 @@
       "Bash(brew install:*)",
       "Bash(terminal-notifier:*)",
       "Bash(pnpm e2e:*)",
-      "Bash(pnpm storybook:test-ci:*)"
+      "Bash(pnpm storybook:test-ci:*)",
+      "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")"
     ],
     "deny": []
   }

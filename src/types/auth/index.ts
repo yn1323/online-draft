@@ -5,7 +5,11 @@
 import type { BaseEntity, ID, Timestamp } from '../common/base';
 
 // 認証状態
-export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated' | 'error';
+export type AuthStatus =
+  | 'loading'
+  | 'authenticated'
+  | 'unauthenticated'
+  | 'error';
 
 // ユーザー
 export interface AuthUser {
@@ -91,7 +95,15 @@ export interface ProfileUpdateFormData {
 
 // 認証エラー
 export interface AuthError {
-  code: 'auth/user-not-found' | 'auth/wrong-password' | 'auth/email-already-in-use' | 'auth/weak-password' | 'auth/too-many-requests' | 'auth/network-request-failed' | 'auth/invalid-email' | string;
+  code:
+    | 'auth/user-not-found'
+    | 'auth/wrong-password'
+    | 'auth/email-already-in-use'
+    | 'auth/weak-password'
+    | 'auth/too-many-requests'
+    | 'auth/network-request-failed'
+    | 'auth/invalid-email'
+    | string;
   message: string;
   field?: string;
 }
@@ -114,7 +126,7 @@ export interface AuthContextValue {
   profile: UserProfile | null;
   status: AuthStatus;
   error: AuthError | null;
-  
+
   // アクション
   login: (credentials: LoginFormData) => Promise<void>;
   loginAnonymously: () => Promise<void>;

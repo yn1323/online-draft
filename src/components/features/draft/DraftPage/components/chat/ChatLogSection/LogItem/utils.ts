@@ -6,7 +6,7 @@ export const formatTime = (date: Date) => {
 };
 
 export const getSystemLogStyle = (
-  type: 'system' | 'draft_result' | 'selection_change'
+  type: 'system' | 'draft_result' | 'selection_change',
 ) => {
   switch (type) {
     case 'system':

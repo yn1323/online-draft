@@ -20,7 +20,7 @@ export interface GroupPresence {
 export const updateUserPresence = async (
   _groupId: string,
   _userId: string,
-  _presence: Partial<ParticipantPresence>
+  _presence: Partial<ParticipantPresence>,
 ): Promise<void> => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -31,7 +31,7 @@ export const updateUserPresence = async (
  */
 export const subscribeToUserPresence = (
   _groupId: string,
-  _callback: (users: ParticipantPresence[]) => void
+  _callback: (users: ParticipantPresence[]) => void,
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -42,7 +42,7 @@ export const subscribeToUserPresence = (
  */
 export const subscribeToRounds = (
   _groupId: string,
-  _callback: (rounds: unknown[]) => void
+  _callback: (rounds: unknown[]) => void,
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -53,7 +53,7 @@ export const subscribeToRounds = (
  */
 export const subscribeToChatMessages = (
   _groupId: string,
-  _callback: (messages: unknown[]) => void
+  _callback: (messages: unknown[]) => void,
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -65,7 +65,7 @@ export const subscribeToChatMessages = (
 export const subscribeToUserSelections = (
   _groupId: string,
   _roundNumber: number,
-  _callback: (selections: unknown[]) => void
+  _callback: (selections: unknown[]) => void,
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -76,7 +76,7 @@ export const subscribeToUserSelections = (
  */
 export const subscribeToGroupState = (
   _groupId: string,
-  _callback: (state: unknown) => void
+  _callback: (state: unknown) => void,
 ): RealtimeSubscription => {
   // TODO: Firestore実装
   throw new Error('Not implemented');
@@ -88,7 +88,7 @@ export const subscribeToGroupState = (
 export const connectUser = async (
   groupId: string,
   userId: string,
-  _userName: string
+  _userName: string,
 ): Promise<void> => {
   await updateUserPresence(groupId, userId, {
     userId,
@@ -102,7 +102,7 @@ export const connectUser = async (
  */
 export const disconnectUser = async (
   groupId: string,
-  userId: string
+  userId: string,
 ): Promise<void> => {
   await updateUserPresence(groupId, userId, {
     status: 'offline',

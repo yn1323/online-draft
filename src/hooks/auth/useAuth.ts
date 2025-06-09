@@ -79,4 +79,3 @@ export function useAuth() {
     isAnonymous: user?.isAnonymous || false,
   };
 }
-

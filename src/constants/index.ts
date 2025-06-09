@@ -8,7 +8,7 @@ export * from './ui';
 // アプリ固有
 export * from './app';
 
-// API関連  
+// API関連
 export * from './api';
 
 // バリデーション

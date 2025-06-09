@@ -20,10 +20,10 @@ export const ChatLogSection = ({
       border="2px solid"
       borderColor="green.300"
       boxShadow="0 10px 30px -10px rgba(34, 197, 94, 0.25)"
-      h={{ 
-        base: 'calc(100vh - 140px)', 
+      h={{
+        base: 'calc(100vh - 140px)',
         md: 'calc(100vh - 150px)',
-        lg: 'calc(100vh - 160px)' 
+        lg: 'calc(100vh - 160px)',
       }}
       minH={{ base: '350px', md: '450px', lg: '500px' }}
       display="flex"
@@ -33,7 +33,8 @@ export const ChatLogSection = ({
       _dark={{
         bgGradient: 'linear(135deg, green.900/40, green.800/40)',
         borderColor: 'green.600',
-        boxShadow: '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
+        boxShadow:
+          '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
       }}
       _before={{
         content: '""',

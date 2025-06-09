@@ -1,17 +1,14 @@
 'use client';
 
-import { Flex, Text, HStack, IconButton } from '@chakra-ui/react';
 import { toaster } from '@/src/components/ui/toaster';
+import { Flex, HStack, IconButton, Text } from '@chakra-ui/react';
 
 interface DraftHeaderProps {
   groupName: string;
   onOpenOptions?: () => void;
 }
 
-export const DraftHeader = ({ 
-  groupName, 
-  onOpenOptions 
-}: DraftHeaderProps) => {
+export const DraftHeader = ({ groupName, onOpenOptions }: DraftHeaderProps) => {
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -32,17 +29,11 @@ export const DraftHeader = ({
   };
 
   return (
-    <Flex 
-      justify="space-between" 
-      align="center"
-      mb={4}
-      py={0}
-      px={0}
-    >
+    <Flex justify="space-between" align="center" mb={4} py={0} px={0}>
       {/* 左側: ドラフト会議名 */}
-      <Text 
-        fontSize={{ base: 'md', md: 'lg' }} 
-        fontWeight="bold" 
+      <Text
+        fontSize={{ base: 'md', md: 'lg' }}
+        fontWeight="bold"
         color="gray.800"
         _dark={{ color: 'white' }}
         truncate
@@ -63,7 +54,7 @@ export const DraftHeader = ({
           onClick={handleCopyUrl}
           _hover={{
             bg: 'green.50',
-            _dark: { bg: 'green.900/20' }
+            _dark: { bg: 'green.900/20' },
           }}
         >
           <Text fontSize="md">📋</Text>
@@ -78,7 +69,7 @@ export const DraftHeader = ({
           onClick={onOpenOptions}
           _hover={{
             bg: 'gray.50',
-            _dark: { bg: 'gray.700' }
+            _dark: { bg: 'gray.700' },
           }}
         >
           <Text fontSize="md">⚙️</Text>

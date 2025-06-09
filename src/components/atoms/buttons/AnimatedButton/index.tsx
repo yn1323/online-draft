@@ -104,10 +104,7 @@ export const AnimatedButton = ({
   };
 
   return (
-    <Button
-      {...getAnimationStyles()}
-      {...props}
-    >
+    <Button {...getAnimationStyles()} {...props}>
       {children}
     </Button>
   );

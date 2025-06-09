@@ -2,7 +2,7 @@
 
 import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
-import { createUser, checkUserNameExists } from '@/src/helpers/firebase/user';
+import { checkUserNameExists, createUser } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { useAutoAuth } from '@/src/hooks/auth/useAutoAuth';
 import { useGroupData } from '@/src/hooks/data/useGroupData';
@@ -12,7 +12,6 @@ import {
   userRegistrationErrorAtom,
   userRegistrationLoadingAtom,
 } from '@/src/stores/user';
-import { AVATAR_IMAGES } from './mocks';
 import {
   Badge,
   Box,
@@ -28,7 +27,10 @@ import { useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
 import UserSelectStep from '../UserSelectStep';
-import StepIndicator, { type Step } from '../components/indicators/StepIndicator';
+import StepIndicator, {
+  type Step,
+} from '../components/indicators/StepIndicator';
+import { AVATAR_IMAGES } from './mocks';
 
 interface LobbyPageProps {
   groupId: string;
@@ -45,8 +47,12 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   // Jotai状態管理
   const setCurrentUser = useSetAtom(currentUserAtom);
-  const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(userRegistrationLoadingAtom);
-  const [userRegistrationError, setUserRegistrationError] = useAtom(userRegistrationErrorAtom);
+  const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(
+    userRegistrationLoadingAtom,
+  );
+  const [userRegistrationError, setUserRegistrationError] = useAtom(
+    userRegistrationErrorAtom,
+  );
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
@@ -213,8 +219,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
           {step === 'select' && (
             <UserSelectStep
               users={groupUsers
-                .filter(user => user.userId) // userIdが存在するもののみ
-                .map(user => ({
+                .filter((user) => user.userId) // userIdが存在するもののみ
+                .map((user) => ({
                   userId: user.userId as string, // フィルター後は必ず存在
                   userName: user.userName,
                   avatarIndex: user.avatar,
@@ -249,7 +255,12 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               borderColor: 'red.700',
             }}
           >
-            <Text fontSize="sm" color="red.700" _dark={{ color: 'red.300' }} fontWeight="medium">
+            <Text
+              fontSize="sm"
+              color="red.700"
+              _dark={{ color: 'red.300' }}
+              fontWeight="medium"
+            >
               ❌ {userRegistrationError}
             </Text>
           </Box>
@@ -275,4 +286,3 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     </Container>
   );
 }
-

@@ -39,4 +39,3 @@ export const isProduction = (): boolean => {
 export const isTest = (): boolean => {
   return process.env.NODE_ENV === 'test';
 };
-

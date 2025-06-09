@@ -84,7 +84,7 @@ export const ANIMATION_EFFECTS = {
  */
 export const createTransition = (
   duration: keyof typeof ANIMATION_DURATIONS = 'standard',
-  easing: keyof typeof ANIMATION_EASINGS = 'ease'
+  easing: keyof typeof ANIMATION_EASINGS = 'ease',
 ): string => {
   return `all ${ANIMATION_DURATIONS[duration]} ${ANIMATION_EASINGS[easing]}`;
 };
@@ -94,7 +94,7 @@ export const createTransition = (
  */
 export const createHoverEffect = (
   effect: keyof typeof ANIMATION_EFFECTS,
-  transition: string = TRANSITIONS.default
+  transition: string = TRANSITIONS.default,
 ) => {
   return {
     transition,

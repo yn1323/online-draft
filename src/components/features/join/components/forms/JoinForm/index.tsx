@@ -1,11 +1,12 @@
 'use client';
 
-import { Box, Button, HStack, Input, Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { IoEnter } from 'react-icons/io5';
 
-import { Field } from '@/src/components/ui/field';
+import { FormButton } from '@/src/components/atoms/buttons/FormButton';
+import { ThemeInput } from '@/src/components/atoms/inputs/ThemeInput';
 import {
   type JoinMeetingForm,
   joinMeetingSchema,
@@ -51,47 +52,36 @@ export default function JoinForm({
         borderColor: 'blue.700',
       }}
     >
-      <VStack gap={4}>
-        <Field
+      <VStack gap={4} align="stretch">
+        <ThemeInput
           label="参加コード"
-          invalid={!!errors.meetingInput}
+          placeholder="ABC123 または招待リンク"
+          disabled={isLoading}
+          size="lg"
+          bg="white"
+          _dark={{ bg: 'gray.800' }}
           errorText={errors.meetingInput?.message}
-        >
-          <Input
-            {...register('meetingInput')}
-            placeholder="ABC123 または招待リンク"
-            disabled={isLoading}
-            size="lg"
-            bg="white"
-            borderColor={errors.meetingInput ? 'red.300' : 'blue.300'}
-            _dark={{
-              bg: 'gray.800',
-              borderColor: errors.meetingInput ? 'red.400' : 'blue.500',
-            }}
-            _focus={{ borderColor: 'blue.500' }}
-            aria-label="参加コードまたは招待リンク"
-          />
-        </Field>
+          invalid={!!errors.meetingInput}
+          {...register('meetingInput')}
+        />
 
-        <Button
+        <FormButton
           colorPalette="blue"
           size="lg"
           width="full"
-          disabled={!isValid || isLoading}
-          loading={isLoading}
+          isLoading={isLoading}
+          isValid={isValid}
+          loadingText="参加中..."
           onClick={handleSubmit(handleFormSubmit)}
           fontSize={{ base: 'sm', md: 'md' }}
           fontWeight="bold"
-          _hover={{
-            bg: 'blue.600',
-          }}
           aria-label="グループに参加する"
         >
           <HStack gap={2}>
             <IoEnter size={18} aria-hidden="true" />
-            <Text>参加する</Text>
+            参加する
           </HStack>
-        </Button>
+        </FormButton>
       </VStack>
     </Box>
   );

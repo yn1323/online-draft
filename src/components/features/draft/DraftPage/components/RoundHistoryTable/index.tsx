@@ -1,5 +1,5 @@
 import { Box, Text, VStack, useBreakpointValue } from '@chakra-ui/react';
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { CurrentRoundRow } from '../CurrentRoundRow';
 import { PastRoundRow } from '../PastRoundRow';
 import { SelectionButton } from '../SelectionButton';
@@ -26,29 +26,29 @@ interface RoundHistoryTableProps {
   onOpenInputModal: () => void;
 }
 
-export const RoundHistoryTable = ({ 
-  roundNumber, 
-  participants, 
-  pastRounds, 
+export const RoundHistoryTable = ({
+  roundNumber,
+  participants,
+  pastRounds,
   onRoundClick,
-  onOpenInputModal
+  onOpenInputModal,
 }: RoundHistoryTableProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  
+
   // SP版折りたたみ状態管理（最新2ラウンドのみデフォルト展開）
   const [expandedRounds, setExpandedRounds] = useState<Set<number>>(() => {
-    if (pastRounds.length === 0) { 
-      return new Set(); 
+    if (pastRounds.length === 0) {
+      return new Set();
     }
     const latestRounds = pastRounds
       .slice(-2) // 最新2ラウンド
-      .map(round => round.roundNumber);
+      .map((round) => round.roundNumber);
     return new Set(latestRounds);
   });
 
   // 折りたたみトグル関数
   const toggleRound = (roundNumber: number) => {
-    setExpandedRounds(prev => {
+    setExpandedRounds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(roundNumber)) {
         newSet.delete(roundNumber);
@@ -71,7 +71,8 @@ export const RoundHistoryTable = ({
       _dark={{
         bgGradient: 'linear(135deg, green.900/40, teal.900/40)',
         borderColor: 'green.600',
-        boxShadow: '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
+        boxShadow:
+          '0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)',
       }}
       _before={{
         content: '""',
@@ -88,15 +89,15 @@ export const RoundHistoryTable = ({
     >
       {/* Header with Action Button */}
       <Box position="relative" mb={{ base: 4, md: 5, lg: 6 }}>
-        <Text 
-          fontSize={{ base: 'lg', md: 'xl' }} 
-          fontWeight="bold" 
-          color="green.700" 
+        <Text
+          fontSize={{ base: 'lg', md: 'xl' }}
+          fontWeight="bold"
+          color="green.700"
           _dark={{ color: 'green.200' }}
         >
           📊 ラウンド ({pastRounds.length})
         </Text>
-        
+
         {/* Selection Button - PC Only, positioned absolutely */}
         <Box
           position="absolute"
@@ -123,17 +124,30 @@ export const RoundHistoryTable = ({
             opacity: 0.9,
           }}
         >
-          <Text fontSize="md" color="green.500" fontWeight="medium" _dark={{ color: 'green.300' }}>
+          <Text
+            fontSize="md"
+            color="green.500"
+            fontWeight="medium"
+            _dark={{ color: 'green.300' }}
+          >
             📝 ラウンドがまだ開始されていません
           </Text>
-          <Text fontSize="sm" color="green.400" mt={2} _dark={{ color: 'green.400' }}>
+          <Text
+            fontSize="sm"
+            color="green.400"
+            mt={2}
+            _dark={{ color: 'green.400' }}
+          >
             ラウンドが開始されると、各ラウンドの情報が表示されます
           </Text>
         </Box>
       ) : (
         <VStack gap={4} align="stretch">
           {/* Current Round Row */}
-          <CurrentRoundRow roundNumber={roundNumber} participants={participants} />
+          <CurrentRoundRow
+            roundNumber={roundNumber}
+            participants={participants}
+          />
 
           {/* Past Rounds */}
           {pastRounds.map((round) => (
@@ -142,8 +156,12 @@ export const RoundHistoryTable = ({
               round={round}
               participants={participants}
               onRoundClick={onRoundClick}
-              isExpanded={isMobile ? expandedRounds.has(round.roundNumber) : true}
-              onToggleExpand={isMobile ? () => toggleRound(round.roundNumber) : undefined}
+              isExpanded={
+                isMobile ? expandedRounds.has(round.roundNumber) : true
+              }
+              onToggleExpand={
+                isMobile ? () => toggleRound(round.roundNumber) : undefined
+              }
             />
           ))}
         </VStack>

@@ -6,7 +6,11 @@ interface DraftHeaderProps {
   groupName: string;
 }
 
-export const DraftHeader = ({ roundNumber, totalRounds, groupName }: DraftHeaderProps) => {
+export const DraftHeader = ({
+  roundNumber,
+  totalRounds,
+  groupName,
+}: DraftHeaderProps) => {
   return (
     <Flex justify="space-between" align="center" mb={6}>
       <Text fontSize="lg" fontWeight="bold" _dark={{ color: 'white' }}>

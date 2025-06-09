@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Grid, Text, VStack } from '@chakra-ui/react';
+import type { Meta, StoryObj } from '@storybook/react';
 import { ThemeCard } from './index';
 
 const meta = {
@@ -60,7 +60,7 @@ export const AllColorSchemes: Story = {
               </Text>
             </VStack>
           </ThemeCard>
-        )
+        ),
       )}
     </Grid>
   ),

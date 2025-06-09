@@ -19,8 +19,7 @@ export const MOCK_USERS = [
 export const STORYBOOK_GROUP_DATA = {
   ABC123: { groupName: 'テストグループ 1', round: 3 },
   XYZ789: {
-    groupName:
-      '非常に長いグループ名のテストケースです！これは表示の確認用',
+    groupName: '非常に長いグループ名のテストケースです！これは表示の確認用',
     round: 5,
   },
   '12': { groupName: '短ID', round: 1 },
