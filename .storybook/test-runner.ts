@@ -5,7 +5,7 @@ const config: TestRunnerConfig = {
   async postVisit(page, context) {
     try {
       // コンテキスト初期化を短時間で確認
-      await page.waitForFunction(() => globalThis.__getContext !== undefined, {
+      await page.waitForFunction(() => (globalThis as any).__getContext !== undefined, {
         timeout: 3000
       });
     } catch (error) {
