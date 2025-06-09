@@ -38,7 +38,7 @@ jobs:
         run: sudo apt-get install fonts-ipafont-gothic
 
       - name: Run Storybook tests
-        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm storybook" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test --testTimeout 30000"
+        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm storybook" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm dlx wait-on http://127.0.0.1:6006/iframe.html && sleep 3 && pnpm storybook:test --testTimeout 30000 --maxWorkers=1"
 
       - name: Upload test results
         if: failure()
