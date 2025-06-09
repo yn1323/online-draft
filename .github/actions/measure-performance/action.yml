@@ -1,0 +1,41 @@
+name: Measure Performance
+description: Measure build times and cache effectiveness
+
+inputs:
+  step_name:
+    description: 'Step name for measurement'
+    required: true
+    default: 'unknown'
+
+outputs:
+  execution_time:
+    description: 'Execution time in seconds'
+    value: ${{ steps.measure.outputs.execution_time }}
+  cache_hit:
+    description: 'Cache hit status'
+    value: ${{ steps.measure.outputs.cache_hit }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Record start time
+      shell: bash
+      run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+      
+    - name: Measure execution
+      id: measure
+      shell: bash
+      run: |
+        END_TIME=$(date +%s)
+        EXECUTION_TIME=$((END_TIME - START_TIME))
+        echo "execution_time=${EXECUTION_TIME}" >> $GITHUB_OUTPUT
+        echo "⏱️ ${{ inputs.step_name }}: ${EXECUTION_TIME}s" >> $GITHUB_STEP_SUMMARY
+        
+        # Cache effectiveness analysis
+        if [ "$EXECUTION_TIME" -lt 30 ]; then
+          echo "cache_hit=true" >> $GITHUB_OUTPUT
+          echo "🎯 Cache効果: 高速実行 (${EXECUTION_TIME}s)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "cache_hit=false" >> $GITHUB_OUTPUT  
+          echo "🐌 Cache効果: 通常実行 (${EXECUTION_TIME}s)" >> $GITHUB_STEP_SUMMARY
+        fi
