@@ -1,0 +1,144 @@
+name: CI結果通知
+
+on:
+  workflow_run:
+    workflows:
+      - "Build"
+      - "Lint"
+      - "Type Check"
+      - "Unit Test"
+      - "Storybook Test"
+      - "E2E Test"
+    types:
+      - completed
+    # 全ブランチ監視（branches指定なし）
+
+jobs:
+  notify-ci-result:
+    runs-on: ubuntu-latest
+    # PRまたはデフォルトブランチの場合のみ実行
+    if: >
+      github.event.workflow_run.event == 'pull_request' ||
+      github.event.workflow_run.head_branch == github.event.repository.default_branch
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node.js and pnpm
+        uses: ./.github/actions/setup
+
+      - name: Check all workflow statuses
+        id: check-workflows
+        uses: actions/github-script@v7
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const headSha = context.payload.workflow_run.head_sha;
+            
+            // 必要なワークフロー名
+            const requiredWorkflows = [
+              'Build',
+              'Lint', 
+              'Type Check',
+              'Unit Test',
+              'Storybook Test'
+            ];
+            
+            console.log(`Checking workflows for commit: ${headSha}`);
+            
+            // 該当コミットの全チェック取得
+            const { data: checkRuns } = await github.rest.checks.listForRef({
+              owner,
+              repo,
+              ref: headSha,
+              per_page: 100
+            });
+            
+            console.log(`Found ${checkRuns.check_runs.length} check runs`);
+            
+            // ワークフロー実行状況を確認
+            const workflowStatuses = {};
+            const completedWorkflows = [];
+            
+            for (const checkRun of checkRuns.check_runs) {
+              const workflowName = checkRun.name;
+              console.log(`Check: ${workflowName} - Status: ${checkRun.status} - Conclusion: ${checkRun.conclusion}`);
+              
+              // 必要なワークフローかチェック
+              const matchedWorkflow = requiredWorkflows.find(required => 
+                workflowName.includes(required)
+              );
+              
+              if (matchedWorkflow && checkRun.status === 'completed') {
+                workflowStatuses[matchedWorkflow] = checkRun.conclusion;
+                completedWorkflows.push(matchedWorkflow);
+              }
+            }
+            
+            console.log('Workflow statuses:', workflowStatuses);
+            console.log('Completed workflows:', completedWorkflows);
+            
+            // 全必要ワークフローが完了したか確認
+            const allCompleted = requiredWorkflows.every(workflow => 
+              completedWorkflows.includes(workflow)
+            );
+            
+            console.log(`All workflows completed: ${allCompleted}`);
+            
+            if (allCompleted) {
+              // すべて成功したか確認
+              const allSuccess = Object.values(workflowStatuses).every(conclusion => 
+                conclusion === 'success' || conclusion === 'neutral'
+              );
+              
+              console.log(`All workflows successful: ${allSuccess}`);
+              
+              // 失敗したワークフローリスト
+              const failedWorkflows = Object.entries(workflowStatuses)
+                .filter(([_, conclusion]) => conclusion === 'failure')
+                .map(([name, _]) => name);
+              
+              core.setOutput('all_completed', 'true');
+              core.setOutput('all_success', allSuccess.toString());
+              core.setOutput('failed_workflows', failedWorkflows.join(', '));
+              
+              // PRまたはブランチ情報
+              const prNumber = context.payload.workflow_run.pull_requests[0]?.number;
+              const branchName = context.payload.workflow_run.head_branch;
+              
+              if (prNumber) {
+                core.setOutput('pr_url', `https://github.com/${owner}/${repo}/pull/${prNumber}`);
+                core.setOutput('context_info', `PR #${prNumber}`);
+              } else {
+                core.setOutput('branch_url', `https://github.com/${owner}/${repo}/tree/${branchName}`);
+                core.setOutput('context_info', `Branch: ${branchName}`);
+              }
+            } else {
+              core.setOutput('all_completed', 'false');
+              const pendingWorkflows = requiredWorkflows.filter(workflow => 
+                !completedWorkflows.includes(workflow)
+              );
+              console.log('Pending workflows:', pendingWorkflows);
+            }
+
+      - name: Notify Success
+        if: steps.check-workflows.outputs.all_completed == 'true' && steps.check-workflows.outputs.all_success == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          tsx scripts/notify-slack.ts success \
+            "CI完了 🎉" \
+            "${{ steps.check-workflows.outputs.context_info }} - 全チェック通過！" \
+            "GitHub Actions"
+
+      - name: Notify Failure
+        if: steps.check-workflows.outputs.all_completed == 'true' && steps.check-workflows.outputs.all_success != 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          tsx scripts/notify-slack.ts error \
+            "CI失敗 ❌" \
+            "${{ steps.check-workflows.outputs.context_info }} - 失敗: ${{ steps.check-workflows.outputs.failed_workflows }}"
