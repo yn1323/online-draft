@@ -16,6 +16,8 @@ on:
 jobs:
   notify-ci-result:
     runs-on: ubuntu-latest
+    # PRの場合のみ実行
+    if: github.event.workflow_run.event == 'pull_request'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,6 +56,7 @@ jobs:
             let hasError = false;
             let allCompleted = true;
             let allSuccess = true;
+            const failedChecks = [];
             
             for (const check of relevantChecks) {
               console.log(`  ${check.name}: ${check.status} - ${check.conclusion}`);
@@ -63,6 +66,7 @@ jobs:
               } else if (check.conclusion === 'failure') {
                 hasError = true;
                 allSuccess = false;
+                failedChecks.push(check.name);
               } else if (check.conclusion !== 'success' && check.conclusion !== 'neutral') {
                 allSuccess = false;
               }
@@ -84,6 +88,28 @@ jobs:
             
             core.setOutput('head_sha', headSha);
             core.setOutput('cache_key', cacheKey);
+            core.setOutput('failed_checks', failedChecks.join(', '));
+            
+            // PR情報取得
+            const prNumber = context.payload.workflow_run.pull_requests[0]?.number;
+            if (prNumber) {
+              core.setOutput('pr_url', `https://github.com/${owner}/${repo}/pull/${prNumber}`);
+              core.setOutput('pr_number', prNumber);
+              
+              // PR詳細情報取得
+              try {
+                const { data: pr } = await github.rest.pulls.get({
+                  owner,
+                  repo,
+                  pull_number: prNumber
+                });
+                core.setOutput('pr_title', pr.title);
+                console.log(`📝 PR Title: ${pr.title}`);
+              } catch (error) {
+                console.log('📝 Failed to get PR title');
+                core.setOutput('pr_title', '');
+              }
+            }
             
             // 判定ロジック
             if (hasError && !errorNotified) {
@@ -121,29 +147,42 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          prNumber="${{ github.event.workflow_run.pull_requests[0].number }}"
-          branchName="${{ github.event.workflow_run.head_branch }}"
+          prUrl="${{ steps.check-ci.outputs.pr_url }}"
+          prTitle="${{ steps.check-ci.outputs.pr_title }}"
+          failedChecks="${{ steps.check-ci.outputs.failed_checks }}"
           
-          if [ -n "$prNumber" ]; then
-            context="PR #$prNumber"
+          if [ -n "$prUrl" ]; then
+            if [ -n "$prTitle" ]; then
+              context="PR: $prTitle\n$prUrl"
+            else
+              context="PR: $prUrl"
+            fi
+            details="失敗したCI: $failedChecks"
           else
+            branchName="${{ github.event.workflow_run.head_branch }}"
             context="Branch: $branchName"
+            details="失敗したCI: $failedChecks"
           fi
           
-          pnpm notify:slack error "CI失敗 ❌" "$context - 1つ以上のCIが失敗しました"
+          pnpm notify:slack error "CI失敗 ❌" "$context\n$details"
 
       - name: Notify success
         if: steps.check-ci.outputs.notify_type == 'success'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          prNumber="${{ github.event.workflow_run.pull_requests[0].number }}"
-          branchName="${{ github.event.workflow_run.head_branch }}"
+          prUrl="${{ steps.check-ci.outputs.pr_url }}"
+          prTitle="${{ steps.check-ci.outputs.pr_title }}"
           
-          if [ -n "$prNumber" ]; then
-            context="PR #$prNumber"
+          if [ -n "$prUrl" ]; then
+            if [ -n "$prTitle" ]; then
+              context="PR: $prTitle\n$prUrl"
+            else
+              context="PR: $prUrl"
+            fi
           else
+            branchName="${{ github.event.workflow_run.head_branch }}"
             context="Branch: $branchName"
           fi
           
-          pnpm notify:slack success "CI完了 🎉" "$context - 全チェック通過！"
+          pnpm notify:slack success "CI完了 ✅" "$context - 全チェック通過！"
