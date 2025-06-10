@@ -1,8 +1,20 @@
 'use client';
 
-import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
-import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useGroupData } from '@/src/hooks/data/useGroupData';
+import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
+import { currentUserAtom } from '@/src/stores/user';
+import {
+  Box,
+  Container,
+  Grid,
+  GridItem,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { useAtomValue } from 'jotai';
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
 import { ActionPanel } from './components/actions/ActionPanel';
 import { FloatingActionButton } from './components/actions/FloatingActionButton';
@@ -63,6 +75,7 @@ export const DraftPage = ({
 }: DraftPageProps = {}) => {
   // groupIdが渡されない場合はuseParamsから取得（後方互換性）
   const params = useParams();
+  const router = useRouter();
   const draftId = groupId ?? (params?.id as string);
 
   // 内部状態の初期化
@@ -82,15 +95,42 @@ export const DraftPage = ({
   });
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
-  // TODO: FirestoreからgroupIdを使ってデータ取得
-  // 現在はモックデータを使用
-  console.log('📍 DraftPage - groupId:', draftId);
+  // Firestore連携でグループ情報とユーザー情報を取得
+  const { groupData, groupLoading, groupError } = useGroupData(draftId);
+  const { groupUsers } = useRealtimeUsers(draftId);
+  const currentUser = useAtomValue(currentUserAtom);
 
-  // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
-  const roundNumber = propRoundNumber ?? 3;
-  const _totalRounds = propTotalRounds ?? 5;
-  const groupName = propGroupName ?? `ドラフト会議 ${draftId}`;
-  const participants = propParticipants ?? mockParticipants;
+  console.log('📍 DraftPage - groupId:', draftId);
+  console.log('📍 DraftPage - groupData:', groupData);
+  console.log('📍 DraftPage - groupUsers:', groupUsers);
+  console.log('📍 DraftPage - currentUser:', currentUser);
+
+  // currentUserがnullの場合はロビーページにリダイレクト
+  useEffect(() => {
+    if (!currentUser && draftId) {
+      console.log(
+        '⚠️ currentUserがnullのため、ロビーページにリダイレクトします',
+      );
+      router.push(`/lobby/${draftId}`);
+    }
+  }, [currentUser, draftId, router]);
+
+  // デフォルト値の設定（Firestoreデータを優先、なければモック）
+  const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
+  const _totalRounds = propTotalRounds ?? groupData?.round ?? 5;
+  const groupName =
+    propGroupName ?? groupData?.groupName ?? `ドラフト会議 ${draftId}`;
+
+  // グループユーザーを participants 形式に変換
+  const participants =
+    propParticipants ??
+    groupUsers.map((user) => ({
+      id: user.userId || '',
+      name: user.userName,
+      avatar: user.avatar,
+      status: 'thinking' as const, // TODO: 実際の選択状態を管理
+    }));
+
   const currentUserSelection =
     propCurrentUserSelection ?? internalCurrentUserSelection;
   const pastRounds = propPastRounds ?? mockPastRounds;
@@ -168,6 +208,50 @@ export const DraftPage = ({
   const handleOpenHelp = () => {
     console.log('ヘルプ画面を開く（今後実装）');
   };
+
+  // currentUserがnull（未認証）の場合
+  if (!currentUser && draftId) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Spinner size="lg" color="blue.500" />
+          <Text color="gray.500">ロビーページにリダイレクト中...</Text>
+        </VStack>
+      </Container>
+    );
+  }
+
+  // ローディング中の表示
+  if (groupLoading) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Spinner size="lg" color="blue.500" />
+          <Text color="gray.500">ドラフト情報を読み込み中...</Text>
+        </VStack>
+      </Container>
+    );
+  }
+
+  // エラー時の表示
+  if (groupError || !groupData) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Box fontSize="48px">❌</Box>
+          <VStack gap={2} textAlign="center">
+            <Text fontSize="xl" fontWeight="bold" color="red.500">
+              ドラフトが見つかりません
+            </Text>
+            <Text color="gray.500">
+              {groupError ||
+                '指定されたドラフトは存在しないか、削除されている可能性があります。'}
+            </Text>
+          </VStack>
+        </VStack>
+      </Container>
+    );
+  }
 
   return (
     <Container

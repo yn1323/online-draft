@@ -1,6 +1,6 @@
 'use client';
 
-import { subscribeUsers } from '@/src/helpers/firebase/user';
+import { getUsers, subscribeUsers } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { groupUsersAtom } from '@/src/stores/user';
 import type { UserDocument } from '@/src/types/firestore';
@@ -69,18 +69,21 @@ export const useRealtimeUsers = (groupId: string) => {
       return;
     }
 
-    // 本番環境: Firebase onSnapshot（リアルタイム監視）
-    console.log('🔄 リアルタイムユーザー監視開始...', { groupId });
+    // 本番環境: 一時的に静的データ取得（デバッグ用）
+    console.log('🔄 ユーザー一覧取得開始...', { groupId });
 
-    const unsubscribe = subscribeUsers(groupId, (users) => {
-      console.log('👥 ユーザー一覧更新:', users);
-      setGroupUsers(users);
-    });
-
-    return () => {
-      console.log('🛑 ユーザー監視停止');
-      unsubscribe();
+    const fetchUsers = async () => {
+      try {
+        const users = await getUsers(groupId);
+        console.log('👥 ユーザー一覧取得成功:', users);
+        setGroupUsers(users);
+      } catch (error) {
+        console.error('❌ ユーザー一覧取得エラー:', error);
+        setGroupUsers([]);
+      }
     };
+
+    fetchUsers();
   }, [groupId, setGroupUsers]);
 
   return { groupUsers };

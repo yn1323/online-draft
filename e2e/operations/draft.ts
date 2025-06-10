@@ -111,4 +111,3 @@ export async function setupNetworkDelay(
     await route.continue();
   });
 }
-
