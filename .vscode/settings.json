@@ -26,12 +26,7 @@
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "favorites.resources": [
-    {
-      "filePath": "src\\helpers\\auth\\middleware.ts",
-      "group": "Default"
-    }
-  ],
+  "favorites.resources": [],
   "claude-code.context.autoGenerate": true,
   "claude-code.context.updateTrigger": "onSave"
 }
