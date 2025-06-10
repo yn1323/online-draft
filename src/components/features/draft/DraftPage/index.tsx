@@ -15,6 +15,7 @@ import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
 import { mockParticipants, mockPastRounds } from './mocks';
 
 interface DraftPageProps {
+  groupId?: string;
   roundNumber?: number;
   totalRounds?: number;
   groupName?: string;
@@ -50,6 +51,7 @@ interface DraftPageProps {
 }
 
 export const DraftPage = ({
+  groupId,
   roundNumber: propRoundNumber,
   totalRounds: propTotalRounds,
   groupName: propGroupName,
@@ -59,9 +61,9 @@ export const DraftPage = ({
   pastRounds: propPastRounds,
   currentRoundTopic: propCurrentRoundTopic,
 }: DraftPageProps = {}) => {
-  // useParamsでルートパラメータを取得
+  // groupIdが渡されない場合はuseParamsから取得（後方互換性）
   const params = useParams();
-  const draftId = params?.id as string;
+  const draftId = groupId ?? (params?.id as string);
 
   // 内部状態の初期化
   const [internalCurrentUserSelection, setInternalCurrentUserSelection] =
@@ -79,6 +81,10 @@ export const DraftPage = ({
     selectedUserId: null,
   });
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
+
+  // TODO: FirestoreからgroupIdを使ってデータ取得
+  // 現在はモックデータを使用
+  console.log('📍 DraftPage - groupId:', draftId);
 
   // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
   const roundNumber = propRoundNumber ?? 3;

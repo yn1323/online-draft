@@ -23,6 +23,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useAtom, useSetAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
@@ -39,6 +40,7 @@ interface LobbyPageProps {
 export default function LobbyPage({ groupId }: LobbyPageProps) {
   const [step, setStep] = useState<Step>('select');
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   // カスタムフック
   useAutoAuth(); // 自動匿名ログイン処理
@@ -62,10 +64,27 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   const handleExistingUserLogin = async (userId: string) => {
     setIsLoading(true);
-    // TODO: Firebase認証処理
-    console.log('Login with existing user:', userId);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    // router.push(`/draft/${groupId}`);
+    try {
+      // 既存ユーザー情報を取得してJotai状態に保存
+      const selectedUser = groupUsers.find((user) => user.userId === userId);
+      if (selectedUser) {
+        setCurrentUser({
+          userId: selectedUser.userId as string,
+          groupId,
+          userName: selectedUser.userName,
+          avatar: selectedUser.avatar,
+          deleteFlg: selectedUser.deleteFlg || false,
+        });
+        console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
+
+        // ドラフトページへ遷移
+        router.push(`/draft/${groupId}`);
+      }
+    } catch (error) {
+      console.error('❌ ログインエラー:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCreateUser = async (data: UserCreateForm) => {
@@ -115,8 +134,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
       console.log('✅ ユーザー作成成功:', newUser);
 
-      // TODO: ドラフトページへのリダイレクト
-      // router.push(`/draft/${groupId}`);
+      // ドラフトページへ遷移
+      router.push(`/draft/${groupId}`);
     } catch (error) {
       console.error('❌ ユーザー作成エラー:', error);
       setUserRegistrationError('ユーザーの作成に失敗しました');

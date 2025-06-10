@@ -4,6 +4,7 @@ import type { Page } from '@playwright/test';
  * 画面遷移共通機能のoperations
  */
 
+
 /**
  * TOPページに戻る操作
  */
@@ -36,7 +37,10 @@ export async function navigateToJoin(page: Page): Promise<void> {
 /**
  * ロビーページへ直接遷移
  */
-export async function navigateToLobby(page: Page, groupId: string): Promise<void> {
+export async function navigateToLobby(
+  page: Page,
+  groupId: string,
+): Promise<void> {
   await page.goto(`/lobby/${groupId}`);
 }
 
@@ -68,7 +72,9 @@ export async function getCurrentUrl(page: Page): Promise<string> {
 /**
  * groupIdをURLから抽出
  */
-export async function extractGroupIdFromUrl(page: Page): Promise<string | null> {
+export async function extractGroupIdFromUrl(
+  page: Page,
+): Promise<string | null> {
   const url = page.url();
   const match = url.match(/\/lobby\/([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;

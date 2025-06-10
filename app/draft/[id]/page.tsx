@@ -1,10 +1,16 @@
 import { DraftPage } from '@/src/components/features/draft/DraftPage';
 import { Animation } from '@/src/components/templates/Animation';
 
-export default function DraftPageRoute() {
+interface DraftPageRouteProps {
+  params: {
+    id: string;
+  };
+}
+
+export default function DraftPageRoute({ params }: DraftPageRouteProps) {
   return (
     <Animation>
-      <DraftPage />
+      <DraftPage groupId={params.id} />
     </Animation>
   );
 }

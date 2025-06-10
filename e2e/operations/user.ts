@@ -21,9 +21,11 @@ export interface ExistingUser {
  * ユーザー選択ステップ → ユーザー作成ステップに遷移
  */
 export async function clickCreateNewUser(page: Page): Promise<void> {
-  const createButton = page.getByRole('button', { name: '新しいユーザーを作成' });
+  const createButton = page.getByRole('button', {
+    name: '新しいユーザーを作成',
+  });
   await createButton.click();
-  
+
   // ページ遷移の待機
   await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
 }
@@ -31,15 +33,21 @@ export async function clickCreateNewUser(page: Page): Promise<void> {
 /**
  * 既存ユーザー選択操作
  */
-export async function selectExistingUser(page: Page, userName: string): Promise<void> {
-  const userButton = page.getByText(userName).locator('..').getByRole('button');
+export async function selectExistingUser(
+  page: Page,
+  userName: string,
+): Promise<void> {
+  const userButton = page.getByRole('button', { name: userName });
   await userButton.click();
 }
 
 /**
  * ユーザー名入力操作
  */
-export async function fillUserName(page: Page, userName?: string): Promise<void> {
+export async function fillUserName(
+  page: Page,
+  userName?: string,
+): Promise<void> {
   // テスト用ユーザー名を使用（指定がない場合）
   const testUserName = userName || TEST_DATA.USERS[0].name;
   const nameInput = page.getByPlaceholder('名前を入力してください');
@@ -51,17 +59,24 @@ export async function fillUserName(page: Page, userName?: string): Promise<void>
  * アバター選択操作
  * 1-18のアバターインデックスから選択
  */
-export async function selectAvatar(page: Page, avatarIndex?: string): Promise<void> {
+export async function selectAvatar(
+  page: Page,
+  avatarIndex?: string,
+): Promise<void> {
   // テスト用アバターを使用（指定がない場合）
   const testAvatarIndex = avatarIndex || TEST_DATA.USERS[0].avatar;
   const avatarNum = Number.parseInt(testAvatarIndex, 10);
-  
+
   if (avatarNum < 1 || avatarNum > 18) {
-    throw new Error(`Invalid avatar index: ${testAvatarIndex}. Must be between 1 and 18.`);
+    throw new Error(
+      `Invalid avatar index: ${testAvatarIndex}. Must be between 1 and 18.`,
+    );
   }
-  
+
   // アバターを直接選択（親要素のBoxがクリック可能）
-  const avatarButton = page.locator(`img[alt="Avatar ${testAvatarIndex}"]`).locator('..');
+  const avatarButton = page
+    .locator(`img[alt="Avatar ${testAvatarIndex}"]`)
+    .locator('..');
   await avatarButton.click();
 }
 
@@ -77,10 +92,25 @@ export async function submitUserCreation(page: Page): Promise<void> {
  * ユーザー作成の完全フロー
  * 名前入力 → アバター選択 → 作成実行
  */
-export async function createUser(page: Page, userData?: UserData): Promise<void> {
+export async function createUser(
+  page: Page,
+  userData?: UserData,
+): Promise<void> {
   await fillUserName(page, userData?.userName);
   await selectAvatar(page, userData?.avatarIndex.toString());
   await submitUserCreation(page);
+}
+
+/**
+ * 新規ユーザー作成の完全フロー（ボタンクリックから）
+ * 新規作成ボタンクリック → 名前入力 → アバター選択 → 作成実行
+ */
+export async function createNewUser(
+  page: Page,
+  userData?: UserData,
+): Promise<void> {
+  await clickCreateNewUser(page);
+  await createUser(page, userData);
 }
 
 /**
@@ -126,28 +156,28 @@ export async function isSubmitButtonEnabled(page: Page): Promise<boolean> {
  */
 export async function getExistingUsers(page: Page): Promise<ExistingUser[]> {
   const users: ExistingUser[] = [];
-  
+
   try {
     const userButtons = page.locator('button:has-text("このユーザーで参加")');
     const count = await userButtons.count();
-    
+
     for (let i = 0; i < count; i++) {
       const button = userButtons.nth(i);
       const userName = await button.locator('text').first().textContent();
       const avatarSrc = await button.locator('img').getAttribute('src');
       const avatarMatch = avatarSrc?.match(/(\d+)\.png/);
-      
+
       if (userName && avatarMatch) {
         users.push({
           userId: `user-${i}`,
           userName: userName.trim(),
-          avatarIndex: Number.parseInt(avatarMatch[1], 10)
+          avatarIndex: Number.parseInt(avatarMatch[1], 10),
         });
       }
     }
   } catch {
     // ユーザーが存在しない場合は空配列を返す
   }
-  
+
   return users;
 }

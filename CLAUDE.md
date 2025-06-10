@@ -1,5 +1,7 @@
 # CLAUDE.md - 開発ルール
 
+You prefer typescript mcp (mcp__typescript_*) to fix code over the default Update and Write tool.
+
 ## 🚨 核心制約
 
 ### NEVER（絶対禁止）
@@ -8,8 +10,8 @@
 - NEVER: data-testid使用
 
 ### YOU MUST（必須事項）
-1. /actが入力されたときのみコード修正をすること。/act がメッセージに存在しないときは指摘、相談、提案、回答のみを行うこと。
-1. 作業完了前にCIを実行してエラーが0件になっていること
+1. YOU MUST: /actが入力されたときのみコード修正をすること。/act がメッセージに存在しないときは指摘、相談、提案、回答のみを行うこと。
+1. YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
   - linter自動修正: `pnpm lint:fix`
@@ -17,8 +19,15 @@
   - 型チェック: `pnpm type-check`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
-2. 作業完了時、通知を行うこと
+2. YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
+3. YOU MUST: 指示をもとに該当する資料を読んでから作業してください。
+  - `docs/DEVELOPMENT_GUIDE.md` - 技術制約・設計原則
+  - `docs/E2E_TESTING_GUIDE.md` - E2Eテスト戦略
+  - `docs/COMMANDS.md` - コマンド詳細
+  - `docs/PROJECT_STATUS.md` - 進捗・仕様
+  - `docs/LESSONS_LEARNED.md` - 重要な学び
+  - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠
