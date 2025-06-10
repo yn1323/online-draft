@@ -17,12 +17,6 @@ importers:
       '@hookform/resolvers':
         specifier: 5.1.0
         version: 5.1.0(react-hook-form@7.57.0(react@19.0.0))
-      '@storybook/addon-themes':
-        specifier: 8.6.14
-        version: 8.6.14(storybook@8.6.14)
-      '@tanstack/react-form':
-        specifier: 1.12.2
-        version: 1.12.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       firebase:
         specifier: ^11.8.1
         version: 11.9.0
@@ -73,6 +67,9 @@ importers:
         specifier: 8.6.14
         version: 8.6.14(@types/react@19.1.6)(storybook@8.6.14)
       '@storybook/addon-onboarding':
+        specifier: 8.6.14
+        version: 8.6.14(storybook@8.6.14)
+      '@storybook/addon-themes':
         specifier: 8.6.14
         version: 8.6.14(storybook@8.6.14)
       '@storybook/blocks':
@@ -1871,30 +1868,6 @@ packages:
   '@swc/types@0.1.21':
     resolution: {integrity: sha512-2YEtj5HJVbKivud9N4bpPBAyZhj4S2Ipe5LkUG94alTpr7in/GU/EARgPAd3BwU+YOmFVJC2+kjqhGRi3r0ZpQ==}
 
-  '@tanstack/form-core@1.12.2':
-    resolution: {integrity: sha512-5nigvx9FAtWWKpDRnhdGrsMC4LjKGdk4+SnJ8xP/phOvW0ffan5atX1u+RvBifWBOIOD6W2tmGDgelUHyJLCpA==}
-
-  '@tanstack/react-form@1.12.2':
-    resolution: {integrity: sha512-pXp+R6EbK0ObK/MpSkczO6A0/W9yw7dl+y8BVLC4hSYrWz/jMXmbsB7fD278AfR5Uvo2iq0D4Wpj+X8qC+TFIg==}
-    peerDependencies:
-      '@tanstack/react-start': ^1.112.0
-      react: ^17.0.0 || ^18.0.0 || ^19.0.0
-      vinxi: ^0.5.0
-    peerDependenciesMeta:
-      '@tanstack/react-start':
-        optional: true
-      vinxi:
-        optional: true
-
-  '@tanstack/react-store@0.7.1':
-    resolution: {integrity: sha512-qUTEKdId6QPWGiWyKAPf/gkN29scEsz6EUSJ0C3HgLMgaqTAyBsQ2sMCfGVcqb+kkhEXAdjleCgH6LAPD6f2sA==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  '@tanstack/store@0.7.1':
-    resolution: {integrity: sha512-PjUQKXEXhLYj2X5/6c1Xn/0/qKY0IVFxTJweopRfF26xfjVyb14yALydJrHupDh3/d+1WKmfEgZPBVCmDkzzwg==}
-
   '@testing-library/dom@10.4.0':
     resolution: {integrity: sha512-pemlzrSESWbdAloYml3bAJMEfNh1Z7EduzqPKprCH5S341frlpYnUEW0H72dLxa6IsYr+mPno20GiSm+h9dEdQ==}
     engines: {node: '>=18'}
@@ -2771,9 +2744,6 @@ packages:
   decimal.js@10.5.0:
     resolution: {integrity: sha512-8vDa8Qxvr/+d94hSh5P3IJwI5t8/c0KsMp+g8bNw9cY2icONa5aPfvKeieW1WlG0WQYwwhJ7mjui2xtiePQSXw==}
 
-  decode-formdata@0.9.0:
-    resolution: {integrity: sha512-q5uwOjR3Um5YD+ZWPOF/1sGHVW9A5rCrRwITQChRXlmPkxDFBqCm4jNTIVdGHNH9OnR+V9MoZVgRhsFb+ARbUw==}
-
   decode-tiff@0.2.1:
     resolution: {integrity: sha512-v/7hQBv/DrOVQ+Eljg0BLMRbXZYuuw3YZ8duZuFxYpo6qUkdn7oFRkN95RZKbnh08EHNjrMXMbEUNhTLuhPvvA==}
 
@@ -2831,9 +2801,6 @@ packages:
   detect-newline@3.1.0:
     resolution: {integrity: sha512-TLz+x/vEXm/Y7P7wn1EJFNLxYpUD4TgMosxY6fAVJUnJMbupHBOncxyWUG9OpTaH9EBD7uFI5LfEgmMOc54DsA==}
     engines: {node: '>=8'}
-
-  devalue@5.1.1:
-    resolution: {integrity: sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw==}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -5002,11 +4969,6 @@ packages:
 
   url-parse@1.5.10:
     resolution: {integrity: sha512-WypcfiRhfeUP9vvF0j6rw0J3hrWrw6iZv3+22h6iRMJ/8z1Tj6XfLP4DsUix5MhMPnXpiHDoKyoZ/bdCkwBCiQ==}
-
-  use-sync-external-store@1.5.0:
-    resolution: {integrity: sha512-Rb46I4cGGVBmjamjphe8L/UnvJD+uPPtTkNvX5mZgqdbavhI4EbgIWJiIHXJ8bc/i9EQGPRh4DwEURJ552Do0A==}
-    peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -7187,29 +7149,6 @@ snapshots:
     dependencies:
       '@swc/counter': 0.1.3
 
-  '@tanstack/form-core@1.12.2':
-    dependencies:
-      '@tanstack/store': 0.7.1
-
-  '@tanstack/react-form@1.12.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      '@tanstack/form-core': 1.12.2
-      '@tanstack/react-store': 0.7.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      decode-formdata: 0.9.0
-      devalue: 5.1.1
-      react: 19.0.0
-    transitivePeerDependencies:
-      - react-dom
-
-  '@tanstack/react-store@0.7.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
-    dependencies:
-      '@tanstack/store': 0.7.1
-      react: 19.0.0
-      react-dom: 19.0.0(react@19.0.0)
-      use-sync-external-store: 1.5.0(react@19.0.0)
-
-  '@tanstack/store@0.7.1': {}
-
   '@testing-library/dom@10.4.0':
     dependencies:
       '@babel/code-frame': 7.27.1
@@ -8464,8 +8403,6 @@ snapshots:
 
   decimal.js@10.5.0: {}
 
-  decode-formdata@0.9.0: {}
-
   decode-tiff@0.2.1: {}
 
   dedent@1.6.0(babel-plugin-macros@3.1.0):
@@ -8517,8 +8454,6 @@ snapshots:
     optional: true
 
   detect-newline@3.1.0: {}
-
-  devalue@5.1.1: {}
 
   diff-sequences@29.6.3: {}
 
@@ -11161,10 +11096,6 @@ snapshots:
     dependencies:
       querystringify: 2.2.0
       requires-port: 1.0.0
-
-  use-sync-external-store@1.5.0(react@19.0.0):
-    dependencies:
-      react: 19.0.0
 
   util-deprecate@1.0.2: {}
 
