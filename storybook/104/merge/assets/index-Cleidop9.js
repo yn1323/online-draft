@@ -1,0 +1,58 @@
+import{j as e}from"./create-recipe-context-LbQq3bM7.js";import{L as s}from"./index-CryOkbmr.js";import{M as o}from"./index-DzMPqw62.js";import{B as n}from"./box-p2MKwv57.js";import{T as i}from"./text-BOFVnBsW.js";import{V as d}from"./v-stack-DfIdlA7P.js";const m=[{id:"1",type:"system",timestamp:new Date("2025-01-08T10:00:00"),content:"Round 1 開始"},{id:"2",type:"chat",timestamp:new Date("2025-01-08T10:01:00"),content:"よろしくお願いします！",user:{id:"user1",name:"ユーザー1",avatar:"1"},isMyMessage:!0},{id:"3",type:"chat",timestamp:new Date("2025-01-08T10:01:30"),content:"こちらこそ！頑張りましょう",user:{id:"user2",name:"山田太郎",avatar:"2"},isMyMessage:!1},{id:"4",type:"draft_result",timestamp:new Date("2025-01-08T10:02:00"),content:"山田太郎が選択を完了しました"},{id:"5",type:"chat",timestamp:new Date("2025-01-08T10:02:10"),content:"うーん、悩ましい...",user:{id:"user1",name:"ユーザー1",avatar:"1"},isMyMessage:!0},{id:"6",type:"selection_change",timestamp:new Date("2025-01-08T10:02:30"),content:"ユーザー1が選択を変更しました",selectionChange:{roundNumber:2,before:"山田太郎",after:"田中花子",userName:"ユーザー1"}},{id:"7",type:"chat",timestamp:new Date("2025-01-08T10:02:45"),content:"やっぱり変更！",user:{id:"user2",name:"山田太郎",avatar:"2"},isMyMessage:!1}],r=({logs:t=m,onSendMessage:u}={})=>e.jsxs(n,{p:{base:4,md:5,lg:6},borderRadius:"xl",bgGradient:"linear(135deg, green.50, green.100)",border:"2px solid",borderColor:"green.300",boxShadow:"0 10px 30px -10px rgba(34, 197, 94, 0.25)",h:{base:"calc(100vh - 140px)",md:"calc(100vh - 150px)",lg:"calc(100vh - 160px)"},minH:{base:"350px",md:"450px",lg:"500px"},display:"flex",flexDirection:"column",position:"relative",overflow:"hidden",_dark:{bgGradient:"linear(135deg, green.900/40, green.800/40)",borderColor:"green.600",boxShadow:"0 0 30px rgba(34, 197, 94, 0.3), 0 0 60px rgba(34, 197, 94, 0.1)"},_before:{content:'""',position:"absolute",top:0,left:0,right:0,height:"3px",bgGradient:"linear(to-r, green.400, green.500, green.400)",_dark:{bgGradient:"linear(to-r, green.300, green.400, green.300)"}},children:[e.jsx(i,{fontSize:{base:"lg",md:"xl"},fontWeight:"bold",mb:{base:4,md:5,lg:6},color:"green.700",flexShrink:0,_dark:{color:"green.300"},children:"💬 ログ・コメント"}),e.jsx(n,{flex:1,overflowY:"auto",bg:"white",borderRadius:"md",border:"1px solid",borderColor:"gray.200",p:{base:3,md:4},mb:{base:2,md:3},minH:0,_dark:{bg:"gray.700",borderColor:"gray.500"},css:{"&::-webkit-scrollbar":{width:"4px"},"&::-webkit-scrollbar-track":{bg:"gray.100"},"&::-webkit-scrollbar-thumb":{bg:"gray.300",borderRadius:"999px"}},children:e.jsx(d,{gap:0,align:"stretch",children:t.map(a=>e.jsx(s,{log:a},a.id))})}),e.jsx(n,{flexShrink:0,children:e.jsx(o,{onSendMessage:u})})]});try{r.displayName="ChatLogSection",r.__docgenInfo={description:"",displayName:"ChatLogSection",props:{logs:{defaultValue:{value:`[
+  {
+    id: '1',
+    type: 'system',
+    timestamp: new Date('2025-01-08T10:00:00'),
+    content: 'Round 1 開始',
+  },
+  {
+    id: '2',
+    type: 'chat',
+    timestamp: new Date('2025-01-08T10:01:00'),
+    content: 'よろしくお願いします！',
+    user: { id: 'user1', name: 'ユーザー1', avatar: '1' },
+    isMyMessage: true,
+  },
+  {
+    id: '3',
+    type: 'chat',
+    timestamp: new Date('2025-01-08T10:01:30'),
+    content: 'こちらこそ！頑張りましょう',
+    user: { id: 'user2', name: '山田太郎', avatar: '2' },
+    isMyMessage: false,
+  },
+  {
+    id: '4',
+    type: 'draft_result',
+    timestamp: new Date('2025-01-08T10:02:00'),
+    content: '山田太郎が選択を完了しました',
+  },
+  {
+    id: '5',
+    type: 'chat',
+    timestamp: new Date('2025-01-08T10:02:10'),
+    content: 'うーん、悩ましい...',
+    user: { id: 'user1', name: 'ユーザー1', avatar: '1' },
+    isMyMessage: true,
+  },
+  {
+    id: '6',
+    type: 'selection_change',
+    timestamp: new Date('2025-01-08T10:02:30'),
+    content: 'ユーザー1が選択を変更しました',
+    selectionChange: {
+      roundNumber: 2,
+      before: '山田太郎',
+      after: '田中花子',
+      userName: 'ユーザー1',
+    },
+  },
+  {
+    id: '7',
+    type: 'chat',
+    timestamp: new Date('2025-01-08T10:02:45'),
+    content: 'やっぱり変更！',
+    user: { id: 'user2', name: '山田太郎', avatar: '2' },
+    isMyMessage: false,
+  },
+]`},description:"",name:"logs",required:!1,type:{name:"LogMessage[]"}},onSendMessage:{defaultValue:null,description:"",name:"onSendMessage",required:!1,type:{name:"((message: string) => void)"}}}}}catch{}export{r as C};
