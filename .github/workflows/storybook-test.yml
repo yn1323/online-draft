@@ -13,6 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     environment: preview
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
+        include:
+          - shard: 1
+            name: "atoms"
+            pattern: "src/components/atoms/**/*.stories.*"
+          - shard: 2  
+            name: "features-light"
+            pattern: "src/components/features/{top,join,lobby}/**/*.stories.* src/components/layout/**/*.stories.* src/constants/**/*.stories.*"
+          - shard: 3
+            name: "features-draft"
+            pattern: "src/components/features/draft/**/*.stories.*"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,21 +44,22 @@ jobs:
             storybook-static
             .storybook/cache
             node_modules/.cache/storybook
-          key: ${{ runner.os }}-storybook-${{ hashFiles('.storybook/**/*', 'src/**/*.stories.*', 'src/components/**/*.{ts,tsx}') }}
+          key: ${{ runner.os }}-storybook-${{ matrix.shard }}-${{ hashFiles('.storybook/**/*', 'src/**/*.stories.*', 'src/components/**/*.{ts,tsx}') }}
           restore-keys: |
+            ${{ runner.os }}-storybook-${{ matrix.shard }}-
             ${{ runner.os }}-storybook-
 
       - name: Install native dependencies
         run: sudo apt-get install fonts-ipafont-gothic
 
-      - name: Run Storybook tests
-        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm storybook" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm dlx wait-on http://127.0.0.1:6006/iframe.html && sleep 3 && pnpm storybook:test --testTimeout 30000 --maxWorkers=1"
+      - name: Run Storybook tests (${{ matrix.name }})
+        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm storybook" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm dlx wait-on http://127.0.0.1:6006/iframe.html && sleep 3 && pnpm storybook:test --testTimeout 30000 --maxWorkers=1 '${{ matrix.pattern }}'"
 
       - name: Upload test results
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: storybook-test-results
+          name: storybook-test-results-${{ matrix.name }}
           path: |
             ./.storybook/test-results/
             ./test-results/
