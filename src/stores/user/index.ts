@@ -50,7 +50,7 @@ export const currentUserAtom = atom<UserDocument | null>(
 // currentUserAtom への書き込み時にLocalStorageも更新
 export const setCurrentUserAtom = atom(
   null,
-  (get, set, user: UserDocument | null) => {
+  (_get, set, user: UserDocument | null) => {
     set(currentUserAtom, user);
 
     if (user) {

@@ -83,6 +83,8 @@ export const getGroupParticipantsStatus = async (
         deleteFlg: data.deleteFlg,
         status: data.status || 'thinking',
         currentRound: data.currentRound || 1,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
       });
     });
 
@@ -121,6 +123,8 @@ export const subscribeGroupParticipantsStatus = (
           deleteFlg: data.deleteFlg,
           status: data.status || 'thinking',
           currentRound: data.currentRound || 1,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
         });
       });
 

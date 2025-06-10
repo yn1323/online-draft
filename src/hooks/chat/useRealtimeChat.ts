@@ -15,6 +15,11 @@ export interface ChatMessage {
   message: string;
   timestamp: Date;
   type: 'user' | 'system';
+  user?: {
+    id: string;
+    name: string;
+    avatar: string;
+  };
 }
 
 // Storybook用のモックメッセージ
@@ -98,8 +103,10 @@ export const useRealtimeChat = (
         // ChatDocument を ChatMessage に変換
         const formattedMessages: ChatMessage[] = chatDocuments.map((doc) => {
           const user = groupUsers.find((u) => u.userId === doc.userId);
-          const avatarPath = user?.avatar ? `/img/${user.avatar}.png` : '/img/1.png';
-          
+          const avatarPath = user?.avatar
+            ? `/img/${user.avatar}.png`
+            : '/img/1.png';
+
           return {
             id: doc.id,
             userId: doc.userId,

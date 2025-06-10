@@ -33,8 +33,11 @@ export async function createNewDraft(
   const createButton = page.getByRole('button', { name: '作成する' });
   await createButton.click();
 
-  // ロビーページに遷移するまで待機
-  await page.waitForURL('/lobby/*', { timeout: TIMEOUTS.NAVIGATION });
+  // Firebase処理とページ遷移を待機（ネットワーク状況に依存するため長めに設定）
+  await page.waitForURL('/lobby/*', {
+    timeout: TIMEOUTS.NETWORK_DELAY,
+    waitUntil: 'domcontentloaded',
+  });
 
   // URLからgroupIdを抽出して返却
   const url = page.url();
@@ -63,7 +66,11 @@ export async function joinByCode(page: Page, code?: string): Promise<void> {
   const submitButton = page.getByRole('button', { name: 'グループに参加する' });
   await submitButton.click();
 
-  await page.waitForURL(`/lobby/${testCode}`, { timeout: TIMEOUTS.NAVIGATION });
+  // Firebase処理とページ遷移を待機
+  await page.waitForURL(`/lobby/${testCode}`, {
+    timeout: TIMEOUTS.NETWORK_DELAY,
+    waitUntil: 'domcontentloaded',
+  });
 }
 
 /**

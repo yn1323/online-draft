@@ -61,6 +61,8 @@ export const saveUserSelection = async (
       const selectionDocument: SelectionDocument = {
         userId,
         selection: [newSelection],
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
       await setDoc(userSelectionRef, selectionDocument);
@@ -168,7 +170,7 @@ export const checkConflicts = (
     if (!itemGroups.has(item)) {
       itemGroups.set(item, []);
     }
-    itemGroups.get(item)!.push({ userId, userName, selection });
+    itemGroups.get(item)?.push({ userId, userName, selection });
   });
 
   const conflicts = new Map<

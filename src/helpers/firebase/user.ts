@@ -72,7 +72,7 @@ export const checkUserNameExists = async (
 export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
   try {
     console.log('🔍 ユーザー一覧取得開始:', { groupId });
-    
+
     const q = query(
       getUserCollection(),
       where('groupId', '==', groupId),
@@ -80,10 +80,10 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
     );
 
     const querySnapshot = await getDocs(q);
-    console.log('📊 ユーザークエリ結果:', { 
-      groupId, 
+    console.log('📊 ユーザークエリ結果:', {
+      groupId,
       docCount: querySnapshot.docs.length,
-      docs: querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
+      docs: querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })),
     });
 
     return querySnapshot.docs.map((doc) => {
@@ -124,12 +124,17 @@ export const subscribeUsers = (
       const users: UserDocument[] = [];
 
       snapshot.forEach((doc) => {
+        const data = doc.data();
         users.push({
           userId: doc.id,
-          groupId: doc.data().groupId,
-          userName: doc.data().userName,
-          avatar: doc.data().avatar,
-          deleteFlg: doc.data().deleteFlg,
+          groupId: data.groupId,
+          userName: data.userName,
+          avatar: data.avatar,
+          deleteFlg: data.deleteFlg,
+          status: data.status || 'thinking',
+          currentRound: data.currentRound || 1,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date(),
         });
       });
 

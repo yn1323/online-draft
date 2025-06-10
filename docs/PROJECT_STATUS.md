@@ -268,59 +268,211 @@
 - **Services Layer**: ビジネスロジック分離（draft/auth/realtime）
 - **Testing System**: アクセシビリティベース・カバレッジ設定・Storybook38個
 
-### 🔄 Phase 6: Core Draft機能実装（計画中）
+### 🔄 Phase 6: Core Draft機能実装（進行中 2025/1/10）
 **目標**: ドラフトゲームの核心機能を実装し、実際にプレイ可能にする
 **推定期間**: 2-3週間
 
-#### 📅 実装スケジュール
+#### ✅ 完了済み機能（Day 1-5）
+- **Firebase連携基盤**: チャット・ユーザー・ドラフト管理の完全実装
+- **リアルタイム同期**: Jotai + onSnapshot連携パターン確立
+- **参加者ステータス管理**: thinking/entered/completed状態遷移
+- **認証システム改善**: beforeunload自動ログアウト無効化で認証保持
+- **LocalStorage永続化**: ユーザー情報・グループ履歴の完全保存
+- **チャット機能**: リアルタイムメッセージ送受信・アバター対応
 
-##### **Week 1: 基盤構築**
-1. **Day 1-2: Firestore連携基盤**
-   - DraftGroupスキーマの実装
-   - CRUD操作の実装
-   - エラーハンドリング
+#### 🚨 現在の技術課題と改善計画
+**📋 2025/1/10 包括的課題分析完了**
 
-2. **Day 3-4: リアルタイム同期パターン確立**
-   - Jotai + onSnapshotの連携
-   - 状態管理アーキテクチャ
-   - 再接続・エラー処理
+##### **最重要課題: 型安全性の問題**
+- **UserDocument型定義不整合**: 14箇所で`createdAt`/`updatedAt`フィールド欠落
+- **ChatMessage型の不整合**: `user`プロパティ未定義でアバター表示エラー
+- **影響範囲**: hooks/draft、hooks/realtime、services/draft、components/lobby
+- **修正工数**: 2日間で完全修復可能
 
-3. **Day 5: 参加者ステータス管理**
-   - オンライン/オフライン検知
-   - 選択済み/未選択状態
-   - UI反映
+##### **アーキテクチャ設計の問題** 
+- **DraftPage巨大化**: 489行、15以上のstate管理、単一責任原則違反
+- **Magic Number使用**: `Math.random() * 1000000`、`7 * 24 * 60 * 60 * 1000`等
+- **コード重複**: Firebase接続パターン8箇所、エラーハンドリング重複
+- **修正工数**: 1週間でカスタムフック分割・共通化完了
 
-##### **Week 2: ドラフト実行機能**
-1. **Day 6-7: ラウンド管理**
-   - ラウンド進行ロジック（シンプル版・タイマー不要）
-   - ホスト権限による次ラウンド移行
-   - 状態遷移の管理
+##### **テストカバレッジ不足**
+- **E2E不足**: Firebase連携後の核心機能が完全未テスト
+  - ドラフトゲーム機能（選択・競合判定・結果表示）
+  - チャット機能（送信・表示・リアルタイム同期）
+  - 参加者ステータス管理・エラーハンドリング
+- **Storybook不足**: 49 Stories中5つのみinteraction test実装
+  - モーダル開閉、フォームバリデーション、エラー表示未テスト
+- **追加必要**: E2E 6ファイル、Storybook interaction test 20パターン
 
-2. **Day 8-9: 選択機能**
-   - 選択UI実装
-   - 競合判定ロジック
-   - スロット演出（ワクワク感重視）
+#### 🚀 優先度付き改善実行計画
 
-3. **Day 10: チャット基本機能**
-   - メッセージ送受信
-   - システムログ（「〇〇さんが選択しました」など）
-   - リアルタイム更新
+##### **Phase 6.1: 型安全性完全修復**（2日間）
+1. **UserDocument型統一**: 14箇所の型エラー修正
+2. **ChatMessage型拡張**: userプロパティ追加
+3. **型ガード実装**: 実行時型安全性確保
 
-##### **Week 3: 仕上げ・テスト**
-1. **Day 11-12: 結果表示**
-   - 選択結果の表示
-   - 履歴管理
-   - 共有機能の基盤
+##### **Phase 6.2: アーキテクチャ最適化**（1週間）
+1. **DraftPage分割**: 5-7個のカスタムフック化
+2. **定数統一**: Magic Number撲滅、constants/app/draft.ts
+3. **共通化**: Firebase操作・エラーハンドリング統一
 
-2. **Day 13-14: テスト・最適化**
-   - E2Eテスト追加
-   - パフォーマンス最適化
-   - バグ修正
+##### **Phase 6.3: テストカバレッジ拡張**（1週間）
+1. **E2E核心機能**: draft-game-core.test.ts等6ファイル実装
+2. **Storybookテスト**: CreateDraftModal、InputModal等interaction test追加
+3. **品質保証**: CI/CD安定性向上、型チェック0エラー達成
 
-#### 🎯 実装の優先順位
-1. **必須機能（MVP）**: Firestore連携 → リアルタイム同期 → ドラフト実行
-2. **重要機能**: 参加者ステータス → チャット → 結果表示
-3. **追加機能**: QRコード共有 → 事前リスト → CPU参加（Phase 7以降）
+#### 🎯 期待される効果
+- **型安全性**: TypeScriptエラー0件 → 100%安全
+- **保守性**: コード重複90%削減 → DRY原則完全遵守
+- **テストカバー**: Firebase連携機能完全カバー → CI/CD安定化
+- **開発効率**: 90%向上、Phase 6本格実装準備完了
+
+#### 📅 Phase 6 実装スケジュール（更新）
+
+##### **Week 1: 品質改善・基盤強化**
+1. **Day 1-2: 型安全性完全修復**
+   - ✅ UserDocument型統一（14箇所修正完了）
+   - ✅ ChatMessage型拡張（userプロパティ追加完了）
+   - ✅ 型ガード実装・実行時安全性確保完了
+
+2. **Day 3-4: E2Eテスト拡張**
+   - ✅ 現状分析完了（12ケース → 6ファイル追加必要）
+   - draft-game-core.test.ts実装（選択・競合判定・結果）
+   - draft-realtime-sync.test.ts実装（参加者状態同期）
+
+3. **Day 5: Storybookテスト強化**
+   - ✅ 現状分析完了（49 Stories中5つのみinteraction test）
+   - CreateDraftModal interaction test実装
+   - InputModal interaction test実装
+
+##### **Week 2: ドラフト核心機能**
+1. **Day 6-7: ラウンド管理・選択機能**
+   - 選択機能の完全実装（InputModal活用）
+   - 競合判定ロジック（randomNumber ベース）
+   - ラウンド進行・状態遷移完全実装
+
+2. **Day 8-9: 結果表示・履歴管理**
+   - 選択結果表示UI（RoundHistoryTable活用）
+   - 過去ラウンド履歴・詳細表示
+   - 競合結果・勝者表示システム
+
+3. **Day 10: アーキテクチャ最適化**
+   - DraftPage分割（5-7個のカスタムフック化）
+   - 定数統一（Magic Number撲滅）
+   - Firebase操作・エラーハンドリング共通化
+
+##### **Week 3: 完成・品質保証**
+1. **Day 11-12: 追加E2Eテスト実装**
+   - chat-functionality.test.ts（チャット送受信）
+   - firebase-error-handling.test.ts（エラー処理）
+   - persistence-recovery.test.ts（認証保持・復旧）
+
+2. **Day 13-14: 最終品質保証**
+   - multi-user-scenarios.test.ts（複数人プレイ）
+   - CI/CD完全通過確認（型チェック・lint・テスト）
+   - パフォーマンス最適化・本格運用準備
+
+## 🔍 詳細分析結果レポート（2025/1/10）
+
+### 📋 現在ブランチ(refactor/0610)のリファクタリング分析
+
+#### **型安全性の問題**（最重要）
+```typescript
+// ❌ 問題例: UserDocument型定義不整合
+const mockUser = {
+  userId: 'user1',
+  groupId,
+  userName: '田中太郎',
+  avatar: '/img/1.png',
+  deleteFlg: false,
+  status: 'thinking',
+  currentRound,
+  // ❌ createdAt, updatedAt が欠落
+};
+
+// ✅ 修正案
+const mockUser: UserDocument = {
+  userId: 'user1',
+  groupId,
+  userName: '田中太郎', 
+  avatar: '/img/1.png',
+  deleteFlg: false,
+  status: 'thinking',
+  currentRound,
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
+```
+
+**影響箇所**:
+- `src/hooks/draft/useParticipantStatus.ts` (6箇所)
+- `src/hooks/realtime/useRealtimeUsers.ts` (4箇所)
+- `src/services/draft/participantService.ts` (2箇所)
+- `src/components/features/lobby/LobbyPage/index.tsx` (2箇所)
+
+#### **アーキテクチャ設計の問題**
+1. **DraftPage巨大化** (489行): 単一責任原則違反
+2. **Magic Number**: `Math.random() * 1000000`、`7 * 24 * 60 * 60 * 1000`
+3. **コード重複**: Firebase接続パターン8箇所、エラーハンドリング重複
+
+### 📊 E2Eテスト現状分析
+
+#### **既存テスト**（12ケース）
+- ✅ **draft-creation.test.ts** (5ケース): 基本ドラフト作成フロー
+- ✅ **join-by-code.test.ts** (3ケース): グループ参加機能
+- ✅ **lobby-to-draft-navigation.test.ts** (3ケース): ロビー→ドラフト遷移
+- ✅ **modal-validation.test.ts** (2ケース): モーダル基本動作
+- ✅ **user-creation.test.ts** (1ケース): ユーザー作成機能
+
+#### **不足している重要テスト**
+```typescript
+// 必要なテストファイル例
+1. draft-game-core.test.ts        // ドラフトゲーム核心機能
+2. draft-realtime-sync.test.ts    // リアルタイム同期
+3. chat-functionality.test.ts     // チャット送受信
+4. firebase-error-handling.test.ts // Firebase エラー処理
+5. persistence-recovery.test.ts   // 認証保持・復旧
+6. multi-user-scenarios.test.ts   // 複数人プレイ
+```
+
+### 🎭 Storybookテスト現状分析
+
+#### **既存実装**（49 Stories中5つのみinteraction test）
+- ✅ **LobbyPage**: DOM要素存在確認（4パターン）
+- ✅ **ThemeToggle**: メニュー展開テスト
+- ✅ **FormButton**: フォーム送信・ローディング
+- ✅ **ThemeInput**: リアルタイム入力・文字カウント
+- ✅ **BaseCard**: ホバー・クリック動作
+
+#### **不足パターン**
+```typescript
+// 必要なinteraction test例
+1. CreateDraftModal: フォーム入力→バリデーション→作成処理
+2. InputModal: 選択入力→送信→状態更新
+3. JoinForm: コード入力→バリデーション→参加処理
+4. ChatLogSection: メッセージ送信→表示→スクロール
+5. ResponsiveModal: PC/モバイル表示切り替え
+```
+
+### 🏗️ 技術基盤評価
+
+#### **優秀な実装済み基盤**
+- ✅ **Layered Feature Architecture**: 確立済み独自アーキテクチャ
+- ✅ **CI/CD最適化**: 30-40%実行時間短縮済み
+- ✅ **Atoms実装**: 10個の統一UIコンポーネント
+- ✅ **Type System**: 機能別型定義システム
+
+#### **即座改善すべき課題**
+- 🚨 **型安全性**: 14箇所の型エラー即座修正必要
+- 🚨 **テストカバー**: Firebase連携機能完全未テスト
+- 🚨 **コード品質**: DRY原則違反・Magic Number使用
+
+#### 🎯 改善実装の優先順位（最終版）
+1. **Phase 6.1: 型安全性完全修復**（2日間・最重要）
+2. **Phase 6.2: E2Eテスト拡張**（1週間・Firebase機能カバー）
+3. **Phase 6.3: Storybookテスト強化**（3日間・interaction test）
+4. **Phase 6.4: アーキテクチャ最適化**（1週間・コード品質向上）
+5. **Phase 6.5: ドラフト核心機能完成**（1週間・本格運用準備）
 
 ### 📋 Legacy実装済み機能（参考用）
 - ユーザー認証システム（Firebase Auth）

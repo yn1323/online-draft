@@ -3,6 +3,7 @@
  */
 
 import { auth, db } from '@/src/lib/firebase';
+import type { Groups } from '@/src/types/firestore';
 import {
   addDoc,
   collection,
@@ -12,16 +13,6 @@ import {
   query,
   where,
 } from 'firebase/firestore';
-
-/**
- * Legacy 互換型定義 (一時的にここに配置)
- */
-type Groups = {
-  groupName: string;
-  round: number;
-  finishedRound: number[];
-  deleteFlg: boolean;
-};
 
 const COLLECTIONS = {
   BASE: ['app', 'onlinedraft'],

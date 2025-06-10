@@ -1,4 +1,7 @@
-import { withAuthenticatedUser } from '@/src/test-utils/mocks';
+import {
+  withAuthenticatedUser,
+  withMockAppRouter,
+} from '@/src/test-utils/mocks';
 import { handlers } from '@/src/test-utils/msw';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from '@storybook/test';
@@ -13,7 +16,7 @@ const meta: Meta<typeof LobbyPage> = {
       handlers: handlers,
     },
   },
-  decorators: [withAuthenticatedUser],
+  decorators: [withMockAppRouter, withAuthenticatedUser],
 };
 
 export default meta;

@@ -5,7 +5,8 @@ import { createNewUser, selectExistingUser } from '../operations/user';
 test.describe('ロビーからドラフトページへの画面遷移', () => {
   test('新規ユーザー作成後、ドラフトページへ遷移する', async ({ page }) => {
     // ドラフト作成してロビーへ
-    const groupId = await createNewDraft(page, 'E2Eテストグループ');
+    const groupName = 'E2Eテストグループ';
+    const groupId = await createNewDraft(page, groupName);
 
     // 新規ユーザー作成
     await createNewUser(page, {
@@ -15,12 +16,17 @@ test.describe('ロビーからドラフトページへの画面遷移', () => {
 
     // ドラフトページへ遷移したことを確認
     await expect(page).toHaveURL(new RegExp(`/draft/${groupId}`));
-    await expect(page.getByText(`ドラフト会議 ${groupId}`)).toBeVisible();
+
+    // ドラフトページのグループ名が表示されるまで待機
+    await expect(page.getByText(groupName)).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   test('既存ユーザー選択後、ドラフトページへ遷移する', async ({ page }) => {
     // ドラフト作成してロビーへ
-    const groupId = await createNewDraft(page, 'E2Eテストグループ');
+    const groupName = 'E2Eテストグループ';
+    const groupId = await createNewDraft(page, groupName);
 
     // 新規ユーザー作成してドラフトページへ
     await createNewUser(page, {

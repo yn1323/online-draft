@@ -25,7 +25,9 @@ export interface StoredGroup {
  * 安全にJSONをパースする
  */
 const safeJsonParse = <T>(jsonString: string | null, defaultValue: T): T => {
-  if (!jsonString) return defaultValue;
+  if (!jsonString) {
+    return defaultValue;
+  }
 
   try {
     return JSON.parse(jsonString) as T;

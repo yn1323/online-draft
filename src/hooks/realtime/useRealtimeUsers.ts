@@ -17,6 +17,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: '田中太郎',
         avatar: '1',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         userId: 'user2',
@@ -24,6 +26,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: '山田花子',
         avatar: '5',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
     XYZ789: [
@@ -33,6 +37,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: 'Alice',
         avatar: '3',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
     '12': [
@@ -42,6 +48,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: 'Bob',
         avatar: '2',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
   };

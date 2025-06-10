@@ -13,6 +13,7 @@ import {
   userRegistrationErrorAtom,
   userRegistrationLoadingAtom,
 } from '@/src/stores/user';
+import type { UserDocument } from '@/src/types/firestore';
 import {
   Badge,
   Box,
@@ -75,6 +76,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
           userName: selectedUser.userName,
           avatar: selectedUser.avatar,
           deleteFlg: selectedUser.deleteFlg || false,
+          createdAt: selectedUser.createdAt || new Date(),
+          updatedAt: new Date(),
         });
         console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
 
@@ -124,12 +127,14 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       });
 
       // 3. Jotai状態に保存
-      const newUser = {
+      const newUser: UserDocument = {
         userId,
         groupId,
         userName: data.userName,
         avatar: data.avatarIndex,
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
       setCurrentUser(newUser);
 

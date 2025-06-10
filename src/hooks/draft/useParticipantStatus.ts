@@ -30,6 +30,8 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
         deleteFlg: false,
         status: 'thinking',
         currentRound,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         userId: 'user2',
@@ -39,6 +41,8 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
         deleteFlg: false,
         status: 'entered',
         currentRound,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         userId: 'user3',
@@ -48,6 +52,8 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
         deleteFlg: false,
         status: 'completed',
         currentRound,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ];
   }, [groupId, currentRound]);
