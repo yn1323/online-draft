@@ -110,10 +110,8 @@ export const DraftPage = ({
   const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
 
   // 参加者ステータス管理
-  const {
-    participants: statusParticipants,
-    updateMyStatus,
-  } = useParticipantStatus(draftId, roundNumber);
+  const { participants: statusParticipants, updateMyStatus } =
+    useParticipantStatus(draftId, roundNumber);
 
   // チャット機能
   const { messages } = useRealtimeChat(draftId, groupUsers);
@@ -434,9 +432,7 @@ export const DraftPage = ({
                   ? {
                       id: msg.userId,
                       name: msg.userName,
-                      avatar:
-                        groupUsers.find((u) => u.userId === msg.userId)
-                          ?.avatar || '/img/1.png',
+                      avatar: msg.user?.avatar || '/img/1.png',
                     }
                   : undefined,
               isMyMessage: msg.userId === currentUser?.userId,

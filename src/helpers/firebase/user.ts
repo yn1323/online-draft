@@ -21,14 +21,19 @@ const getUserCollection = () => {
  * ユーザーを作成する
  */
 export const createUser = async (
-  userData: Omit<UserDocument, 'userId'>,
+  userData: Omit<UserDocument, 'userId' | 'createdAt' | 'updatedAt'>,
 ): Promise<string> => {
   try {
+    const now = new Date();
     const docRef = await addDoc(getUserCollection(), {
       groupId: userData.groupId,
       userName: userData.userName,
       avatar: userData.avatar,
       deleteFlg: false,
+      status: userData.status || 'thinking',
+      currentRound: userData.currentRound || 1,
+      createdAt: now,
+      updatedAt: now,
     });
 
     return docRef.id;
@@ -66,6 +71,8 @@ export const checkUserNameExists = async (
  */
 export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
   try {
+    console.log('🔍 ユーザー一覧取得開始:', { groupId });
+    
     const q = query(
       getUserCollection(),
       where('groupId', '==', groupId),
@@ -73,14 +80,26 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
     );
 
     const querySnapshot = await getDocs(q);
+    console.log('📊 ユーザークエリ結果:', { 
+      groupId, 
+      docCount: querySnapshot.docs.length,
+      docs: querySnapshot.docs.map(doc => ({ id: doc.id, data: doc.data() }))
+    });
 
-    return querySnapshot.docs.map((doc) => ({
-      userId: doc.id,
-      groupId: doc.data().groupId,
-      userName: doc.data().userName,
-      avatar: doc.data().avatar,
-      deleteFlg: doc.data().deleteFlg,
-    }));
+    return querySnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        userId: doc.id,
+        groupId: data.groupId,
+        userName: data.userName,
+        avatar: data.avatar,
+        deleteFlg: data.deleteFlg,
+        status: data.status || 'thinking',
+        currentRound: data.currentRound || 1,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
+      };
+    });
   } catch (error) {
     console.error('GETUSERS:', error);
     throw new Error('ユーザー一覧の取得に失敗しました');

@@ -51,11 +51,14 @@ export async function createDraftGroup(
 
   try {
     // グループデータ作成 (Legacy 互換)
+    const now = new Date();
     const groupData: Groups = {
       groupName: input.groupName,
       round: 1, // 初期ラウンド
       finishedRound: [], // 完了したラウンドは空
       deleteFlg: false,
+      createdAt: now,
+      updatedAt: now,
     };
 
     // Firestoreに保存 (Legacy パス)
@@ -88,9 +91,15 @@ export async function getDraftGroup(
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
+      const data = docSnap.data();
       return {
         id: docSnap.id,
-        ...docSnap.data(),
+        groupName: data.groupName,
+        round: data.round,
+        finishedRound: data.finishedRound,
+        deleteFlg: data.deleteFlg,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date(),
       } as Groups & { id: string };
     }
 

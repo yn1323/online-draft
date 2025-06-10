@@ -43,6 +43,7 @@ export const updateParticipantStatus = async (
     await updateDoc(userRef, {
       status,
       currentRound,
+      updatedAt: new Date(),
     });
 
     console.log('✅ 参加者ステータス更新成功:', {

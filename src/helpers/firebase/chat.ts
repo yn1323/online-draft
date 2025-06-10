@@ -37,12 +37,15 @@ export const createChatMessage = async (
   chatData: Omit<ChatDocument, 'date' | 'deleteFlg'>,
 ): Promise<string> => {
   try {
+    const now = Timestamp.now();
     const docRef = await addDoc(getChatCollection(), {
       groupId: chatData.groupId,
       userId: chatData.userId,
       message: chatData.message,
-      date: Timestamp.now(),
+      date: now,
       deleteFlg: false,
+      createdAt: now,
+      updatedAt: now,
     });
 
     console.log('✅ チャットメッセージ送信成功:', docRef.id);
@@ -100,26 +103,38 @@ export const subscribeChatMessages = (
       getChatCollection(),
       where('groupId', '==', groupId),
       where('deleteFlg', '==', false),
-      orderBy('date', 'asc'), // リアルタイムでは古い順で取得
+      orderBy('date', 'asc'), // 複合インデックス必要のため一時的に無効化
     );
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const messages: (ChatDocument & { id: string })[] = [];
-
-      snapshot.forEach((doc) => {
-        messages.push({
-          id: doc.id,
-          groupId: doc.data().groupId,
-          userId: doc.data().userId,
-          message: doc.data().message,
-          date: doc.data().date,
-          deleteFlg: doc.data().deleteFlg,
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        console.log('🔄 onSnapshot実行:', {
+          groupId,
+          docCount: snapshot.docs.length,
+          docs: snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })),
         });
-      });
 
-      console.log('💬 チャットメッセージ更新:', messages.length, '件');
-      callback(messages);
-    });
+        const messages: (ChatDocument & { id: string })[] = [];
+
+        snapshot.forEach((doc) => {
+          messages.push({
+            id: doc.id,
+            groupId: doc.data().groupId,
+            userId: doc.data().userId,
+            message: doc.data().message,
+            date: doc.data().date,
+            deleteFlg: doc.data().deleteFlg,
+          });
+        });
+
+        console.log('💬 チャットメッセージ更新:', messages.length, '件');
+        callback(messages);
+      },
+      (error) => {
+        console.error('❌ onSnapshot Error:', error);
+      },
+    );
 
     return unsubscribe;
   } catch (error) {

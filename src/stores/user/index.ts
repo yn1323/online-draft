@@ -39,6 +39,8 @@ export const currentUserAtom = atom<UserDocument | null>(
         avatar: storedUser.avatar,
         groupId: '', // groupIdは別途設定
         deleteFlg: false, // 必須プロパティ
+        createdAt: new Date(storedUser.timestamp), // LocalStorageから復元
+        updatedAt: new Date(), // 復元時の時刻
       };
     }
     return null;

@@ -96,14 +96,24 @@ export const useRealtimeChat = (
     try {
       const unsubscribe = subscribeChatMessages(groupId, (chatDocuments) => {
         // ChatDocument を ChatMessage に変換
-        const formattedMessages: ChatMessage[] = chatDocuments.map((doc) => ({
-          id: doc.id,
-          userId: doc.userId,
-          userName: getUserName(doc.userId, groupUsers),
-          message: doc.message,
-          timestamp: doc.date.toDate(),
-          type: doc.userId === 'system' ? 'system' : 'user',
-        }));
+        const formattedMessages: ChatMessage[] = chatDocuments.map((doc) => {
+          const user = groupUsers.find((u) => u.userId === doc.userId);
+          const avatarPath = user?.avatar ? `/img/${user.avatar}.png` : '/img/1.png';
+          
+          return {
+            id: doc.id,
+            userId: doc.userId,
+            userName: getUserName(doc.userId, groupUsers),
+            message: doc.message,
+            timestamp: doc.date.toDate(),
+            type: doc.userId === 'system' ? 'system' : 'user',
+            user: {
+              id: doc.userId,
+              name: getUserName(doc.userId, groupUsers),
+              avatar: avatarPath,
+            },
+          };
+        });
 
         console.log(
           '💬 チャットメッセージ更新:',
