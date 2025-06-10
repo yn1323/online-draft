@@ -23,6 +23,11 @@ export type Groups = {
 };
 
 /**
+ * 参加者ステータス型
+ */
+export type ParticipantStatus = 'thinking' | 'entered' | 'completed';
+
+/**
  * Users コレクション (Legacy 互換)
  */
 export type UserDocument = {
@@ -31,6 +36,8 @@ export type UserDocument = {
   userName: string;
   avatar: string; // アバターインデックス ("1", "2", etc.)
   deleteFlg: boolean;
+  status?: ParticipantStatus; // 現在のラウンドでの参加者ステータス
+  currentRound?: number; // 現在のラウンド番号
 };
 
 /**

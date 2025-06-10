@@ -1,8 +1,13 @@
 'use client';
 
+import { saveRecentGroup } from '@/src/helpers/utils/localStorage';
+import { useRealtimeChat } from '@/src/hooks/chat/useRealtimeChat';
+import { useSendMessage } from '@/src/hooks/chat/useSendMessage';
 import { useGroupData } from '@/src/hooks/data/useGroupData';
+import { useParticipantStatus } from '@/src/hooks/draft/useParticipantStatus';
 import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
-import { currentUserAtom } from '@/src/stores/user';
+import { saveUserSelection } from '@/src/services/draft/selectionService';
+import { currentUserAtom, setCurrentUserAtom } from '@/src/stores/user';
 import {
   Box,
   Container,
@@ -12,7 +17,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
@@ -99,37 +104,88 @@ export const DraftPage = ({
   const { groupData, groupLoading, groupError } = useGroupData(draftId);
   const { groupUsers } = useRealtimeUsers(draftId);
   const currentUser = useAtomValue(currentUserAtom);
+  const setCurrentUser = useSetAtom(setCurrentUserAtom);
+
+  // デフォルト値の設定（Firestoreデータを優先、なければモック）
+  const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
+
+  // 参加者ステータス管理
+  const {
+    participants: statusParticipants,
+    updateMyStatus,
+  } = useParticipantStatus(draftId, roundNumber);
+
+  // チャット機能
+  const { messages } = useRealtimeChat(draftId, groupUsers);
+  const { sendMessage } = useSendMessage();
 
   console.log('📍 DraftPage - groupId:', draftId);
   console.log('📍 DraftPage - groupData:', groupData);
   console.log('📍 DraftPage - groupUsers:', groupUsers);
   console.log('📍 DraftPage - currentUser:', currentUser);
+  console.log('💬 DraftPage - messages:', messages);
 
-  // currentUserがnullの場合はロビーページにリダイレクト
+  // リロード時の再接続処理：currentUserがnullかつgroupDataがロードされた場合
   useEffect(() => {
-    if (!currentUser && draftId) {
-      console.log(
-        '⚠️ currentUserがnullのため、ロビーページにリダイレクトします',
-      );
-      router.push(`/lobby/${draftId}`);
+    // ローディング中は処理しない
+    if (groupLoading || !draftId) {
+      return;
     }
-  }, [currentUser, draftId, router]);
 
-  // デフォルト値の設定（Firestoreデータを優先、なければモック）
-  const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
+    if (currentUser) {
+      // currentUserがある場合は最近のグループとして保存
+      if (groupData) {
+        saveRecentGroup({
+          groupId: draftId,
+          groupName: groupData.groupName || `ドラフト会議 ${draftId}`,
+          lastJoined: Date.now(),
+        });
+
+        // groupIdの設定
+        if (currentUser.groupId !== draftId) {
+          setCurrentUser({
+            ...currentUser,
+            groupId: draftId,
+          });
+        }
+      }
+    } else {
+      console.log(
+        '⚠️ currentUserがnull：ユーザー情報復元またはリダイレクト判定',
+      );
+
+      // GroupDataがある場合はユーザー情報再接続を試みる
+      if (groupData) {
+        console.log(
+          '📍 GroupData存在：LocalStorageからユーザー情報を確認済み（復元失敗）',
+        );
+        console.log('🔄 ロビーページにリダイレクト');
+        router.push(`/lobby/${draftId}`);
+      }
+      // GroupDataもない場合はエラー表示（下記のエラーハンドリングで処理）
+    }
+  }, [currentUser, groupData, groupLoading, draftId, router, setCurrentUser]);
+
   const _totalRounds = propTotalRounds ?? groupData?.round ?? 5;
   const groupName =
     propGroupName ?? groupData?.groupName ?? `ドラフト会議 ${draftId}`;
 
-  // グループユーザーを participants 形式に変換
+  // グループユーザーを participants 形式に変換（ステータス情報を統合）
   const participants =
     propParticipants ??
-    groupUsers.map((user) => ({
-      id: user.userId || '',
-      name: user.userName,
-      avatar: user.avatar,
-      status: 'thinking' as const, // TODO: 実際の選択状態を管理
-    }));
+    groupUsers.map((user) => {
+      // ステータス参加者情報から該当ユーザーのステータスを取得
+      const statusUser = statusParticipants.find(
+        (sp) => sp.userId === user.userId,
+      );
+
+      return {
+        id: user.userId || '',
+        name: user.userName,
+        avatar: user.avatar,
+        status: statusUser?.status || 'thinking',
+      };
+    });
 
   const currentUserSelection =
     propCurrentUserSelection ?? internalCurrentUserSelection;
@@ -139,16 +195,49 @@ export const DraftPage = ({
   // イベントハンドラーの設定
   const handleSubmitSelection =
     propOnSubmitSelection ??
-    ((selection: string, comment?: string) => {
-      console.log('選択:', selection, 'コメント:', comment);
-      setInternalCurrentUserSelection(selection);
-      // 実際の実装では、ここでFirestoreに保存
+    (async (selection: string, comment?: string) => {
+      if (!currentUser || !draftId) {
+        console.error('❌ ユーザー情報またはグループIDが不正');
+        return;
+      }
+
+      try {
+        console.log('🔄 選択データ保存開始:', { selection, comment });
+
+        // Firestoreに選択データを保存
+        await saveUserSelection(
+          currentUser.userId || '',
+          draftId,
+          roundNumber,
+          selection,
+          comment || '',
+        );
+
+        console.log('✅ 選択データ保存成功');
+        setInternalCurrentUserSelection(selection);
+      } catch (error) {
+        console.error('❌ 選択データ保存エラー:', error);
+        // エラーの場合は内部状態のみ更新（フォールバック）
+        setInternalCurrentUserSelection(selection);
+      }
     });
 
-  const handleSubmit = () => {
-    if (selection.trim()) {
+  const handleSubmit = async () => {
+    if (selection.trim() && currentUser) {
+      // 選択を提出
       handleSubmitSelection(selection.trim(), comment.trim() || undefined);
-      setIsInputModalOpen(false);
+
+      // ステータスを 'entered' に更新
+      const success = await updateMyStatus(currentUser.userId || '', 'entered');
+
+      if (success) {
+        console.log('✅ 選択提出＆ステータス更新成功');
+        setIsInputModalOpen(false);
+        setSelection('');
+        setComment('');
+      } else {
+        console.error('❌ ステータス更新失敗（モーダルは開いたまま）');
+      }
     }
   };
 
@@ -207,6 +296,24 @@ export const DraftPage = ({
 
   const handleOpenHelp = () => {
     console.log('ヘルプ画面を開く（今後実装）');
+  };
+
+  // チャット関連のハンドラー
+  const handleSendMessage = async (message: string) => {
+    if (!currentUser || !draftId) {
+      console.error('❌ ユーザー情報またはグループIDが不正');
+      return;
+    }
+
+    const success = await sendMessage({
+      groupId: draftId,
+      userId: currentUser.userId || '',
+      message,
+    });
+
+    if (success) {
+      console.log('✅ メッセージ送信成功');
+    }
   };
 
   // currentUserがnull（未認証）の場合
@@ -316,7 +423,26 @@ export const DraftPage = ({
 
         {/* Right: Communication (35%) */}
         <GridItem>
-          <ChatLogSection />
+          <ChatLogSection
+            logs={messages.map((msg) => ({
+              id: msg.id,
+              type: msg.type === 'system' ? 'system' : 'chat',
+              timestamp: msg.timestamp,
+              content: msg.message,
+              user:
+                msg.type === 'user'
+                  ? {
+                      id: msg.userId,
+                      name: msg.userName,
+                      avatar:
+                        groupUsers.find((u) => u.userId === msg.userId)
+                          ?.avatar || '/img/1.png',
+                    }
+                  : undefined,
+              isMyMessage: msg.userId === currentUser?.userId,
+            }))}
+            onSendMessage={handleSendMessage}
+          />
         </GridItem>
       </Grid>
 

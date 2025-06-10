@@ -38,7 +38,7 @@ export const LogItem = ({ log }: LogItemProps) => {
           flexDirection={log.isMyMessage ? 'row-reverse' : 'row'}
         >
           <Image
-            src={`/img/${log.user.avatar}.png`}
+            src={log.user.avatar}
             alt={log.user.name}
             w="32px"
             h="32px"

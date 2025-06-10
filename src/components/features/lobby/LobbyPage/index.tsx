@@ -9,6 +9,7 @@ import { useGroupData } from '@/src/hooks/data/useGroupData';
 import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
 import {
   currentUserAtom,
+  setCurrentUserAtom,
   userRegistrationErrorAtom,
   userRegistrationLoadingAtom,
 } from '@/src/stores/user';
@@ -48,7 +49,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const { groupUsers } = useRealtimeUsers(groupId);
 
   // Jotai状態管理
-  const setCurrentUser = useSetAtom(currentUserAtom);
+  const setCurrentUser = useSetAtom(setCurrentUserAtom);
   const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(
     userRegistrationLoadingAtom,
   );
