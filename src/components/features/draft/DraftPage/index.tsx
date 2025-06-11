@@ -1,13 +1,13 @@
 'use client';
 
 import { saveRecentGroup } from '@/src/helpers/utils/localStorage';
+import { useDraftAuth } from '@/src/hooks/auth/useDraftAuth';
 import { useRealtimeChat } from '@/src/hooks/chat/useRealtimeChat';
 import { useSendMessage } from '@/src/hooks/chat/useSendMessage';
 import { useGroupData } from '@/src/hooks/data/useGroupData';
 import { useParticipantStatus } from '@/src/hooks/draft/useParticipantStatus';
 import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
 import { saveUserSelection } from '@/src/services/draft/selectionService';
-import { currentUserAtom, setCurrentUserAtom } from '@/src/stores/user';
 import {
   Box,
   Container,
@@ -17,9 +17,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { DraftAuthGuard } from '../DraftAuthGuard';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
 import { ChatLogSection } from './components/chat/ChatLogSection';
 import { DraftHeader } from './components/layout/DraftHeader';
@@ -65,7 +65,7 @@ interface DraftPageProps {
   ) => void;
 }
 
-export const DraftPage = ({
+const DraftPageContent = ({
   groupId,
   roundNumber: propRoundNumber,
   totalRounds: propTotalRounds,
@@ -78,7 +78,7 @@ export const DraftPage = ({
 }: DraftPageProps = {}) => {
   // groupIdが渡されない場合はuseParamsから取得（後方互換性）
   const params = useParams();
-  const router = useRouter();
+  const _router = useRouter();
   const draftId = groupId ?? (params?.id as string);
 
   // 内部状態の初期化
@@ -98,11 +98,12 @@ export const DraftPage = ({
   });
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
+  // 認証統合フック（Firebase認証 + SessionUser管理）
+  const { currentUser } = useDraftAuth(draftId);
+
   // Firestore連携でグループ情報とユーザー情報を取得
   const { groupData, groupLoading, groupError } = useGroupData(draftId);
   const { groupUsers } = useRealtimeUsers(draftId);
-  const currentUser = useAtomValue(currentUserAtom);
-  const setCurrentUser = useSetAtom(setCurrentUserAtom);
 
   // デフォルト値の設定（Firestoreデータを優先、なければモック）
   const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
@@ -121,46 +122,16 @@ export const DraftPage = ({
   console.log('📍 DraftPage - currentUser:', currentUser);
   console.log('💬 DraftPage - messages:', messages);
 
-  // リロード時の再接続処理：currentUserがnullかつgroupDataがロードされた場合
+  // 最近のグループとして保存（認証完了後）
   useEffect(() => {
-    // ローディング中は処理しない
-    if (groupLoading || !draftId) {
-      return;
+    if (currentUser && groupData && !groupLoading) {
+      saveRecentGroup({
+        groupId: draftId,
+        groupName: groupData.groupName || `ドラフト会議 ${draftId}`,
+        lastJoined: Date.now(),
+      });
     }
-
-    if (currentUser) {
-      // currentUserがある場合は最近のグループとして保存
-      if (groupData) {
-        saveRecentGroup({
-          groupId: draftId,
-          groupName: groupData.groupName || `ドラフト会議 ${draftId}`,
-          lastJoined: Date.now(),
-        });
-
-        // groupIdの設定
-        if (currentUser.groupId !== draftId) {
-          setCurrentUser({
-            ...currentUser,
-            groupId: draftId,
-          });
-        }
-      }
-    } else {
-      console.log(
-        '⚠️ currentUserがnull：ユーザー情報復元またはリダイレクト判定',
-      );
-
-      // GroupDataがある場合はユーザー情報再接続を試みる
-      if (groupData) {
-        console.log(
-          '📍 GroupData存在：LocalStorageからユーザー情報を確認済み（復元失敗）',
-        );
-        console.log('🔄 ロビーページにリダイレクト');
-        router.push(`/lobby/${draftId}`);
-      }
-      // GroupDataもない場合はエラー表示（下記のエラーハンドリングで処理）
-    }
-  }, [currentUser, groupData, groupLoading, draftId, router, setCurrentUser]);
+  }, [currentUser, groupData, groupLoading, draftId]);
 
   const _totalRounds = propTotalRounds ?? groupData?.round ?? 5;
   const groupName =
@@ -202,7 +173,7 @@ export const DraftPage = ({
 
         // Firestoreに選択データを保存
         await saveUserSelection(
-          currentUser.userId || '',
+          currentUser.id || '',
           draftId,
           roundNumber,
           selection,
@@ -224,7 +195,7 @@ export const DraftPage = ({
       handleSubmitSelection(selection.trim(), comment.trim() || undefined);
 
       // ステータスを 'entered' に更新
-      const success = await updateMyStatus(currentUser.userId || '', 'entered');
+      const success = await updateMyStatus(currentUser.id || '', 'entered');
 
       if (success) {
         console.log('✅ 選択提出＆ステータス更新成功');
@@ -303,7 +274,7 @@ export const DraftPage = ({
 
     const success = await sendMessage({
       groupId: draftId,
-      userId: currentUser.userId || '',
+      userId: currentUser.id || '',
       message,
     });
 
@@ -312,19 +283,7 @@ export const DraftPage = ({
     }
   };
 
-  // currentUserがnull（未認証）の場合
-  if (!currentUser && draftId) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Spinner size="lg" color="blue.500" />
-          <Text color="gray.500">ロビーページにリダイレクト中...</Text>
-        </VStack>
-      </Container>
-    );
-  }
-
-  // ローディング中の表示
+  // ローディング中（グループデータ取得中）
   if (groupLoading) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
@@ -336,7 +295,7 @@ export const DraftPage = ({
     );
   }
 
-  // エラー時の表示
+  // グループデータエラー
   if (groupError || !groupData) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
@@ -344,13 +303,24 @@ export const DraftPage = ({
           <Box fontSize="48px">❌</Box>
           <VStack gap={2} textAlign="center">
             <Text fontSize="xl" fontWeight="bold" color="red.500">
-              ドラフトが見つかりません
+              ドラフト情報の取得に失敗
             </Text>
             <Text color="gray.500">
-              {groupError ||
-                '指定されたドラフトは存在しないか、削除されている可能性があります。'}
+              {groupError || 'ドラフト情報を読み込めませんでした'}
             </Text>
           </VStack>
+        </VStack>
+      </Container>
+    );
+  }
+
+  // currentUserは認証ガードで保証されているため、ここでは存在チェックのみ
+  if (!currentUser) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Spinner size="lg" color="blue.500" />
+          <Text color="gray.500">ユーザー情報を確認中...</Text>
         </VStack>
       </Container>
     );
@@ -408,7 +378,7 @@ export const DraftPage = ({
                     avatar: msg.user?.avatar || '/img/1.png',
                   }
                 : undefined,
-            isMyMessage: msg.userId === currentUser?.userId,
+            isMyMessage: msg.userId === currentUser?.id,
           }))}
           onSendMessage={handleSendMessage}
         />
@@ -449,7 +419,7 @@ export const DraftPage = ({
                       avatar: msg.user?.avatar || '/img/1.png',
                     }
                   : undefined,
-              isMyMessage: msg.userId === currentUser?.userId,
+              isMyMessage: msg.userId === currentUser?.id,
             }))}
             onSendMessage={handleSendMessage}
           />
@@ -499,5 +469,33 @@ export const DraftPage = ({
         onOpenHelp={handleOpenHelp}
       />
     </Container>
+  );
+};
+
+/**
+ * DraftPage - 認証ガード統合版
+ * Firebase認証 + SessionUser管理による統合認証フローを提供
+ */
+export const DraftPage = (props: DraftPageProps) => {
+  const params = useParams();
+  const draftId = props.groupId ?? (params?.id as string);
+
+  if (!draftId) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Box fontSize="48px">⚠️</Box>
+          <Text fontSize="xl" fontWeight="bold" color="orange.500">
+            グループIDが不正です
+          </Text>
+        </VStack>
+      </Container>
+    );
+  }
+
+  return (
+    <DraftAuthGuard groupId={draftId}>
+      <DraftPageContent {...props} />
+    </DraftAuthGuard>
   );
 };

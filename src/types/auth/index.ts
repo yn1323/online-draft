@@ -32,11 +32,11 @@ export interface UserSession {
 
 // SessionStorage管理用のDraftUser（Legacy互換）
 export interface SessionUser {
-  id: ID;                 // DraftUserのFirestore ID
-  groupId: ID;           // 所属グループID
-  name: string;          // ユーザー名
-  avatar: string;        // アバター画像パス（1.png〜18.png）
-  createdAt: Timestamp;  // 作成日時
+  id: ID; // DraftUserのFirestore ID
+  groupId: ID; // 所属グループID
+  name: string; // ユーザー名
+  avatar: string; // アバター画像パス（1.png〜18.png）
+  createdAt: Timestamp; // 作成日時
 }
 
 // プロフィール

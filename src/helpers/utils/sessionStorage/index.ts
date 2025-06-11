@@ -6,7 +6,7 @@
 import type { SessionUser } from '@/src/types/auth';
 
 const SESSION_KEYS = {
-  CURRENT_USER: 'currentUser',  // Legacy互換のためキー名はそのまま
+  CURRENT_USER: 'currentUser', // Legacy互換のためキー名はそのまま
   GROUP_ID: 'groupId',
 } as const;
 
@@ -52,7 +52,7 @@ export const setSessionUser = (user: SessionUser): void => {
   try {
     sessionStorage.setItem(SESSION_KEYS.CURRENT_USER, JSON.stringify(user));
     sessionStorage.setItem(SESSION_KEYS.GROUP_ID, user.groupId);
-    
+
     console.log('💾 DraftUserをSessionStorageに保存:', {
       id: user.id,
       name: user.name,
@@ -91,7 +91,7 @@ export const getSessionUser = (): SessionUser | null => {
       name: user.name,
       groupId: user.groupId,
     });
-    
+
     return user;
   } catch (error) {
     console.error('❌ SessionUser取得エラー:', error);
@@ -138,13 +138,13 @@ export const getSessionGroupId = (): string | null => {
 export const isValidSessionForGroup = (currentGroupId: string): boolean => {
   const sessionGroupId = getSessionGroupId();
   const isValid = sessionGroupId === currentGroupId;
-  
+
   if (!isValid && sessionGroupId) {
     console.log('⚠️ GroupID不整合検出:', {
       current: currentGroupId,
       session: sessionGroupId,
     });
   }
-  
+
   return isValid;
 };

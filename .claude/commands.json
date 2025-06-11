@@ -419,6 +419,58 @@
           "description": "Return created PR URL for user reference"
         }
       ]
+    },
+    "sub": {
+      "description": "Execute tasks as parallel sub-agents with autonomous operation",
+      "usage": "/sub <task_description>",
+      "examples": [
+        "/sub バグを修正",
+        "/sub ドキュメントを更新",
+        "/sub XXの提案",
+        "/sub API設計を改善",
+        "/sub テストカバレッジを向上"
+      ],
+      "steps": [
+        {
+          "action": "validate_task_input",
+          "description": "Validate task description input and ensure it's actionable"
+        },
+        {
+          "action": "analyze_task_scope",
+          "description": "Analyze task scope and complexity to determine sub-agent requirements"
+        },
+        {
+          "action": "prepare_context",
+          "description": "Prepare current project context and relevant information for sub-agent"
+        },
+        {
+          "action": "launch_sub_agent",
+          "description": "Launch sub-agent with specific task instructions and autonomous operation mode"
+        },
+        {
+          "action": "monitor_progress",
+          "description": "Monitor sub-agent progress and provide intermediate updates if needed"
+        },
+        {
+          "action": "collect_results",
+          "description": "Collect sub-agent results and integrate with main workflow"
+        },
+        {
+          "action": "provide_summary",
+          "description": "Provide concise summary of sub-agent completion status and outcomes"
+        }
+      ],
+      "features": {
+        "parallel_execution": true,
+        "autonomous_operation": true,
+        "multiple_simultaneous": true,
+        "result_integration": true
+      },
+      "constraints": {
+        "task_specificity": "Each sub-agent should have a clear, specific task scope",
+        "resource_awareness": "Consider system resources when launching multiple sub-agents",
+        "error_handling": "Handle sub-agent failures gracefully without affecting main workflow"
+      }
     }
   }
 }

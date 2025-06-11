@@ -1,13 +1,13 @@
 'use client';
 
 import { getUserById } from '@/src/helpers/firebase/user';
+import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import {
   clearSessionUser,
   getSessionUser,
   isValidSessionForGroup,
   setSessionUser,
 } from '@/src/helpers/utils/sessionStorage';
-import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import type { SessionUser } from '@/src/types/auth';
 import type { UserDocument } from '@/src/types/firestore';
 import { useCallback, useEffect, useState } from 'react';
@@ -22,12 +22,12 @@ interface UseSessionUserReturn {
   currentUser: SessionUser | null; // Legacy互換のため同じものを提供
   loading: boolean;
   error: string | null;
-  
+
   // 状態判定
-  isUserSelected: boolean;        // ユーザーが選択済みかどうか
-  hasValidSession: boolean;       // 有効なセッションがあるか
-  needsUserSelection: boolean;    // ユーザー選択が必要か
-  
+  isUserSelected: boolean; // ユーザーが選択済みかどうか
+  hasValidSession: boolean; // 有効なセッションがあるか
+  needsUserSelection: boolean; // ユーザー選択が必要か
+
   // 操作関数
   selectUser: (userId: string) => Promise<void>;
   clearUser: () => void;
@@ -42,15 +42,18 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
   /**
    * UserDocumentをSessionUserに変換
    */
-  const convertToSessionUser = useCallback((userDoc: UserDocument): SessionUser => {
-    return {
-      id: userDoc.userId || '',
-      groupId: userDoc.groupId,
-      name: userDoc.userName,
-      avatar: userDoc.avatar,
-      createdAt: userDoc.createdAt,
-    };
-  }, []);
+  const convertToSessionUser = useCallback(
+    (userDoc: UserDocument): SessionUser => {
+      return {
+        id: userDoc.userId || '',
+        groupId: userDoc.groupId,
+        name: userDoc.userName,
+        avatar: userDoc.avatar,
+        createdAt: userDoc.createdAt,
+      };
+    },
+    [],
+  );
 
   /**
    * SessionStorageからユーザー情報を復元
@@ -62,7 +65,7 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
     try {
       // SessionStorageから既存ユーザー情報を取得
       const storedUser = getSessionUser();
-      
+
       if (!storedUser) {
         console.log('📝 SessionStorageにユーザー情報がありません');
         setSessionUserState(null);
@@ -79,7 +82,7 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
 
       // Firestoreから最新のユーザー情報を取得して検証
       const userDoc = await getUserById(storedUser.id);
-      
+
       if (!userDoc || userDoc.deleteFlg) {
         console.log('⚠️ ユーザーが削除済みまたは存在しないためSessionをクリア');
         clearSessionUser();
@@ -89,7 +92,9 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
 
       // GroupIDが変更されていないかチェック
       if (userDoc.groupId !== groupId) {
-        console.log('⚠️ ユーザーが別のグループに所属しているためSessionをクリア');
+        console.log(
+          '⚠️ ユーザーが別のグループに所属しているためSessionをクリア',
+        );
         clearSessionUser();
         setSessionUserState(null);
         return;
@@ -115,50 +120,56 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
   /**
    * ユーザーを選択してSessionStorageに保存
    */
-  const selectUser = useCallback(async (userId: string): Promise<void> => {
-    setLoading(true);
-    setError(null);
+  const selectUser = useCallback(
+    async (userId: string): Promise<void> => {
+      setLoading(true);
+      setError(null);
 
-    try {
-      console.log('🔄 ユーザー選択処理開始:', { userId, groupId });
+      try {
+        console.log('🔄 ユーザー選択処理開始:', { userId, groupId });
 
-      // Firestoreからユーザー情報を取得
-      const userDoc = await getUserById(userId);
-      
-      if (!userDoc) {
-        throw new Error('指定されたユーザーが見つかりません');
+        // Firestoreからユーザー情報を取得
+        const userDoc = await getUserById(userId);
+
+        if (!userDoc) {
+          throw new Error('指定されたユーザーが見つかりません');
+        }
+
+        if (userDoc.deleteFlg) {
+          throw new Error('このユーザーは削除されています');
+        }
+
+        if (userDoc.groupId !== groupId) {
+          throw new Error('このユーザーは別のグループに所属しています');
+        }
+
+        // SessionUser形式に変換
+        const sessionUser = convertToSessionUser(userDoc);
+
+        // SessionStorageに保存
+        setSessionUser(sessionUser);
+
+        // 状態を更新
+        setSessionUserState(sessionUser);
+
+        console.log('✅ ユーザー選択完了:', {
+          id: sessionUser.id,
+          name: sessionUser.name,
+          groupId: sessionUser.groupId,
+        });
+      } catch (error) {
+        console.error('❌ ユーザー選択エラー:', error);
+        const errorMessage =
+          error instanceof Error
+            ? error.message
+            : 'ユーザーの選択に失敗しました';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
       }
-
-      if (userDoc.deleteFlg) {
-        throw new Error('このユーザーは削除されています');
-      }
-
-      if (userDoc.groupId !== groupId) {
-        throw new Error('このユーザーは別のグループに所属しています');
-      }
-
-      // SessionUser形式に変換
-      const sessionUser = convertToSessionUser(userDoc);
-      
-      // SessionStorageに保存
-      setSessionUser(sessionUser);
-      
-      // 状態を更新
-      setSessionUserState(sessionUser);
-      
-      console.log('✅ ユーザー選択完了:', {
-        id: sessionUser.id,
-        name: sessionUser.name,
-        groupId: sessionUser.groupId,
-      });
-    } catch (error) {
-      console.error('❌ ユーザー選択エラー:', error);
-      const errorMessage = error instanceof Error ? error.message : 'ユーザーの選択に失敗しました';
-      setError(errorMessage);
-    } finally {
-      setLoading(false);
-    }
-  }, [groupId, convertToSessionUser]);
+    },
+    [groupId, convertToSessionUser],
+  );
 
   /**
    * SessionStorageをクリアしてユーザー選択をリセット

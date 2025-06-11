@@ -153,18 +153,20 @@ export const subscribeUsers = (
 /**
  * ユーザーIDから特定のユーザー情報を取得する
  */
-export const getUserById = async (userId: string): Promise<UserDocument | null> => {
+export const getUserById = async (
+  userId: string,
+): Promise<UserDocument | null> => {
   try {
     console.log('🔍 ユーザー情報取得開始:', { userId });
-    
+
     const docRef = doc(getUserCollection(), userId);
     const docSnap = await getDoc(docRef);
-    
+
     if (!docSnap.exists()) {
       console.log('❌ ユーザーが存在しません:', { userId });
       return null;
     }
-    
+
     const data = docSnap.data();
     const user: UserDocument = {
       userId: docSnap.id,
@@ -177,13 +179,13 @@ export const getUserById = async (userId: string): Promise<UserDocument | null> 
       createdAt: data.createdAt?.toDate() || new Date(),
       updatedAt: data.updatedAt?.toDate() || new Date(),
     };
-    
+
     console.log('✅ ユーザー情報取得成功:', {
       userId: user.userId,
       name: user.userName,
       groupId: user.groupId,
     });
-    
+
     return user;
   } catch (error) {
     console.error('❌ ユーザー情報取得エラー:', error);

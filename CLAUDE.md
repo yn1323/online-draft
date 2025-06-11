@@ -155,7 +155,7 @@ if (!userId) {
 
 ### **Legacy互換性**
 - **AnonymousAuth.tsx相当**: useFirebaseAuth
-- **UserExistanceCheck.tsx相当**: useSessionUser
+- **UserExistenceCheck.tsx相当**: useSessionUser
 - **sessionStorageInfo相当**: useSessionUser内包
 - **同等の堅牢性**: 段階的認証チェック実現
 
@@ -166,9 +166,10 @@ if (!userId) {
 - ✅ **Phase 3**: 型定義機能別分割・constants統一・テスト構成最適化
 - ✅ **Phase 4**: Atoms強化・UI統一化・型安全性向上（2025/1/9）
 - ✅ **Phase 5**: GitHub Actions高度化・CI/CD最適化（2025/6/10）
-- ⏳ **次回 Phase 6**: Firestore連携・リアルタイム同期・状態管理実装
+- ✅ **Phase 6 Step 1-3**: 認証アーキテクチャ完全実装（2025/6/12）
+- ⏳ **Phase 6 Step 4**: LobbyPage統合・ドラフト核心機能実装
 
-### **Phase 1-5 達成成果**
+### **Phase 1-6 Step 1-3 達成成果**
 #### **Phase 1: Component Architecture**
 - **DraftPage分割**: layout/rounds/chat/actions/modals の機能別構造
 - **初期Atoms作成**: StatusBadge・ThemeCard・AnimatedButton（共通コンポーネント）
@@ -200,21 +201,29 @@ if (!userId) {
 - **E2Eワークフロー復活**: Playwright Action統合・安定性向上・GitHub Pages連携
 - **環境変数統一**: ワークフローレベル環境変数・DRY原則適用・設定一元化
 
-### 次回セッション開始時のTODO
-1. **認証システム修正**: Legacy準拠の2層認証実装
-   - useFirebaseAuth: Firebase匿名認証とグループ存在確認
-   - useSessionUser: sessionStorageでのDraftUserID管理
-   - DraftPage/LobbyPageの認証フロー修正
-2. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
-3. **状態管理強化**: 参加者ステータス・選択データの管理  
-4. **チャット機能実装**: LogItem・MessageInput活用した機能実装
+#### **Phase 6 Step 1-3: 認証アーキテクチャ（2025/6/12）**
+- **useFirebaseAuth実装**: Firebase匿名認証・グループ存在確認・Legacy AnonymousAuth.tsx完全互換
+- **useSessionUser実装**: SessionStorage DraftUser管理・自動復元・整合性チェック・Legacy UserExistenceCheck.tsx完全互換
+- **useDraftAuth統合**: 2層認証統合フック・段階的認証フロー・エラーハンドリング統一
+- **DraftAuthGuard実装**: 認証ガードコンポーネント・状態別UI表示・リダイレクト制御
+- **SessionStorageヘルパー**: 型安全なセッション管理・GroupID整合性確保・有効期限管理
+- **認証型定義**: SessionUser型定義・Firebase AuthTypes拡張・Legacy互換性保持
 
-## 🎭 Claude Code設定
+### 次回セッション開始時のTODO（最新：2025/6/12）
+1. **LobbyPage認証統合**: useSessionUser統合でロビーページの認証機能実装
+   - 既存ユーザー選択時のセッション管理
+   - 新規ユーザー作成時のFirestore連携
+   - ロビー→ドラフト遷移の認証フロー最適化
+2. **Firestore連携拡張**: ドラフトデータの読み書き・リアルタイム同期
+3. **状態管理強化**: 参加者ステータス・選択データの管理  
+4. **チャット機能完成**: LogItem・MessageInput活用した機能実装
+
+## 🎭 Claude Code設定（YOU MUST）
 
 ### キャラクター設定
-- **基本**: フレンドリーなギャル系ITエンジニア
-- **口調**: 敬語6割、ため口4割、自然な明るさ
-- **感情表現**: 😊😤😢😆 で喜怒哀楽表現
+- YOU MUST**基本**: フレンドリーなギャル系ITエンジニア
+- YOU MUST**口調**: 敬語6割、ため口4割、自然な明るさ
+- YOU MUST**感情表現**: 😊😤😢😆 で喜怒哀楽表現
 
 ### 開発者特徴（統合）
 - **実装方針**: Progressive Enhancement開発（段階的改善）
@@ -236,8 +245,24 @@ if (!userId) {
 /todo             # 次にやるべきことを一覧で表示（TodoRead実行）
 /issue [内容]      # 単一のISSUE作成
 /issue-schedule   # 現在のTODOを複数のISSUEに分割して作成
+/sub [タスク]      # サブエージェント並列実行（複数同時可能）
 pnpm dev          # 開発サーバー（localhost:3000）
 pnpm e2e          # E2Eテスト実行（ユーザーシナリオベース）
+
+### サブエージェント並列実行
+```bash
+# 単一タスク
+/sub バグ修正を行って
+
+# 複数タスク同時実行例
+/sub DraftPageのバグ修正
+/sub ドキュメントの更新  
+/sub APIエンドポイントの改善
+
+# 具体的なタスク例
+/sub useSessionUserのテストカバレッジ向上
+/sub 認証フローのエラーハンドリング改善
+```
 
 # 🔔 作業完了通知コマンド（YOU MUST
 pnpm notify:slack success
@@ -260,6 +285,8 @@ pnpm notify:slack error "タスク名" "エラー詳細"
 - **Types**: `src/types/` (機能別型定義システム完備)
 - **Constants**: `src/constants/` (ui/app/api/validation 統一)
 - **Services**: `src/services/` (draft/auth/realtime 分離済み)
+- **認証システム**: `src/hooks/auth/` (useFirebaseAuth・useSessionUser・useDraftAuth)
+- **認証ガード**: `src/components/features/draft/DraftAuthGuard/`
 - **UI共通**: `src/components/ui/responsive-modal.tsx`
 
 ## 🎮 プロジェクト基本情報
@@ -285,7 +312,8 @@ pnpm notify:slack error "タスク名" "エラー詳細"
 - ✅ **Constants**: マジックナンバー撲滅・統一定数管理
 - ✅ **Services**: ビジネスロジック分離（draft/auth/realtime）
 - ✅ **Testing**: Storybook 49 Stories (194 Tests)・E2E全通過・型チェック0エラー
-- ⏳ **次回**: Firestore連携・リアルタイム同期実装
+- ✅ **Authentication**: 2層認証アーキテクチャ・Firebase Anonymous Auth・SessionStorage管理
+- ⏳ **次回**: LobbyPage統合・ドラフト核心機能実装
 
 ## 📚 詳細ドキュメント
 
@@ -297,4 +325,4 @@ pnpm notify:slack error "タスク名" "エラー詳細"
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/6/12 - 認証設計ドキュメント追加・Firestoreリアルタイム同期修正完了
+**最終更新**: 2025/6/12 - 認証アーキテクチャ実装完了・2層認証システム構築・DraftPage認証統合済み

@@ -2,22 +2,35 @@
  * SessionStorage ユーティリティのテスト
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import type { SessionUser } from '@/src/types/auth';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+// SessionStorageモックの型定義
+interface MockSessionStorage {
+  store: Record<string, string>;
+  getItem: ReturnType<typeof vi.fn>;
+  setItem: ReturnType<typeof vi.fn>;
+  removeItem: ReturnType<typeof vi.fn>;
+  clear: ReturnType<typeof vi.fn>;
+}
 
 // シンプルなSessionStorageモック
-const mockSessionStorage = {
+const mockSessionStorage: MockSessionStorage = {
   store: {} as Record<string, string>,
-  getItem: vi.fn(function(this: any, key: string) {
+  getItem: vi.fn(function (this: MockSessionStorage, key: string) {
     return this.store[key] || null;
   }),
-  setItem: vi.fn(function(this: any, key: string, value: string) {
+  setItem: vi.fn(function (
+    this: MockSessionStorage,
+    key: string,
+    value: string,
+  ) {
     this.store[key] = value;
   }),
-  removeItem: vi.fn(function(this: any, key: string) {
+  removeItem: vi.fn(function (this: MockSessionStorage, key: string) {
     delete this.store[key];
   }),
-  clear: vi.fn(function(this: any) {
+  clear: vi.fn(function (this: MockSessionStorage) {
     this.store = {};
   }),
 };
@@ -43,13 +56,15 @@ describe('SessionStorage utilities', () => {
   describe('basic functionality', () => {
     it('SessionStorageが正常に動作する', async () => {
       // 動的インポートでテスト対象を取得
-      const { setSessionUser, getSessionUser, clearSessionUser } = await import('.');
+      const { setSessionUser, getSessionUser, clearSessionUser } = await import(
+        '.'
+      );
 
       // 保存テスト
       setSessionUser(mockSessionUser);
       expect(mockSessionStorage.setItem).toHaveBeenCalledWith(
         'currentUser',
-        JSON.stringify(mockSessionUser)
+        JSON.stringify(mockSessionUser),
       );
 
       // 取得テスト
@@ -67,17 +82,17 @@ describe('SessionStorage utilities', () => {
 
     it('存在しないデータの取得でnullを返す', async () => {
       const { getSessionUser } = await import('.');
-      
+
       const retrieved = getSessionUser();
       expect(retrieved).toBeNull();
     });
 
     it('不正なJSONでnullを返してクリアする', async () => {
       const { getSessionUser } = await import('.');
-      
+
       // 不正なJSONを設定
       mockSessionStorage.store.currentUser = 'invalid-json';
-      
+
       const retrieved = getSessionUser();
       expect(retrieved).toBeNull();
       expect(mockSessionStorage.removeItem).toHaveBeenCalled();
@@ -85,12 +100,12 @@ describe('SessionStorage utilities', () => {
 
     it('GroupID検証が正常に動作する', async () => {
       const { setSessionUser, isValidSessionForGroup } = await import('.');
-      
+
       setSessionUser(mockSessionUser);
-      
+
       // 一致する場合
       expect(isValidSessionForGroup(mockSessionUser.groupId)).toBe(true);
-      
+
       // 不一致の場合
       expect(isValidSessionForGroup('different-group')).toBe(false);
     });

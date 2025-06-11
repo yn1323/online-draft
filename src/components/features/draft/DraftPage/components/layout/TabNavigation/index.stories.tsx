@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { mockLogs } from '../../chat/ChatLogSection/mocks';
 import { mockParticipants, mockPastRounds } from '../../../mocks';
+import { mockLogs } from '../../chat/ChatLogSection/mocks';
 import { TabNavigation } from './index';
 
 // ChatLogSection の LogMessage 型を TabNavigation の messages 型に変換
@@ -42,8 +42,7 @@ export const Default: Story = {
       console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
     messages: mockMessages,
-    onSendMessage: (message: string) =>
-      console.log('Message sent:', message),
+    onSendMessage: (message: string) => console.log('Message sent:', message),
   },
 };
 
@@ -58,8 +57,7 @@ export const WithoutPastRounds: Story = {
       console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
     messages: mockMessages,
-    onSendMessage: (message: string) =>
-      console.log('Message sent:', message),
+    onSendMessage: (message: string) => console.log('Message sent:', message),
   },
 };
 
@@ -74,7 +72,6 @@ export const WithoutMessages: Story = {
       console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
     messages: [],
-    onSendMessage: (message: string) =>
-      console.log('Message sent:', message),
+    onSendMessage: (message: string) => console.log('Message sent:', message),
   },
 };
