@@ -11,14 +11,14 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
 
 ### YOU MUST（必須事項）
 - YOU MUST: /actが入力されたときのみコード修正をすること。/act がメッセージに存在しないときは指摘、相談、提案、回答のみを行うこと。
-- YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること
+- YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること（下記順番で実施すること）
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
-  - linter自動修正: `pnpm lint:fix`
-  - linter（他CI実行後最後にもう1度実行すること）: `pnpm lint`
-  - 型チェック: `pnpm type-check`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
+  - linter自動修正: `pnpm lint:fix`
+  - 型チェック: `pnpm type-check`
+  - linter: `pnpm lint`
 - YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
 - YOU MUST: 指示をもとに該当する資料を読んでから作業してください。
