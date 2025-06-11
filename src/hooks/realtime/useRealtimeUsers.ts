@@ -71,23 +71,19 @@ export const useRealtimeUsers = (groupId: string) => {
 
     // Storybook環境: onSnapshotはWebSocketベースのためモックデータを直接設定
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモックユーザーを使用');
       const mockUsers = getMockUsersForGroup(groupId);
       setGroupUsers(mockUsers);
       return;
     }
 
     // 本番環境: リアルタイムユーザー購読
-    console.log('🔄 ユーザー一覧リアルタイム購読開始...', { groupId });
 
     const unsubscribe = subscribeUsers(groupId, (users) => {
-      console.log('👥 ユーザー一覧リアルタイム更新:', users);
       setGroupUsers(users);
     });
 
     // クリーンアップ関数を返す
     return () => {
-      console.log('🛑 ユーザー一覧購読停止');
       unsubscribe();
     };
   }, [groupId, setGroupUsers]);

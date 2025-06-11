@@ -47,7 +47,6 @@ const baseFetch = async <T extends BaseFetch>(
   // biome-ignore lint/style/useBlockStatements: <explanation>
   if (!res.ok) return {};
   const json: T['response'] = await res.json().catch((e) => {
-    console.error(e);
   });
   return json ?? {};
 };

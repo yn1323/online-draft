@@ -48,10 +48,8 @@ export const createChatMessage = async (
       updatedAt: now,
     });
 
-    console.log('✅ チャットメッセージ送信成功:', docRef.id);
     return docRef.id;
   } catch (error) {
-    console.error('❌ チャットメッセージ送信エラー:', error);
     throw new Error('チャットメッセージの送信に失敗しました');
   }
 };
@@ -86,7 +84,6 @@ export const getChatMessages = async (
     // 時系列順に並び替え（古い順）
     return messages.reverse();
   } catch (error) {
-    console.error('❌ チャットメッセージ取得エラー:', error);
     throw new Error('チャットメッセージの取得に失敗しました');
   }
 };
@@ -109,11 +106,6 @@ export const subscribeChatMessages = (
     const unsubscribe = onSnapshot(
       q,
       (snapshot) => {
-        console.log('🔄 onSnapshot実行:', {
-          groupId,
-          docCount: snapshot.docs.length,
-          docs: snapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })),
-        });
 
         const messages: (ChatDocument & { id: string })[] = [];
 
@@ -128,17 +120,14 @@ export const subscribeChatMessages = (
           });
         });
 
-        console.log('💬 チャットメッセージ更新:', messages.length, '件');
         callback(messages);
       },
       (error) => {
-        console.error('❌ onSnapshot Error:', error);
       },
     );
 
     return unsubscribe;
   } catch (error) {
-    console.error('❌ チャットメッセージ監視エラー:', error);
     throw new Error('チャットメッセージの監視に失敗しました');
   }
 };

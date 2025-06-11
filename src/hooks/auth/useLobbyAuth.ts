@@ -76,31 +76,15 @@ export const useLobbyAuth = (groupId: string): UseLobbyAuthReturn => {
 
   // 統合リトライ関数
   const retry = useCallback(() => {
-    console.log('🔄 LobbyAuth統合リトライ実行');
     retryFirebase();
     retrySession();
   }, [retryFirebase, retrySession]);
 
   // セッションクリア関数
   const clearSession = useCallback(() => {
-    console.log('🗑️ LobbyAuthセッションクリア');
     clearUser();
   }, [clearUser]);
 
-  // デバッグログ
-  console.log('🏛️ useLobbyAuth state:', {
-    groupId,
-    firebaseAuthenticated,
-    groupExists,
-    sessionUser: sessionUser
-      ? { id: sessionUser.id, name: sessionUser.name }
-      : null,
-    isReady,
-    hasActiveSession,
-    needsUserSelection: needsUserSelectionComputed,
-    hasAuthError,
-    loading,
-  });
 
   return {
     isReady,

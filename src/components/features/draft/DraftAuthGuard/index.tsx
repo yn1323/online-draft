@@ -84,10 +84,6 @@ export const DraftAuthGuard = ({ groupId, children }: DraftAuthGuardProps) => {
 
   // ユーザー選択が必要 - 速やかにロビーにリダイレクト
   if (needsUserSelection) {
-    console.log('🔄 認証なしでDraftアクセス検出、ロビーページにリダイレクト:', {
-      groupId,
-    });
-
     // 即座にロビーページにリダイレクト
     router.replace(`/lobby/${groupId}`);
 

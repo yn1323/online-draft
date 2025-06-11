@@ -27,21 +27,15 @@ export const TopPage = () => {
     setIsLoading(true);
 
     try {
-      console.log('🔄 ドラフト作成開始...', { groupName });
-
       // 認証チェック・自動ログイン
       if (!isAuthenticated) {
-        console.log('🔐 認証されていないため、自動ログイン実行...');
         await signInAnonymously(auth);
-        console.log('✅ 自動ログイン完了');
       }
 
       // Firestoreでグループ作成
       const result = await createDraftGroup({
         groupName,
       });
-
-      console.log('✅ グループ作成成功:', result);
 
       // 成功通知
       toaster.create({
@@ -54,8 +48,6 @@ export const TopPage = () => {
       // ロビーページに遷移
       router.push(`/lobby/${result.groupId}`);
     } catch (error) {
-      console.error('❌ ドラフト作成エラー:', error);
-
       setIsLoading(false);
       toaster.create({
         title: 'ドラフト作成エラー',

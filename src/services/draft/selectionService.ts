@@ -36,7 +36,6 @@ export const saveUserSelection = async (
   comment = '',
 ): Promise<string> => {
   try {
-    console.log('🔄 選択データ保存開始:', { userId, groupId, round, item });
 
     // randomNumber: 競合解決用（1-1000000のランダム値）
     const randomNumber = Math.floor(Math.random() * 1000000) + 1;
@@ -69,10 +68,8 @@ export const saveUserSelection = async (
       await setDoc(userSelectionRef, selectionDocument);
     }
 
-    console.log('✅ 選択データ保存成功:', newSelection);
     return randomNumber.toString();
   } catch (error) {
-    console.error('❌ 選択データ保存エラー:', error);
     throw new Error('選択データの保存に失敗しました');
   }
 };
@@ -132,10 +129,8 @@ export const getRoundSelections = async (
       }
     });
 
-    console.log('📊 ラウンド選択データ取得:', roundSelections.length, '件');
     return roundSelections;
   } catch (error) {
-    console.error('❌ ラウンド選択データ取得エラー:', error);
     throw new Error('選択データの取得に失敗しました');
   }
 };
@@ -203,10 +198,6 @@ export const checkConflicts = (
     }
   });
 
-  console.log('⚔️ 競合判定結果:', {
-    conflicts: conflicts.size,
-    winners: winners.size,
-  });
 
   return { conflicts, winners };
 };
@@ -231,7 +222,6 @@ export const getUserSelection = async (
 
     return roundSelection || null;
   } catch (error) {
-    console.error('❌ ユーザー選択取得エラー:', error);
     throw new Error('ユーザー選択の取得に失敗しました');
   }
 };
@@ -251,7 +241,6 @@ export const subscribeRoundSelections = (
   ) => void,
 ): (() => void) => {
   try {
-    console.log('🔄 選択データリアルタイム監視開始:', { groupId, round });
 
     // selectionコレクション全体を監視（リアルタイム購読）
     const selectionQuery = query(
@@ -263,25 +252,20 @@ export const subscribeRoundSelections = (
       selectionQuery,
       async (snapshot) => {
         try {
-          console.log('📡 選択データ更新検出:', snapshot.size, '件');
           // 変更があった場合、該当ラウンドの選択データを再取得
           const selections = await getRoundSelections(groupId, round);
           callback(selections);
         } catch (error) {
-          console.error('❌ 選択データ処理エラー:', error);
         }
       },
       (error) => {
-        console.error('❌ 選択データ監視エラー:', error);
       },
     );
 
     return () => {
-      console.log('🛑 選択データ監視停止');
       unsubscribe();
     };
   } catch (error) {
-    console.error('❌ 選択データ監視開始エラー:', error);
     throw new Error('選択データの監視に失敗しました');
   }
 };

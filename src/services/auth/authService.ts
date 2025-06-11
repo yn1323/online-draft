@@ -31,7 +31,6 @@ export const signInAnonymous = async (): Promise<AuthUser> => {
     const userCredential = await signInAnonymously(auth);
     return convertFirebaseUser(userCredential.user);
   } catch (error) {
-    console.error('Anonymous sign in failed:', error);
     throw error;
   }
 };
@@ -43,7 +42,6 @@ export const signOut = async (): Promise<void> => {
   try {
     await firebaseSignOut(auth);
   } catch (error) {
-    console.error('Sign out failed:', error);
     throw error;
   }
 };

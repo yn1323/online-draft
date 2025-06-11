@@ -40,7 +40,6 @@ export const createUser = async (
 
     return docRef.id;
   } catch (error) {
-    console.error('CREATEUSER:', error);
     throw new Error('ユーザーの作成に失敗しました');
   }
 };
@@ -63,7 +62,6 @@ export const checkUserNameExists = async (
     const querySnapshot = await getDocs(q);
     return !querySnapshot.empty;
   } catch (error) {
-    console.error('CHECKUSERNAMEEXISTS:', error);
     throw new Error('ユーザー名の重複チェックに失敗しました');
   }
 };
@@ -73,7 +71,6 @@ export const checkUserNameExists = async (
  */
 export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
   try {
-    console.log('🔍 ユーザー一覧取得開始:', { groupId });
 
     const q = query(
       getUserCollection(),
@@ -82,11 +79,6 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
     );
 
     const querySnapshot = await getDocs(q);
-    console.log('📊 ユーザークエリ結果:', {
-      groupId,
-      docCount: querySnapshot.docs.length,
-      docs: querySnapshot.docs.map((doc) => ({ id: doc.id, data: doc.data() })),
-    });
 
     return querySnapshot.docs.map((doc) => {
       const data = doc.data();
@@ -103,7 +95,6 @@ export const getUsers = async (groupId: string): Promise<UserDocument[]> => {
       };
     });
   } catch (error) {
-    console.error('GETUSERS:', error);
     throw new Error('ユーザー一覧の取得に失敗しました');
   }
 };
@@ -145,7 +136,6 @@ export const subscribeUsers = (
 
     return unsubscribe;
   } catch (error) {
-    console.error('SUBSCRIBEUSERS:', error);
     throw new Error('ユーザー一覧の監視に失敗しました');
   }
 };
@@ -157,13 +147,11 @@ export const getUserById = async (
   userId: string,
 ): Promise<UserDocument | null> => {
   try {
-    console.log('🔍 ユーザー情報取得開始:', { userId });
 
     const docRef = doc(getUserCollection(), userId);
     const docSnap = await getDoc(docRef);
 
     if (!docSnap.exists()) {
-      console.log('❌ ユーザーが存在しません:', { userId });
       return null;
     }
 
@@ -180,15 +168,9 @@ export const getUserById = async (
       updatedAt: data.updatedAt?.toDate() || new Date(),
     };
 
-    console.log('✅ ユーザー情報取得成功:', {
-      userId: user.userId,
-      name: user.userName,
-      groupId: user.groupId,
-    });
 
     return user;
   } catch (error) {
-    console.error('❌ ユーザー情報取得エラー:', error);
     throw new Error('ユーザー情報の取得に失敗しました');
   }
 };

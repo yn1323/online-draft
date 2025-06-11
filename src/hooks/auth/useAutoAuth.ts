@@ -15,21 +15,14 @@ export const useAutoAuth = () => {
 
   useEffect(() => {
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のため自動ログインをスキップ');
       return;
     }
 
     const autoLogin = async () => {
       if (!authLoading && !isAuthenticated) {
         try {
-          console.log('🔄 ロビーページ - 自動匿名ログイン開始...');
           const userCredential = await signInAnonymously(auth);
-          console.log('✅ 自動ログイン成功:', {
-            uid: userCredential.user.uid,
-            isAnonymous: userCredential.user.isAnonymous,
-          });
         } catch (error) {
-          console.error('❌ 自動ログインエラー:', error);
         }
       }
     };

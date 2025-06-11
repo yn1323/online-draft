@@ -71,12 +71,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   // 認証フロー最適化：有効なセッションがある場合はドラフトページへ
   useEffect(() => {
     if (hasActiveSession && sessionUser && !authLoading && !groupLoading) {
-      console.log('✅ 有効なセッションを検出、ドラフトページへリダイレクト:', {
-        userId: sessionUser.id,
-        userName: sessionUser.name,
-        groupId: sessionUser.groupId,
-      });
-
       // 少し待ってからリダイレクト（UIの準備を待つ）
       const timer = setTimeout(() => {
         router.push(`/draft/${groupId}`);
@@ -95,13 +89,11 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   // エラーハンドリング関数
   const handleRetry = () => {
-    console.log('🔄 エラー状態をリセットして再試行');
     setUserRegistrationError(null);
     retryAuth();
   };
 
   const handleClearSession = () => {
-    console.log('🗑️ セッションをクリアして最初から開始');
     clearSession();
     setUserRegistrationError(null);
     setStep('select');
@@ -113,17 +105,12 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   const handleExistingUserLogin = async (userId: string) => {
     try {
-      console.log('🔄 既存ユーザーログイン開始:', { userId, groupId });
-
       // useSessionUserのselectUserを使用してSessionStorageに保存
       await selectUser(userId);
-
-      console.log('✅ 既存ユーザーでログイン完了');
 
       // ドラフトページへ遷移
       router.push(`/draft/${groupId}`);
     } catch (error) {
-      console.error('❌ ログインエラー:', error);
       setUserRegistrationError(
         error instanceof Error ? error.message : 'ログインに失敗しました',
       );
@@ -132,13 +119,11 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
 
   const handleCreateUser = async (data: UserCreateForm) => {
     if (!groupId) {
-      console.error('❌ グループIDが指定されていません');
       return;
     }
 
     // Storybook環境ではモック処理
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモック処理');
       setUserRegistrationLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       setUserRegistrationLoading(false);
@@ -148,7 +133,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     try {
       setUserRegistrationLoading(true);
       setUserRegistrationError(null);
-      console.log('🔄 ユーザー作成開始:', data);
 
       // 1. ユーザー名重複チェック
       const nameExists = await checkUserNameExists(groupId, data.userName);
@@ -165,17 +149,12 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
         deleteFlg: false,
       });
 
-      console.log('✅ ユーザー作成成功:', { userId, userName: data.userName });
-
       // 3. useSessionUserのselectUserを使用してSessionStorageに保存
       await selectUser(userId);
-
-      console.log('✅ SessionStorage保存完了');
 
       // ドラフトページへ遷移
       router.push(`/draft/${groupId}`);
     } catch (error) {
-      console.error('❌ ユーザー作成エラー:', error);
       setUserRegistrationError(
         error instanceof Error ? error.message : 'ユーザーの作成に失敗しました',
       );

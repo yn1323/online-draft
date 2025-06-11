@@ -86,7 +86,6 @@ export const useRealtimeChat = (
 
     // Storybook環境: モックデータを使用
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモックチャットを使用');
       const mockMessages = getMockMessages(groupId);
       setMessages(mockMessages);
       setLoading(false);
@@ -94,7 +93,6 @@ export const useRealtimeChat = (
     }
 
     // 本番環境: Firebase onSnapshot（リアルタイム監視）
-    console.log('🔄 リアルタイムチャット監視開始...', { groupId });
     setLoading(true);
     setError(null);
 
@@ -122,21 +120,14 @@ export const useRealtimeChat = (
           };
         });
 
-        console.log(
-          '💬 チャットメッセージ更新:',
-          formattedMessages.length,
-          '件',
-        );
         setMessages(formattedMessages);
         setLoading(false);
       });
 
       return () => {
-        console.log('🛑 チャット監視停止');
         unsubscribe();
       };
     } catch (error) {
-      console.error('❌ チャット監視エラー:', error);
       setError('チャットの取得に失敗しました');
       setLoading(false);
     }

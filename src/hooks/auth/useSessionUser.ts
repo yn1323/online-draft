@@ -67,14 +67,12 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
       const storedUser = getSessionUser();
 
       if (!storedUser) {
-        console.log('📝 SessionStorageにユーザー情報がありません');
         setSessionUserState(null);
         return;
       }
 
       // GroupID整合性チェック
       if (!isValidSessionForGroup(groupId)) {
-        console.log('⚠️ GroupID不整合のためSessionをクリア');
         clearSessionUser();
         setSessionUserState(null);
         return;
@@ -84,7 +82,6 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
       const userDoc = await getUserById(storedUser.id);
 
       if (!userDoc || userDoc.deleteFlg) {
-        console.log('⚠️ ユーザーが削除済みまたは存在しないためSessionをクリア');
         clearSessionUser();
         setSessionUserState(null);
         return;
@@ -92,23 +89,14 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
 
       // GroupIDが変更されていないかチェック
       if (userDoc.groupId !== groupId) {
-        console.log(
-          '⚠️ ユーザーが別のグループに所属しているためSessionをクリア',
-        );
         clearSessionUser();
         setSessionUserState(null);
         return;
       }
 
-      console.log('✅ SessionUser復元成功:', {
-        id: storedUser.id,
-        name: storedUser.name,
-        groupId: storedUser.groupId,
-      });
 
       setSessionUserState(storedUser);
     } catch (error) {
-      console.error('❌ SessionUser復元エラー:', error);
       setError('ユーザー情報の復元に失敗しました');
       clearSessionUser();
       setSessionUserState(null);
@@ -126,7 +114,6 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
       setError(null);
 
       try {
-        console.log('🔄 ユーザー選択処理開始:', { userId, groupId });
 
         // Firestoreからユーザー情報を取得
         const userDoc = await getUserById(userId);
@@ -152,13 +139,7 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
         // 状態を更新
         setSessionUserState(sessionUser);
 
-        console.log('✅ ユーザー選択完了:', {
-          id: sessionUser.id,
-          name: sessionUser.name,
-          groupId: sessionUser.groupId,
-        });
       } catch (error) {
-        console.error('❌ ユーザー選択エラー:', error);
         const errorMessage =
           error instanceof Error
             ? error.message
@@ -175,7 +156,6 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
    * SessionStorageをクリアしてユーザー選択をリセット
    */
   const clearUser = useCallback(() => {
-    console.log('🗑️ SessionUser情報をクリア');
     clearSessionUser();
     setSessionUserState(null);
     setError(null);
@@ -185,14 +165,12 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
    * 再実行用関数
    */
   const retry = useCallback(() => {
-    console.log('🔄 SessionUser復元を再実行');
     loadSessionUser();
   }, [loadSessionUser]);
 
   // 初期化処理
   useEffect(() => {
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためSessionUser処理をスキップ');
       setLoading(false);
 
       // Storybook環境ではwindowのSessionStorageを確認
@@ -203,7 +181,6 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
         // SessionStorageにデータがある場合はそれを使用
         try {
           const userData = JSON.parse(storedData);
-          console.log('📚 Storybook環境のためモックユーザーを使用');
           setSessionUserState(userData);
         } catch (_e) {
           setSessionUserState(null);
@@ -216,7 +193,6 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
     }
 
     if (!groupId) {
-      console.log('⚠️ groupIdが指定されていません');
       setLoading(false);
       return;
     }

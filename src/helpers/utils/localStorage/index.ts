@@ -32,7 +32,6 @@ const safeJsonParse = <T>(jsonString: string | null, defaultValue: T): T => {
   try {
     return JSON.parse(jsonString) as T;
   } catch (error) {
-    console.warn('⚠️ JSON parse error:', error);
     return defaultValue;
   }
 };
@@ -48,9 +47,7 @@ export const saveCurrentUser = (user: Omit<StoredUser, 'timestamp'>): void => {
     };
 
     localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(userData));
-    console.log('💾 ユーザー情報をLocalStorageに保存:', userData);
   } catch (error) {
-    console.error('❌ ユーザー情報保存エラー:', error);
   }
 };
 
@@ -71,15 +68,12 @@ export const getCurrentUser = (): StoredUser | null => {
     const isExpired = Date.now() - userData.timestamp > SEVEN_DAYS_MS;
 
     if (isExpired) {
-      console.log('⏰ ユーザー情報の有効期限切れ');
       clearCurrentUser();
       return null;
     }
 
-    console.log('📱 LocalStorageからユーザー情報を復元:', userData);
     return userData;
   } catch (error) {
-    console.error('❌ ユーザー情報取得エラー:', error);
     return null;
   }
 };
@@ -90,9 +84,7 @@ export const getCurrentUser = (): StoredUser | null => {
 export const clearCurrentUser = (): void => {
   try {
     localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
-    console.log('🗑️ ユーザー情報をクリア');
   } catch (error) {
-    console.error('❌ ユーザー情報クリアエラー:', error);
   }
 };
 
@@ -113,9 +105,7 @@ export const saveRecentGroup = (group: StoredGroup): void => {
       STORAGE_KEYS.RECENT_GROUPS,
       JSON.stringify(updatedGroups),
     );
-    console.log('💾 最近のグループ情報を保存:', group);
   } catch (error) {
-    console.error('❌ グループ情報保存エラー:', error);
   }
 };
 
@@ -127,7 +117,6 @@ export const getRecentGroups = (): StoredGroup[] => {
     const groupsJson = localStorage.getItem(STORAGE_KEYS.RECENT_GROUPS);
     return safeJsonParse<StoredGroup[]>(groupsJson, []);
   } catch (error) {
-    console.error('❌ グループ情報取得エラー:', error);
     return [];
   }
 };

@@ -27,17 +27,10 @@ export function AuthComponent({
       const loggedInUser = userCredential.user;
 
       onAuthSuccess?.(loggedInUser);
-
-      console.log('✅ 匿名ログイン成功:', {
-        uid: loggedInUser.uid,
-        isAnonymous: loggedInUser.isAnonymous,
-      });
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : '認証エラーが発生しました';
       onAuthError?.(errorMessage);
-
-      console.error('❌ 匿名ログインエラー:', error);
     } finally {
       setIsLoading(false);
     }
@@ -46,9 +39,8 @@ export function AuthComponent({
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      console.log('👋 ログアウト完了');
     } catch (error) {
-      console.error('❌ ログアウトエラー:', error);
+      // ログアウトエラーをサイレントに処理
     }
   };
 

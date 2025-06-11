@@ -21,7 +21,6 @@ const safeJsonParse = <T>(jsonString: string | null, defaultValue: T): T => {
   try {
     return JSON.parse(jsonString) as T;
   } catch (error) {
-    console.warn('⚠️ SessionStorage JSON parse error:', error);
     return defaultValue;
   }
 };
@@ -45,7 +44,6 @@ export const isSessionStorageAvailable = (): boolean => {
  */
 export const setSessionUser = (user: SessionUser): void => {
   if (!isSessionStorageAvailable()) {
-    console.warn('⚠️ SessionStorage is not available');
     return;
   }
 
@@ -53,13 +51,7 @@ export const setSessionUser = (user: SessionUser): void => {
     sessionStorage.setItem(SESSION_KEYS.CURRENT_USER, JSON.stringify(user));
     sessionStorage.setItem(SESSION_KEYS.GROUP_ID, user.groupId);
 
-    console.log('💾 DraftUserをSessionStorageに保存:', {
-      id: user.id,
-      name: user.name,
-      groupId: user.groupId,
-    });
   } catch (error) {
-    console.error('❌ SessionUser保存エラー:', error);
   }
 };
 
@@ -81,20 +73,13 @@ export const getSessionUser = (): SessionUser | null => {
 
     // 基本的なバリデーション
     if (!user.id || !user.name || !user.groupId || !user.avatar) {
-      console.warn('⚠️ SessionUser data is incomplete:', user);
       clearSessionUser();
       return null;
     }
 
-    console.log('📱 SessionStorageからDraftUserを復元:', {
-      id: user.id,
-      name: user.name,
-      groupId: user.groupId,
-    });
 
     return user;
   } catch (error) {
-    console.error('❌ SessionUser取得エラー:', error);
     return null;
   }
 };
@@ -110,9 +95,7 @@ export const clearSessionUser = (): void => {
   try {
     sessionStorage.removeItem(SESSION_KEYS.CURRENT_USER);
     sessionStorage.removeItem(SESSION_KEYS.GROUP_ID);
-    console.log('🗑️ SessionUser情報をクリア');
   } catch (error) {
-    console.error('❌ SessionUserクリアエラー:', error);
   }
 };
 
@@ -127,7 +110,6 @@ export const getSessionGroupId = (): string | null => {
   try {
     return sessionStorage.getItem(SESSION_KEYS.GROUP_ID);
   } catch (error) {
-    console.error('❌ SessionGroupId取得エラー:', error);
     return null;
   }
 };
@@ -140,10 +122,6 @@ export const isValidSessionForGroup = (currentGroupId: string): boolean => {
   const isValid = sessionGroupId === currentGroupId;
 
   if (!isValid && sessionGroupId) {
-    console.log('⚠️ GroupID不整合検出:', {
-      current: currentGroupId,
-      session: sessionGroupId,
-    });
   }
 
   return isValid;

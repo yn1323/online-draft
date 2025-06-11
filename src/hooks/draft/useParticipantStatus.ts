@@ -66,14 +66,12 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
 
     // Storybook環境: モックデータを使用
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモック参加者ステータスを使用');
       setParticipants(getMockParticipants());
       setLoading(false);
       return;
     }
 
     // 本番環境: Firebase onSnapshot（リアルタイム監視）
-    console.log('🔄 参加者ステータス監視開始...', { groupId, currentRound });
     setLoading(true);
     setError(null);
 
@@ -81,22 +79,15 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
       const unsubscribe = subscribeGroupParticipantsStatus(
         groupId,
         (updatedParticipants) => {
-          console.log(
-            '👥 参加者ステータス更新:',
-            updatedParticipants.length,
-            '人',
-          );
           setParticipants(updatedParticipants);
           setLoading(false);
         },
       );
 
       return () => {
-        console.log('🛑 参加者ステータス監視停止');
         unsubscribe();
       };
     } catch (error) {
-      console.error('❌ 参加者ステータス監視エラー:', error);
       setError('参加者ステータスの取得に失敗しました');
       setLoading(false);
     }
@@ -114,7 +105,6 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
 
       // Storybook環境: モック処理
       if (isStorybookEnvironment()) {
-        console.log('📚 Storybook環境のためステータス更新をモック');
         setUpdating(true);
         await new Promise((resolve) => setTimeout(resolve, 500));
 
@@ -134,14 +124,11 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
         setUpdating(true);
         setError(null);
 
-        console.log('🔄 ステータス更新開始:', { userId, status, currentRound });
 
         await updateParticipantStatus(userId, status, currentRound);
 
-        console.log('✅ ステータス更新成功');
         return true;
       } catch (error) {
-        console.error('❌ ステータス更新エラー:', error);
         setError('ステータスの更新に失敗しました');
         return false;
       } finally {
@@ -158,7 +145,6 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
     async (newRound: number): Promise<boolean> => {
       // Storybook環境: モック処理
       if (isStorybookEnvironment()) {
-        console.log('📚 Storybook環境のため全ステータスリセットをモック');
         setUpdating(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
 
@@ -180,14 +166,11 @@ export const useParticipantStatus = (groupId: string, currentRound: number) => {
         setUpdating(true);
         setError(null);
 
-        console.log('🔄 全ステータスリセット開始:', { groupId, newRound });
 
         await resetAllParticipantsStatus(groupId, newRound);
 
-        console.log('✅ 全ステータスリセット成功');
         return true;
       } catch (error) {
-        console.error('❌ 全ステータスリセットエラー:', error);
         setError('ステータスのリセットに失敗しました');
         return false;
       } finally {

@@ -48,7 +48,6 @@ export const updateRound = async (
   request: UpdateRoundRequest,
 ): Promise<Round> => {
   // TODO: Firestore実装
-  console.log('updateRound called with:', request);
   throw new Error('Not implemented');
 };
 

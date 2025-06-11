@@ -77,12 +77,9 @@ const baseFetch = async <T extends BaseFetch>(
         : cache),
   });
   if (!res.ok) {
-    console.error('Failed fetch: ', targetUrl, 'Status:', res.status);
     return {};
   }
   const json: T['response'] = await res.json().catch((e) => {
-    console.error('Failed fetch: ', targetUrl);
-    console.error(e);
     return {};
   });
   return json ?? {};

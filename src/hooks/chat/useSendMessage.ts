@@ -29,7 +29,6 @@ export const useSendMessage = () => {
 
     // Storybook環境: モック処理
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためメッセージ送信をモック');
       setSending(true);
       await new Promise((resolve) => setTimeout(resolve, 500));
       setSending(false);
@@ -41,7 +40,6 @@ export const useSendMessage = () => {
       setSending(true);
       setError(null);
 
-      console.log('🔄 メッセージ送信開始:', { groupId, userId, message });
 
       await createChatMessage({
         groupId,
@@ -49,10 +47,8 @@ export const useSendMessage = () => {
         message: message.trim(),
       });
 
-      console.log('✅ メッセージ送信成功');
       return true;
     } catch (error) {
-      console.error('❌ メッセージ送信エラー:', error);
       setError('メッセージの送信に失敗しました');
       return false;
     } finally {

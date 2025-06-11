@@ -116,12 +116,6 @@ const DraftPageContent = ({
   const { messages } = useRealtimeChat(draftId, groupUsers);
   const { sendMessage } = useSendMessage();
 
-  console.log('📍 DraftPage - groupId:', draftId);
-  console.log('📍 DraftPage - groupData:', groupData);
-  console.log('📍 DraftPage - groupUsers:', groupUsers);
-  console.log('📍 DraftPage - currentUser:', currentUser);
-  console.log('💬 DraftPage - messages:', messages);
-
   // 最近のグループとして保存（認証完了後）
   useEffect(() => {
     if (currentUser && groupData && !groupLoading) {
@@ -164,13 +158,10 @@ const DraftPageContent = ({
     propOnSubmitSelection ??
     (async (selection: string, comment?: string) => {
       if (!currentUser || !draftId) {
-        console.error('❌ ユーザー情報またはグループIDが不正');
         return;
       }
 
       try {
-        console.log('🔄 選択データ保存開始:', { selection, comment });
-
         // Firestoreに選択データを保存
         await saveUserSelection(
           currentUser.id || '',
@@ -180,10 +171,8 @@ const DraftPageContent = ({
           comment || '',
         );
 
-        console.log('✅ 選択データ保存成功');
         setInternalCurrentUserSelection(selection);
       } catch (error) {
-        console.error('❌ 選択データ保存エラー:', error);
         // エラーの場合は内部状態のみ更新（フォールバック）
         setInternalCurrentUserSelection(selection);
       }
@@ -198,19 +187,15 @@ const DraftPageContent = ({
       const success = await updateMyStatus(currentUser.id || '', 'entered');
 
       if (success) {
-        console.log('✅ 選択提出＆ステータス更新成功');
         setIsInputModalOpen(false);
         setSelection('');
         setComment('');
-      } else {
-        console.error('❌ ステータス更新失敗（モーダルは開いたまま）');
       }
     }
   };
 
   const handleRoundClick = (roundNumber: number) => {
     // 従来のラウンド全体クリック（必要に応じて削除可能）
-    console.log('ラウンド全体クリック:', roundNumber);
   };
 
   const handleUserClick = (roundNumber: number, userId: string) => {
@@ -238,9 +223,7 @@ const DraftPageContent = ({
       comment?: string;
     },
   ) => {
-    console.log('ユーザー選択保存:', { roundNumber, selection });
     // 実際の実装では、ここでFirestoreに保存
-    // 今回はコンソールログのみ
   };
 
   const handleOpenInputModal = () => {
@@ -258,29 +241,24 @@ const DraftPageContent = ({
   };
 
   const handleOpenSettings = () => {
-    console.log('設定画面を開く（今後実装）');
+    // 設定画面を開く（今後実装）
   };
 
   const handleOpenHelp = () => {
-    console.log('ヘルプ画面を開く（今後実装）');
+    // ヘルプ画面を開く（今後実装）
   };
 
   // チャット関連のハンドラー
   const handleSendMessage = async (message: string) => {
     if (!currentUser || !draftId) {
-      console.error('❌ ユーザー情報またはグループIDが不正');
       return;
     }
 
-    const success = await sendMessage({
+    await sendMessage({
       groupId: draftId,
       userId: currentUser.id || '',
       message,
     });
-
-    if (success) {
-      console.log('✅ メッセージ送信成功');
-    }
   };
 
   // ローディング中（グループデータ取得中）

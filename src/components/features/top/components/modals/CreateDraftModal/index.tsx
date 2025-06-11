@@ -43,7 +43,6 @@ export const CreateDraftModal = ({
       onClose();
     } catch (err) {
       // エラーハンドリングは親コンポーネントで行う
-      console.error('CreateDraftModal: エラーが発生しました', err);
     }
   };
 

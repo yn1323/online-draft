@@ -51,7 +51,6 @@ export const JoinPage = () => {
         });
       }
     } catch (error) {
-      console.error('参加エラー:', error);
       toaster.create({
         title: '接続エラー',
         description:
@@ -79,7 +78,6 @@ export const JoinPage = () => {
         });
       }
     } catch (error) {
-      console.error('参加エラー:', error);
       toaster.create({
         title: '参加エラー',
         description: '参加できませんでした。',

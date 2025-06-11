@@ -27,7 +27,6 @@ export const sendMessage = async (
   request: SendMessageRequest,
 ): Promise<ChatMessage> => {
   // TODO: Firestore実装
-  console.log('sendMessage called with:', request);
   throw new Error('Not implemented');
 };
 

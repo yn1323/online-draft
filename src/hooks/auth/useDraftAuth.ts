@@ -69,30 +69,15 @@ export const useDraftAuth = (groupId: string): UseDraftAuthReturn => {
 
   // 統合リトライ関数
   const retry = useCallback(() => {
-    console.log('🔄 DraftAuth統合リトライ実行');
     retryFirebase();
     retrySession();
   }, [retryFirebase, retrySession]);
 
   // セッションクリア関数
   const clearSession = useCallback(() => {
-    console.log('🗑️ DraftAuthセッションクリア');
     clearUser();
   }, [clearUser]);
 
-  // デバッグログ
-  console.log('🔐 useDraftAuth state:', {
-    groupId,
-    firebaseAuthenticated,
-    groupExists,
-    sessionUser: sessionUser
-      ? { id: sessionUser.id, name: sessionUser.name }
-      : null,
-    isReady,
-    needsUserSelection: needsUserSelectionComputed,
-    hasAuthError,
-    loading,
-  });
 
   return {
     isReady,

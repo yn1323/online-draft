@@ -31,11 +31,6 @@ export const updateParticipantStatus = async (
   currentRound: number,
 ): Promise<void> => {
   try {
-    console.log('🔄 参加者ステータス更新開始:', {
-      userId,
-      status,
-      currentRound,
-    });
 
     // ユーザードキュメントのリファレンスを取得
     const userRef = doc(getUserCollection(), userId);
@@ -46,13 +41,7 @@ export const updateParticipantStatus = async (
       updatedAt: new Date(),
     });
 
-    console.log('✅ 参加者ステータス更新成功:', {
-      userId,
-      status,
-      currentRound,
-    });
   } catch (error) {
-    console.error('❌ 参加者ステータス更新エラー:', error);
     throw new Error('参加者ステータスの更新に失敗しました');
   }
 };
@@ -88,10 +77,8 @@ export const getGroupParticipantsStatus = async (
       });
     });
 
-    console.log('📊 グループ参加者ステータス取得:', participants.length, '人');
     return participants;
   } catch (error) {
-    console.error('❌ 参加者ステータス取得エラー:', error);
     throw new Error('参加者ステータスの取得に失敗しました');
   }
 };
@@ -128,13 +115,11 @@ export const subscribeGroupParticipantsStatus = (
         });
       });
 
-      console.log('🔄 参加者ステータス更新:', participants.length, '人');
       callback(participants);
     });
 
     return unsubscribe;
   } catch (error) {
-    console.error('❌ 参加者ステータス監視エラー:', error);
     throw new Error('参加者ステータスの監視に失敗しました');
   }
 };
@@ -147,7 +132,6 @@ export const resetAllParticipantsStatus = async (
   newRound: number,
 ): Promise<void> => {
   try {
-    console.log('🔄 全参加者ステータスリセット開始:', { groupId, newRound });
 
     const participants = await getGroupParticipantsStatus(groupId);
 
@@ -158,13 +142,7 @@ export const resetAllParticipantsStatus = async (
 
     await Promise.all(updatePromises);
 
-    console.log(
-      '✅ 全参加者ステータスリセット完了:',
-      participants.length,
-      '人',
-    );
   } catch (error) {
-    console.error('❌ 全参加者ステータスリセットエラー:', error);
     throw new Error('参加者ステータスのリセットに失敗しました');
   }
 };
@@ -188,11 +166,6 @@ export const checkRoundCompletion = (
     (p) => p.status === 'completed',
   );
 
-  console.log('🏁 ラウンド完了チェック:', {
-    currentRound,
-    participants: currentRoundParticipants.length,
-    allCompleted,
-  });
 
   return allCompleted;
 };

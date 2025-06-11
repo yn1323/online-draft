@@ -49,7 +49,6 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
 
       // Storybook環境: 確実にモックデータを使用
       if (isStorybookEnvironment()) {
-        console.log('📚 Storybook環境のためモックデータを使用');
         setGroupLoading(true);
 
         // 少し遅延を入れてローディング状態をテスト
@@ -69,7 +68,6 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
 
       // 本番環境: Firebase getDraftGroup
       try {
-        console.log('🔄 グループ情報取得開始...', { groupId });
         setGroupLoading(true);
         setGroupError(null);
 
@@ -77,7 +75,6 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
 
         if (!group) {
           setGroupError('指定されたグループが見つかりません');
-          console.error('❌ グループが存在しません:', { groupId });
           return;
         }
 
@@ -86,9 +83,7 @@ export const useGroupData = (groupId: string): UseGroupDataResult => {
           round: group.round,
         });
 
-        console.log('✅ グループ情報取得成功:', group);
       } catch (error) {
-        console.error('❌ グループ情報取得エラー:', error);
         setGroupError('グループ情報の取得に失敗しました');
       } finally {
         setGroupLoading(false);

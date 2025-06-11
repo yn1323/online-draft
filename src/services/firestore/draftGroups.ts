@@ -33,7 +33,6 @@ export type CreateDraftGroupResult = {
 export async function createDraftGroup(
   input: CreateDraftGroupInput,
 ): Promise<CreateDraftGroupResult> {
-  console.log('🔄 ドラフトグループ作成開始...', input);
 
   // 認証チェック
   if (!auth.currentUser) {
@@ -58,15 +57,11 @@ export async function createDraftGroup(
       groupData,
     );
 
-    console.log('✅ ドラフトグループ作成成功:', {
-      groupId: docRef.id,
-    });
 
     return {
       groupId: docRef.id,
     };
   } catch (error) {
-    console.error('❌ ドラフトグループ作成エラー:', error);
     throw error;
   }
 }
@@ -96,7 +91,6 @@ export async function getDraftGroup(
 
     return null;
   } catch (error) {
-    console.error('❌ グループ取得エラー:', error);
     throw error;
   }
 }

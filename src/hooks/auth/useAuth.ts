@@ -22,29 +22,22 @@ export function useAuth() {
 
   useEffect(() => {
     if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためFirebase認証監視をスキップ');
       setLoading(false);
       setUser(null);
       setError(null);
       return;
     }
 
-    console.log('🔄 Firebase認証状態の監視を開始...');
 
     const unsubscribe = onAuthStateChanged(
       auth,
       (firebaseUser) => {
-        console.log(
-          '🔥 認証状態変更:',
-          firebaseUser ? `UID: ${firebaseUser.uid}` : 'ログアウト',
-        );
 
         setUser(firebaseUser);
         setLoading(false);
         setError(null);
       },
       (error) => {
-        console.error('❌ 認証状態監視エラー:', error);
         setError(error.message);
         setLoading(false);
       },
@@ -65,7 +58,6 @@ export function useAuth() {
     // window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
-      console.log('👋 Firebase認証状態の監視を停止');
       unsubscribe();
       // window.removeEventListener('beforeunload', handleBeforeUnload);
     };
