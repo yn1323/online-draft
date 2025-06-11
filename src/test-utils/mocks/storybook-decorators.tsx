@@ -59,3 +59,37 @@ export const withCustomUser = (userOverrides: Partial<User>): Decorator =>
     user: createMockFirebaseUser(userOverrides),
     loading: false,
   });
+
+/**
+ * LobbyPage用のモックデコレーター
+ * Firebase認証とSessionStorageの両方をモック
+ */
+export const withLobbyMock =
+  (options?: {
+    sessionUser?: { id: string; name: string; groupId: string } | null;
+    groupExists?: boolean;
+    firebaseAuthenticated?: boolean;
+  }): Decorator =>
+  (Story: React.ComponentType) => {
+    // Firebase認証のモック
+    const mockStore = createMockJotaiStore({
+      user: options?.firebaseAuthenticated !== false ? createMockFirebaseUser() : null,
+      loading: false,
+    });
+
+    // Storybook環境でのSessionStorageモック
+    if (typeof window !== 'undefined') {
+      const key = `draft_user_${options?.sessionUser?.groupId || 'mock-group'}`;
+      if (options?.sessionUser) {
+        window.sessionStorage.setItem(key, JSON.stringify(options.sessionUser));
+      } else {
+        window.sessionStorage.removeItem(key);
+      }
+    }
+
+    return (
+      <JotaiProvider store={mockStore}>
+        <Story />
+      </JotaiProvider>
+    );
+  };

@@ -149,9 +149,20 @@ export const useFirebaseAuth = (groupId: string): UseFirebaseAuthReturn => {
   useEffect(() => {
     if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためFirebase認証をスキップ');
-      setLoading(false);
-      setIsAuthenticated(true);
-      setGroupExists(true);
+      
+      // Storybook環境ではグループIDによってモックの動作を変える
+      if (groupId === 'nonexistent') {
+        // グループが存在しないケース
+        setLoading(false);
+        setIsAuthenticated(true);
+        setGroupExists(false);
+        setGroupError('指定されたグループが見つかりません');
+      } else {
+        // 通常の成功ケース
+        setLoading(false);
+        setIsAuthenticated(true);
+        setGroupExists(true);
+      }
       return;
     }
 
@@ -172,13 +183,14 @@ export const useFirebaseAuth = (groupId: string): UseFirebaseAuthReturn => {
     }
   }, [authError, loading]);
 
-  useEffect(() => {
-    if (groupError && !loading && !groupExists) {
-      // グループ不存在時のリダイレクト（Legacy準拠）
-      console.log('🔄 グループが見つからないため/にリダイレクト');
-      router.push('/');
-    }
-  }, [groupError, loading, groupExists, router]);
+  // Legacy同等のエラーハンドリング（コメントアウト）
+  // useEffect(() => {
+  //   if (groupError && !loading && !groupExists) {
+  //     // グループ不存在時のリダイレクト（Legacy準拠）
+  //     console.log('🔄 グループが見つからないため/にリダイレクト');
+  //     router.push('/');
+  //   }
+  // }, [groupError, loading, groupExists, router]);
 
   return {
     isAuthenticated,

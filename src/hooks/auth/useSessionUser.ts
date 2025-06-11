@@ -194,13 +194,24 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
     if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためSessionUser処理をスキップ');
       setLoading(false);
-      setSessionUserState({
-        id: 'mock-user-1',
-        groupId,
-        name: 'MockUser',
-        avatar: '1',
-        createdAt: new Date(),
-      });
+      
+      // Storybook環境ではwindowのSessionStorageを確認
+      const key = `draft_user_${groupId}`;
+      const storedData = window.sessionStorage.getItem(key);
+      
+      if (storedData) {
+        // SessionStorageにデータがある場合はそれを使用
+        try {
+          const userData = JSON.parse(storedData);
+          console.log('📚 Storybook環境のためモックユーザーを使用');
+          setSessionUserState(userData);
+        } catch (e) {
+          setSessionUserState(null);
+        }
+      } else {
+        // SessionStorageにデータがない場合はnull
+        setSessionUserState(null);
+      }
       return;
     }
 

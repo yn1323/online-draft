@@ -48,6 +48,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     hasAuthError,
     loading: authLoading,
     authError,
+    groupError,
     userError,
     selectUser,
     retry: retryAuth,
@@ -55,7 +56,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   } = useLobbyAuth(groupId);
 
   // データ取得フック
-  const { groupData, groupLoading, groupError } = useGroupData(groupId);
+  const { groupData, groupLoading, groupError: groupDataError } = useGroupData(groupId);
   const { groupUsers } = useRealtimeUsers(groupId);
 
   const bgColor = useColorModeValue('white', 'gray.800');
@@ -221,8 +222,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     );
   }
 
-  // 認証エラー時の表示
-  if (hasAuthError) {
+  // Firebase認証エラー時の表示（グループエラーは除く）
+  if (authError && !userError) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
         <VStack gap={6} align="center" justify="center" minH="400px">
@@ -232,7 +233,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               認証エラー
             </Heading>
             <Text color="gray.500">
-              {authError || 'Firebase認証またはグループの確認に失敗しました'}
+              {authError || 'Firebase認証に失敗しました'}
             </Text>
             <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
               グループID: {groupId}
@@ -251,8 +252,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     );
   }
 
-  // グループデータエラー時の表示
-  if (groupError || !groupData) {
+  // グループエラー時の表示（グループが存在しない場合）
+  if (groupError || groupDataError || (!groupLoading && !groupData)) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
         <VStack gap={6} align="center" justify="center" minH="400px">
@@ -262,7 +263,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               グループが見つかりません
             </Heading>
             <Text color="gray.500">
-              {groupError ||
+              {groupError || groupDataError ||
                 '指定されたグループID のグループは存在しないか、削除されている可能性があります。'}
             </Text>
             <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>

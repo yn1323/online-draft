@@ -19,6 +19,7 @@ interface UseLobbyAuthReturn {
 
   // エラー情報
   authError: string | null; // Firebase認証エラー
+  groupError: string | null; // グループエラー
   userError: string | null; // SessionUser関連エラー
 
   // ユーザー情報
@@ -107,7 +108,8 @@ export const useLobbyAuth = (groupId: string): UseLobbyAuthReturn => {
     needsUserSelection: needsUserSelectionComputed,
     hasAuthError,
     loading,
-    authError: authError || groupError,
+    authError, // Firebase認証エラーのみ
+    groupError, // グループエラーは別途返す
     userError,
     currentUser: sessionUser,
     selectUser,
