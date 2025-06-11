@@ -2,7 +2,7 @@
 
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ConditionalFloatingButton } from '../../actions/ConditionalFloatingButton';
+import { SelectionButton } from '../../actions/SelectionButton';
 import { ChatLogSection } from '../../chat/ChatLogSection';
 import { RoundHistoryTable } from '../../rounds/RoundHistoryTable';
 
@@ -95,11 +95,10 @@ export const TabNavigation = ({
         {activeTab === 'chat' && <ChatLogSection />}
       </Box>
 
-      {/* Conditional Floating Button */}
-      <ConditionalFloatingButton
-        activeTab={activeTab}
-        onClick={onOpenInputModal}
-      />
+      {/* Entry Button */}
+      <Box p={4}>
+        <SelectionButton onClick={onOpenInputModal} />
+      </Box>
     </VStack>
   );
 };

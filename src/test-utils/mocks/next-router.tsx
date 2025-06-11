@@ -4,7 +4,7 @@
 
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { AppRouterContext } from 'next/dist/shared/lib/app-router-context.shared-runtime';
-import type { ReactNode, FC } from 'react';
+import type { FC, ReactNode } from 'react';
 
 // App Routerのモック実装
 const mockRouter: AppRouterInstance = {
