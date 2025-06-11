@@ -1,6 +1,8 @@
 import {
   addDoc,
   collection,
+  doc,
+  getDoc,
   getDocs,
   onSnapshot,
   query,
@@ -145,5 +147,46 @@ export const subscribeUsers = (
   } catch (error) {
     console.error('SUBSCRIBEUSERS:', error);
     throw new Error('ユーザー一覧の監視に失敗しました');
+  }
+};
+
+/**
+ * ユーザーIDから特定のユーザー情報を取得する
+ */
+export const getUserById = async (userId: string): Promise<UserDocument | null> => {
+  try {
+    console.log('🔍 ユーザー情報取得開始:', { userId });
+    
+    const docRef = doc(getUserCollection(), userId);
+    const docSnap = await getDoc(docRef);
+    
+    if (!docSnap.exists()) {
+      console.log('❌ ユーザーが存在しません:', { userId });
+      return null;
+    }
+    
+    const data = docSnap.data();
+    const user: UserDocument = {
+      userId: docSnap.id,
+      groupId: data.groupId,
+      userName: data.userName,
+      avatar: data.avatar,
+      deleteFlg: data.deleteFlg,
+      status: data.status || 'thinking',
+      currentRound: data.currentRound || 1,
+      createdAt: data.createdAt?.toDate() || new Date(),
+      updatedAt: data.updatedAt?.toDate() || new Date(),
+    };
+    
+    console.log('✅ ユーザー情報取得成功:', {
+      userId: user.userId,
+      name: user.userName,
+      groupId: user.groupId,
+    });
+    
+    return user;
+  } catch (error) {
+    console.error('❌ ユーザー情報取得エラー:', error);
+    throw new Error('ユーザー情報の取得に失敗しました');
   }
 };

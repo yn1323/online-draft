@@ -6,6 +6,7 @@
 | Frontend | Next.js 15 + React 19 + TypeScript 5 | ✅ |
 | UI | Chakra UI v3 + ダークモード | ✅ |
 | State | Jotai + Firebase onSnapshot | ✅ |
+| Auth | Firebase Anonymous + SessionStorage | 🔄 |
 | Test | Vitest + Playwright + Storybook | ✅ |
 | Linting | Biome | ✅ |
 
@@ -106,6 +107,109 @@ const useRealtimeGroup = (groupId: string) => {
   }, [groupId, setGroup]);
 };
 ```
+
+## 🔐 認証実装パターン
+
+### 2層認証アーキテクチャ
+Legacy準拠の堅牢な認証システム：
+
+#### Layer 1: Firebase匿名認証
+```typescript
+// src/hooks/auth/useFirebaseAuth.ts
+export const useFirebaseAuth = (groupId: string) => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [groupExists, setGroupExists] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const authenticate = async () => {
+      try {
+        // Firebase匿名認証
+        const auth = getAuth();
+        if (!auth.currentUser) {
+          await signInAnonymously(auth);
+        }
+        setIsAuthenticated(true);
+
+        // グループ存在確認
+        const groupData = await getDraftGroup(groupId);
+        setGroupExists(!!groupData);
+      } catch (error) {
+        console.error('認証エラー:', error);
+        setIsAuthenticated(false);
+        setGroupExists(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    authenticate();
+  }, [groupId]);
+
+  return { isAuthenticated, groupExists, loading };
+};
+```
+
+#### Layer 2: SessionStorage DraftUser管理
+```typescript
+// src/hooks/auth/useSessionUser.ts
+export const useSessionUser = () => {
+  const [currentUser, setCurrentUser] = useAtom(currentUserAtom);
+
+  const setUserId = (userId: string) => {
+    sessionStorage.setItem('draftUserId', userId);
+    // currentUserとの整合性確保
+    if (currentUser) {
+      setCurrentUser({ ...currentUser, userId });
+    }
+  };
+
+  const getUserId = (): string | null => {
+    return sessionStorage.getItem('draftUserId');
+  };
+
+  const clearUserId = () => {
+    sessionStorage.removeItem('draftUserId');
+  };
+
+  return { 
+    userId: getUserId(), 
+    setUserId, 
+    clearUserId 
+  };
+};
+```
+
+### 認証フロー実装例
+```typescript
+// DraftPage での認証チェック
+const DraftPage = ({ groupId }: { groupId: string }) => {
+  const { isAuthenticated, groupExists, loading } = useFirebaseAuth(groupId);
+  const { userId } = useSessionUser();
+  const router = useRouter();
+
+  // Firebase認証 & グループ確認
+  if (loading) return <LoadingSpinner />;
+  if (!isAuthenticated || !groupExists) {
+    return <ErrorPage message="アクセスできません" />;
+  }
+
+  // DraftUserID確認
+  if (!userId) {
+    router.push(`/lobby/${groupId}`);
+    return <RedirectingPage />;
+  }
+
+  return <DraftContent />;
+};
+```
+
+### Legacy互換性
+| Legacy Component | Current Implementation |
+|------------------|----------------------|
+| AnonymousAuth.tsx | useFirebaseAuth() |
+| UserExistanceCheck.tsx | useSessionUser() |
+| sessionStorageInfo() | useSessionUser() |
 
 ## 📋 コンポーネント構造
 ```

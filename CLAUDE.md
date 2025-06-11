@@ -10,8 +10,8 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
 - NEVER: data-testid使用
 
 ### YOU MUST（必須事項）
-1. YOU MUST: /actが入力されたときのみコード修正をすること。/act がメッセージに存在しないときは指摘、相談、提案、回答のみを行うこと。
-1. YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること
+- YOU MUST: /actが入力されたときのみコード修正をすること。/act がメッセージに存在しないときは指摘、相談、提案、回答のみを行うこと。
+- YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
   - linter自動修正: `pnpm lint:fix`
@@ -19,9 +19,9 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
   - 型チェック: `pnpm type-check`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
-2. YOU MUST: 作業完了時、通知を行うこと
+- YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
-3. YOU MUST: 指示をもとに該当する資料を読んでから作業してください。
+- YOU MUST: 指示をもとに該当する資料を読んでから作業してください。
   - `docs/DEVELOPMENT_GUIDE.md` - 技術制約・設計原則
   - `docs/E2E_TESTING_GUIDE.md` - E2Eテスト戦略
   - `docs/COMMANDS.md` - コマンド詳細
@@ -70,6 +70,95 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
 - **User-First Design**: 技術制約よりユーザー体験優先
 - **Composition over Inheritance**: React的思考での設計
 
+## 🔐 認証・セキュリティ設計
+
+### **2層認証アーキテクチャ（Legacy準拠）**
+
+#### **Layer 1: Firebase Anonymous認証**
+```typescript
+// 全ページで自動実行される基盤認証
+useFirebaseAuth(groupId) {
+  // 1. Firebase匿名認証の自動実行
+  // 2. グループ存在確認（getDraftGroup）
+  // 3. 認証失敗時の適切なエラーハンドリング
+}
+```
+
+#### **Layer 2: SessionStorage DraftUser認証**
+```typescript
+// アプリ独自のユーザーID管理
+useSessionUser() {
+  // 1. sessionStorageでDraftUserID管理
+  // 2. Firestoreでユーザー存在確認
+  // 3. currentUser（Jotai）との整合性確保
+}
+```
+
+### **認証フロー設計**
+
+#### **未認証ユーザー → /draft/{id} アクセス**
+```
+1. Firebase匿名認証実行（useFirebaseAuth）
+2. グループ存在確認
+3. sessionStorageでDraftUserID確認（useSessionUser）
+4. userIdなし → /lobby/{id} にリダイレクト
+5. ロビーでユーザー選択/作成 → sessionStorage保存
+6. /draft/{id} に遷移
+```
+
+#### **認証済みユーザー → /draft/{id} アクセス**
+```
+1. Firebase認証確認（既にログイン済み）
+2. sessionStorageでDraftUserID確認
+3. Firestoreでユーザー存在確認
+4. 成功 → 直接ドラフト画面表示
+```
+
+### **状態管理統合**
+
+#### **Firebase Auth（基盤）**
+- 匿名認証によるFirestore Permission確保
+- グループアクセス権限の確立
+
+#### **SessionStorage（DraftUser）**
+- アプリ独自のユーザーID管理
+- ページリロード時の状態復元
+- ブラウザセッション単位での永続化
+
+#### **Jotai（currentUser）**
+- リアクティブな認証状態管理
+- コンポーネント間での状態共有
+- localStorageとの整合性確保（7日期限）
+
+### **実装ガイドライン**
+
+#### **認証フックの使用**
+```typescript
+// DraftPage内での認証チェック
+const { isAuthenticated, groupExists, loading } = useFirebaseAuth(groupId)
+const { userId, setUserId, clearUserId } = useSessionUser()
+
+// 段階的な認証確認
+if (loading) return <LoadingSpinner />
+if (!isAuthenticated || !groupExists) return <ErrorPage />
+if (!userId) {
+  router.push(`/lobby/${groupId}`)
+  return <RedirectingPage />
+}
+```
+
+#### **エラーハンドリング**
+- **認証失敗**: 適切なエラーメッセージ表示
+- **グループ不存在**: TOPページへリダイレクト
+- **ユーザー不存在**: ロビーページへリダイレクト
+- **Permission Error**: Firebase認証状態の確認
+
+### **Legacy互換性**
+- **AnonymousAuth.tsx相当**: useFirebaseAuth
+- **UserExistanceCheck.tsx相当**: useSessionUser
+- **sessionStorageInfo相当**: useSessionUser内包
+- **同等の堅牢性**: 段階的認証チェック実現
+
 ## 📍 現在のタスク状況
 **Phase 1-5: 超大規模リファクタリング + CI/CD最適化完了** 🎉
 - ✅ **Phase 1**: DraftPage機能別分割・初期atoms作成・UI定数統一
@@ -112,9 +201,13 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
 - **環境変数統一**: ワークフローレベル環境変数・DRY原則適用・設定一元化
 
 ### 次回セッション開始時のTODO
-1. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
-2. **状態管理強化**: 参加者ステータス・選択データの管理  
-3. **チャット機能実装**: LogItem・MessageInput活用した機能実装
+1. **認証システム修正**: Legacy準拠の2層認証実装
+   - useFirebaseAuth: Firebase匿名認証とグループ存在確認
+   - useSessionUser: sessionStorageでのDraftUserID管理
+   - DraftPage/LobbyPageの認証フロー修正
+2. **Firestore連携**: ドラフトデータの読み書き・リアルタイム同期
+3. **状態管理強化**: 参加者ステータス・選択データの管理  
+4. **チャット機能実装**: LogItem・MessageInput活用した機能実装
 
 ## 🎭 Claude Code設定
 
@@ -204,4 +297,4 @@ pnpm notify:slack error "タスク名" "エラー詳細"
 - `docs/LESSONS_LEARNED.md` - 重要な学び
 - `docs/LEGACY_MIGRATION.md` - レガシー参考
 
-**最終更新**: 2025/1/9 - Phase 1-4完了・Atoms強化・型安全性100%達成
+**最終更新**: 2025/6/12 - 認証設計ドキュメント追加・Firestoreリアルタイム同期修正完了
