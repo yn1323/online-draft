@@ -19,13 +19,11 @@ import type { ReactNode } from 'react';
 interface DraftAuthGuardProps {
   groupId: string;
   children: ReactNode;
-  onUserSelect?: (userId: string) => Promise<void>;
 }
 
 export const DraftAuthGuard = ({
   groupId,
   children,
-  onUserSelect,
 }: DraftAuthGuardProps) => {
   const router = useRouter();
   const {
@@ -36,9 +34,7 @@ export const DraftAuthGuard = ({
     authError,
     userError,
     currentUser,
-    selectUser,
     retry,
-    clearSession,
   } = useDraftAuth(groupId);
 
   // ローディング中
@@ -91,11 +87,13 @@ export const DraftAuthGuard = ({
 
   // ユーザー選択が必要 - 速やかにロビーにリダイレクト
   if (needsUserSelection) {
-    console.log('🔄 認証なしでDraftアクセス検出、ロビーページにリダイレクト:', { groupId });
-    
+    console.log('🔄 認証なしでDraftアクセス検出、ロビーページにリダイレクト:', {
+      groupId,
+    });
+
     // 即座にロビーページにリダイレクト
     router.replace(`/lobby/${groupId}`);
-    
+
     // リダイレクト中の簡潔な表示
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>

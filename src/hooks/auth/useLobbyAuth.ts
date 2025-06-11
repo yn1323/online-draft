@@ -1,9 +1,9 @@
 'use client';
 
+import type { SessionUser } from '@/src/types/auth';
+import { useCallback, useMemo } from 'react';
 import { useFirebaseAuth } from './useFirebaseAuth';
 import { useSessionUser } from './useSessionUser';
-import { useCallback, useMemo } from 'react';
-import type { SessionUser } from '@/src/types/auth';
 
 /**
  * LobbyPage用の統合認証フック
@@ -11,19 +11,19 @@ import type { SessionUser } from '@/src/types/auth';
  */
 interface UseLobbyAuthReturn {
   // 統合認証状態
-  isReady: boolean;                 // Firebase認証完了 + グループ存在確認完了
-  hasActiveSession: boolean;        // 有効なセッションが存在（ドラフトリダイレクト用）
-  needsUserSelection: boolean;      // ユーザー選択画面を表示する必要がある
-  hasAuthError: boolean;            // Firebase認証エラーまたはグループ不存在
-  loading: boolean;                 // 認証処理中（Firebase認証 or SessionUser復元中）
-  
+  isReady: boolean; // Firebase認証完了 + グループ存在確認完了
+  hasActiveSession: boolean; // 有効なセッションが存在（ドラフトリダイレクト用）
+  needsUserSelection: boolean; // ユーザー選択画面を表示する必要がある
+  hasAuthError: boolean; // Firebase認証エラーまたはグループ不存在
+  loading: boolean; // 認証処理中（Firebase認証 or SessionUser復元中）
+
   // エラー情報
-  authError: string | null;         // Firebase認証エラー
-  userError: string | null;         // SessionUser関連エラー
-  
+  authError: string | null; // Firebase認証エラー
+  userError: string | null; // SessionUser関連エラー
+
   // ユーザー情報
   currentUser: SessionUser | null;
-  
+
   // 操作関数
   selectUser: (userId: string) => Promise<void>;
   retry: () => void;
@@ -91,7 +91,9 @@ export const useLobbyAuth = (groupId: string): UseLobbyAuthReturn => {
     groupId,
     firebaseAuthenticated,
     groupExists,
-    sessionUser: sessionUser ? { id: sessionUser.id, name: sessionUser.name } : null,
+    sessionUser: sessionUser
+      ? { id: sessionUser.id, name: sessionUser.name }
+      : null,
     isReady,
     hasActiveSession,
     needsUserSelection: needsUserSelectionComputed,

@@ -87,7 +87,11 @@ export const ParticipantCell = ({ participant }: ParticipantCellProps) => {
         >
           {participant.name}
         </Text>
-        <Text fontSize="xs" color={colors.textColor} _dark={{ color: colors.textColorDark }}>
+        <Text
+          fontSize="xs"
+          color={colors.textColor}
+          _dark={{ color: colors.textColorDark }}
+        >
           {statusEmoji[participant.status]}
         </Text>
       </Box>
