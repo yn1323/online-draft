@@ -395,6 +395,22 @@ export const DraftPage = ({
           onRoundClick={handleRoundClick}
           onUserClick={handleUserClick}
           onOpenInputModal={handleOpenInputModal}
+          messages={messages.map((msg) => ({
+            id: msg.id,
+            type: msg.type === 'system' ? 'system' : 'chat',
+            timestamp: msg.timestamp,
+            content: msg.message,
+            user:
+              msg.type === 'user'
+                ? {
+                    id: msg.userId,
+                    name: msg.userName,
+                    avatar: msg.user?.avatar || '/img/1.png',
+                  }
+                : undefined,
+            isMyMessage: msg.userId === currentUser?.userId,
+          }))}
+          onSendMessage={handleSendMessage}
         />
       </VStack>
 

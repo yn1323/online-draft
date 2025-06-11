@@ -77,21 +77,19 @@ export const useRealtimeUsers = (groupId: string) => {
       return;
     }
 
-    // 本番環境: 一時的に静的データ取得（デバッグ用）
-    console.log('🔄 ユーザー一覧取得開始...', { groupId });
+    // 本番環境: リアルタイムユーザー購読
+    console.log('🔄 ユーザー一覧リアルタイム購読開始...', { groupId });
 
-    const fetchUsers = async () => {
-      try {
-        const users = await getUsers(groupId);
-        console.log('👥 ユーザー一覧取得成功:', users);
-        setGroupUsers(users);
-      } catch (error) {
-        console.error('❌ ユーザー一覧取得エラー:', error);
-        setGroupUsers([]);
-      }
+    const unsubscribe = subscribeUsers(groupId, (users) => {
+      console.log('👥 ユーザー一覧リアルタイム更新:', users);
+      setGroupUsers(users);
+    });
+
+    // クリーンアップ関数を返す
+    return () => {
+      console.log('🛑 ユーザー一覧購読停止');
+      unsubscribe();
     };
-
-    fetchUsers();
   }, [groupId, setGroupUsers]);
 
   return { groupUsers };

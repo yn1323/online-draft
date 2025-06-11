@@ -1,6 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { mockLogs } from '../../chat/ChatLogSection/mocks';
 import { mockParticipants, mockPastRounds } from '../../../mocks';
 import { TabNavigation } from './index';
+
+// ChatLogSection の LogMessage 型を TabNavigation の messages 型に変換
+const convertLogsToMessages = (logs: typeof mockLogs) => {
+  return logs
+    .filter((log) => log.type === 'chat' || log.type === 'system')
+    .map((log) => ({
+      id: log.id,
+      type: log.type as 'chat' | 'system',
+      timestamp: log.timestamp,
+      content: log.content,
+      user: log.user,
+      isMyMessage: log.isMyMessage,
+    }));
+};
+
+const mockMessages = convertLogsToMessages(mockLogs);
 
 const meta = {
   title: 'Features/Draft/DraftPage/Components/TabNavigation',
@@ -24,6 +41,9 @@ export const Default: Story = {
     onUserClick: (roundNumber: number, userId: string) =>
       console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
+    messages: mockMessages,
+    onSendMessage: (message: string) =>
+      console.log('Message sent:', message),
   },
 };
 
@@ -37,5 +57,24 @@ export const WithoutPastRounds: Story = {
     onUserClick: (roundNumber: number, userId: string) =>
       console.log('User clicked:', roundNumber, userId),
     onOpenInputModal: () => console.log('Input modal opened'),
+    messages: mockMessages,
+    onSendMessage: (message: string) =>
+      console.log('Message sent:', message),
+  },
+};
+
+export const WithoutMessages: Story = {
+  args: {
+    roundNumber: 2,
+    participants: mockParticipants,
+    pastRounds: mockPastRounds,
+    onRoundClick: (roundNumber: number) =>
+      console.log('Round clicked:', roundNumber),
+    onUserClick: (roundNumber: number, userId: string) =>
+      console.log('User clicked:', roundNumber, userId),
+    onOpenInputModal: () => console.log('Input modal opened'),
+    messages: [],
+    onSendMessage: (message: string) =>
+      console.log('Message sent:', message),
   },
 };

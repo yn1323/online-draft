@@ -9,6 +9,7 @@ import {
   doc,
   getDoc,
   getDocs,
+  onSnapshot,
   query,
   setDoc,
   updateDoc,
@@ -250,19 +251,34 @@ export const subscribeRoundSelections = (
   ) => void,
 ): (() => void) => {
   try {
-    // ユーザー情報とselection情報を両方監視する必要があるため、
-    // 簡単な実装として定期的にgetRoundSelectionsを呼ぶ
-    const interval = setInterval(async () => {
-      try {
-        const selections = await getRoundSelections(groupId, round);
-        callback(selections);
-      } catch (error) {
+    console.log('🔄 選択データリアルタイム監視開始:', { groupId, round });
+
+    // selectionコレクション全体を監視（リアルタイム購読）
+    const selectionQuery = query(
+      getSelectionCollection(),
+      where('groupId', '==', groupId),
+    );
+
+    const unsubscribe = onSnapshot(
+      selectionQuery,
+      async (snapshot) => {
+        try {
+          console.log('📡 選択データ更新検出:', snapshot.size, '件');
+          // 変更があった場合、該当ラウンドの選択データを再取得
+          const selections = await getRoundSelections(groupId, round);
+          callback(selections);
+        } catch (error) {
+          console.error('❌ 選択データ処理エラー:', error);
+        }
+      },
+      (error) => {
         console.error('❌ 選択データ監視エラー:', error);
-      }
-    }, 2000); // 2秒ごとに更新
+      },
+    );
 
     return () => {
-      clearInterval(interval);
+      console.log('🛑 選択データ監視停止');
+      unsubscribe();
     };
   } catch (error) {
     console.error('❌ 選択データ監視開始エラー:', error);
