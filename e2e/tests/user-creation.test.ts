@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 import { createNewDraft } from '../operations/draft';
-import { 
-  clickCreateNewUser, 
+import {
+  type UserData,
+  clickCreateNewUser,
   createUser,
-  type UserData
 } from '../operations/user';
 
 /**
@@ -22,20 +22,19 @@ test.describe('ユーザー作成操作', () => {
   test('新規ユーザーの作成が正常に動作する', async ({ page }) => {
     // 新規ユーザー作成ボタンをクリック
     await clickCreateNewUser(page);
-    
+
     // ユーザー作成ステップに遷移していることを確認
     await expect(page.getByText('アバターを選択')).toBeVisible();
-    
+
     // ユーザー情報を入力
     const userData: UserData = {
       userName: 'テストユーザー',
-      avatarIndex: 5
+      avatarIndex: 5,
     };
-    
-    await createUser(page, userData);
-    
-    // ユーザー作成後、URLが変わらないことを確認（基本フロー確認）
-    await expect(page).toHaveURL(/\/lobby\/.+/);
-  });
 
+    await createUser(page, userData);
+
+    // ユーザー作成後、URLが変わらないことを確認（基本フロー確認）
+    await expect(page).toHaveURL(/\/draft\/.+/);
+  });
 });

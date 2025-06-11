@@ -1,8 +1,8 @@
 'use client';
 
+import { FloatingActionButton } from '@/src/components/features/draft/DraftPage/components/actions/FloatingActionButton';
 import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
-import { ConditionalFloatingButton } from '../../actions/ConditionalFloatingButton';
 import { ChatLogSection } from '../../chat/ChatLogSection';
 import { RoundHistoryTable } from '../../rounds/RoundHistoryTable';
 
@@ -27,6 +27,20 @@ interface TabNavigationProps {
   onRoundClick: (roundNumber: number) => void;
   onUserClick: (roundNumber: number, userId: string) => void;
   onOpenInputModal: () => void;
+  // チャット機能用プロパティ
+  messages?: {
+    id: string;
+    type: 'chat' | 'system';
+    timestamp: Date;
+    content: string;
+    user?: {
+      id: string;
+      name: string;
+      avatar: string;
+    };
+    isMyMessage?: boolean;
+  }[];
+  onSendMessage?: (message: string) => void;
 }
 
 type TabType = 'rounds' | 'chat';
@@ -38,6 +52,8 @@ export const TabNavigation = ({
   onRoundClick,
   onUserClick,
   onOpenInputModal,
+  messages,
+  onSendMessage,
 }: TabNavigationProps) => {
   const [activeTab, setActiveTab] = useState<TabType>('rounds');
 
@@ -57,7 +73,7 @@ export const TabNavigation = ({
         <Button
           flex={1}
           variant={activeTab === 'rounds' ? 'solid' : 'ghost'}
-          colorPalette={activeTab === 'rounds' ? 'purple' : 'gray'}
+          colorPalette={activeTab === 'rounds' ? 'blue' : 'gray'}
           borderRadius="md"
           fontSize="sm"
           fontWeight="bold"
@@ -76,7 +92,7 @@ export const TabNavigation = ({
           onClick={() => setActiveTab('chat')}
           _active={{ transform: 'none' }}
         >
-          💬 ログ
+          💬 ログ・チャット
         </Button>
       </HStack>
 
@@ -92,14 +108,15 @@ export const TabNavigation = ({
             onOpenInputModal={onOpenInputModal}
           />
         )}
-        {activeTab === 'chat' && <ChatLogSection />}
+        {activeTab === 'chat' && (
+          <ChatLogSection logs={messages} onSendMessage={onSendMessage} />
+        )}
       </Box>
 
       {/* Conditional Floating Button */}
-      <ConditionalFloatingButton
-        activeTab={activeTab}
-        onClick={onOpenInputModal}
-      />
+      {activeTab !== 'chat' && (
+        <FloatingActionButton onClick={onOpenInputModal} />
+      )}
     </VStack>
   );
 };

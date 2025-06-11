@@ -1,13 +1,15 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { FloatingActionButton } from './index';
 
-const meta = {
+const meta: Meta<typeof FloatingActionButton> = {
   title: 'Features/Draft/DraftPage/Components/FloatingActionButton',
   component: FloatingActionButton,
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
+  argTypes: {
+    onClick: { action: 'clicked' },
+  },
 } satisfies Meta<typeof FloatingActionButton>;
 
 export default meta;
@@ -15,17 +17,25 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    onClick: () => console.log('Floating action button clicked'),
+    onClick: () => console.log('FloatingActionButton clicked'),
   },
 };
 
-export const Positioned: Story = {
+export const WithBackground: Story = {
   args: {
-    onClick: () => console.log('Floating action button clicked'),
+    onClick: () => console.log('FloatingActionButton clicked'),
   },
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
-    },
-  },
+  decorators: [
+    (Story) => (
+      <div
+        style={{
+          height: '100vh',
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          position: 'relative',
+        }}
+      >
+        <Story />
+      </div>
+    ),
+  ],
 };

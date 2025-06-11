@@ -56,6 +56,7 @@ export const TopPage = () => {
     } catch (error) {
       console.error('❌ ドラフト作成エラー:', error);
 
+      setIsLoading(false);
       toaster.create({
         title: 'ドラフト作成エラー',
         description:
@@ -63,9 +64,6 @@ export const TopPage = () => {
         type: 'error',
         duration: 5000,
       });
-      throw error; // モーダルでエラーハンドリングするためrethrow
-    } finally {
-      setIsLoading(false);
     }
   };
 

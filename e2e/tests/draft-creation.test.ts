@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
+import { TEST_DATA, TIMEOUTS } from '../constants';
 import { createNewDraft, setupNetworkDelay } from '../operations/draft';
 import { goBack, reloadPage } from '../operations/navigation';
-import { TEST_DATA, TIMEOUTS } from '../constants';
 
 /**
  * ドラフト作成操作のE2Eテスト
@@ -48,15 +48,15 @@ test.describe('ドラフト作成操作', () => {
   }) => {
     // ドラフト作成後にネットワーク遅延をシミュレートする方法に変更
     const draftName = 'ネットワーク遅延テスト';
-    
+
     // 通常のドラフト作成
     const groupId = await createNewDraft(page, draftName);
     expect(groupId).toBeTruthy();
-    
+
     // ロビーページでの追加読み込みでネットワーク遅延をテスト
     await setupNetworkDelay(page, TIMEOUTS.SHORT);
     await reloadPage(page);
-    
+
     // リロード後もロビーページが正常に表示されることを確認
     await expect(page).toHaveURL(/\/lobby\//);
   });

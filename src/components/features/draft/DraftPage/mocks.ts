@@ -80,6 +80,6 @@ export const mockPastRounds = [
 
 export const statusEmoji = {
   thinking: '⚫', // オフライン
-  entered: '✏️', // 未入力（オンライン）
+  entered: '✅', // 入力完了
   completed: '✅', // 完了
 };

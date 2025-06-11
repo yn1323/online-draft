@@ -82,7 +82,7 @@ export default function UserSelectStep({
         }}
       >
         <Box as={FiUserPlus} mr={3} />
-        新しいユーザーを作成
+        新しいユーザーとして参加
       </Button>
     </VStack>
   );

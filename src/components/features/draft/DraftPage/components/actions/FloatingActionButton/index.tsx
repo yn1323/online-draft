@@ -10,42 +10,44 @@ interface FloatingActionButtonProps {
 export const FloatingActionButton = ({
   onClick,
 }: FloatingActionButtonProps) => {
-  const buttonTheme = COMPONENT_THEMES.button.floating;
+  const buttonTheme = COMPONENT_THEMES.button.primary;
 
   return (
     <Button
       position="fixed"
+      bottom={6}
+      right={6}
       size="lg"
-      h={{ base: '52px', md: '56px' }}
-      minW={{ base: '110px', md: '120px' }}
+      h="56px"
+      minW="120px"
       px={4}
       borderRadius="full"
       onClick={onClick}
-      fontSize="sm"
+      fontSize="lg"
       fontWeight="bold"
       variant="solid"
-      colorPalette={buttonTheme.colorPalette}
-      boxShadow={buttonTheme.boxShadow}
+      bg={buttonTheme.bg}
+      color={buttonTheme.textColor}
+      boxShadow="0 8px 24px -6px rgba(0, 0, 0, 0.3)"
+      transition="all 0.3s ease"
       zIndex={1000}
-      display={{ base: 'flex', lg: 'none' }}
-      right={{ base: 4, md: 6 }}
-      bottom={{ base: 4, md: 6 }}
-      transition="all 0.2s ease"
       _hover={{
-        transform: 'translateY(-2px)',
-        boxShadow: buttonTheme.hoverBoxShadow,
+        bg: buttonTheme.hoverBg,
+        transform: 'translateY(-2px) scale(1.05)',
+        boxShadow: '0 12px 32px -8px rgba(0, 0, 0, 0.4)',
       }}
       _active={{
-        transform: 'translateY(0)',
+        transform: 'translateY(0) scale(0.95)',
       }}
       _dark={{
-        boxShadow: buttonTheme.darkBoxShadow,
+        bg: 'green.600',
+        color: 'white',
         _hover: {
-          boxShadow: buttonTheme.darkHoverBoxShadow,
+          bg: 'green.500',
         },
       }}
     >
-      🎯 選択する
+      ➡️ エントリー
     </Button>
   );
 };

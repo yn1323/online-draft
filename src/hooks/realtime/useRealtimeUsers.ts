@@ -1,6 +1,6 @@
 'use client';
 
-import { subscribeUsers } from '@/src/helpers/firebase/user';
+import { getUsers, subscribeUsers } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { groupUsersAtom } from '@/src/stores/user';
 import type { UserDocument } from '@/src/types/firestore';
@@ -17,6 +17,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: '田中太郎',
         avatar: '1',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
       {
         userId: 'user2',
@@ -24,6 +26,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: '山田花子',
         avatar: '5',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
     XYZ789: [
@@ -33,6 +37,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: 'Alice',
         avatar: '3',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
     '12': [
@@ -42,6 +48,8 @@ const getMockUsersForGroup = (groupId: string): UserDocument[] => {
         userName: 'Bob',
         avatar: '2',
         deleteFlg: false,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       },
     ],
   };
@@ -69,16 +77,17 @@ export const useRealtimeUsers = (groupId: string) => {
       return;
     }
 
-    // 本番環境: Firebase onSnapshot（リアルタイム監視）
-    console.log('🔄 リアルタイムユーザー監視開始...', { groupId });
+    // 本番環境: リアルタイムユーザー購読
+    console.log('🔄 ユーザー一覧リアルタイム購読開始...', { groupId });
 
     const unsubscribe = subscribeUsers(groupId, (users) => {
-      console.log('👥 ユーザー一覧更新:', users);
+      console.log('👥 ユーザー一覧リアルタイム更新:', users);
       setGroupUsers(users);
     });
 
+    // クリーンアップ関数を返す
     return () => {
-      console.log('🛑 ユーザー監視停止');
+      console.log('🛑 ユーザー一覧購読停止');
       unsubscribe();
     };
   }, [groupId, setGroupUsers]);

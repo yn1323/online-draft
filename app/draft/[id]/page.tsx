@@ -1,10 +1,18 @@
 import { DraftPage } from '@/src/components/features/draft/DraftPage';
 import { Animation } from '@/src/components/templates/Animation';
 
-export default function DraftPageRoute() {
+interface DraftPageRouteProps {
+  params: Promise<{
+    id: string;
+  }>;
+}
+
+export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
+  const { id } = await params;
+
   return (
     <Animation>
-      <DraftPage />
+      <DraftPage groupId={id} />
     </Animation>
   );
 }
