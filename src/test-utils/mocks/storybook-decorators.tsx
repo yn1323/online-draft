@@ -73,7 +73,10 @@ export const withLobbyMock =
   (Story: React.ComponentType) => {
     // Firebase認証のモック
     const mockStore = createMockJotaiStore({
-      user: options?.firebaseAuthenticated !== false ? createMockFirebaseUser() : null,
+      user:
+        options?.firebaseAuthenticated !== false
+          ? createMockFirebaseUser()
+          : null,
       loading: false,
     });
 

@@ -194,18 +194,18 @@ export const useSessionUser = (groupId: string): UseSessionUserReturn => {
     if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためSessionUser処理をスキップ');
       setLoading(false);
-      
+
       // Storybook環境ではwindowのSessionStorageを確認
       const key = `draft_user_${groupId}`;
       const storedData = window.sessionStorage.getItem(key);
-      
+
       if (storedData) {
         // SessionStorageにデータがある場合はそれを使用
         try {
           const userData = JSON.parse(storedData);
           console.log('📚 Storybook環境のためモックユーザーを使用');
           setSessionUserState(userData);
-        } catch (e) {
+        } catch (_e) {
           setSessionUserState(null);
         }
       } else {

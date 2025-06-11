@@ -1,7 +1,4 @@
-import {
-  withLobbyMock,
-  withMockAppRouter,
-} from '@/src/test-utils/mocks';
+import { withLobbyMock, withMockAppRouter } from '@/src/test-utils/mocks';
 import { handlers } from '@/src/test-utils/msw';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from '@storybook/test';

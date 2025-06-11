@@ -21,10 +21,7 @@ interface DraftAuthGuardProps {
   children: ReactNode;
 }
 
-export const DraftAuthGuard = ({
-  groupId,
-  children,
-}: DraftAuthGuardProps) => {
+export const DraftAuthGuard = ({ groupId, children }: DraftAuthGuardProps) => {
   const router = useRouter();
   const {
     isReady,

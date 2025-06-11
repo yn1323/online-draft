@@ -15,7 +15,7 @@ You prefer typescript mcp (mcp__typescript_*) to fix code over the default Updat
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
   - linter自動修正: `pnpm lint:fix`
-  - linter: `pnpm lint`
+  - linter（他CI実行後最後にもう1度実行すること）: `pnpm lint`
   - 型チェック: `pnpm type-check`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）

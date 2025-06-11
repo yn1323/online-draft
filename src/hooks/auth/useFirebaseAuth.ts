@@ -30,7 +30,7 @@ export const useFirebaseAuth = (groupId: string): UseFirebaseAuthReturn => {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
   const [groupError, setGroupError] = useState<string | null>(null);
-  const router = useRouter();
+  const _router = useRouter();
 
   /**
    * Firebase匿名認証を実行
@@ -149,7 +149,7 @@ export const useFirebaseAuth = (groupId: string): UseFirebaseAuthReturn => {
   useEffect(() => {
     if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためFirebase認証をスキップ');
-      
+
       // Storybook環境ではグループIDによってモックの動作を変える
       if (groupId === 'nonexistent') {
         // グループが存在しないケース

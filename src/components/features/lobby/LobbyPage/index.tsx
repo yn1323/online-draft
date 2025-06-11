@@ -45,7 +45,6 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const {
     currentUser: sessionUser,
     hasActiveSession,
-    hasAuthError,
     loading: authLoading,
     authError,
     groupError,
@@ -56,7 +55,11 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   } = useLobbyAuth(groupId);
 
   // データ取得フック
-  const { groupData, groupLoading, groupError: groupDataError } = useGroupData(groupId);
+  const {
+    groupData,
+    groupLoading,
+    groupError: groupDataError,
+  } = useGroupData(groupId);
   const { groupUsers } = useRealtimeUsers(groupId);
 
   const bgColor = useColorModeValue('white', 'gray.800');
@@ -263,7 +266,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               グループが見つかりません
             </Heading>
             <Text color="gray.500">
-              {groupError || groupDataError ||
+              {groupError ||
+                groupDataError ||
                 '指定されたグループID のグループは存在しないか、削除されている可能性があります。'}
             </Text>
             <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
@@ -308,7 +312,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
             _dark={{ color: 'gray.100' }}
             fontWeight="bold"
           >
-            {groupData.groupName}
+            {groupData?.groupName}
           </Heading>
           <HStack justify="center" gap={2}>
             <Text fontSize="sm" color="gray.500">
@@ -321,7 +325,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               •
             </Text>
             <Text fontSize="sm" color="gray.500">
-              ラウンド: {groupData.round}
+              ラウンド: {groupData?.round}
             </Text>
           </HStack>
         </Box>
