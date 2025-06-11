@@ -47,7 +47,9 @@ export const Default: Story = {
     ).toBeInTheDocument();
 
     // 新規ユーザー作成ボタン
-    expect(await canvas.findByText('新しいユーザーを作成')).toBeInTheDocument();
+    expect(
+      await canvas.findByText('新しいユーザーとして参加'),
+    ).toBeInTheDocument();
 
     // ヘルプテキスト
     expect(

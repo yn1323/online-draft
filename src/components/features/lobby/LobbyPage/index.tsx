@@ -4,19 +4,14 @@ import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
 import { checkUserNameExists, createUser } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
-import { useAutoAuth } from '@/src/hooks/auth/useAutoAuth';
+import { useLobbyAuth } from '@/src/hooks/auth/useLobbyAuth';
 import { useGroupData } from '@/src/hooks/data/useGroupData';
 import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
-import {
-  currentUserAtom,
-  setCurrentUserAtom,
-  userRegistrationErrorAtom,
-  userRegistrationLoadingAtom,
-} from '@/src/stores/user';
 import type { UserDocument } from '@/src/types/firestore';
 import {
   Badge,
   Box,
+  Button,
   Container,
   HStack,
   Heading,
@@ -24,9 +19,8 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useAtom, useSetAtom } from 'jotai';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiAlertCircle, FiUsers } from 'react-icons/fi';
 import UserCreateStep from '../UserCreateStep';
 import UserSelectStep from '../UserSelectStep';
@@ -41,22 +35,28 @@ interface LobbyPageProps {
 
 export default function LobbyPage({ groupId }: LobbyPageProps) {
   const [step, setStep] = useState<Step>('select');
-  const [isLoading, setIsLoading] = useState(false);
+  const [userRegistrationLoading, setUserRegistrationLoading] = useState(false);
+  const [userRegistrationError, setUserRegistrationError] = useState<
+    string | null
+  >(null);
   const router = useRouter();
 
-  // カスタムフック
-  useAutoAuth(); // 自動匿名ログイン処理
+  // 統合認証フック（Firebase認証 + SessionUser管理）
+  const {
+    currentUser: sessionUser,
+    hasActiveSession,
+    hasAuthError,
+    loading: authLoading,
+    authError,
+    userError,
+    selectUser,
+    retry: retryAuth,
+    clearSession,
+  } = useLobbyAuth(groupId);
+
+  // データ取得フック
   const { groupData, groupLoading, groupError } = useGroupData(groupId);
   const { groupUsers } = useRealtimeUsers(groupId);
-
-  // Jotai状態管理
-  const setCurrentUser = useSetAtom(setCurrentUserAtom);
-  const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(
-    userRegistrationLoadingAtom,
-  );
-  const [userRegistrationError, setUserRegistrationError] = useAtom(
-    userRegistrationErrorAtom,
-  );
 
   const bgColor = useColorModeValue('white', 'gray.800');
   const borderColor = useColorModeValue('gray.200', 'gray.600');
@@ -64,30 +64,65 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
   const helpBorderColor = useColorModeValue('blue.200', 'blue.700');
   const helpTextColor = useColorModeValue('blue.700', 'blue.300');
 
-  const handleExistingUserLogin = async (userId: string) => {
-    setIsLoading(true);
-    try {
-      // 既存ユーザー情報を取得してJotai状態に保存
-      const selectedUser = groupUsers.find((user) => user.userId === userId);
-      if (selectedUser) {
-        setCurrentUser({
-          userId: selectedUser.userId as string,
-          groupId,
-          userName: selectedUser.userName,
-          avatar: selectedUser.avatar,
-          deleteFlg: selectedUser.deleteFlg || false,
-          createdAt: selectedUser.createdAt || new Date(),
-          updatedAt: new Date(),
-        });
-        console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
+  // 認証フロー最適化：有効なセッションがある場合はドラフトページへ
+  useEffect(() => {
+    if (hasActiveSession && sessionUser && !authLoading && !groupLoading) {
+      console.log('✅ 有効なセッションを検出、ドラフトページへリダイレクト:', {
+        userId: sessionUser.id,
+        userName: sessionUser.name,
+        groupId: sessionUser.groupId,
+      });
 
-        // ドラフトページへ遷移
+      // 少し待ってからリダイレクト（UIの準備を待つ）
+      const timer = setTimeout(() => {
         router.push(`/draft/${groupId}`);
-      }
+      }, 500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [
+    hasActiveSession,
+    sessionUser,
+    authLoading,
+    groupLoading,
+    groupId,
+    router,
+  ]);
+
+  // エラーハンドリング関数
+  const handleRetry = () => {
+    console.log('🔄 エラー状態をリセットして再試行');
+    setUserRegistrationError(null);
+    retryAuth();
+  };
+
+  const handleClearSession = () => {
+    console.log('🗑️ セッションをクリアして最初から開始');
+    clearSession();
+    setUserRegistrationError(null);
+    setStep('select');
+  };
+
+  const handleGoHome = () => {
+    router.push('/');
+  };
+
+  const handleExistingUserLogin = async (userId: string) => {
+    try {
+      console.log('🔄 既存ユーザーログイン開始:', { userId, groupId });
+
+      // useSessionUserのselectUserを使用してSessionStorageに保存
+      await selectUser(userId);
+
+      console.log('✅ 既存ユーザーでログイン完了');
+
+      // ドラフトページへ遷移
+      router.push(`/draft/${groupId}`);
     } catch (error) {
       console.error('❌ ログインエラー:', error);
-    } finally {
-      setIsLoading(false);
+      setUserRegistrationError(
+        error instanceof Error ? error.message : 'ログインに失敗しました',
+      );
     }
   };
 
@@ -100,9 +135,9 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
     // Storybook環境ではモック処理
     if (isStorybookEnvironment()) {
       console.log('📚 Storybook環境のためモック処理');
-      setIsLoading(true);
+      setUserRegistrationLoading(true);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsLoading(false);
+      setUserRegistrationLoading(false);
       return;
     }
 
@@ -126,49 +161,103 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
         deleteFlg: false,
       });
 
-      // 3. Jotai状態に保存
-      const newUser: UserDocument = {
-        userId,
-        groupId,
-        userName: data.userName,
-        avatar: data.avatarIndex,
-        deleteFlg: false,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      };
-      setCurrentUser(newUser);
+      console.log('✅ ユーザー作成成功:', { userId, userName: data.userName });
 
-      console.log('✅ ユーザー作成成功:', newUser);
+      // 3. useSessionUserのselectUserを使用してSessionStorageに保存
+      await selectUser(userId);
+
+      console.log('✅ SessionStorage保存完了');
 
       // ドラフトページへ遷移
       router.push(`/draft/${groupId}`);
     } catch (error) {
       console.error('❌ ユーザー作成エラー:', error);
-      setUserRegistrationError('ユーザーの作成に失敗しました');
+      setUserRegistrationError(
+        error instanceof Error ? error.message : 'ユーザーの作成に失敗しました',
+      );
     } finally {
       setUserRegistrationLoading(false);
     }
   };
 
-  // ローディング中の表示
-  if (groupLoading) {
+  // 自動リダイレクト中の表示
+  if (hasActiveSession && sessionUser && !authLoading && !groupLoading) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
         <VStack gap={6} align="center" justify="center" minH="400px">
-          <Spinner size="lg" color="blue.500" />
-          <Text color="gray.500">グループ情報を読み込み中...</Text>
+          <Spinner size="lg" color="green.500" />
+          <VStack gap={2} textAlign="center">
+            <Text color="green.600" fontWeight="bold">
+              ようこそ、{sessionUser.name}さん！
+            </Text>
+            <Text color="gray.500">ドラフトページへ移動しています...</Text>
+            <Text fontSize="sm" color="gray.400">
+              既存のセッションが見つかりました
+            </Text>
+          </VStack>
         </VStack>
       </Container>
     );
   }
 
-  // エラー時の表示
+  // ローディング中の表示（グループ情報 + 統合認証）
+  if (groupLoading || authLoading) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Spinner size="lg" color="blue.500" />
+          <VStack gap={2} textAlign="center">
+            <Text color="gray.500">
+              {groupLoading
+                ? 'グループ情報を読み込み中...'
+                : '認証情報を確認中...'}
+            </Text>
+            <Text fontSize="sm" color="gray.400">
+              Firebase認証とグループ情報を確認しています
+            </Text>
+          </VStack>
+        </VStack>
+      </Container>
+    );
+  }
+
+  // 認証エラー時の表示
+  if (hasAuthError) {
+    return (
+      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
+        <VStack gap={6} align="center" justify="center" minH="400px">
+          <Box as={FiAlertCircle} fontSize="48px" color="red.500" />
+          <VStack gap={3} textAlign="center">
+            <Heading size="md" color="red.500">
+              認証エラー
+            </Heading>
+            <Text color="gray.500">
+              {authError || 'Firebase認証またはグループの確認に失敗しました'}
+            </Text>
+            <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
+              グループID: {groupId}
+            </Badge>
+            <VStack gap={2} pt={4}>
+              <Button colorPalette="blue" onClick={handleRetry} size="md">
+                再試行
+              </Button>
+              <Button variant="ghost" onClick={handleGoHome} size="sm">
+                トップページに戻る
+              </Button>
+            </VStack>
+          </VStack>
+        </VStack>
+      </Container>
+    );
+  }
+
+  // グループデータエラー時の表示
   if (groupError || !groupData) {
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
         <VStack gap={6} align="center" justify="center" minH="400px">
           <Box as={FiAlertCircle} fontSize="48px" color="red.500" />
-          <VStack gap={2} textAlign="center">
+          <VStack gap={3} textAlign="center">
             <Heading size="md" color="red.500">
               グループが見つかりません
             </Heading>
@@ -179,6 +268,14 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
             <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
               グループID: {groupId}
             </Badge>
+            <VStack gap={2} pt={4}>
+              <Button colorPalette="blue" onClick={handleRetry} size="md">
+                再試行
+              </Button>
+              <Button variant="ghost" onClick={handleGoHome} size="sm">
+                トップページに戻る
+              </Button>
+            </VStack>
           </VStack>
         </VStack>
       </Container>
@@ -253,7 +350,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
                 }))}
               onUserSelect={handleExistingUserLogin}
               onCreateNewUser={() => setStep('create')}
-              isLoading={isLoading}
+              isLoading={authLoading}
             />
           )}
 
@@ -268,7 +365,7 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
         </Box>
 
         {/* エラー表示 */}
-        {userRegistrationError && (
+        {(userRegistrationError || userError) && (
           <Box
             bg="red.50"
             border="1px solid"
@@ -280,14 +377,34 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
               borderColor: 'red.700',
             }}
           >
-            <Text
-              fontSize="sm"
-              color="red.700"
-              _dark={{ color: 'red.300' }}
-              fontWeight="medium"
-            >
-              ❌ {userRegistrationError}
-            </Text>
+            <VStack gap={3} align="stretch">
+              <Text
+                fontSize="sm"
+                color="red.700"
+                _dark={{ color: 'red.300' }}
+                fontWeight="medium"
+              >
+                ❌ {userRegistrationError || userError}
+              </Text>
+              <HStack gap={2} justify="center">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorPalette="red"
+                  onClick={handleRetry}
+                >
+                  再試行
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  colorPalette="red"
+                  onClick={handleClearSession}
+                >
+                  セッションクリア
+                </Button>
+              </HStack>
+            </VStack>
           </Box>
         )}
 

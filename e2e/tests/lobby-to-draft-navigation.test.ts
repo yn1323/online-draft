@@ -37,8 +37,14 @@ test.describe('ロビーからドラフトページへの画面遷移', () => {
     // ドラフトページへ遷移を確認
     await page.waitForURL(new RegExp(`/draft/${groupId}`));
 
-    // ロビーページに直接アクセス
+    // SessionStorageをクリアしてからロビーページに直接アクセス
+    await page.evaluate(() => {
+      sessionStorage.clear();
+    });
     await page.goto(`/lobby/${groupId}`);
+
+    // ページの読み込み完了を待機
+    await page.waitForSelector('text=既存テストユーザー', { timeout: 10000 });
 
     // 既存ユーザーを選択
     await selectExistingUser(page, '既存テストユーザー');

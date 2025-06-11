@@ -22,7 +22,7 @@ export interface ExistingUser {
  */
 export async function clickCreateNewUser(page: Page): Promise<void> {
   const createButton = page.getByRole('button', {
-    name: '新しいユーザーを作成',
+    name: '新しいユーザーとして参加',
   });
   await createButton.click();
 

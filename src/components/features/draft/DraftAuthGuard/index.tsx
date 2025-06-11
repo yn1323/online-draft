@@ -89,49 +89,19 @@ export const DraftAuthGuard = ({
     );
   }
 
-  // ユーザー選択が必要
+  // ユーザー選択が必要 - 速やかにロビーにリダイレクト
   if (needsUserSelection) {
-    const _handleUserSelection = async (userId: string) => {
-      try {
-        if (onUserSelect) {
-          await onUserSelect(userId);
-        } else {
-          await selectUser(userId);
-        }
-      } catch (error) {
-        console.error('❌ ユーザー選択エラー:', error);
-      }
-    };
-
-    const handleGoToLobby = () => {
-      router.push(`/lobby/${groupId}`);
-    };
-
+    console.log('🔄 認証なしでDraftアクセス検出、ロビーページにリダイレクト:', { groupId });
+    
+    // 即座にロビーページにリダイレクト
+    router.replace(`/lobby/${groupId}`);
+    
+    // リダイレクト中の簡潔な表示
     return (
       <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
         <VStack gap={6} align="center" justify="center" minH="400px">
-          <Box fontSize="48px">👤</Box>
-          <VStack gap={3} textAlign="center">
-            <Text fontSize="xl" fontWeight="bold" color="blue.500">
-              ユーザーを選択してください
-            </Text>
-            <Text color="gray.500">
-              ドラフトに参加するユーザーを選択するか、新しいユーザーを作成してください
-            </Text>
-            {userError && (
-              <Text fontSize="sm" color="red.500">
-                {userError}
-              </Text>
-            )}
-            <VStack gap={2} pt={4}>
-              <Button colorPalette="blue" onClick={handleGoToLobby} size="lg">
-                ロビーページでユーザー選択
-              </Button>
-              <Button variant="ghost" onClick={clearSession} size="sm">
-                セッションをクリア
-              </Button>
-            </VStack>
-          </VStack>
+          <Spinner size="lg" color="blue.500" />
+          <Text color="gray.500">ロビーページに移動しています...</Text>
         </VStack>
       </Container>
     );
