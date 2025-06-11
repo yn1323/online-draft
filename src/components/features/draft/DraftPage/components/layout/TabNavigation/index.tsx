@@ -73,7 +73,7 @@ export const TabNavigation = ({
         <Button
           flex={1}
           variant={activeTab === 'rounds' ? 'solid' : 'ghost'}
-          colorPalette={activeTab === 'rounds' ? 'purple' : 'gray'}
+          colorPalette={activeTab === 'rounds' ? 'blue' : 'gray'}
           borderRadius="md"
           fontSize="sm"
           fontWeight="bold"

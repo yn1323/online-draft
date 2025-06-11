@@ -87,35 +87,9 @@ export const ParticipantCell = ({ participant }: ParticipantCellProps) => {
         >
           {participant.name}
         </Text>
-        <Box position="relative" display="inline-block">
-          {participant.status === 'thinking' && (
-            <Box
-              position="absolute"
-              top="-2px"
-              right="-2px"
-              w="6px"
-              h="6px"
-              bg="gray.400"
-              borderRadius="full"
-              animation="pulse 2s ease-in-out infinite"
-            />
-          )}
-          {participant.status === 'entered' && (
-            <Box
-              position="absolute"
-              top="-2px"
-              right="-2px"
-              w="6px"
-              h="6px"
-              bg="yellow.400"
-              borderRadius="full"
-              animation="pulse 1.5s ease-in-out infinite"
-            />
-          )}
-          <Text fontSize="xs" color={colors.textColor}>
-            {statusEmoji[participant.status]}
-          </Text>
-        </Box>
+        <Text fontSize="xs" color={colors.textColor} _dark={{ color: colors.textColorDark }}>
+          {statusEmoji[participant.status]}
+        </Text>
       </Box>
     </Box>
   );
