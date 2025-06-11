@@ -1,6 +1,6 @@
 'use client';
 
-import { FloatingActionButton } from '../FloatingActionButton';
+import { FloatingActionButton } from '../actions/FloatingActionButton';
 
 interface ConditionalFloatingButtonProps {
   activeTab: 'rounds' | 'chat';

@@ -21,15 +21,13 @@ import { useAtomValue, useSetAtom } from 'jotai';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
-import { ActionPanel } from './components/actions/ActionPanel';
-import { FloatingActionButton } from './components/actions/FloatingActionButton';
 import { ChatLogSection } from './components/chat/ChatLogSection';
 import { DraftHeader } from './components/layout/DraftHeader';
 import { TabNavigation } from './components/layout/TabNavigation';
 import { InputModal } from './components/modals/InputModal';
 import { OptionsModal } from './components/modals/OptionsModal';
 import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
-import { mockParticipants, mockPastRounds } from './mocks';
+import { mockPastRounds } from './mocks';
 
 interface DraftPageProps {
   groupId?: string;

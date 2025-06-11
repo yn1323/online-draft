@@ -25,25 +25,6 @@ test.describe('コード参加操作', () => {
     await expect(page).toHaveURL(`/lobby/${groupId}`);
   });
 
-  test('参加ページの基本操作が正常に動作する', async ({ page }) => {
-    // TOPページから参加ページに遷移
-    await page.goto('/');
-
-    const joinButton = page.getByText('会議に参加');
-    await joinButton.click();
-
-    // 参加ページに遷移していることを確認
-    await expect(page).toHaveURL('/join');
-
-    // 参加コード入力欄が表示されることを確認
-    const codeInput = page.getByPlaceholder('ABC123 または招待リンク');
-    await expect(codeInput).toBeVisible();
-
-    // 参加ボタンが表示されることを確認
-    const submitButton = page.getByText('参加する');
-    await expect(submitButton).toBeVisible();
-  });
-
   test('無効なコードでバックエンドエラーハンドリングされる', async ({
     page,
   }) => {

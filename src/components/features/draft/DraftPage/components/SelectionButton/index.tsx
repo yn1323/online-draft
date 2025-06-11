@@ -42,7 +42,7 @@ export const SelectionButton = ({ onClick }: SelectionButtonProps) => {
         },
       }}
     >
-      🎯 選択する！
+      エントリー
     </Button>
   );
 };

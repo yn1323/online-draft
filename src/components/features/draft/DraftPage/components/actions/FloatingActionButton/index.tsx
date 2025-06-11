@@ -45,7 +45,7 @@ export const FloatingActionButton = ({
         },
       }}
     >
-      🎯 選択する
+      エントリー
     </Button>
   );
 };

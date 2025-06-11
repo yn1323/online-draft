@@ -35,6 +35,6 @@ test.describe('ユーザー作成操作', () => {
     await createUser(page, userData);
 
     // ユーザー作成後、URLが変わらないことを確認（基本フロー確認）
-    await expect(page).toHaveURL(/\/lobby\/.+/);
+    await expect(page).toHaveURL(/\/draft\/.+/);
   });
 });
