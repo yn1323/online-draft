@@ -3,11 +3,12 @@ import { createNewDraft } from '../operations/draft';
 import { createNewUser, selectExistingUser } from '../operations/user';
 
 test.describe('ロビーからドラフトページへの画面遷移', () => {
-  test('新規ユーザー作成後、ドラフトページへ遷移する', async ({ page }) => {
+  test('新規ユーザー作成後、ドラフトページへ遷移する', async ({
+    page,
+  }) => {
     // ドラフト作成してロビーへ
-    const groupName = 'E2Eテストグループ';
-    const groupId = await createNewDraft(page, groupName);
-
+    const groupId = await createNewDraft(page, 'E2Eテストグループ');
+    
     // 新規ユーザー作成
     await createNewUser(page, {
       userName: 'テストユーザー',
@@ -16,18 +17,17 @@ test.describe('ロビーからドラフトページへの画面遷移', () => {
 
     // ドラフトページへ遷移したことを確認
     await expect(page).toHaveURL(new RegExp(`/draft/${groupId}`));
-
-    // ドラフトページのグループ名が表示されるまで待機
-    await expect(page.getByText(groupName)).toBeVisible({
-      timeout: 10000,
-    });
+    await expect(
+      page.getByText(`ドラフト会議 ${groupId}`),
+    ).toBeVisible();
   });
 
-  test('既存ユーザー選択後、ドラフトページへ遷移する', async ({ page }) => {
+  test('既存ユーザー選択後、ドラフトページへ遷移する', async ({
+    page,
+  }) => {
     // ドラフト作成してロビーへ
-    const groupName = 'E2Eテストグループ';
-    const groupId = await createNewDraft(page, groupName);
-
+    const groupId = await createNewDraft(page, 'E2Eテストグループ');
+    
     // 新規ユーザー作成してドラフトページへ
     await createNewUser(page, {
       userName: '既存テストユーザー',
@@ -37,14 +37,8 @@ test.describe('ロビーからドラフトページへの画面遷移', () => {
     // ドラフトページへ遷移を確認
     await page.waitForURL(new RegExp(`/draft/${groupId}`));
 
-    // SessionStorageをクリアしてからロビーページに直接アクセス
-    await page.evaluate(() => {
-      sessionStorage.clear();
-    });
+    // ロビーページに直接アクセス
     await page.goto(`/lobby/${groupId}`);
-
-    // ページの読み込み完了を待機
-    await page.waitForSelector('text=既存テストユーザー', { timeout: 10000 });
 
     // 既存ユーザーを選択
     await selectExistingUser(page, '既存テストユーザー');
@@ -57,7 +51,7 @@ test.describe('ロビーからドラフトページへの画面遷移', () => {
     page,
   }) => {
     await page.goto('/lobby/non-existent-group-id');
-
+    
     await expect(
       page.getByRole('heading', { name: 'グループが見つかりません' }),
     ).toBeVisible();

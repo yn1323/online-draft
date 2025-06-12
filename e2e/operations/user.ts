@@ -22,7 +22,7 @@ export interface ExistingUser {
  */
 export async function clickCreateNewUser(page: Page): Promise<void> {
   const createButton = page.getByRole('button', {
-    name: '新しいユーザーとして参加',
+    name: '新しいユーザーを作成',
   });
   await createButton.click();
 
@@ -86,12 +86,6 @@ export async function selectAvatar(
 export async function submitUserCreation(page: Page): Promise<void> {
   const submitButton = page.getByText('作成して参加');
   await submitButton.click();
-
-  // Firebase処理完了とページ遷移を待機
-  await page.waitForURL('/draft/*', {
-    timeout: TIMEOUTS.NETWORK_DELAY,
-    waitUntil: 'domcontentloaded',
-  });
 }
 
 /**

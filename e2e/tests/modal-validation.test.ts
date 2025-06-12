@@ -44,4 +44,25 @@ test.describe('ドラフト作成モーダル', () => {
       page.getByRole('heading', { name: 'テストドラフト' }),
     ).toBeVisible();
   });
+
+  test('Firebase接続エラー時の適切なハンドリング', async ({ page }) => {
+    const nameInput = page.getByPlaceholder('例: 〇〇ドラフト会議');
+    const createButton = page.getByRole('button', { name: '作成する' });
+
+    // ネットワークを完全にブロック（Firebase接続エラーをシミュレート）
+    await page.route('**/*', (route) => route.abort());
+
+    // ドラフト名を入力
+    await nameInput.fill('エラーテストドラフト');
+
+    // 作成ボタンをクリック
+    await createButton.click();
+
+    // バックエンドエラー時の適切なハンドリングを確認
+    await page.waitForTimeout(3000); // エラー処理待機
+
+    // モーダルが開いたままであること（エラーハンドリング）を確認
+    const modal = page.getByRole('dialog', { name: 'ドラフトを作成' });
+    await expect(modal).toBeVisible();
+  });
 });

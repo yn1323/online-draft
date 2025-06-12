@@ -199,7 +199,7 @@
 - **Phase 8**: 追加機能（QRコード・事前リスト・CPU参加）
 - **Phase 9**: 本番環境準備（セキュリティ・スケーラビリティ）
 
-## 📋 現在の実装状況（UPDATED 2025/6/12）
+## 📋 現在の実装状況（UPDATED 2025/1/10）
 
 ### ✅ 完了済み機能（Phase 1-5）
 - **基本プロジェクト構造**: Next.js 15 + App Router
@@ -237,12 +237,11 @@
   - 18種類動物アバター選択
   - レスポンシブアバターグリッド
   - ステップ分離UI・視覚的フィードバック
-- **認証システム**: 2層認証アーキテクチャ完全実装
-  - **useFirebaseAuth**: Firebase Anonymous Auth統合・グループ存在確認
-  - **useSessionUser**: SessionStorage DraftUser管理・自動復元・整合性チェック
-  - **useDraftAuth**: 統合認証フロー・DraftPage専用認証
-  - **DraftAuthGuard**: 認証ガードコンポーネント・状態別UI表示
-  - **SessionStorageヘルパー**: 型安全なセッション管理
+- **Firebase認証システム**: 完全実装
+  - Firebase Anonymous Auth統合
+  - ロビーページアクセス時の自動ログイン
+  - 他サイト離脱時の自動ログアウト
+  - Jotai状態管理との完全連携
   - 認証テストページ（/auth-test）
 - **コンポーネントディレクトリ構成**: 完全統一
   - `src/components/features/<feature>/<ComponentName>/`形式統一
@@ -269,70 +268,61 @@
 - **Services Layer**: ビジネスロジック分離（draft/auth/realtime）
 - **Testing System**: アクセシビリティベース・カバレッジ設定・Storybook38個
 
-### ✅ 追加完了機能（Phase 6 Step 1-3 認証アーキテクチャ）
-- **2層認証システム**: Firebase Anonymous Auth + SessionStorageの完全統合
-- **認証フックシステム**: useFirebaseAuth・useSessionUser・useDraftAuthの3層構造
-- **セッション管理強化**: 型安全SessionStorageヘルパー・GroupID整合性確保
-- **DraftPage認証統合**: DraftAuthGuardコンポーネント・統合認証フロー
-- **Legacy互換性**: AnonymousAuth.tsx・UserExistenceCheck.tsx完全置き換え
-
-### ✅ Phase 6 Step 1-3: 認証アーキテクチャ実装（完了 2025/6/12）
-**目標**: 2層認証システムの完全実装とDraftPage認証統合
-**実装期間**: 2025/6/12（完了）
-
-#### ✅ 完了機能（Step 1-3）
-- **Step 1: useFirebaseAuth実装**: Firebase匿名認証・グループ存在確認・Legacy AnonymousAuth.tsx完全互換
-- **Step 2: useSessionUser実装**: SessionStorage DraftUser管理・自動復元・GroupID整合性チェック・Legacy UserExistenceCheck.tsx完全互換
-- **Step 3: DraftPage認証統合**: useDraftAuth統合認証フック・DraftAuthGuard認証ガードコンポーネント実装
-
-#### ✅ 新規作成ファイル
-- `src/hooks/auth/useFirebaseAuth.ts` - Firebase匿名認証フック
-- `src/hooks/auth/useSessionUser.ts` - SessionUser管理フック
-- `src/hooks/auth/useDraftAuth.ts` - 統合認証フック
-- `src/components/features/draft/DraftAuthGuard/index.tsx` - 認証ガード
-- `src/helpers/utils/sessionStorage/index.ts` - SessionStorageヘルパー
-- `src/types/auth/index.ts` - SessionUser型定義追加
-
-#### ✅ 技術変更点
-- currentUserAtom依存からuseDraftAuth統合認証への移行
-- 2層認証アーキテクチャ（Firebase Anonymous + SessionStorage）
-- Legacy UserExistenceCheck.tsx/AnonymousAuth.tsx完全互換
-
-### 🔄 Phase 6 Step 4: LobbyPage統合（進行中 2025/6/12）
-**目標**: ロビーページと認証システムの完全統合
-**推定期間**: 1週間
-
-#### ⏳ 実装予定機能（Step 4）
-- **ロビーページ統合**: useSessionUserと既存ユーザー選択・新規ユーザー作成の統合
-- **認証フロー最適化**: ロビー→ドラフト遷移のスムーズ化
-- **セッション管理強化**: ユーザー選択時の自動セッション保存・Firestore連携
-
-### 🔄 Phase 6 Step 5+: ドラフト核心機能（予定）
+### 🔄 Phase 6: Core Draft機能実装（計画中）
 **目標**: ドラフトゲームの核心機能を実装し、実際にプレイ可能にする
 **推定期間**: 2-3週間
 
-#### ✅ 完了済み機能（既存実装）
-- **Firebase連携基盤**: チャット・ユーザー・ドラフト管理の完全実装
-- **リアルタイム同期**: Jotai + onSnapshot連携パターン確立
-- **参加者ステータス管理**: thinking/entered/completed状態遷移
-- **認証システム改善**: beforeunload自動ログアウト無効化で認証保持
-- **LocalStorage永続化**: ユーザー情報・グループ履歴の完全保存
-- **チャット機能**: リアルタイムメッセージ送受信・アバター対応
+#### 📅 実装スケジュール
 
-#### ✅ 認証アーキテクチャ実装完了（2025/6/12）
-**Phase 6 Step 1-3が完了し、次の段階に進む準備が整いました。**
+##### **Week 1: 基盤構築**
+1. **Day 1-2: Firestore連携基盤**
+   - DraftGroupスキーマの実装
+   - CRUD操作の実装
+   - エラーハンドリング
 
-#### 🚀 次回予定タスク（Phase 6 Step 4+）
-1. **LobbyPage認証統合**: useSessionUserと既存ロビー機能の統合
-2. **ドラフト核心機能**: 選択・競合判定・結果表示の実装
-3. **E2Eテスト拡張**: Firebase連携機能の完全テストカバー
+2. **Day 3-4: リアルタイム同期パターン確立**
+   - Jotai + onSnapshotの連携
+   - 状態管理アーキテクチャ
+   - 再接続・エラー処理
 
-### 📋 次回セッション予定（2025/6/12以降）
-1. **Phase 6 Step 4**: LobbyPage認証統合実装
-2. **Phase 6 Step 5+**: ドラフト核心機能実装（選択・競合判定・結果表示）
-3. **Phase 7**: UI/UX改善（アニメーション・演出強化）
+3. **Day 5: 参加者ステータス管理**
+   - オンライン/オフライン検知
+   - 選択済み/未選択状態
+   - UI反映
 
-### ✅ Legacy実装済み機能（参考用）
+##### **Week 2: ドラフト実行機能**
+1. **Day 6-7: ラウンド管理**
+   - ラウンド進行ロジック（シンプル版・タイマー不要）
+   - ホスト権限による次ラウンド移行
+   - 状態遷移の管理
+
+2. **Day 8-9: 選択機能**
+   - 選択UI実装
+   - 競合判定ロジック
+   - スロット演出（ワクワク感重視）
+
+3. **Day 10: チャット基本機能**
+   - メッセージ送受信
+   - システムログ（「〇〇さんが選択しました」など）
+   - リアルタイム更新
+
+##### **Week 3: 仕上げ・テスト**
+1. **Day 11-12: 結果表示**
+   - 選択結果の表示
+   - 履歴管理
+   - 共有機能の基盤
+
+2. **Day 13-14: テスト・最適化**
+   - E2Eテスト追加
+   - パフォーマンス最適化
+   - バグ修正
+
+#### 🎯 実装の優先順位
+1. **必須機能（MVP）**: Firestore連携 → リアルタイム同期 → ドラフト実行
+2. **重要機能**: 参加者ステータス → チャット → 結果表示
+3. **追加機能**: QRコード共有 → 事前リスト → CPU参加（Phase 7以降）
+
+### 📋 Legacy実装済み機能（参考用）
 - ユーザー認証システム（Firebase Auth）
 - ドラフトルーム作成・参加機能
 - リアルタイムチャット機能

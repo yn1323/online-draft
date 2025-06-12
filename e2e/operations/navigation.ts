@@ -4,6 +4,7 @@ import type { Page } from '@playwright/test';
  * 画面遷移共通機能のoperations
  */
 
+
 /**
  * TOPページに戻る操作
  */

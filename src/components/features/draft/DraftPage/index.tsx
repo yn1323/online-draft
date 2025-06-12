@@ -1,33 +1,18 @@
 'use client';
 
-import { saveRecentGroup } from '@/src/helpers/utils/localStorage';
-import { useDraftAuth } from '@/src/hooks/auth/useDraftAuth';
-import { useRealtimeChat } from '@/src/hooks/chat/useRealtimeChat';
-import { useSendMessage } from '@/src/hooks/chat/useSendMessage';
-import { useGroupData } from '@/src/hooks/data/useGroupData';
-import { useParticipantStatus } from '@/src/hooks/draft/useParticipantStatus';
-import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
-import { saveUserSelection } from '@/src/services/draft/selectionService';
-import {
-  Box,
-  Container,
-  Grid,
-  GridItem,
-  Spinner,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { DraftAuthGuard } from '../DraftAuthGuard';
+import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
+import { useParams } from 'next/navigation';
+import { useState } from 'react';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
+import { ActionPanel } from './components/actions/ActionPanel';
+import { FloatingActionButton } from './components/actions/FloatingActionButton';
 import { ChatLogSection } from './components/chat/ChatLogSection';
 import { DraftHeader } from './components/layout/DraftHeader';
 import { TabNavigation } from './components/layout/TabNavigation';
 import { InputModal } from './components/modals/InputModal';
 import { OptionsModal } from './components/modals/OptionsModal';
 import { RoundHistoryTable } from './components/rounds/RoundHistoryTable';
-import { mockPastRounds } from './mocks';
+import { mockParticipants, mockPastRounds } from './mocks';
 
 interface DraftPageProps {
   groupId?: string;
@@ -65,7 +50,7 @@ interface DraftPageProps {
   ) => void;
 }
 
-const DraftPageContent = ({
+export const DraftPage = ({
   groupId,
   roundNumber: propRoundNumber,
   totalRounds: propTotalRounds,
@@ -78,7 +63,6 @@ const DraftPageContent = ({
 }: DraftPageProps = {}) => {
   // groupIdが渡されない場合はuseParamsから取得（後方互換性）
   const params = useParams();
-  const _router = useRouter();
   const draftId = groupId ?? (params?.id as string);
 
   // 内部状態の初期化
@@ -98,62 +82,15 @@ const DraftPageContent = ({
   });
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
-  // 認証統合フック（Firebase認証 + SessionUser管理）
-  const { currentUser } = useDraftAuth(draftId);
-
-  // Firestore連携でグループ情報とユーザー情報を取得
-  const { groupData, groupLoading, groupError } = useGroupData(draftId);
-  const { groupUsers } = useRealtimeUsers(draftId);
-
-  // デフォルト値の設定（Firestoreデータを優先、なければモック）
-  const roundNumber = propRoundNumber ?? groupData?.round ?? 1;
-
-  // 参加者ステータス管理
-  const { participants: statusParticipants, updateMyStatus } =
-    useParticipantStatus(draftId, roundNumber);
-
-  // チャット機能
-  const { messages } = useRealtimeChat(draftId, groupUsers);
-  const { sendMessage } = useSendMessage();
-
+  // TODO: FirestoreからgroupIdを使ってデータ取得
+  // 現在はモックデータを使用
   console.log('📍 DraftPage - groupId:', draftId);
-  console.log('📍 DraftPage - groupData:', groupData);
-  console.log('📍 DraftPage - groupUsers:', groupUsers);
-  console.log('📍 DraftPage - currentUser:', currentUser);
-  console.log('💬 DraftPage - messages:', messages);
 
-  // 最近のグループとして保存（認証完了後）
-  useEffect(() => {
-    if (currentUser && groupData && !groupLoading) {
-      saveRecentGroup({
-        groupId: draftId,
-        groupName: groupData.groupName || `ドラフト会議 ${draftId}`,
-        lastJoined: Date.now(),
-      });
-    }
-  }, [currentUser, groupData, groupLoading, draftId]);
-
-  const _totalRounds = propTotalRounds ?? groupData?.round ?? 5;
-  const groupName =
-    propGroupName ?? groupData?.groupName ?? `ドラフト会議 ${draftId}`;
-
-  // グループユーザーを participants 形式に変換（ステータス情報を統合）
-  const participants =
-    propParticipants ??
-    groupUsers.map((user) => {
-      // ステータス参加者情報から該当ユーザーのステータスを取得
-      const statusUser = statusParticipants.find(
-        (sp) => sp.userId === user.userId,
-      );
-
-      return {
-        id: user.userId || '',
-        name: user.userName,
-        avatar: user.avatar,
-        status: statusUser?.status || 'thinking',
-      };
-    });
-
+  // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
+  const roundNumber = propRoundNumber ?? 3;
+  const _totalRounds = propTotalRounds ?? 5;
+  const groupName = propGroupName ?? `ドラフト会議 ${draftId}`;
+  const participants = propParticipants ?? mockParticipants;
   const currentUserSelection =
     propCurrentUserSelection ?? internalCurrentUserSelection;
   const pastRounds = propPastRounds ?? mockPastRounds;
@@ -162,49 +99,16 @@ const DraftPageContent = ({
   // イベントハンドラーの設定
   const handleSubmitSelection =
     propOnSubmitSelection ??
-    (async (selection: string, comment?: string) => {
-      if (!currentUser || !draftId) {
-        console.error('❌ ユーザー情報またはグループIDが不正');
-        return;
-      }
-
-      try {
-        console.log('🔄 選択データ保存開始:', { selection, comment });
-
-        // Firestoreに選択データを保存
-        await saveUserSelection(
-          currentUser.id || '',
-          draftId,
-          roundNumber,
-          selection,
-          comment || '',
-        );
-
-        console.log('✅ 選択データ保存成功');
-        setInternalCurrentUserSelection(selection);
-      } catch (error) {
-        console.error('❌ 選択データ保存エラー:', error);
-        // エラーの場合は内部状態のみ更新（フォールバック）
-        setInternalCurrentUserSelection(selection);
-      }
+    ((selection: string, comment?: string) => {
+      console.log('選択:', selection, 'コメント:', comment);
+      setInternalCurrentUserSelection(selection);
+      // 実際の実装では、ここでFirestoreに保存
     });
 
-  const handleSubmit = async () => {
-    if (selection.trim() && currentUser) {
-      // 選択を提出
+  const handleSubmit = () => {
+    if (selection.trim()) {
       handleSubmitSelection(selection.trim(), comment.trim() || undefined);
-
-      // ステータスを 'entered' に更新
-      const success = await updateMyStatus(currentUser.id || '', 'entered');
-
-      if (success) {
-        console.log('✅ 選択提出＆ステータス更新成功');
-        setIsInputModalOpen(false);
-        setSelection('');
-        setComment('');
-      } else {
-        console.error('❌ ステータス更新失敗（モーダルは開いたまま）');
-      }
+      setIsInputModalOpen(false);
     }
   };
 
@@ -265,67 +169,6 @@ const DraftPageContent = ({
     console.log('ヘルプ画面を開く（今後実装）');
   };
 
-  // チャット関連のハンドラー
-  const handleSendMessage = async (message: string) => {
-    if (!currentUser || !draftId) {
-      console.error('❌ ユーザー情報またはグループIDが不正');
-      return;
-    }
-
-    const success = await sendMessage({
-      groupId: draftId,
-      userId: currentUser.id || '',
-      message,
-    });
-
-    if (success) {
-      console.log('✅ メッセージ送信成功');
-    }
-  };
-
-  // ローディング中（グループデータ取得中）
-  if (groupLoading) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Spinner size="lg" color="blue.500" />
-          <Text color="gray.500">ドラフト情報を読み込み中...</Text>
-        </VStack>
-      </Container>
-    );
-  }
-
-  // グループデータエラー
-  if (groupError || !groupData) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Box fontSize="48px">❌</Box>
-          <VStack gap={2} textAlign="center">
-            <Text fontSize="xl" fontWeight="bold" color="red.500">
-              ドラフト情報の取得に失敗
-            </Text>
-            <Text color="gray.500">
-              {groupError || 'ドラフト情報を読み込めませんでした'}
-            </Text>
-          </VStack>
-        </VStack>
-      </Container>
-    );
-  }
-
-  // currentUserは認証ガードで保証されているため、ここでは存在チェックのみ
-  if (!currentUser) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Spinner size="lg" color="blue.500" />
-          <Text color="gray.500">ユーザー情報を確認中...</Text>
-        </VStack>
-      </Container>
-    );
-  }
-
   return (
     <Container
       maxW="1600px"
@@ -365,22 +208,6 @@ const DraftPageContent = ({
           onRoundClick={handleRoundClick}
           onUserClick={handleUserClick}
           onOpenInputModal={handleOpenInputModal}
-          messages={messages.map((msg) => ({
-            id: msg.id,
-            type: msg.type === 'system' ? 'system' : 'chat',
-            timestamp: msg.timestamp,
-            content: msg.message,
-            user:
-              msg.type === 'user'
-                ? {
-                    id: msg.userId,
-                    name: msg.userName,
-                    avatar: msg.user?.avatar || '/img/1.png',
-                  }
-                : undefined,
-            isMyMessage: msg.userId === currentUser?.id,
-          }))}
-          onSendMessage={handleSendMessage}
         />
       </VStack>
 
@@ -405,24 +232,7 @@ const DraftPageContent = ({
 
         {/* Right: Communication (35%) */}
         <GridItem>
-          <ChatLogSection
-            logs={messages.map((msg) => ({
-              id: msg.id,
-              type: msg.type === 'system' ? 'system' : 'chat',
-              timestamp: msg.timestamp,
-              content: msg.message,
-              user:
-                msg.type === 'user'
-                  ? {
-                      id: msg.userId,
-                      name: msg.userName,
-                      avatar: msg.user?.avatar || '/img/1.png',
-                    }
-                  : undefined,
-              isMyMessage: msg.userId === currentUser?.id,
-            }))}
-            onSendMessage={handleSendMessage}
-          />
+          <ChatLogSection />
         </GridItem>
       </Grid>
 
@@ -469,33 +279,5 @@ const DraftPageContent = ({
         onOpenHelp={handleOpenHelp}
       />
     </Container>
-  );
-};
-
-/**
- * DraftPage - 認証ガード統合版
- * Firebase認証 + SessionUser管理による統合認証フローを提供
- */
-export const DraftPage = (props: DraftPageProps) => {
-  const params = useParams();
-  const draftId = props.groupId ?? (params?.id as string);
-
-  if (!draftId) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Box fontSize="48px">⚠️</Box>
-          <Text fontSize="xl" fontWeight="bold" color="orange.500">
-            グループIDが不正です
-          </Text>
-        </VStack>
-      </Container>
-    );
-  }
-
-  return (
-    <DraftAuthGuard groupId={draftId}>
-      <DraftPageContent {...props} />
-    </DraftAuthGuard>
   );
 };
