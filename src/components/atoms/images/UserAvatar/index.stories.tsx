@@ -45,7 +45,12 @@ export const BasicVariations: Story = {
         <HStack gap={4} align="center">
           <UserAvatar src="/img/1.png" alt="デフォルト" />
           <UserAvatar src="" alt="フォールバック" fallback="T" />
-          <UserAvatar src="/img/2.png" alt="ステータス付き" status="online" showStatus />
+          <UserAvatar
+            src="/img/2.png"
+            alt="ステータス付き"
+            status="online"
+            showStatus
+          />
           <UserAvatar src="/img/3.png" alt="サークル" shape="circle" />
           <UserAvatar src="/img/4.png" alt="ボーダー付き" borderStyle="solid" />
         </HStack>
@@ -77,9 +82,24 @@ export const StyleVariations: Story = {
       <div>
         <h3 style={{ marginBottom: '1rem' }}>ボーダースタイル</h3>
         <HStack gap={4} align="center">
-          <UserAvatar src="/img/1.png" alt="ボーダー無し" borderStyle="none" size="lg" />
-          <UserAvatar src="/img/2.png" alt="サブトルボーダー" borderStyle="subtle" size="lg" />
-          <UserAvatar src="/img/3.png" alt="ソリッドボーダー" borderStyle="solid" size="lg" />
+          <UserAvatar
+            src="/img/1.png"
+            alt="ボーダー無し"
+            borderStyle="none"
+            size="lg"
+          />
+          <UserAvatar
+            src="/img/2.png"
+            alt="サブトルボーダー"
+            borderStyle="subtle"
+            size="lg"
+          />
+          <UserAvatar
+            src="/img/3.png"
+            alt="ソリッドボーダー"
+            borderStyle="solid"
+            size="lg"
+          />
         </HStack>
       </div>
     </VStack>
@@ -92,12 +112,38 @@ export const AdvancedFeatures: Story = {
       <div>
         <h3 style={{ marginBottom: '1rem' }}>ステータスインジケーター</h3>
         <HStack gap={4} align="center">
-          <UserAvatar src="/img/1.png" alt="Online" status="online" showStatus size="lg" />
-          <UserAvatar src="/img/2.png" alt="Away" status="away" showStatus size="lg" />
-          <UserAvatar src="/img/3.png" alt="Busy" status="busy" showStatus size="lg" />
-          <UserAvatar src="/img/4.png" alt="Offline" status="offline" showStatus size="lg" />
+          <UserAvatar
+            src="/img/1.png"
+            alt="Online"
+            status="online"
+            showStatus
+            size="lg"
+          />
+          <UserAvatar
+            src="/img/2.png"
+            alt="Away"
+            status="away"
+            showStatus
+            size="lg"
+          />
+          <UserAvatar
+            src="/img/3.png"
+            alt="Busy"
+            status="busy"
+            showStatus
+            size="lg"
+          />
+          <UserAvatar
+            src="/img/4.png"
+            alt="Offline"
+            status="offline"
+            showStatus
+            size="lg"
+          />
         </HStack>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'gray' }}>オンライン、離席中、取り込み中、オフライン</p>
+        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'gray' }}>
+          オンライン、離席中、取り込み中、オフライン
+        </p>
       </div>
       <div>
         <h3 style={{ marginBottom: '1rem' }}>フォールバックバリエーション</h3>
@@ -111,18 +157,55 @@ export const AdvancedFeatures: Story = {
       <div>
         <h3 style={{ marginBottom: '1rem' }}>組み合わせ例</h3>
         <HStack gap={4} align="center">
-          <UserAvatar src="/img/1.png" alt="Alice" size="lg" shape="circle" borderStyle="solid" status="online" showStatus />
-          <UserAvatar src="" alt="Bob" fallback="B" size="lg" shape="circle" borderStyle="subtle" status="away" showStatus />
-          <UserAvatar src="/img/3.png" alt="Charlie" size="lg" shape="square" borderStyle="solid" status="busy" showStatus />
+          <UserAvatar
+            src="/img/1.png"
+            alt="Alice"
+            size="lg"
+            shape="circle"
+            borderStyle="solid"
+            status="online"
+            showStatus
+          />
+          <UserAvatar
+            src=""
+            alt="Bob"
+            fallback="B"
+            size="lg"
+            shape="circle"
+            borderStyle="subtle"
+            status="away"
+            showStatus
+          />
+          <UserAvatar
+            src="/img/3.png"
+            alt="Charlie"
+            size="lg"
+            shape="square"
+            borderStyle="solid"
+            status="busy"
+            showStatus
+          />
         </HStack>
       </div>
       <div>
         <h3 style={{ marginBottom: '1rem' }}>エラーハンドリング</h3>
         <HStack gap={4} align="center">
-          <UserAvatar src="/invalid-image.jpg" alt="フォールバック表示" fallback="E" size="lg" />
-          <UserAvatar src="/invalid-image.jpg" alt="フォールバック非表示" showFallback={false} size="lg" />
+          <UserAvatar
+            src="/invalid-image.jpg"
+            alt="フォールバック表示"
+            fallback="E"
+            size="lg"
+          />
+          <UserAvatar
+            src="/invalid-image.jpg"
+            alt="フォールバック非表示"
+            showFallback={false}
+            size="lg"
+          />
         </HStack>
-        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'gray' }}>左: エラー時フォールバック表示、右: エラー時非表示</p>
+        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: 'gray' }}>
+          左: エラー時フォールバック表示、右: エラー時非表示
+        </p>
       </div>
     </VStack>
   ),

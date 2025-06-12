@@ -49,12 +49,31 @@ type Story = StoryObj<typeof meta>;
 
 export const BasicStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: '1rem',
+        alignItems: 'center',
+        flexWrap: 'wrap',
+      }}
+    >
       <IconActionButton icon={<FiSettings />} label="デフォルト" />
-      <IconActionButton icon={<FiEdit3 />} label="ツールチップ付き" tooltip="このアイテムを編集します" />
-      <IconActionButton icon={<FiEye />} label="ツールチップ無し" showTooltip={false} />
+      <IconActionButton
+        icon={<FiEdit3 />}
+        label="ツールチップ付き"
+        tooltip="このアイテムを編集します"
+      />
+      <IconActionButton
+        icon={<FiEye />}
+        label="ツールチップ無し"
+        showTooltip={false}
+      />
       <IconActionButton icon={<FiTrash2 />} label="無効化" disabled />
-      <IconActionButton icon={<FiHeart />} label="アニメーション無" animated={false} />
+      <IconActionButton
+        icon={<FiHeart />}
+        label="アニメーション無"
+        animated={false}
+      />
     </div>
   ),
 };
@@ -65,10 +84,30 @@ export const VariantsAndStyles: Story = {
       <div>
         <h3 style={{ marginBottom: '1rem' }}>バリアント</h3>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-          <IconActionButton icon={<FiSettings />} label="Solid" variant="solid" colorPalette="blue" />
-          <IconActionButton icon={<FiEdit3 />} label="Outline" variant="outline" colorPalette="green" />
-          <IconActionButton icon={<FiEye />} label="Ghost" variant="ghost" colorPalette="purple" />
-          <IconActionButton icon={<FiShare2 />} label="Subtle" variant="subtle" colorPalette="red" />
+          <IconActionButton
+            icon={<FiSettings />}
+            label="Solid"
+            variant="solid"
+            colorPalette="blue"
+          />
+          <IconActionButton
+            icon={<FiEdit3 />}
+            label="Outline"
+            variant="outline"
+            colorPalette="green"
+          />
+          <IconActionButton
+            icon={<FiEye />}
+            label="Ghost"
+            variant="ghost"
+            colorPalette="purple"
+          />
+          <IconActionButton
+            icon={<FiShare2 />}
+            label="Subtle"
+            variant="subtle"
+            colorPalette="red"
+          />
         </div>
       </div>
       <div>
@@ -83,13 +122,50 @@ export const VariantsAndStyles: Story = {
       </div>
       <div>
         <h3 style={{ marginBottom: '1rem' }}>カラーパレット</h3>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <IconActionButton icon={<FiHeart />} label="Blue" colorPalette="blue" variant="solid" />
-          <IconActionButton icon={<FiDownload />} label="Green" colorPalette="green" variant="solid" />
-          <IconActionButton icon={<FiTrash2 />} label="Red" colorPalette="red" variant="solid" />
-          <IconActionButton icon={<FiRefreshCw />} label="Yellow" colorPalette="yellow" variant="solid" />
-          <IconActionButton icon={<FiShare2 />} label="Purple" colorPalette="purple" variant="solid" />
-          <IconActionButton icon={<FiX />} label="Gray" colorPalette="gray" variant="solid" />
+        <div
+          style={{
+            display: 'flex',
+            gap: '1rem',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+          }}
+        >
+          <IconActionButton
+            icon={<FiHeart />}
+            label="Blue"
+            colorPalette="blue"
+            variant="solid"
+          />
+          <IconActionButton
+            icon={<FiDownload />}
+            label="Green"
+            colorPalette="green"
+            variant="solid"
+          />
+          <IconActionButton
+            icon={<FiTrash2 />}
+            label="Red"
+            colorPalette="red"
+            variant="solid"
+          />
+          <IconActionButton
+            icon={<FiRefreshCw />}
+            label="Yellow"
+            colorPalette="yellow"
+            variant="solid"
+          />
+          <IconActionButton
+            icon={<FiShare2 />}
+            label="Purple"
+            colorPalette="purple"
+            variant="solid"
+          />
+          <IconActionButton
+            icon={<FiX />}
+            label="Gray"
+            colorPalette="gray"
+            variant="solid"
+          />
         </div>
       </div>
     </div>

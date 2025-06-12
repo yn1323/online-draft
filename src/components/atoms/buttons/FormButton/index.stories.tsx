@@ -37,9 +37,18 @@ type Story = StoryObj<typeof meta>;
 
 export const BasicStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+    <div
+      style={{
+        display: 'flex',
+        gap: '1rem',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+      }}
+    >
       <FormButton>デフォルト</FormButton>
-      <FormButton isLoading loadingText="送信中...">ローディング</FormButton>
+      <FormButton isLoading loadingText="送信中...">
+        ローディング
+      </FormButton>
       <FormButton isValid={false}>無効</FormButton>
       <FormButton disabled>無効化</FormButton>
       <FormButton animated={false}>アニメーション無</FormButton>

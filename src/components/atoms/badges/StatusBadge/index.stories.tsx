@@ -12,13 +12,7 @@ const meta = {
   argTypes: {
     status: {
       control: 'select',
-      options: [
-        'entered',
-        'completed',
-        'pending',
-        'active',
-        'done',
-      ],
+      options: ['entered', 'completed', 'pending', 'active', 'done'],
     },
     variant: {
       control: 'select',
