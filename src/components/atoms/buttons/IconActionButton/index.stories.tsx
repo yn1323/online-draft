@@ -47,127 +47,51 @@ const meta: Meta<typeof IconActionButton> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    icon: <FiSettings />,
-    label: '設定',
-  },
-};
-
-export const WithTooltip: Story = {
-  args: {
-    icon: <FiEdit3 />,
-    label: '編集',
-    tooltip: 'このアイテムを編集します',
-  },
-};
-
-export const NoTooltip: Story = {
-  args: {
-    icon: <FiEye />,
-    label: '表示',
-    showTooltip: false,
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    icon: <FiTrash2 />,
-    label: '削除',
-    disabled: true,
-  },
-};
-
-export const NoAnimation: Story = {
-  args: {
-    icon: <FiHeart />,
-    label: 'いいね',
-    animated: false,
-  },
-};
-
-export const Variants: Story = {
+export const BasicStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-      <IconActionButton
-        icon={<FiSettings />}
-        label="Solid"
-        variant="solid"
-        colorPalette="blue"
-      />
-      <IconActionButton
-        icon={<FiEdit3 />}
-        label="Outline"
-        variant="outline"
-        colorPalette="green"
-      />
-      <IconActionButton
-        icon={<FiEye />}
-        label="Ghost"
-        variant="ghost"
-        colorPalette="purple"
-      />
-      <IconActionButton
-        icon={<FiShare2 />}
-        label="Subtle"
-        variant="subtle"
-        colorPalette="red"
-      />
+    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+      <IconActionButton icon={<FiSettings />} label="デフォルト" />
+      <IconActionButton icon={<FiEdit3 />} label="ツールチップ付き" tooltip="このアイテムを編集します" />
+      <IconActionButton icon={<FiEye />} label="ツールチップ無し" showTooltip={false} />
+      <IconActionButton icon={<FiTrash2 />} label="無効化" disabled />
+      <IconActionButton icon={<FiHeart />} label="アニメーション無" animated={false} />
     </div>
   ),
 };
 
-export const Sizes: Story = {
+export const VariantsAndStyles: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-      <IconActionButton icon={<FiPlus />} label="XS" size="xs" />
-      <IconActionButton icon={<FiPlus />} label="Small" size="sm" />
-      <IconActionButton icon={<FiPlus />} label="Medium" size="md" />
-      <IconActionButton icon={<FiPlus />} label="Large" size="lg" />
-      <IconActionButton icon={<FiPlus />} label="XL" size="xl" />
-    </div>
-  ),
-};
-
-export const ColorPalettes: Story = {
-  render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-      <IconActionButton
-        icon={<FiHeart />}
-        label="Blue"
-        colorPalette="blue"
-        variant="solid"
-      />
-      <IconActionButton
-        icon={<FiDownload />}
-        label="Green"
-        colorPalette="green"
-        variant="solid"
-      />
-      <IconActionButton
-        icon={<FiTrash2 />}
-        label="Red"
-        colorPalette="red"
-        variant="solid"
-      />
-      <IconActionButton
-        icon={<FiRefreshCw />}
-        label="Yellow"
-        colorPalette="yellow"
-        variant="solid"
-      />
-      <IconActionButton
-        icon={<FiShare2 />}
-        label="Purple"
-        colorPalette="purple"
-        variant="solid"
-      />
-      <IconActionButton
-        icon={<FiX />}
-        label="Gray"
-        colorPalette="gray"
-        variant="solid"
-      />
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div>
+        <h3 style={{ marginBottom: '1rem' }}>バリアント</h3>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <IconActionButton icon={<FiSettings />} label="Solid" variant="solid" colorPalette="blue" />
+          <IconActionButton icon={<FiEdit3 />} label="Outline" variant="outline" colorPalette="green" />
+          <IconActionButton icon={<FiEye />} label="Ghost" variant="ghost" colorPalette="purple" />
+          <IconActionButton icon={<FiShare2 />} label="Subtle" variant="subtle" colorPalette="red" />
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '1rem' }}>サイズ</h3>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <IconActionButton icon={<FiPlus />} label="XS" size="xs" />
+          <IconActionButton icon={<FiPlus />} label="Small" size="sm" />
+          <IconActionButton icon={<FiPlus />} label="Medium" size="md" />
+          <IconActionButton icon={<FiPlus />} label="Large" size="lg" />
+          <IconActionButton icon={<FiPlus />} label="XL" size="xl" />
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '1rem' }}>カラーパレット</h3>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
+          <IconActionButton icon={<FiHeart />} label="Blue" colorPalette="blue" variant="solid" />
+          <IconActionButton icon={<FiDownload />} label="Green" colorPalette="green" variant="solid" />
+          <IconActionButton icon={<FiTrash2 />} label="Red" colorPalette="red" variant="solid" />
+          <IconActionButton icon={<FiRefreshCw />} label="Yellow" colorPalette="yellow" variant="solid" />
+          <IconActionButton icon={<FiShare2 />} label="Purple" colorPalette="purple" variant="solid" />
+          <IconActionButton icon={<FiX />} label="Gray" colorPalette="gray" variant="solid" />
+        </div>
+      </div>
     </div>
   ),
 };

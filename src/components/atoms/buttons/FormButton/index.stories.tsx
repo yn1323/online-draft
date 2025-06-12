@@ -35,62 +35,42 @@ const meta: Meta<typeof FormButton> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    children: '送信',
-  },
-};
-
-export const Loading: Story = {
-  args: {
-    children: '送信',
-    isLoading: true,
-    loadingText: '送信中...',
-  },
-};
-
-export const Invalid: Story = {
-  args: {
-    children: '送信',
-    isValid: false,
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    children: '送信',
-    disabled: true,
-  },
-};
-
-export const NoAnimation: Story = {
-  args: {
-    children: '送信',
-    animated: false,
-  },
-};
-
-export const ColorVariants: Story = {
+export const BasicStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-      <FormButton colorPalette="blue">送信</FormButton>
-      <FormButton colorPalette="green">保存</FormButton>
-      <FormButton colorPalette="red">削除</FormButton>
-      <FormButton colorPalette="yellow">警告</FormButton>
-      <FormButton colorPalette="purple">アクション</FormButton>
-      <FormButton colorPalette="gray">キャンセル</FormButton>
+    <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+      <FormButton>デフォルト</FormButton>
+      <FormButton isLoading loadingText="送信中...">ローディング</FormButton>
+      <FormButton isValid={false}>無効</FormButton>
+      <FormButton disabled>無効化</FormButton>
+      <FormButton animated={false}>アニメーション無</FormButton>
     </div>
   ),
 };
 
-export const Sizes: Story = {
+export const VariantsAndSizes: Story = {
   render: () => (
-    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-      <FormButton size="xs">XS</FormButton>
-      <FormButton size="sm">Small</FormButton>
-      <FormButton size="md">Medium</FormButton>
-      <FormButton size="lg">Large</FormButton>
-      <FormButton size="xl">XL</FormButton>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+      <div>
+        <h3 style={{ marginBottom: '1rem' }}>カラーバリアント</h3>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <FormButton colorPalette="blue">送信</FormButton>
+          <FormButton colorPalette="green">保存</FormButton>
+          <FormButton colorPalette="red">削除</FormButton>
+          <FormButton colorPalette="yellow">警告</FormButton>
+          <FormButton colorPalette="purple">アクション</FormButton>
+          <FormButton colorPalette="gray">キャンセル</FormButton>
+        </div>
+      </div>
+      <div>
+        <h3 style={{ marginBottom: '1rem' }}>サイズ</h3>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+          <FormButton size="xs">XS</FormButton>
+          <FormButton size="sm">Small</FormButton>
+          <FormButton size="md">Medium</FormButton>
+          <FormButton size="lg">Large</FormButton>
+          <FormButton size="xl">XL</FormButton>
+        </div>
+      </div>
     </div>
   ),
 };
