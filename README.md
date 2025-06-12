@@ -56,17 +56,23 @@ pnpm e2e              # E2Eテスト実行
 pnpm notify:slack     # Slack通知送信
 ```
 
-## Learn More
+## 🔧 環境設定
 
-To learn more about Next.js, take a look at the following resources:
+### Firebase設定
+1. Firebaseプロジェクトを作成
+2. 以下の環境変数を設定:
+   ```
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+   NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+   NEXT_PUBLIC_GTM_ID=GTM-XXXXXX
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 開発サーバー起動
+```bash
+pnpm install
+pnpm dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎮 プロジェクトについて
+オンラインドラフト会議システム - 推しを選んで、かぶったら勝負！
