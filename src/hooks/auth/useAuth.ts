@@ -50,24 +50,24 @@ export function useAuth() {
       },
     );
 
-    // 他サイト離脱時の自動ログアウト（Storybook環境以外）
-    const handleBeforeUnload = async () => {
-      if (auth.currentUser) {
-        console.log('🚪 他サイト離脱検知 - 自動ログアウト実行');
-        try {
-          await signOut(auth);
-        } catch (error) {
-          console.error('❌ 自動ログアウトエラー:', error);
-        }
-      }
-    };
+    // 他サイト離脱時の自動ログアウト（一時的に無効化）
+    // const handleBeforeUnload = async () => {
+    //   if (auth.currentUser) {
+    //     console.log('🚪 他サイト離脱検知 - 自動ログアウト実行');
+    //     try {
+    //       await signOut(auth);
+    //     } catch (error) {
+    //       console.error('❌ 自動ログアウトエラー:', error);
+    //     }
+    //   }
+    // };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    // window.addEventListener('beforeunload', handleBeforeUnload);
 
     return () => {
       console.log('👋 Firebase認証状態の監視を停止');
       unsubscribe();
-      window.removeEventListener('beforeunload', handleBeforeUnload);
+      // window.removeEventListener('beforeunload', handleBeforeUnload);
     };
   }, [setUser, setLoading, setError]);
 

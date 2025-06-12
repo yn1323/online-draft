@@ -20,7 +20,14 @@ export type Groups = {
   round: number; // 現在のラウンド (1から開始)
   finishedRound: number[]; // 完了したラウンドの配列
   deleteFlg: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
+
+/**
+ * 参加者ステータス型
+ */
+export type ParticipantStatus = 'thinking' | 'entered' | 'completed';
 
 /**
  * Users コレクション (Legacy 互換)
@@ -31,6 +38,10 @@ export type UserDocument = {
   userName: string;
   avatar: string; // アバターインデックス ("1", "2", etc.)
   deleteFlg: boolean;
+  status?: ParticipantStatus; // 現在のラウンドでの参加者ステータス
+  currentRound?: number; // 現在のラウンド番号
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -42,6 +53,8 @@ export type LogDocument = {
   message: string;
   date: Date;
   deleteFlg: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 /**
@@ -50,6 +63,8 @@ export type LogDocument = {
 export type SelectionDocument = {
   userId: string;
   selection: Selection[];
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type Selection = {

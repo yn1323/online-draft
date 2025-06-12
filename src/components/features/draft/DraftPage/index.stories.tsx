@@ -1,3 +1,4 @@
+import { withMockAppRouter } from '@/src/test-utils/mocks';
 import type { Meta, StoryObj } from '@storybook/react';
 import { DraftPage } from './index';
 import { mockParticipants, mockPastRounds } from './mocks';
@@ -8,6 +9,7 @@ const meta = {
   parameters: {
     layout: 'fullscreen',
   },
+  decorators: [withMockAppRouter],
   tags: ['autodocs'],
 } satisfies Meta<typeof DraftPage>;
 

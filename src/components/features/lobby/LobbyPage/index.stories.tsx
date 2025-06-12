@@ -1,4 +1,4 @@
-import { withAuthenticatedUser } from '@/src/test-utils/mocks';
+import { withLobbyMock, withMockAppRouter } from '@/src/test-utils/mocks';
 import { handlers } from '@/src/test-utils/msw';
 import type { Meta, StoryObj } from '@storybook/react';
 import { expect, within } from '@storybook/test';
@@ -13,7 +13,15 @@ const meta: Meta<typeof LobbyPage> = {
       handlers: handlers,
     },
   },
-  decorators: [withAuthenticatedUser],
+  decorators: [
+    withMockAppRouter,
+    // Lobbyページ用のモック（Firebase認証済み、SessionUserなし）
+    withLobbyMock({
+      firebaseAuthenticated: true,
+      groupExists: true,
+      sessionUser: null, // SessionUserなしでユーザー選択画面を表示
+    }),
+  ],
 };
 
 export default meta;
@@ -23,6 +31,14 @@ export const Default: Story = {
   args: {
     groupId: 'ABC123',
   },
+  decorators: [
+    // SessionUserなしでユーザー選択画面を表示
+    withLobbyMock({
+      firebaseAuthenticated: true,
+      groupExists: true,
+      sessionUser: null,
+    }),
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -44,7 +60,9 @@ export const Default: Story = {
     ).toBeInTheDocument();
 
     // 新規ユーザー作成ボタン
-    expect(await canvas.findByText('新しいユーザーを作成')).toBeInTheDocument();
+    expect(
+      await canvas.findByText('新しいユーザーとして参加'),
+    ).toBeInTheDocument();
 
     // ヘルプテキスト
     expect(
@@ -62,6 +80,13 @@ export const LongGroupName: Story = {
   args: {
     groupId: 'XYZ789',
   },
+  decorators: [
+    withLobbyMock({
+      firebaseAuthenticated: true,
+      groupExists: true,
+      sessionUser: null,
+    }),
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -85,6 +110,13 @@ export const ShortGroupId: Story = {
   args: {
     groupId: '12',
   },
+  decorators: [
+    withLobbyMock({
+      firebaseAuthenticated: true,
+      groupExists: true,
+      sessionUser: null,
+    }),
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -104,6 +136,14 @@ export const NonExistentGroup: Story = {
   args: {
     groupId: 'nonexistent',
   },
+  decorators: [
+    // グループが存在しないケースのモック
+    withLobbyMock({
+      firebaseAuthenticated: true,
+      groupExists: false,
+      sessionUser: null,
+    }),
+  ],
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -117,7 +157,7 @@ export const NonExistentGroup: Story = {
       await canvas.findByText('グループID: nonexistent'),
     ).toBeInTheDocument();
     expect(
-      await canvas.findByText(/指定されたグループID のグループは存在しないか/),
+      await canvas.findByText('指定されたグループが見つかりません'),
     ).toBeInTheDocument();
   },
 };

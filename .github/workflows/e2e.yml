@@ -37,13 +37,6 @@ jobs:
         
     - name: Setup Playwright
       uses: ./.github/actions/playwright
-      with:
-        DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        DIRECT_URL: ${{ secrets.DIRECT_URL }}
-        TEST_USER_ID: ${{ secrets.TEST_USER_ID }}
-        TEST_USER_NAME: ${{ secrets.TEST_USER_NAME }}
-        TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
-        TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}
     - name: Record e2e start
       run: echo "E2E_START=$(date +%s)" >> $GITHUB_ENV
       
