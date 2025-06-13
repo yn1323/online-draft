@@ -157,7 +157,9 @@ export const NonExistentGroup: Story = {
       await canvas.findByText('グループID: nonexistent'),
     ).toBeInTheDocument();
     expect(
-      await canvas.findByText('指定されたグループが見つかりません'),
+      await canvas.findByText(
+        '指定されたグループID のグループは存在しないか、削除されている可能性があります。',
+      ),
     ).toBeInTheDocument();
   },
 };

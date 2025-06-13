@@ -74,6 +74,8 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
           userName: selectedUser.userName,
           avatar: selectedUser.avatar,
           deleteFlg: selectedUser.deleteFlg || false,
+          createdAt: selectedUser.createdAt,
+          updatedAt: selectedUser.updatedAt,
         });
         console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
 
@@ -123,12 +125,15 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       });
 
       // 3. Jotai状態に保存
+      const now = new Date();
       const newUser = {
         userId,
         groupId,
         userName: data.userName,
         avatar: data.avatarIndex,
         deleteFlg: false,
+        createdAt: now,
+        updatedAt: now,
       };
       setCurrentUser(newUser);
 
