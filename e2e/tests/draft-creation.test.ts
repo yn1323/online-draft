@@ -22,8 +22,8 @@ test.describe('ドラフト作成操作', () => {
     expect(groupId).toBeTruthy();
     expect(groupId).toMatch(/^[a-zA-Z0-9_-]+$/); // 有効なFirestore ID形式
 
-    // 入力したドラフト名とgroupIdが表示されることを確認
-    await expect(page.getByText(draftName)).toBeVisible();
+    // 入力したドラフト名とgroupIdが表示されることを確認（ヘッダー内の特定要素を対象）
+    await expect(page.getByRole('heading', { name: draftName })).toBeVisible();
     await expect(page.getByText(groupId)).toBeVisible();
   });
 

@@ -31,107 +31,115 @@ const meta: Meta<typeof ThemeTextarea> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    placeholder: '内容を入力してください',
-  },
-};
-
-export const WithLabel: Story = {
-  args: {
-    label: 'コメント',
-    placeholder: 'コメントを入力してください',
-  },
-};
-
-export const Required: Story = {
-  args: {
-    label: '詳細説明',
-    placeholder: '詳細を入力してください',
-    required: true,
-  },
-};
-
-export const WithHelperText: Story = {
-  args: {
-    label: 'フィードバック',
-    placeholder: 'ご意見をお聞かせください',
-    helperText: '具体的で建設的なフィードバックをお願いします',
-  },
-};
-
-export const WithError: Story = {
-  args: {
-    label: 'コメント',
-    placeholder: 'コメントを入力してください',
-    errorText: 'この項目は必須です',
-    invalid: true,
-  },
-};
-
-export const WithCharacterCount: Story = {
-  args: {
-    label: 'レビュー',
-    placeholder: 'レビューを入力してください',
-    maxLength: 200,
-    showCharacterCount: true,
-  },
-};
-
-export const AutoResize: Story = {
-  args: {
-    label: '自動リサイズ',
-    placeholder: '内容が増えると自動で高さが調整されます',
-    autoResize: true,
-    rows: 2,
-  },
-};
-
-export const Disabled: Story = {
-  args: {
-    label: '無効なテキストエリア',
-    placeholder: '編集できません',
-    disabled: true,
-    value: '無効な値です',
-  },
-};
-
-export const Sizes: Story = {
+export const BasicStates: Story = {
   render: () => (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+    <div
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem',
+        maxWidth: '400px',
+      }}
+    >
+      <ThemeTextarea placeholder="デフォルトテキストエリア" />
+      <ThemeTextarea label="コメント" placeholder="コメントを入力" />
+      <ThemeTextarea label="詳細説明" placeholder="詳細を入力" required />
       <ThemeTextarea
-        label="Extra Small"
-        placeholder="xs size"
-        size="xs"
+        label="フィードバック"
+        placeholder="ご意見をお聞かせください"
+        helperText="具体的で建設的なフィードバックをお願いします"
+      />
+      <ThemeTextarea
+        label="エラー例"
+        placeholder="入力してください"
+        errorText="この項目は必須です"
+        invalid
+      />
+      <ThemeTextarea
+        label="文字数カウント"
+        placeholder="レビューを入力"
+        maxLength={200}
+        showCharacterCount
+      />
+      <ThemeTextarea
+        label="自動リサイズ"
+        placeholder="内容が増えると自動で高さが調整"
+        autoResize
         rows={2}
       />
-      <ThemeTextarea label="Small" placeholder="sm size" size="sm" rows={2} />
-      <ThemeTextarea label="Medium" placeholder="md size" size="md" rows={3} />
-      <ThemeTextarea label="Large" placeholder="lg size" size="lg" rows={4} />
       <ThemeTextarea
-        label="Extra Large"
-        placeholder="xl size"
-        size="xl"
-        rows={5}
+        label="無効なテキストエリア"
+        placeholder="編集できません"
+        disabled
+        value="無効な値です"
       />
     </div>
   ),
 };
 
-export const Interactive: Story = {
+export const SizesAndInteractive: Story = {
   render: () => {
     const [value, setValue] = useState('');
     return (
-      <ThemeTextarea
-        label="インタラクティブ入力"
-        placeholder="何か入力してみてください"
-        value={value}
-        onChange={setValue}
-        maxLength={100}
-        showCharacterCount
-        autoResize
-        helperText="リアルタイムで値が更新されます"
-      />
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+        <div>
+          <h3 style={{ marginBottom: '1rem' }}>サイズバリエーション</h3>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              maxWidth: '400px',
+            }}
+          >
+            <ThemeTextarea
+              label="Extra Small"
+              placeholder="xs size"
+              size="xs"
+              rows={2}
+            />
+            <ThemeTextarea
+              label="Small"
+              placeholder="sm size"
+              size="sm"
+              rows={2}
+            />
+            <ThemeTextarea
+              label="Medium"
+              placeholder="md size"
+              size="md"
+              rows={3}
+            />
+            <ThemeTextarea
+              label="Large"
+              placeholder="lg size"
+              size="lg"
+              rows={4}
+            />
+            <ThemeTextarea
+              label="Extra Large"
+              placeholder="xl size"
+              size="xl"
+              rows={5}
+            />
+          </div>
+        </div>
+        <div>
+          <h3 style={{ marginBottom: '1rem' }}>インタラクティブ例</h3>
+          <div style={{ maxWidth: '400px' }}>
+            <ThemeTextarea
+              label="リアルタイム入力"
+              placeholder="何か入力してみてください"
+              value={value}
+              onChange={setValue}
+              maxLength={100}
+              showCharacterCount
+              autoResize
+              helperText="リアルタイムで値が更新されます"
+            />
+          </div>
+        </div>
+      </div>
     );
   },
 };

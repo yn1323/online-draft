@@ -12,14 +12,7 @@ const meta = {
   argTypes: {
     status: {
       control: 'select',
-      options: [
-        'thinking',
-        'entered',
-        'completed',
-        'pending',
-        'active',
-        'done',
-      ],
+      options: ['entered', 'completed', 'pending', 'active', 'done'],
     },
     variant: {
       control: 'select',
@@ -31,39 +24,28 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
-  args: {
-    status: 'thinking',
-  },
-};
-
-export const AllStatuses: Story = {
-  args: { status: 'thinking' },
+export const Showcase: Story = {
+  args: { status: 'entered' },
   render: () => (
-    <VStack gap={4}>
-      <HStack gap={3}>
-        <StatusBadge status="thinking" />
-        <StatusBadge status="entered" />
-        <StatusBadge status="completed" />
-      </HStack>
-      <HStack gap={3}>
-        <StatusBadge status="pending" />
-        <StatusBadge status="active" />
-        <StatusBadge status="done" />
-      </HStack>
-    </VStack>
-  ),
-};
-
-export const AllVariants: Story = {
-  args: { status: 'completed' },
-  render: () => (
-    <VStack gap={4}>
-      <HStack gap={3}>
-        <StatusBadge status="completed" variant="solid" />
-        <StatusBadge status="completed" variant="outline" />
-        <StatusBadge status="completed" variant="subtle" />
-      </HStack>
+    <VStack gap={6}>
+      <VStack gap={2}>
+        <HStack gap={3}>
+          <StatusBadge status="entered" />
+          <StatusBadge status="completed" />
+          <StatusBadge status="pending" />
+        </HStack>
+        <HStack gap={3}>
+          <StatusBadge status="active" />
+          <StatusBadge status="done" />
+        </HStack>
+      </VStack>
+      <VStack gap={2}>
+        <HStack gap={3}>
+          <StatusBadge status="completed" variant="solid" />
+          <StatusBadge status="completed" variant="outline" />
+          <StatusBadge status="completed" variant="subtle" />
+        </HStack>
+      </VStack>
     </VStack>
   ),
 };

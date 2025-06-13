@@ -4,7 +4,6 @@ import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
-import { ActionPanel } from './components/actions/ActionPanel';
 import { FloatingActionButton } from './components/actions/FloatingActionButton';
 import { ChatLogSection } from './components/chat/ChatLogSection';
 import { DraftHeader } from './components/layout/DraftHeader';

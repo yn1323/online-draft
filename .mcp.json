@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "typescript": {
+      "command": "npx",
+      "args": ["-y", "typescript-mcp"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    }
+  }
+}

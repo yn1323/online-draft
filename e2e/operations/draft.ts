@@ -20,9 +20,10 @@ export async function createNewDraft(
   });
   await createDraftButton.click();
 
-  // モーダルが表示されることを確認
+  // モーダルが表示されるまで待機（アニメーション完了を待つ）
+  await page.waitForTimeout(500); // モーダルアニメーション開始待機
   const modal = page.locator(SELECTORS.MODAL.CONTAINER);
-  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MODAL_ANIMATION });
+  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
 
   // ドラフト名を入力（指定がない場合はテスト用デフォルト値を使用）
   const inputName = draftName || TEST_DATA.DRAFT_ROOM.NAME;
@@ -111,4 +112,3 @@ export async function setupNetworkDelay(
     await route.continue();
   });
 }
-

@@ -69,5 +69,8 @@
       "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")"
     ],
     "deny": []
-  }
+  },
+  "enabledMcpjsonServers": [
+    "typescript"
+  ]
 }
