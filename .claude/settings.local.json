@@ -71,6 +71,8 @@
     "deny": []
   },
   "enabledMcpjsonServers": [
-    "typescript"
-  ]
+    "typescript",
+    "playwright"
+  ],
+  "enableAllProjectMcpServers": true
 }

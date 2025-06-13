@@ -1,10 +1,19 @@
 'use client';
 
-import { Container, Grid, GridItem, VStack } from '@chakra-ui/react';
+import {
+  Center,
+  Container,
+  Grid,
+  GridItem,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { useParams } from 'next/navigation';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useSessionUser } from '../../../../hooks/auth/useSessionUser';
+import { useDraftData } from '../../../../hooks/draft/useDraftData';
 import { UserRoundDetailModal } from '../UserRoundDetailModal';
-import { FloatingActionButton } from './components/actions/FloatingActionButton';
 import { ChatLogSection } from './components/chat/ChatLogSection';
 import { DraftHeader } from './components/layout/DraftHeader';
 import { TabNavigation } from './components/layout/TabNavigation';
@@ -52,7 +61,6 @@ interface DraftPageProps {
 export const DraftPage = ({
   groupId,
   roundNumber: propRoundNumber,
-  totalRounds: propTotalRounds,
   groupName: propGroupName,
   participants: propParticipants,
   currentUserSelection: propCurrentUserSelection,
@@ -63,6 +71,26 @@ export const DraftPage = ({
   // groupIdが渡されない場合はuseParamsから取得（後方互換性）
   const params = useParams();
   const draftId = groupId ?? (params?.id as string);
+
+  // セッションユーザー情報
+  const { sessionUser } = useSessionUser(draftId || '');
+  const userId = sessionUser?.id;
+  const userName = sessionUser?.name || 'ユーザー';
+  const userAvatar = sessionUser?.avatar || '1';
+
+  // Firestoreデータ統合（userIdがある場合に使用）
+  const shouldUseFirestore = draftId && userId;
+  const {
+    rounds: firestoreRounds,
+    currentRound: firestoreCurrentRound,
+    currentRoundNumber: firestoreCurrentRoundNumber,
+    participants: firestoreParticipants,
+    loading: firestoreLoading,
+    error: firestoreError,
+  } = useDraftData({
+    groupId: draftId || '',
+    enableRealtime: !!shouldUseFirestore,
+  });
 
   // 内部状態の初期化
   const [internalCurrentUserSelection, setInternalCurrentUserSelection] =
@@ -81,19 +109,55 @@ export const DraftPage = ({
   });
   const [isOptionsModalOpen, setIsOptionsModalOpen] = useState(false);
 
-  // TODO: FirestoreからgroupIdを使ってデータ取得
-  // 現在はモックデータを使用
-  console.log('📍 DraftPage - groupId:', draftId);
-
-  // デフォルト値の設定（propsがある場合はpropsを優先、ない場合はモックとuseParamsを使用）
-  const roundNumber = propRoundNumber ?? 3;
-  const _totalRounds = propTotalRounds ?? 5;
+  // データソースの決定（propsがある場合はprops優先、ない場合はFirestore）
+  const roundNumber = propRoundNumber ?? firestoreCurrentRoundNumber ?? 3;
   const groupName = propGroupName ?? `ドラフト会議 ${draftId}`;
-  const participants = propParticipants ?? mockParticipants;
+
+  // 参加者データの変換（UserDocument → 表示用形式）
+  const displayParticipants =
+    propParticipants ??
+    (shouldUseFirestore
+      ? firestoreParticipants.map((participant) => ({
+          id: participant.userId || '',
+          name: participant.userName,
+          avatar: `/img/${participant.avatar}.png`,
+          status: participant.status || 'thinking',
+        }))
+      : mockParticipants);
+
   const currentUserSelection =
     propCurrentUserSelection ?? internalCurrentUserSelection;
-  const pastRounds = propPastRounds ?? mockPastRounds;
-  const currentRoundTopic = propCurrentRoundTopic ?? '好きなゲーム';
+
+  // 過去ラウンドデータの変換（Round[] → 表示用形式）
+  const displayPastRounds = useMemo(() => {
+    if (propPastRounds) {
+      return propPastRounds;
+    }
+    if (!shouldUseFirestore) {
+      return mockPastRounds;
+    }
+
+    return firestoreRounds
+      .filter((round) => round.status === 'completed')
+      .map((round) => ({
+        roundNumber: round.roundNumber,
+        topic: round.topic,
+        selections: [], // TODO: 選択データとの連携
+      }));
+  }, [propPastRounds, shouldUseFirestore, firestoreRounds]);
+
+  const currentRoundTopic =
+    propCurrentRoundTopic ?? (firestoreCurrentRound?.topic || '好きなゲーム');
+
+  console.log('📍 DraftPage - 統合データ:', {
+    draftId,
+    shouldUseFirestore,
+    roundNumber,
+    participantsCount: displayParticipants.length,
+    pastRoundsCount: displayPastRounds.length,
+    loading: firestoreLoading,
+    error: firestoreError,
+  });
 
   // イベントハンドラーの設定
   const handleSubmitSelection =
@@ -168,6 +232,56 @@ export const DraftPage = ({
     console.log('ヘルプ画面を開く（今後実装）');
   };
 
+  // 認証中の表示（モック表示防止）
+  if (!userId && draftId) {
+    return (
+      <Container maxW="1600px" p={4} minH="100vh">
+        <Center h="50vh">
+          <VStack gap={4}>
+            <Spinner size="xl" color="blue.500" />
+            <Text fontSize="lg" color="gray.600" _dark={{ color: 'gray.300' }}>
+              認証中...
+            </Text>
+          </VStack>
+        </Center>
+      </Container>
+    );
+  }
+
+  // ローディング状態の表示
+  if (shouldUseFirestore && firestoreLoading) {
+    return (
+      <Container maxW="1600px" p={4} minH="100vh">
+        <Center h="50vh">
+          <VStack gap={4}>
+            <Spinner size="xl" color="green.500" />
+            <Text fontSize="lg" color="gray.600" _dark={{ color: 'gray.300' }}>
+              ドラフトデータを読み込み中...
+            </Text>
+          </VStack>
+        </Center>
+      </Container>
+    );
+  }
+
+  // エラー状態の表示
+  if (shouldUseFirestore && firestoreError) {
+    return (
+      <Container maxW="1600px" p={4} minH="100vh">
+        <Center h="50vh">
+          <VStack gap={4}>
+            <Text fontSize="xl" color="red.500">
+              ⚠️ エラーが発生しました
+            </Text>
+            <Text fontSize="md" color="gray.600" _dark={{ color: 'gray.300' }}>
+              {firestoreError}
+            </Text>
+          </VStack>
+        </Center>
+      </Container>
+    );
+  }
+
   return (
     <Container
       maxW="1600px"
@@ -202,8 +316,8 @@ export const DraftPage = ({
       >
         <TabNavigation
           roundNumber={roundNumber}
-          participants={participants}
-          pastRounds={pastRounds}
+          participants={displayParticipants}
+          pastRounds={displayPastRounds}
           onRoundClick={handleRoundClick}
           onUserClick={handleUserClick}
           onOpenInputModal={handleOpenInputModal}
@@ -221,8 +335,8 @@ export const DraftPage = ({
         <GridItem>
           <RoundHistoryTable
             roundNumber={roundNumber}
-            participants={participants}
-            pastRounds={pastRounds}
+            participants={displayParticipants}
+            pastRounds={displayPastRounds}
             onRoundClick={handleRoundClick}
             onUserClick={handleUserClick}
             onOpenInputModal={handleOpenInputModal}
@@ -231,7 +345,13 @@ export const DraftPage = ({
 
         {/* Right: Communication (35%) */}
         <GridItem>
-          <ChatLogSection />
+          <ChatLogSection
+            groupId={shouldUseFirestore ? draftId : undefined}
+            userId={shouldUseFirestore ? userId : undefined}
+            userName={shouldUseFirestore ? userName : undefined}
+            userAvatar={shouldUseFirestore ? userAvatar : undefined}
+            enableFirestore={!!shouldUseFirestore}
+          />
         </GridItem>
       </Grid>
 
@@ -256,11 +376,11 @@ export const DraftPage = ({
             onClose={handleCloseUserRoundDetail}
             roundNumber={userRoundDetailModal.selectedRound}
             participant={
-              participants.find(
+              displayParticipants.find(
                 (p) => p.id === userRoundDetailModal.selectedUserId,
-              ) || participants[0]
+              ) || displayParticipants[0]
             }
-            initialSelection={pastRounds
+            initialSelection={displayPastRounds
               .find((r) => r.roundNumber === userRoundDetailModal.selectedRound)
               ?.selections.find(
                 (s) => s.userId === userRoundDetailModal.selectedUserId,

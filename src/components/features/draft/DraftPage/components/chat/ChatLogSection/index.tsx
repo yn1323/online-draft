@@ -1,17 +1,102 @@
 import { Box, Text, VStack } from '@chakra-ui/react';
+import { useEffect, useRef } from 'react';
+import { useChatMessages } from '../../../../../../../hooks/draft/useChatMessages';
+import type { ChatMessage } from '../../../../../../../types/draft';
 import { LogItem, type LogMessage } from './LogItem';
 import { MessageInput } from './MessageInput';
 import { mockLogs } from './mocks';
 
 interface ChatLogSectionProps {
+  groupId?: string;
+  userId?: string;
+  userName?: string;
+  userAvatar?: string;
   logs?: LogMessage[];
   onSendMessage?: (message: string) => void;
+  enableFirestore?: boolean;
 }
 
+/**
+ * ChatMessageをLogMessageに変換
+ */
+const chatMessageToLogMessage = (chatMessage: ChatMessage): LogMessage => {
+  return {
+    id: chatMessage.id,
+    type: chatMessage.type === 'system' ? 'system' : 'chat',
+    timestamp: chatMessage.timestamp,
+    content: chatMessage.content,
+    user:
+      chatMessage.type === 'user'
+        ? {
+            id: chatMessage.userId,
+            name: chatMessage.userName,
+            avatar: `/img/${chatMessage.userAvatar}.png`, // アバターパス変換
+          }
+        : undefined,
+    isMyMessage: false, // TODO: 現在ユーザーIDとの比較で設定
+    selectionChange: chatMessage.metadata?.selectionChange
+      ? {
+          roundNumber: chatMessage.metadata.roundNumber || 1,
+          before: chatMessage.metadata.selectionChange.before,
+          after: chatMessage.metadata.selectionChange.after,
+          userName: chatMessage.userName,
+        }
+      : undefined,
+  };
+};
+
 export const ChatLogSection = ({
-  logs = mockLogs,
+  groupId,
+  userId,
+  userName = '参加者',
+  userAvatar = '1',
+  logs,
   onSendMessage,
+  enableFirestore = false,
 }: ChatLogSectionProps = {}) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Firestoreチャット機能
+  const {
+    messages: firestoreMessages,
+    loading: firestoreLoading,
+    error: firestoreError,
+    sendMessage: sendFirestoreMessage,
+    isSending,
+  } = useChatMessages({
+    groupId: groupId || '',
+    userId: userId || '',
+    userName,
+    userAvatar,
+    enableRealtime: enableFirestore && !!groupId,
+  });
+
+  // 使用するデータソースの決定
+  const useFirestore = enableFirestore && groupId && userId;
+  const displayLogs = useFirestore
+    ? firestoreMessages.map(chatMessageToLogMessage)
+    : logs || mockLogs;
+
+  // メッセージ送信ハンドラー
+  const handleSendMessage = async (message: string) => {
+    if (useFirestore) {
+      try {
+        await sendFirestoreMessage(message);
+      } catch (error) {
+        console.error('メッセージ送信エラー:', error);
+      }
+    } else if (onSendMessage) {
+      onSendMessage(message);
+    }
+  };
+
+  // 新しいメッセージが追加されたら自動スクロール
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  });
+
   return (
     <Box
       p={{ base: 4, md: 5, lg: 6 }}
@@ -61,6 +146,7 @@ export const ChatLogSection = ({
       </Text>
 
       <Box
+        ref={scrollRef}
         flex={1}
         overflowY="auto"
         bg="white"
@@ -87,15 +173,30 @@ export const ChatLogSection = ({
           },
         }}
       >
+        {useFirestore && firestoreLoading && displayLogs.length === 0 && (
+          <Text fontSize="sm" color="gray.500" textAlign="center" p={4}>
+            メッセージを読み込み中...
+          </Text>
+        )}
+
+        {useFirestore && firestoreError && (
+          <Text fontSize="sm" color="red.500" textAlign="center" p={4}>
+            ⚠️ {firestoreError}
+          </Text>
+        )}
+
         <VStack gap={0} align="stretch">
-          {logs.map((log) => (
+          {displayLogs.map((log) => (
             <LogItem key={log.id} log={log} />
           ))}
         </VStack>
       </Box>
 
       <Box flexShrink={0}>
-        <MessageInput onSendMessage={onSendMessage} />
+        <MessageInput
+          onSendMessage={handleSendMessage}
+          disabled={!!(useFirestore && isSending)}
+        />
       </Box>
     </Box>
   );

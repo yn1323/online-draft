@@ -4,6 +4,7 @@ import { useColorModeValue } from '@/src/components/ui/color-mode';
 import type { UserCreateForm } from '@/src/constants/schemas';
 import { checkUserNameExists, createUser } from '@/src/helpers/firebase/user';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
+import { setSessionUser } from '@/src/helpers/utils/sessionStorage';
 import { useAutoAuth } from '@/src/hooks/auth/useAutoAuth';
 import { useGroupData } from '@/src/hooks/data/useGroupData';
 import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
@@ -77,7 +78,18 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
           createdAt: selectedUser.createdAt,
           updatedAt: selectedUser.updatedAt,
         });
-        console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
+
+        // SessionStorageにも保存（DraftPage認証用）
+        const sessionUser = {
+          id: selectedUser.userId as string,
+          groupId,
+          name: selectedUser.userName,
+          avatar: selectedUser.avatar,
+          createdAt: selectedUser.createdAt,
+        };
+        setSessionUser(sessionUser);
+
+        console.log('✅ 既存ユーザーでログイン (Jotai + SessionStorage):', selectedUser.userName);
 
         // ドラフトページへ遷移
         router.push(`/draft/${groupId}`);
@@ -137,7 +149,17 @@ export default function LobbyPage({ groupId }: LobbyPageProps) {
       };
       setCurrentUser(newUser);
 
-      console.log('✅ ユーザー作成成功:', newUser);
+      // 4. SessionStorageにも保存（DraftPage認証用）
+      const sessionUser = {
+        id: userId,
+        groupId,
+        name: data.userName,
+        avatar: data.avatarIndex,
+        createdAt: now,
+      };
+      setSessionUser(sessionUser);
+
+      console.log('✅ ユーザー作成成功 (Jotai + SessionStorage):', newUser);
 
       // ドラフトページへ遷移
       router.push(`/draft/${groupId}`);

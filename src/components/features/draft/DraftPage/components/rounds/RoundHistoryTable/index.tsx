@@ -1,5 +1,5 @@
 import { Box, Text, VStack, useBreakpointValue } from '@chakra-ui/react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { SelectionButton } from '../../actions/SelectionButton';
 import { CurrentRoundRow } from '../CurrentRoundRow';
 import { PastRoundRow } from '../PastRoundRow';
@@ -111,48 +111,48 @@ export const RoundHistoryTable = ({
           <SelectionButton onClick={onOpenInputModal} />
         </Box>
       </Box>
-      {pastRounds.length === 0 ? (
-        <Box
-          p={8}
-          textAlign="center"
-          bg="white"
-          borderRadius="lg"
-          border="2px dashed"
-          borderColor="green.300"
-          opacity={0.8}
-          _dark={{
-            bg: 'gray.800',
-            borderColor: 'green.600',
-            opacity: 0.9,
-          }}
-        >
-          <Text
-            fontSize="md"
-            color="green.500"
-            fontWeight="medium"
-            _dark={{ color: 'green.300' }}
-          >
-            📝 ラウンドがまだ開始されていません
-          </Text>
-          <Text
-            fontSize="sm"
-            color="green.400"
-            mt={2}
-            _dark={{ color: 'green.400' }}
-          >
-            ラウンドが開始されると、各ラウンドの情報が表示されます
-          </Text>
-        </Box>
-      ) : (
-        <VStack gap={4} align="stretch">
-          {/* Current Round Row */}
-          <CurrentRoundRow
-            roundNumber={roundNumber}
-            participants={participants}
-          />
+      <VStack gap={4} align="stretch">
+        {/* Current Round Row - 常に表示 */}
+        <CurrentRoundRow
+          roundNumber={roundNumber}
+          participants={participants}
+        />
 
-          {/* Past Rounds */}
-          {pastRounds.map((round) => (
+        {/* Past Rounds */}
+        {pastRounds.length === 0 ? (
+          <Box
+            p={8}
+            textAlign="center"
+            bg="white"
+            borderRadius="lg"
+            border="2px dashed"
+            borderColor="green.300"
+            opacity={0.8}
+            _dark={{
+              bg: 'gray.800',
+              borderColor: 'green.600',
+              opacity: 0.9,
+            }}
+          >
+            <Text
+              fontSize="md"
+              color="green.500"
+              fontWeight="medium"
+              _dark={{ color: 'green.300' }}
+            >
+              📝 ラウンドがまだ開始されていません
+            </Text>
+            <Text
+              fontSize="sm"
+              color="green.400"
+              mt={2}
+              _dark={{ color: 'green.400' }}
+            >
+              ラウンドが開始されると、各ラウンドの情報が表示されます
+            </Text>
+          </Box>
+        ) : (
+          pastRounds.map((round) => (
             <PastRoundRow
               key={round.roundNumber}
               round={round}
@@ -166,9 +166,9 @@ export const RoundHistoryTable = ({
                 isMobile ? () => toggleRound(round.roundNumber) : undefined
               }
             />
-          ))}
-        </VStack>
-      )}
+          ))
+        )}
+      </VStack>
     </Box>
   );
 };

@@ -1,5 +1,13 @@
 export const formatTime = (date: Date) => {
-  return date.toLocaleTimeString('ja-JP', {
+  // FirestoreのTimestampの場合はDateに変換
+  const actualDate = date instanceof Date ? date : new Date(date);
+  
+  // Dateオブジェクトが有効かチェック
+  if (!actualDate || Number.isNaN(actualDate.getTime())) {
+    return '--:--';
+  }
+  
+  return actualDate.toLocaleTimeString('ja-JP', {
     hour: '2-digit',
     minute: '2-digit',
   });

@@ -67,7 +67,7 @@ export const ParticipantCell = ({ participant }: ParticipantCellProps) => {
         }}
       >
         <Image
-          src={`/img/${participant.avatar}.png`}
+          src={participant.avatar}
           alt={participant.name}
           width="24px"
           height="24px"
