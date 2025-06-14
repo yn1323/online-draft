@@ -5,7 +5,7 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import { z } from 'zod';
 import { ColorModeProvider } from '../src/components/ui/color-mode';
 import { customErrorMap } from '../src/configs/zod/zop-setup';
-import { handlers } from './mocks/handlers';
+// import { handlers } from './mocks/handlers';
 
 initialize({
   serviceWorker: {
@@ -21,9 +21,9 @@ const preview: Preview = {
         date: /Date$/i,
       },
     },
-    msw: {
-      handlers: handlers,
-    },
+    // msw: {
+    //   handlers: handlers,
+    // },
   },
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   loaders: [mswLoader] as any,
