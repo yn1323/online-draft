@@ -10,6 +10,7 @@ type AvatarProps = {
   name?: string;
   size?: AvatarSize;
   avatarNumber?: string;
+  noBorder?: boolean;
 };
 
 // サイズ別のピクセル値定義
@@ -47,12 +48,21 @@ export const Avatar = ({
   name,
   size = 'md',
   avatarNumber,
+  noBorder = false,
 }: AvatarProps) => {
   const avatarImageSrc =
     src || (avatarNumber ? `/img/${avatarNumber}.png` : undefined);
   const sizeValue = SIZE_VALUES[size];
 
   if (avatarImageSrc) {
+    const containerStyles = noBorder
+      ? {
+          borderRadius: 'xl',
+          bg: 'transparent',
+          transition: 'all 0.15s ease',
+        }
+      : IMAGE_STYLES;
+
     return (
       <Box
         width={`${sizeValue}px`}
@@ -61,17 +71,19 @@ export const Avatar = ({
         display="flex"
         alignItems="center"
         justifyContent="center"
-        {...IMAGE_STYLES}
+        {...containerStyles}
       >
         <Image
           src={avatarImageSrc}
           alt={name || 'アバター画像'}
-          width={sizeValue - 4}
-          height={sizeValue - 4}
+          width={sizeValue}
+          height={sizeValue}
           style={{
             objectFit: 'contain',
+            objectPosition: 'center',
             width: '100%',
             height: '100%',
+            display: 'block',
           }}
         />
       </Box>

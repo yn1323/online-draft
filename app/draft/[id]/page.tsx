@@ -1,4 +1,4 @@
-import { DraftPage } from '@/src/components/features/draft/DraftPage/sp';
+import { DraftPageSp } from '@/src/components/features/draft/DraftPage/sp';
 import { Animation } from '@/src/components/templates/Animation';
 
 interface DraftPageRouteProps {
@@ -11,7 +11,7 @@ export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
   await params; // パラメータの取得（現在は未使用）
   return (
     <Animation>
-      <DraftPage />
+      <DraftPageSp />
     </Animation>
   );
 }

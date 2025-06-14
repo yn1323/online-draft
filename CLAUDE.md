@@ -18,7 +18,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること（下記順番で実施すること）
   - ファイル末尾改行
   - 単体テスト: `pnpm test`
-  <!-- - Storybookテスト: `pnpm storybook:test-ci` -->
+  - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
   - linter自動修正: `pnpm lint:fix`
   - 型チェック: `pnpm type-check`

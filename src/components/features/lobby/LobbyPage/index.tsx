@@ -13,7 +13,9 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { LuCopy } from 'react-icons/lu';
+import { AvatarSelectionModal } from '../AvatarSelectionModal';
 
 /**
  * ロビー画面コンポーネント
@@ -28,6 +30,22 @@ export const LobbyPage = () => {
   ];
 
   const roomUrl = 'https://example.com/lobby/AbCdEfGhIjKlMnOpQrSt';
+
+  // 新規参加者かどうかの判定（モック）
+  const _isNewUser = false; // 実際にはJotaiやFirebase Authで判定
+
+  // アバター選択モーダルの状態
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+
+  // 使用中のアバター番号を取得
+  const usedAvatars = mockParticipants.map((p) => p.avatar);
+
+  // 新規参加確定時の処理
+  const handleJoinConfirm = (userData: { name: string; avatar: string }) => {
+    console.log('新規参加:', userData);
+    // 実際にはFirestoreにユーザー追加、Jotai更新など
+    setIsAvatarModalOpen(false);
+  };
 
   return (
     <Box bg="gray.50" minH="100vh" py={[4, 8]}>
@@ -138,29 +156,49 @@ export const LobbyPage = () => {
                     </Box>
                   ))}
 
-                  {/* 空き枠表示 */}
-                  {[...Array(8 - mockParticipants.length)].map((_, index) => (
-                    <Box
-                      key={`empty-${index}`}
-                      p={4}
-                      borderRadius="lg"
-                      bg="gray.50"
-                      border="2px dashed"
-                      borderColor="gray.300"
-                    >
-                      <HStack gap={3}>
-                        <Box
-                          w="48px"
-                          h="48px"
-                          borderRadius="full"
-                          bg="gray.200"
-                        />
-                        <Text fontSize={['xs', 'sm']} color="gray.400">
-                          参加待ち...
+                  {/* 新規参加ボタン */}
+                  <Box
+                    p={4}
+                    borderRadius="lg"
+                    bg="blue.50"
+                    border="2px dashed"
+                    borderColor="blue.300"
+                    cursor="pointer"
+                    transition="all 0.15s"
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    _hover={{
+                      bg: 'blue.100',
+                      borderColor: 'blue.400',
+                      transform: 'translateY(-2px)',
+                    }}
+                    _active={{
+                      transform: 'translateY(0)',
+                    }}
+                  >
+                    <VStack gap={2}>
+                      <Box
+                        w="48px"
+                        h="48px"
+                        borderRadius="full"
+                        bg="blue.200"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text fontSize="2xl" color="blue.600">
+                          ＋
                         </Text>
-                      </HStack>
-                    </Box>
-                  ))}
+                      </Box>
+                      <Text
+                        fontSize={['xs', 'sm']}
+                        color="blue.600"
+                        fontWeight="medium"
+                        textAlign="center"
+                      >
+                        参加する
+                      </Text>
+                    </VStack>
+                  </Box>
                 </SimpleGrid>
 
                 <Box textAlign="center" pt={2}>
@@ -172,7 +210,7 @@ export const LobbyPage = () => {
                     参加者をタップしてドラフトを開始
                   </Text>
                   <Text fontSize="xs" color="gray.500" mt={1}>
-                    全員が揃ったら誰でも開始できます
+                    新規参加は「＋参加する」から・最小2人で開始可能
                   </Text>
                 </Box>
               </VStack>
@@ -185,6 +223,14 @@ export const LobbyPage = () => {
           </Button>
         </VStack>
       </Container>
+
+      {/* アバター選択モーダル */}
+      <AvatarSelectionModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        onConfirm={handleJoinConfirm}
+        usedAvatars={usedAvatars}
+      />
     </Box>
   );
 };

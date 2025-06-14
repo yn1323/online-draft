@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { LobbyPage } from './index';
 
 const meta: Meta<typeof LobbyPage> = {
-  title: 'Features/LobbyPage',
+  title: 'Features/Lobby/LobbyPage',
   component: LobbyPage,
   parameters: {
     layout: 'fullscreen',
