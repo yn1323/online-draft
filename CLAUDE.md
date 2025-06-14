@@ -231,3 +231,4 @@ const [globalUser] = useAtom(userAtom);
 ## 🧠 メモリ
 
 - 質問が複数ある際は1つずつ聞いてほしい。チャットで回答しやすく聞いて
+- セッション開始時に/docs以下の資料をすべて読む。(/doc/archiveを除く) YOU MUST
