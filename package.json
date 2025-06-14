@@ -71,7 +71,7 @@
     "reg-suit": "0.14.4",
     "storybook": "8.6.14",
     "storycap-testrun": "0.0.2",
-    "tsx": "4.19.4",
+    "tsx": "4.20.3",
     "tweetnacl": "^1.0.3",
     "tweetnacl-sealedbox-js": "^1.2.0",
     "tweetnacl-util": "^0.15.1",
