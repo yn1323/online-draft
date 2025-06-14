@@ -4,32 +4,141 @@ import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
 import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import {
   Box,
   Container,
   Grid,
   GridItem,
   HStack,
-  Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { LuCheck } from 'react-icons/lu';
 
 /**
  * ドラフト実行画面コンポーネント（PC版）
- * 2カラムレイアウト: 左側にドラフトリスト、右側にチャット
+ * 2カラムレイアウト（7:3）: 左側に現在状況+過去結果、右側にチャット
  */
 export const DraftPagePC = () => {
+  // アイテム選択モーダルの状態
+  const [isItemSelectModalOpen, setIsItemSelectModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [comment, setComment] = useState('');
+
+  // アイテム選択確定ハンドラー
+  const handleItemSelect = () => {
+    if (selectedItem.trim()) {
+      console.log('アイテム選択:', { item: selectedItem, comment });
+      // 実際にはFirestoreに保存、Jotai更新など
+      setIsItemSelectModalOpen(false);
+      setSelectedItem('');
+      setComment('');
+    }
+  };
+
   // モックデータ
   const mockParticipants = [
     {
       id: '1',
       name: '田中太郎',
       avatar: '1',
-      currentPick: 'トラウト (外野手)',
+      currentPick: '候補A (タイプB)',
     },
-    { id: '2', name: '山田花子', avatar: '3', currentPick: '大谷翔平 (投手)' },
-    { id: '3', name: '佐藤次郎', avatar: '5', currentPick: '投手を選択中...' },
+    { id: '2', name: '山田花子', avatar: '3', currentPick: '候補B (タイプA)' },
+    { id: '3', name: '佐藤次郎', avatar: '5', currentPick: '選択中...' },
+  ];
+
+  // 過去のドラフト結果モックデータ
+  const pastDraftResults = [
+    {
+      round: 1,
+      picks: [
+        {
+          order: 1,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: 'イチロー',
+          position: '外野手',
+        },
+        {
+          order: 2,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '松井秀喜',
+          position: '内野手',
+        },
+        {
+          order: 3,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: '野茂英雄',
+          position: '投手',
+        },
+      ],
+    },
+    {
+      round: 2,
+      picks: [
+        {
+          order: 1,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: 'ダルビッシュ有',
+          position: '投手',
+        },
+        {
+          order: 2,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: '青木宣親',
+          position: '外野手',
+        },
+        {
+          order: 3,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '筒香嘉智',
+          position: '内野手',
+        },
+      ],
+    },
+    {
+      round: 3,
+      picks: [
+        {
+          order: 1,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '前田健太',
+          position: '投手',
+        },
+        {
+          order: 2,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: '柳田悠岐',
+          position: '外野手',
+        },
+        {
+          order: 3,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: '山田哲人',
+          position: '内野手',
+        },
+      ],
+    },
   ];
 
   const mockChatMessages = [
@@ -61,191 +170,372 @@ export const DraftPagePC = () => {
     <Box bg="gray.50" minH="100vh" py={[4, 8]}>
       <Container maxW="container.xl">
         {/* ヘッダー */}
-        <HStack mb={6}>
+        <Box mb={6}>
           <Text fontSize={['lg', '2xl']} fontWeight="bold" color="gray.800">
-            2025年プロ野球ドラフト会議
+            オンラインドラフト会議
           </Text>
-          <Spacer />
-          <Text fontSize={['md', 'lg']} color="blue.600" fontWeight="medium">
-            Round 1 / 12
-          </Text>
-        </HStack>
+        </Box>
 
-        <Grid templateColumns="2fr 1fr" gap={6} h="calc(100vh - 200px)">
-          {/* 左側: ドラフトリスト */}
+        <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 200px)">
+          {/* 左側: ドラフト状況エリア */}
           <GridItem>
-            <Card variant="elevated" size="md">
-              <Box h="full" display="flex" flexDirection="column">
-                <Text fontSize={['md', 'lg']} fontWeight="bold" mb={4}>
-                  参加者とドラフト状況
-                </Text>
-                <Box flex="1" overflow="auto">
-                  <VStack gap={4} align="stretch">
-                    {mockParticipants.map((participant, index) => (
-                      <Box
-                        key={participant.id}
-                        p={4}
-                        borderRadius="lg"
-                        bg={index === 2 ? 'blue.50' : 'white'}
-                        border="2px solid"
-                        borderColor={index === 2 ? 'blue.300' : 'gray.200'}
-                        transition="all 0.15s"
-                      >
-                        <HStack gap={4}>
-                          <Avatar
-                            avatarNumber={participant.avatar}
-                            name={participant.name}
-                            size="lg"
-                          />
+            <VStack gap={4} h="full" w="full" align="stretch">
+              {/* 上部: 現在ラウンドの選択状況（超コンパクト） */}
+              <Box w="full">
+                <Card variant="elevated" size="sm">
+                  <VStack gap={3} w="full">
+                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                      Round 4 - 現在の選択状況
+                    </Text>
 
-                          <VStack align="start" flex={1} gap={1}>
-                            <HStack>
-                              <Text fontWeight="bold" fontSize="lg">
-                                {participant.name}
-                              </Text>
-                              {index === 2 && (
-                                <Box
-                                  bg="blue.400"
-                                  color="white"
-                                  px={3}
-                                  py={1}
-                                  borderRadius="full"
-                                  fontSize="xs"
-                                  fontWeight="bold"
-                                >
-                                  選択中
-                                </Box>
-                              )}
-                            </HStack>
-                            <Text
-                              color={index === 2 ? 'blue.600' : 'gray.600'}
-                              fontSize="md"
-                            >
-                              {participant.currentPick}
-                            </Text>
-                          </VStack>
-
-                          <VStack align="end" gap={1}>
-                            <Text fontSize="sm" color="gray.500">
-                              順番 #{index + 1}
-                            </Text>
-                            {index === 2 && (
-                              <Text
-                                fontSize="sm"
-                                color="orange.500"
-                                fontWeight="medium"
-                              >
-                                残り 1:30
-                              </Text>
-                            )}
-                          </VStack>
-                        </HStack>
-                      </Box>
-                    ))}
-
-                    {/* 選択中プレイヤーのアクション */}
-                    <Box
-                      p={4}
-                      bg="blue.100"
-                      borderRadius="lg"
-                      border="2px dashed"
-                      borderColor="blue.300"
-                    >
-                      <VStack gap={3}>
-                        <Text
-                          fontWeight="bold"
-                          color="blue.800"
+                    <Grid templateColumns="1fr 1fr 1fr" gap={2} w="full">
+                      {mockParticipants.map((participant, index) => (
+                        <Box
+                          key={participant.id}
+                          p={2}
+                          bg={index === 2 ? 'blue.50' : 'green.50'}
+                          border="1px solid"
+                          borderColor={index === 2 ? 'blue.300' : 'green.300'}
+                          borderRadius="md"
                           textAlign="center"
                         >
-                          あなたの選択順です！
-                        </Text>
-                        <HStack w="full">
-                          <Input placeholder="選手名を入力..." size="lg" />
-                          <Button variant="primary" size="lg">
-                            決定
-                          </Button>
-                        </HStack>
-                      </VStack>
+                          <VStack gap={1}>
+                            <Avatar
+                              avatarNumber={participant.avatar}
+                              name={participant.name}
+                              size="xs"
+                            />
+                            <Text fontSize="2xs" fontWeight="medium" truncate>
+                              {participant.name}
+                            </Text>
+                            {index === 2 ? (
+                              <Box
+                                bg="blue.400"
+                                color="white"
+                                px={1}
+                                py={0.5}
+                                borderRadius="sm"
+                                fontSize="2xs"
+                                fontWeight="bold"
+                              >
+                                選択中
+                              </Box>
+                            ) : (
+                              <HStack gap={1} fontSize="2xs" color="green.600">
+                                <LuCheck size={10} />
+                                <Text>完了</Text>
+                              </HStack>
+                            )}
+                          </VStack>
+                        </Box>
+                      ))}
+                    </Grid>
+
+                    {/* 選択アクション */}
+                    <Box w="full" pt={1}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => setIsItemSelectModalOpen(true)}
+                      >
+                        選手を選択する
+                      </Button>
                     </Box>
                   </VStack>
-                </Box>
+                </Card>
               </Box>
-            </Card>
+
+              {/* 下部: 過去のドラフト結果（テーブル風レイアウト） */}
+              <Box flex={1} w="full">
+                <Card variant="elevated" size="md">
+                  <Box h="full" display="flex" flexDirection="column">
+                    <Text fontSize="md" fontWeight="bold" mb={3}>
+                      過去のドラフト結果
+                    </Text>
+
+                    {/* ヘッダー行（参加者名） */}
+                    <Grid templateColumns="60px 1fr 1fr 1fr" gap={2} mb={2}>
+                      <Box
+                        p={2}
+                        bg="gray.100"
+                        borderRadius="md"
+                        fontSize="xs"
+                        fontWeight="bold"
+                        textAlign="center"
+                        color="gray.700"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                        minH="40px"
+                      >
+                        Round
+                      </Box>
+                      {mockParticipants.map((participant) => (
+                        <Box
+                          key={participant.id}
+                          p={2}
+                          bg="gray.100"
+                          borderRadius="md"
+                          fontSize="xs"
+                          fontWeight="bold"
+                          textAlign="center"
+                          color="gray.700"
+                          display="flex"
+                          alignItems="center"
+                          justifyContent="center"
+                          minH="40px"
+                        >
+                          <HStack gap={1} justify="center">
+                            <Avatar
+                              avatarNumber={participant.avatar}
+                              name={participant.name}
+                              size="xs"
+                            />
+                            <Text>{participant.name}</Text>
+                          </HStack>
+                        </Box>
+                      ))}
+                    </Grid>
+
+                    {/* 結果行（スクロール可能） */}
+                    <Box flex="1" overflow="auto">
+                      <VStack gap={1} align="stretch">
+                        {pastDraftResults.map((roundResult) => (
+                          <Grid
+                            key={roundResult.round}
+                            templateColumns="60px 1fr 1fr 1fr"
+                            gap={2}
+                          >
+                            <Box
+                              p={2}
+                              bg="white"
+                              border="1px solid"
+                              borderColor="gray.200"
+                              borderRadius="md"
+                              fontSize="sm"
+                              fontWeight="bold"
+                              textAlign="center"
+                              color="gray.800"
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                              minH="40px"
+                            >
+                              {roundResult.round}
+                            </Box>
+                            {mockParticipants.map((participant) => {
+                              const pick = roundResult.picks.find(
+                                (p) => p.playerId === participant.id,
+                              );
+                              return (
+                                <Box
+                                  key={participant.id}
+                                  p={2}
+                                  bg="white"
+                                  border="1px solid"
+                                  borderColor="gray.200"
+                                  borderRadius="md"
+                                  fontSize="xs"
+                                  minH="40px"
+                                  display="flex"
+                                  alignItems="center"
+                                >
+                                  {pick ? (
+                                    <VStack gap={0} align="start" w="full">
+                                      <Text
+                                        fontWeight="medium"
+                                        color="gray.800"
+                                        truncate
+                                      >
+                                        {pick.pick}
+                                      </Text>
+                                      <Text color="gray.500" fontSize="2xs">
+                                        ({pick.position})
+                                      </Text>
+                                    </VStack>
+                                  ) : (
+                                    <Text color="gray.400" fontSize="2xs">
+                                      -
+                                    </Text>
+                                  )}
+                                </Box>
+                              );
+                            })}
+                          </Grid>
+                        ))}
+
+                        {/* 現在ラウンド（Round 4）*/}
+                        <Grid templateColumns="60px 1fr 1fr 1fr" gap={2}>
+                          <Box
+                            p={2}
+                            bg="orange.100"
+                            border="2px solid"
+                            borderColor="orange.400"
+                            borderRadius="md"
+                            fontSize="sm"
+                            fontWeight="bold"
+                            textAlign="center"
+                            color="orange.800"
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            minH="40px"
+                          >
+                            4
+                          </Box>
+                          {mockParticipants.map((participant) => (
+                            <Box
+                              key={participant.id}
+                              p={2}
+                              bg="orange.100"
+                              border="2px solid"
+                              borderColor="orange.400"
+                              borderRadius="md"
+                              fontSize="xs"
+                              minH="40px"
+                              display="flex"
+                              alignItems="center"
+                              justifyContent="center"
+                            >
+                              <Text color="orange.700" fontWeight="medium">
+                                [選択中...]
+                              </Text>
+                            </Box>
+                          ))}
+                        </Grid>
+                      </VStack>
+                    </Box>
+                  </Box>
+                </Card>
+              </Box>
+            </VStack>
           </GridItem>
 
           {/* 右側: チャット */}
-          <GridItem>
-            <Card variant="elevated" size="md">
-              <Box h="full" display="flex" flexDirection="column">
-                <Text fontSize={['md', 'lg']} fontWeight="bold" mb={4}>
-                  チャット
-                </Text>
-                <Box flex="1" overflow="auto">
-                  <VStack gap={3} align="stretch" h="full">
-                    <Box flex="1" overflow="auto">
-                      <VStack gap={3} align="stretch">
-                        {mockChatMessages.map((message) => (
-                          <HStack key={message.id} align="start" gap={2}>
-                            <Avatar
-                              avatarNumber={message.avatar}
-                              name={message.userName}
-                              size="xs"
-                            />
-                            <Box
-                              p={3}
-                              borderRadius="lg"
-                              bg={message.isSystem ? 'orange.50' : 'gray.50'}
-                              border="1px solid"
-                              borderColor={
-                                message.isSystem ? 'orange.200' : 'gray.200'
-                              }
-                              flex={1}
-                            >
-                              <HStack>
-                                <Text
-                                  fontSize="xs"
-                                  color={
-                                    message.isSystem ? 'orange.600' : 'gray.700'
-                                  }
-                                  fontWeight="bold"
-                                >
-                                  {message.userName}
-                                </Text>
-                                <Text fontSize="xs" color="gray.500">
-                                  {message.timestamp}
-                                </Text>
-                              </HStack>
-                              <Text
-                                fontSize={['xs', 'sm']}
-                                color={
-                                  message.isSystem ? 'orange.800' : 'gray.800'
+          <GridItem h="full">
+            <Box h="full">
+              <Card variant="elevated" size="md">
+                <Box h="full" display="flex" flexDirection="column">
+                  <Text fontSize={['md', 'lg']} fontWeight="bold" mb={4}>
+                    チャット
+                  </Text>
+                  <Box flex="1" overflow="auto">
+                    <VStack gap={3} align="stretch" h="full">
+                      <Box flex="1" overflow="auto">
+                        <VStack gap={3} align="stretch">
+                          {mockChatMessages.map((message) => (
+                            <HStack key={message.id} align="start" gap={2}>
+                              <Avatar
+                                avatarNumber={message.avatar}
+                                name={message.userName}
+                                size="xs"
+                              />
+                              <Box
+                                p={3}
+                                borderRadius="lg"
+                                bg={message.isSystem ? 'orange.50' : 'gray.50'}
+                                border="1px solid"
+                                borderColor={
+                                  message.isSystem ? 'orange.200' : 'gray.200'
                                 }
-                                mt={1}
+                                flex={1}
                               >
-                                {message.message}
-                              </Text>
-                            </Box>
-                          </HStack>
-                        ))}
-                      </VStack>
-                    </Box>
+                                <HStack>
+                                  <Text
+                                    fontSize="xs"
+                                    color={
+                                      message.isSystem
+                                        ? 'orange.600'
+                                        : 'gray.700'
+                                    }
+                                    fontWeight="bold"
+                                  >
+                                    {message.userName}
+                                  </Text>
+                                  <Text fontSize="xs" color="gray.500">
+                                    {message.timestamp}
+                                  </Text>
+                                </HStack>
+                                <Text
+                                  fontSize={['xs', 'sm']}
+                                  color={
+                                    message.isSystem ? 'orange.800' : 'gray.800'
+                                  }
+                                  mt={1}
+                                >
+                                  {message.message}
+                                </Text>
+                              </Box>
+                            </HStack>
+                          ))}
+                        </VStack>
+                      </Box>
 
-                    {/* チャット入力エリア */}
-                    <Box pt={3} borderTop="1px solid" borderColor="gray.200">
-                      <HStack>
-                        <Input placeholder="メッセージを入力..." size="sm" />
-                        <Button variant="secondary" size="sm">
-                          送信
-                        </Button>
-                      </HStack>
-                    </Box>
-                  </VStack>
+                      {/* チャット入力エリア */}
+                      <Box pt={3} borderTop="1px solid" borderColor="gray.200">
+                        <HStack>
+                          <Input placeholder="メッセージを入力..." size="sm" />
+                          <Button variant="secondary" size="sm">
+                            送信
+                          </Button>
+                        </HStack>
+                      </Box>
+                    </VStack>
+                  </Box>
                 </Box>
-              </Box>
-            </Card>
+              </Card>
+            </Box>
           </GridItem>
         </Grid>
       </Container>
+
+      {/* 選手選択モーダル */}
+      <ResponsiveModal
+        isOpen={isItemSelectModalOpen}
+        onClose={() => setIsItemSelectModalOpen(false)}
+        title="選手を選択"
+        actions={{
+          cancel: {
+            text: 'キャンセル',
+            onClick: () => setIsItemSelectModalOpen(false),
+          },
+          submit: {
+            text: '決定',
+            disabled: !selectedItem.trim(),
+            onClick: handleItemSelect,
+          },
+        }}
+      >
+        <VStack gap={4} w="full">
+          {/* 選手名入力 */}
+          <VStack gap={2} align="start" w="full">
+            <Text fontSize="sm" fontWeight="bold" color="gray.700">
+              選手名
+            </Text>
+            <Input
+              placeholder="選手名を入力してください"
+              value={setSelectedItem}
+              onChange={setSelectedItem}
+              maxLength={50}
+              size="lg"
+            />
+          </VStack>
+
+          {/* コメント入力 */}
+          <VStack gap={2} align="start" w="full">
+            <Text fontSize="sm" fontWeight="bold" color="gray.700">
+              コメント（任意）
+            </Text>
+            <Input
+              placeholder="この選択についてのコメント..."
+              value={comment}
+              onChange={setComment}
+              maxLength={100}
+              size="lg"
+            />
+          </VStack>
+        </VStack>
+      </ResponsiveModal>
     </Box>
   );
 };
