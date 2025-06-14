@@ -2,14 +2,14 @@
 
 import {
   Box,
-  Button,
   Container,
   HStack,
   Heading,
-  Input,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Button } from '@/src/components/atoms/Button';
+import { Input } from '@/src/components/atoms/Input';
 
 /**
  * トップページコンポーネント
@@ -22,10 +22,10 @@ export const TopPage = () => {
         <VStack gap={8} align="center">
           {/* ヘッダーエリア */}
           <VStack gap={2}>
-            <Heading size="3xl" color="gray.800" textAlign="center">
+            <Heading size={["2xl", "3xl"]} color="gray.800" textAlign="center">
               オンラインドラフト会議
             </Heading>
-            <Text color="gray.600" fontSize="lg" textAlign="center">
+            <Text color="gray.600" fontSize={["md", "lg"]} textAlign="center">
               みんなでワイワイ！リアルタイムドラフト
             </Text>
           </VStack>
@@ -50,23 +50,9 @@ export const TopPage = () => {
           <VStack gap={6} w="full" maxW="sm">
             {/* ルーム作成ボタン */}
             <Button
+              variant="primary"
               size="lg"
-              bg="blue.400"
-              color="white"
-              w="full"
-              h={16}
-              fontSize="xl"
-              boxShadow="lg"
-              _hover={{
-                bg: 'blue.500',
-                transform: 'translateY(-2px)',
-                boxShadow: 'xl',
-              }}
-              _active={{
-                bg: 'blue.600',
-                transform: 'translateY(0)',
-                boxShadow: 'md',
-              }}
+              width="full"
             >
               ルームを作成
             </Button>
@@ -82,27 +68,17 @@ export const TopPage = () => {
 
             {/* ルーム参加 */}
             <VStack gap={3} w="full">
-              <Text color="gray.700" fontSize="sm">
+              <Text color="gray.700" fontSize={["xs", "sm"]}>
                 既存のルームに参加
               </Text>
               <HStack w="full">
                 <Input
                   placeholder="ルームURLまたはID"
                   size="lg"
-                  bg="white"
-                  _placeholder={{ color: 'gray.400' }}
                 />
                 <Button
-                  bg="green.400"
-                  color="white"
+                  variant="secondary"
                   size="lg"
-                  px={8}
-                  _hover={{
-                    bg: 'green.500',
-                  }}
-                  _active={{
-                    bg: 'green.600',
-                  }}
                 >
                   参加
                 </Button>

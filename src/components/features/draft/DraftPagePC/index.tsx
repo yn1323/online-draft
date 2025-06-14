@@ -1,19 +1,19 @@
 'use client';
 
 import {
-  Avatar,
   Box,
-  Button,
-  Card,
   Container,
   Grid,
   GridItem,
   HStack,
-  Input,
   Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
+import { Input } from '@/src/components/atoms/Input';
 
 /**
  * ドラフト実行画面コンポーネント（PC版）
@@ -31,18 +31,21 @@ export const DraftPagePC = () => {
     {
       id: '1',
       userName: '田中太郎',
+      avatar: '1',
       message: 'トラウト指名！',
       timestamp: '14:32',
     },
     {
       id: '2',
       userName: '山田花子',
+      avatar: '3',
       message: '大谷で行きます！',
       timestamp: '14:35',
     },
     {
       id: '3',
       userName: 'システム',
+      avatar: '99',
       message: '佐藤次郎さんの選択中です（1分30秒）',
       timestamp: '14:38',
       isSystem: true,
@@ -54,11 +57,11 @@ export const DraftPagePC = () => {
       <Container maxW="container.xl">
         {/* ヘッダー */}
         <HStack mb={6}>
-          <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+          <Text fontSize={["lg", "2xl"]} fontWeight="bold" color="gray.800">
             2025年プロ野球ドラフト会議
           </Text>
           <Spacer />
-          <Text fontSize="lg" color="blue.600" fontWeight="medium">
+          <Text fontSize={["md", "lg"]} color="blue.600" fontWeight="medium">
             Round 1 / 12
           </Text>
         </HStack>
@@ -66,13 +69,12 @@ export const DraftPagePC = () => {
         <Grid templateColumns="2fr 1fr" gap={6} h="calc(100vh - 200px)">
           {/* 左側: ドラフトリスト */}
           <GridItem>
-            <Card.Root h="full">
-              <Card.Header>
-                <Text fontSize="lg" fontWeight="bold">
+            <Card variant="elevated" size="md">
+              <Box h="full" display="flex" flexDirection="column">
+                <Text fontSize={["md", "lg"]} fontWeight="bold" mb={4}>
                   参加者とドラフト状況
                 </Text>
-              </Card.Header>
-              <Card.Body overflow="auto">
+                <Box flex="1" overflow="auto">
                 <VStack gap={4} align="stretch">
                   {mockParticipants.map((participant, index) => (
                     <Box
@@ -85,12 +87,11 @@ export const DraftPagePC = () => {
                       transition="all 0.15s"
                     >
                       <HStack gap={4}>
-                        <Avatar.Root size="lg">
-                          <Avatar.Image src={`/img/${participant.avatar}.png`} />
-                          <Avatar.Fallback>
-                            {participant.name.charAt(0)}
-                          </Avatar.Fallback>
-                        </Avatar.Root>
+                        <Avatar
+                          avatarNumber={participant.avatar}
+                          name={participant.name}
+                          size="lg"
+                        />
 
                         <VStack align="start" flex={1} gap={1}>
                           <HStack>
@@ -156,21 +157,11 @@ export const DraftPagePC = () => {
                       <HStack w="full">
                         <Input
                           placeholder="選手名を入力..."
-                          bg="white"
                           size="lg"
-                          _placeholder={{ color: 'gray.400' }}
                         />
                         <Button
-                          bg="blue.400"
-                          color="white"
+                          variant="primary"
                           size="lg"
-                          px={8}
-                          _hover={{
-                            bg: 'blue.500',
-                          }}
-                          _active={{
-                            bg: 'blue.600',
-                          }}
                         >
                           決定
                         </Button>
@@ -178,60 +169,62 @@ export const DraftPagePC = () => {
                     </VStack>
                   </Box>
                 </VStack>
-              </Card.Body>
-            </Card.Root>
+                </Box>
+              </Box>
+            </Card>
           </GridItem>
 
           {/* 右側: チャット */}
           <GridItem>
-            <Card.Root h="full" display="flex" flexDirection="column">
-              <Card.Header>
-                <Text fontSize="lg" fontWeight="bold">
+            <Card variant="elevated" size="md">
+              <Box h="full" display="flex" flexDirection="column">
+                <Text fontSize={["md", "lg"]} fontWeight="bold" mb={4}>
                   チャット
                 </Text>
-              </Card.Header>
-              <Card.Body flex="1" overflow="auto">
+                <Box flex="1" overflow="auto">
                 <VStack gap={3} align="stretch" h="full">
                   <Box flex="1" overflow="auto">
                     <VStack gap={3} align="stretch">
                       {mockChatMessages.map((message) => (
-                        <Box
-                          key={message.id}
-                          p={3}
-                          borderRadius="lg"
-                          bg={message.isSystem ? 'yellow.50' : 'gray.50'}
-                          border="1px solid"
-                          borderColor={
-                            message.isSystem ? 'yellow.200' : 'gray.200'
-                          }
-                        >
-                          <HStack align="start" gap={2}>
-                            <Text
-                              fontSize="xs"
-                              color={
-                                message.isSystem ? 'yellow.600' : 'blue.600'
-                              }
-                              fontWeight="bold"
-                              minWidth="fit-content"
-                            >
-                              {message.userName}
-                            </Text>
-                            <Text
-                              fontSize="xs"
-                              color="gray.500"
-                              minWidth="fit-content"
-                            >
-                              {message.timestamp}
-                            </Text>
-                          </HStack>
-                          <Text
-                            fontSize="sm"
-                            color={message.isSystem ? 'yellow.800' : 'gray.800'}
-                            mt={1}
+                        <HStack key={message.id} align="start" gap={2}>
+                          <Avatar
+                            avatarNumber={message.avatar}
+                            name={message.userName}
+                            size="xs"
+                          />
+                          <Box
+                            p={3}
+                            borderRadius="lg"
+                            bg={message.isSystem ? 'orange.50' : 'gray.50'}
+                            border="1px solid"
+                            borderColor={
+                              message.isSystem ? 'orange.200' : 'gray.200'
+                            }
+                            flex={1}
                           >
-                            {message.message}
-                          </Text>
-                        </Box>
+                            <HStack>
+                              <Text
+                                fontSize="xs"
+                                color={
+                                  message.isSystem ? 'orange.600' : 'gray.700'
+                                }
+                                fontWeight="bold"
+                              >
+                                {message.userName}
+                              </Text>
+                              <Text fontSize="xs" color="gray.500">
+                                {message.timestamp}
+                              </Text>
+                            </HStack>
+                            <Text
+                              fontSize={["xs", "sm"]}
+                              color={message.isSystem ? 'orange.800' : 'gray.800'}
+                              mt={1}
+                            >
+                              {message.message}
+                            </Text>
+                          </Box>
+                        </HStack>
                       ))}
                     </VStack>
                   </Box>
@@ -242,28 +235,19 @@ export const DraftPagePC = () => {
                       <Input
                         placeholder="メッセージを入力..."
                         size="sm"
-                        bg="white"
-                        _placeholder={{ color: 'gray.400' }}
                       />
                       <Button
-                        bg="green.400"
-                        color="white"
+                        variant="secondary"
                         size="sm"
-                        px={4}
-                        _hover={{
-                          bg: 'green.500',
-                        }}
-                        _active={{
-                          bg: 'green.600',
-                        }}
                       >
                         送信
                       </Button>
                     </HStack>
                   </Box>
                 </VStack>
-              </Card.Body>
-            </Card.Root>
+                </Box>
+              </Box>
+            </Card>
           </GridItem>
         </Grid>
       </Container>

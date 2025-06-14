@@ -2,16 +2,16 @@
 
 import {
   Accordion,
-  Avatar,
   Box,
-  Button,
   HStack,
-  Input,
   Spacer,
   Tabs,
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Input } from '@/src/components/atoms/Input';
 
 /**
  * ドラフト実行画面コンポーネント（スマホ版）
@@ -50,6 +50,7 @@ export const DraftPage = () => {
       avatar: '99',
       content: 'ドラフトを開始しました！',
       timestamp: '14:00',
+      isSystem: true,
     },
     {
       id: '2',
@@ -64,6 +65,7 @@ export const DraftPage = () => {
       avatar: '99',
       content: '第1巡目が完了しました',
       timestamp: '14:05',
+      isSystem: true,
     },
     {
       id: '4',
@@ -89,10 +91,10 @@ export const DraftPage = () => {
       >
         <HStack justify="space-between">
           <VStack align="start" gap={0}>
-            <Text fontSize="lg" fontWeight="bold">
+            <Text fontSize={["md", "lg"]} fontWeight="bold">
               第2巡目
             </Text>
-            <Text fontSize="sm" color="gray.500">
+            <Text fontSize={["xs", "sm"]} color="gray.500">
               入力状況: 1/3人
             </Text>
           </VStack>
@@ -127,15 +129,14 @@ export const DraftPage = () => {
                 <Accordion.Item key={participant.id} value={participant.id}>
                   <Accordion.ItemTrigger>
                     <HStack flex={1}>
-                      <Avatar.Root size="xs">
-                        <Avatar.Image src={`/img/${participant.avatar}.png`} />
-                        <Avatar.Fallback>
-                          {participant.name.charAt(0)}
-                        </Avatar.Fallback>
-                      </Avatar.Root>
-                      <Text>{participant.name}</Text>
+                      <Avatar
+                        avatarNumber={participant.avatar}
+                        name={participant.name}
+                        size="xs"
+                      />
+                      <Text fontSize={["sm", "md"]}>{participant.name}</Text>
                       <Spacer />
-                      <Text fontSize="sm" color="gray.500">
+                      <Text fontSize={["xs", "sm"]} color="gray.500">
                         ({participant.acquisitions.length}/5)
                       </Text>
                     </HStack>
@@ -176,20 +177,30 @@ export const DraftPage = () => {
             <VStack gap={3} align="stretch">
               {mockMessages.map((msg) => (
                 <HStack key={msg.id} align="start">
-                  <Avatar.Root size="xs">
-                    <Avatar.Image src={`/img/${msg.avatar}.png`} />
-                    <Avatar.Fallback>{msg.userName.charAt(0)}</Avatar.Fallback>
-                  </Avatar.Root>
+                  <Avatar
+                    avatarNumber={msg.avatar}
+                    name={msg.userName}
+                    size="xs"
+                  />
                   <VStack align="start" gap={0} flex={1}>
                     <HStack>
-                      <Text fontSize="xs" fontWeight="medium">
+                      <Text 
+                        fontSize="xs" 
+                        fontWeight="medium"
+                        color={msg.isSystem ? 'orange.600' : 'gray.700'}
+                      >
                         {msg.userName}
                       </Text>
                       <Text fontSize="xs" color="gray.500">
                         {msg.timestamp}
                       </Text>
                     </HStack>
-                    <Text fontSize="sm">{msg.content}</Text>
+                    <Text 
+                      fontSize={["xs", "sm"]}
+                      color={msg.isSystem ? 'orange.700' : 'gray.800'}
+                    >
+                      {msg.content}
+                    </Text>
                   </VStack>
                 </HStack>
               ))}
@@ -210,22 +221,21 @@ export const DraftPage = () => {
       >
         <VStack gap={3}>
           <HStack w="full">
-            <Input placeholder="選択したいアイテム" size="md" bg="white" />
+            <Input 
+              placeholder="選択したいアイテム" 
+              size="md" 
+            />
             <Button
-              bg="blue.400"
-              color="white"
-              disabled={false}
-              _hover={{
-                bg: 'blue.500',
-              }}
-              _active={{
-                bg: 'blue.600',
-              }}
+              variant="primary"
+              size="md"
             >
               送信
             </Button>
           </HStack>
-          <Input placeholder="コメント（選択理由など）" size="sm" bg="white" />
+          <Input 
+            placeholder="コメント（選択理由など）" 
+            size="sm" 
+          />
         </VStack>
       </Box>
     </VStack>
