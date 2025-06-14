@@ -3,13 +3,19 @@
   "configurations": [
     {
       "command": "pnpm dev",
-      "name": "Run Dev Server",
+      "name": "Next.js開発環境",
       "request": "launch",
       "type": "node-terminal"
     },
     {
       "command": "pnpm storybook",
-      "name": "Run Storybook Server",
+      "name": "Storybook開発環境",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "pnpm test:ui",
+      "name": "単体テストHMR環境",
       "request": "launch",
       "type": "node-terminal"
     }

@@ -67,7 +67,8 @@
       "Bash(pnpm e2e:*)",
       "Bash(pnpm storybook:test-ci:*)",
       "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")",
-      "WebFetch(domain:www.anthropic.com)"
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(pnpm update:*)"
     ],
     "deny": []
   },

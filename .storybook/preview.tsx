@@ -15,6 +15,11 @@ initialize({
 
 const preview: Preview = {
   parameters: {
+    options: {
+      storySort: {
+        order: ['atoms', 'features', 'layout', 'dev'],
+      },
+    },
     controls: {
       matchers: {
         color: /(background|color)$/i,
