@@ -1,6 +1,6 @@
 'use client';
 
-import { Card as ChakraCard, Box } from '@chakra-ui/react';
+import { Box, Card as ChakraCard } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 
 type CardProps = {
@@ -29,7 +29,6 @@ const VARIANT_STYLES = {
     border: 'none',
     _hover: {
       boxShadow: 'xl',
-      transform: 'translateY(-2px)',
     },
   },
   outline: {
