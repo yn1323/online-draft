@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DraftPage } from './index';
+import { DraftPageSp } from '.';
 
-const meta: Meta<typeof DraftPage> = {
-  title: 'Features/DraftPage',
-  component: DraftPage,
+const meta: Meta<typeof DraftPageSp> = {
+  title: 'Features/DraftPage/sp',
+  component: DraftPageSp,
   parameters: {
     layout: 'fullscreen',
   },

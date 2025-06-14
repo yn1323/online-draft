@@ -1,5 +1,8 @@
 'use client';
 
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Input } from '@/src/components/atoms/Input';
 import {
   Accordion,
   Box,
@@ -9,15 +12,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Avatar } from '@/src/components/atoms/Avatar';
-import { Button } from '@/src/components/atoms/Button';
-import { Input } from '@/src/components/atoms/Input';
 
 /**
  * ドラフト実行画面コンポーネント（スマホ版）
  * タブ形式でリストとチャットを切り替え
  */
-export const DraftPage = () => {
+export const DraftPageSp = () => {
   // モックデータ
   const mockParticipants = [
     {
@@ -91,10 +91,10 @@ export const DraftPage = () => {
       >
         <HStack justify="space-between">
           <VStack align="start" gap={0}>
-            <Text fontSize={["md", "lg"]} fontWeight="bold">
+            <Text fontSize={['md', 'lg']} fontWeight="bold">
               第2巡目
             </Text>
-            <Text fontSize={["xs", "sm"]} color="gray.500">
+            <Text fontSize={['xs', 'sm']} color="gray.500">
               入力状況: 1/3人
             </Text>
           </VStack>
@@ -134,9 +134,9 @@ export const DraftPage = () => {
                         name={participant.name}
                         size="xs"
                       />
-                      <Text fontSize={["sm", "md"]}>{participant.name}</Text>
+                      <Text fontSize={['sm', 'md']}>{participant.name}</Text>
                       <Spacer />
-                      <Text fontSize={["xs", "sm"]} color="gray.500">
+                      <Text fontSize={['xs', 'sm']} color="gray.500">
                         ({participant.acquisitions.length}/5)
                       </Text>
                     </HStack>
@@ -184,8 +184,8 @@ export const DraftPage = () => {
                   />
                   <VStack align="start" gap={0} flex={1}>
                     <HStack>
-                      <Text 
-                        fontSize="xs" 
+                      <Text
+                        fontSize="xs"
                         fontWeight="medium"
                         color={msg.isSystem ? 'orange.600' : 'gray.700'}
                       >
@@ -195,8 +195,8 @@ export const DraftPage = () => {
                         {msg.timestamp}
                       </Text>
                     </HStack>
-                    <Text 
-                      fontSize={["xs", "sm"]}
+                    <Text
+                      fontSize={['xs', 'sm']}
                       color={msg.isSystem ? 'orange.700' : 'gray.800'}
                     >
                       {msg.content}
@@ -221,21 +221,12 @@ export const DraftPage = () => {
       >
         <VStack gap={3}>
           <HStack w="full">
-            <Input 
-              placeholder="選択したいアイテム" 
-              size="md" 
-            />
-            <Button
-              variant="primary"
-              size="md"
-            >
+            <Input placeholder="選択したいアイテム" size="md" />
+            <Button variant="primary" size="md">
               送信
             </Button>
           </HStack>
-          <Input 
-            placeholder="コメント（選択理由など）" 
-            size="sm" 
-          />
+          <Input placeholder="コメント（選択理由など）" size="sm" />
         </VStack>
       </Box>
     </VStack>

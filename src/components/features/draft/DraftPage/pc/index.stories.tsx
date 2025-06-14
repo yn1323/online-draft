@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { DraftPagePC } from './index';
 
 const meta: Meta<typeof DraftPagePC> = {
-  title: 'Features/Draft/DraftPagePC',
+  title: 'Features/DraftPage/PC',
   component: DraftPagePC,
   parameters: {
     layout: 'fullscreen',

@@ -1,4 +1,4 @@
-import { DraftPage } from '@/src/components/features/draft/DraftPage';
+import { DraftPage } from '@/src/components/features/draft/DraftPage/sp';
 import { Animation } from '@/src/components/templates/Animation';
 
 interface DraftPageRouteProps {

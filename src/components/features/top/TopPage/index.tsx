@@ -1,5 +1,7 @@
 'use client';
 
+import { Button } from '@/src/components/atoms/Button';
+import { Input } from '@/src/components/atoms/Input';
 import {
   Box,
   Container,
@@ -8,8 +10,6 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { Button } from '@/src/components/atoms/Button';
-import { Input } from '@/src/components/atoms/Input';
 
 /**
  * トップページコンポーネント
@@ -22,10 +22,10 @@ export const TopPage = () => {
         <VStack gap={8} align="center">
           {/* ヘッダーエリア */}
           <VStack gap={2}>
-            <Heading size={["2xl", "3xl"]} color="gray.800" textAlign="center">
+            <Heading size={['2xl', '3xl']} color="gray.800" textAlign="center">
               オンラインドラフト会議
             </Heading>
-            <Text color="gray.600" fontSize={["md", "lg"]} textAlign="center">
+            <Text color="gray.600" fontSize={['md', 'lg']} textAlign="center">
               みんなでワイワイ！リアルタイムドラフト
             </Text>
           </VStack>
@@ -49,11 +49,7 @@ export const TopPage = () => {
           {/* アクションエリア */}
           <VStack gap={6} w="full" maxW="sm">
             {/* ルーム作成ボタン */}
-            <Button
-              variant="primary"
-              size="lg"
-              width="full"
-            >
+            <Button variant="primary" size="lg" width="full">
               ルームを作成
             </Button>
 
@@ -68,18 +64,12 @@ export const TopPage = () => {
 
             {/* ルーム参加 */}
             <VStack gap={3} w="full">
-              <Text color="gray.700" fontSize={["xs", "sm"]}>
+              <Text color="gray.700" fontSize={['xs', 'sm']}>
                 既存のルームに参加
               </Text>
               <HStack w="full">
-                <Input
-                  placeholder="ルームURLまたはID"
-                  size="lg"
-                />
-                <Button
-                  variant="secondary"
-                  size="lg"
-                >
+                <Input placeholder="ルームURLまたはID" size="lg" />
+                <Button variant="secondary" size="lg">
                   参加
                 </Button>
               </HStack>

@@ -1,5 +1,5 @@
+import { Box, HStack, VStack } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { VStack, HStack, Box } from '@chakra-ui/react';
 import { Button } from './index';
 
 const meta: Meta<typeof Button> = {
@@ -26,7 +26,7 @@ export const AllVariants: Story = {
           <Button variant="ghost">ゴースト</Button>
         </HStack>
       </Box>
-      
+
       {/* サイズ */}
       <Box>
         <HStack gap={4} align="center">
@@ -35,7 +35,7 @@ export const AllVariants: Story = {
           <Button size="lg">大</Button>
         </HStack>
       </Box>
-      
+
       {/* 状態 */}
       <Box>
         <HStack gap={4} wrap="wrap">
@@ -43,7 +43,7 @@ export const AllVariants: Story = {
           <Button disabled>無効化</Button>
         </HStack>
       </Box>
-      
+
       {/* 幅 */}
       <Box>
         <VStack gap={3}>

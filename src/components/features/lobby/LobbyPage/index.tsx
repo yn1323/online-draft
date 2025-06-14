@@ -1,5 +1,8 @@
 'use client';
 
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
 import {
   Box,
   Container,
@@ -11,9 +14,6 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { LuCopy } from 'react-icons/lu';
-import { Avatar } from '@/src/components/atoms/Avatar';
-import { Button } from '@/src/components/atoms/Button';
-import { Card } from '@/src/components/atoms/Card';
 
 /**
  * ロビー画面コンポーネント
@@ -34,7 +34,7 @@ export const LobbyPage = () => {
       <Container maxW="container.lg">
         <VStack gap={6}>
           {/* ヘッダー */}
-          <Text fontSize={["xl", "2xl"]} fontWeight="bold" color="gray.800">
+          <Text fontSize={['xl', '2xl']} fontWeight="bold" color="gray.800">
             ドラフトルーム
           </Text>
 
@@ -79,7 +79,7 @@ export const LobbyPage = () => {
                   </HStack>
                 </Box>
 
-                <Text fontSize={["xs", "sm"]} color="gray.500">
+                <Text fontSize={['xs', 'sm']} color="gray.500">
                   音声通話アプリ（LINE、Discord等）を併用してお楽しみください
                 </Text>
               </VStack>
@@ -90,11 +90,11 @@ export const LobbyPage = () => {
           <Card variant="elevated" size="md">
             <Box w="full">
               <HStack mb={4}>
-                <Text fontWeight="bold" fontSize={["md", "lg"]}>
+                <Text fontWeight="bold" fontSize={['md', 'lg']}>
                   参加者 ({mockParticipants.length}人)
                 </Text>
                 <Spacer />
-                <Text fontSize={["xs", "sm"]} color="gray.500">
+                <Text fontSize={['xs', 'sm']} color="gray.500">
                   最小2人から開始可能
                 </Text>
               </HStack>
@@ -127,7 +127,7 @@ export const LobbyPage = () => {
                           size="md"
                         />
                         <VStack align="start" gap={0}>
-                          <Text fontSize={["xs", "sm"]} fontWeight="medium">
+                          <Text fontSize={['xs', 'sm']} fontWeight="medium">
                             {participant.name}
                           </Text>
                           <Text fontSize="xs" color="green.500">
@@ -155,7 +155,7 @@ export const LobbyPage = () => {
                           borderRadius="full"
                           bg="gray.200"
                         />
-                        <Text fontSize={["xs", "sm"]} color="gray.400">
+                        <Text fontSize={['xs', 'sm']} color="gray.400">
                           参加待ち...
                         </Text>
                       </HStack>
@@ -164,7 +164,11 @@ export const LobbyPage = () => {
                 </SimpleGrid>
 
                 <Box textAlign="center" pt={2}>
-                  <Text fontSize={["xs", "sm"]} color="blue.500" fontWeight="medium">
+                  <Text
+                    fontSize={['xs', 'sm']}
+                    color="blue.500"
+                    fontWeight="medium"
+                  >
                     参加者をタップしてドラフトを開始
                   </Text>
                   <Text fontSize="xs" color="gray.500" mt={1}>
@@ -176,10 +180,7 @@ export const LobbyPage = () => {
           </Card>
 
           {/* 退室ボタン */}
-          <Button
-            variant="outline"
-            size="sm"
-          >
+          <Button variant="outline" size="sm">
             ルームを退出
           </Button>
         </VStack>
