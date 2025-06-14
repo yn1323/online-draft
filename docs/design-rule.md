@@ -335,7 +335,7 @@ type UserType = {
 };
 
 // ✅ Union Types必須（Enum禁止）
-type StatusType = 'waiting' | 'playing' | 'finished';
+type PriorityType = 'low' | 'medium' | 'high';
 
 // ✅ ジェネリクス最小限
 type ApiResponseType<T> = {
@@ -348,8 +348,8 @@ interface User {        // interface禁止
   id: string;
 }
 
-enum Status {          // enum禁止
-  WAITING = 'waiting'
+enum Priority {        // enum禁止
+  LOW = 'low'
 }
 ```
 

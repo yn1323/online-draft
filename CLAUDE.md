@@ -9,6 +9,29 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - **シンプルファースト**: 必要になってから複雑化する
 - **厳格なルール**: 一貫性のあるコード品質を保証
 
+## 🚨 核心制約
+
+### NEVER（絶対禁止）
+- NEVER: data-testidをテストで使用
+
+### YOU MUST（必須事項）
+- YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること（下記順番で実施すること）
+  - ファイル末尾改行
+  - 単体テスト: `pnpm test`
+  <!-- - Storybookテスト: `pnpm storybook:test-ci` -->
+  - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
+  - linter自動修正: `pnpm lint:fix`
+  - 型チェック: `pnpm type-check`
+  - linter: `pnpm lint`
+- YOU MUST: 作業完了時、通知を行うこと
+  - `pnpm notify:slack ...`
+
+### IMPORTANT（重要事項）
+- IMPORTANT: Chakra UI v3 Modern API準拠
+- IMPORTANT: 3ステップ以上でTodoWrite使用
+- IMPORTANT: 作業開始前に計画することを好む
+- IMPORTANT: モーダルは @src/components/ui/responsive-modal.tsx を利用すること
+
 ## 📋 Claude Code開発ワークフロー
 
 ```
@@ -232,3 +255,4 @@ const [globalUser] = useAtom(userAtom);
 
 - 質問が複数ある際は1つずつ聞いてほしい。チャットで回答しやすく聞いて
 - セッション開始時に/docs以下の資料をすべて読む。(/doc/archiveを除く) YOU MUST
+- タスク長すぎもう少し短く区切ってください
