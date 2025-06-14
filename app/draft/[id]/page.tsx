@@ -1,4 +1,3 @@
-import { DraftAuthGuard } from '@/src/components/features/draft/DraftAuthGuard';
 import { DraftPage } from '@/src/components/features/draft/DraftPage';
 import { Animation } from '@/src/components/templates/Animation';
 
@@ -9,12 +8,10 @@ interface DraftPageRouteProps {
 }
 
 export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
-  const resolvedParams = await params;
+  await params; // パラメータの取得（現在は未使用）
   return (
     <Animation>
-      <DraftAuthGuard groupId={resolvedParams.id}>
-        <DraftPage groupId={resolvedParams.id} />
-      </DraftAuthGuard>
+      <DraftPage />
     </Animation>
   );
 }
