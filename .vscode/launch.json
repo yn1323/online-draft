@@ -15,7 +15,7 @@
     },
     {
       "command": "pnpm test:ui",
-      "name": "単体テストHMR環境",
+      "name": "VitestHMR環境",
       "request": "launch",
       "type": "node-terminal"
     }
