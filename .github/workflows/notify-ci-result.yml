@@ -23,6 +23,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Restore error notification cache
+        id: cache-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: /tmp/ci-error-marker
+          key: ci-error-${{ github.event.workflow_run.head_sha }}
+
       - name: Check CI status and notify
         id: check-ci
         uses: actions/github-script@v7
@@ -35,6 +42,10 @@ jobs:
             const cacheKey = `ci-error-${headSha}`;
             
             console.log(`🔍 Checking CI for commit: ${headSha}`);
+            
+            // キャッシュヒット確認（既にエラー通知済みかチェック）
+            const cacheHit = '${{ steps.cache-restore.outputs.cache-hit }}' === 'true';
+            console.log(`📦 Cache hit: ${cacheHit}`);
             
             // 該当コミットの全チェック取得
             const { data: checkRuns } = await github.rest.checks.listForRef({
@@ -75,16 +86,10 @@ jobs:
             
             console.log(`📊 Status: completed=${allCompleted}, success=${allSuccess}, hasError=${hasError}`);
             
-            // キャッシュから既通知チェック
-            let errorNotified = false;
-            try {
-              const cacheResponse = await github.rest.actions.getActionsCacheUsage({
-                owner,
-                repo
-              });
-              console.log('📦 Cache checked');
-            } catch (error) {
-              console.log('📦 Cache check failed, proceeding...');
+            // キャッシュヒット時はエラー通知済み
+            const errorNotified = cacheHit;
+            if (errorNotified) {
+              console.log('📦 Error already notified for this commit, skipping...');
             }
             
             core.setOutput('head_sha', headSha);
@@ -117,34 +122,39 @@ jobs:
               console.log('❌ Error detected, will notify');
               core.setOutput('notify_type', 'error');
               core.setOutput('should_notify', 'true');
+            } else if (hasError && errorNotified) {
+              console.log('❌ Error detected but already notified, skipping');
+              core.setOutput('notify_type', 'none');
+              core.setOutput('should_notify', 'false');
             } else if (allCompleted && allSuccess) {
               console.log('✅ All CI completed successfully, will notify');
               core.setOutput('notify_type', 'success');
               core.setOutput('should_notify', 'true');
             } else {
               console.log('⏳ CI not ready for notification');
+              core.setOutput('notify_type', 'none');
               core.setOutput('should_notify', 'false');
             }
 
-      - name: Cache error notification
-        if: steps.check-ci.outputs.notify_type == 'error'
-        uses: actions/cache@v4
+      - name: Save error notification cache
+        if: steps.check-ci.outputs.notify_type == 'error' && steps.check-ci.outputs.should_notify == 'true'
+        uses: actions/cache/save@v4
         with:
           path: /tmp/ci-error-marker
-          key: ${{ steps.check-ci.outputs.cache_key }}
+          key: ci-error-${{ github.event.workflow_run.head_sha }}
 
       - name: Create cache marker
-        if: steps.check-ci.outputs.notify_type == 'error'
+        if: steps.check-ci.outputs.notify_type == 'error' && steps.check-ci.outputs.should_notify == 'true'
         run: |
           mkdir -p /tmp
-          echo "error-notified" > /tmp/ci-error-marker
+          echo "error-notified-$(date -u +%Y-%m-%dT%H:%M:%SZ)" > /tmp/ci-error-marker
 
       - name: Setup Node.js and pnpm
         if: steps.check-ci.outputs.should_notify == 'true'
         uses: ./.github/actions/setup
 
       - name: Notify error
-        if: steps.check-ci.outputs.notify_type == 'error'
+        if: steps.check-ci.outputs.notify_type == 'error' && steps.check-ci.outputs.should_notify == 'true'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |

@@ -1,5 +1,4 @@
 import { ThemeToggle } from '@/src/components/layout/ThemeToggle';
-import { AuthProvider } from '@/src/components/providers/AuthProvider';
 import { Provider } from '@/src/components/ui/provider';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -28,10 +27,8 @@ export default function RootLayout({
     <html lang="ja" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Provider>
-          <AuthProvider>
-            <ThemeToggle />
-            {children}
-          </AuthProvider>
+          <ThemeToggle />
+          {children}
         </Provider>
       </body>
     </html>

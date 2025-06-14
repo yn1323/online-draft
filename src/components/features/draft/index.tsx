@@ -1,1 +1,0 @@
-export { DraftPage } from './DraftPage';
