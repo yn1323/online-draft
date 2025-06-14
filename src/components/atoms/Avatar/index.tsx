@@ -28,11 +28,6 @@ const IMAGE_STYLES = {
   border: '2px solid',
   borderColor: 'gray.200',
   bg: 'white',
-  _hover: {
-    borderColor: 'blue.400',
-    transform: 'translateY(-2px)',
-    boxShadow: 'lg',
-  },
   transition: 'all 0.15s ease',
 } as const;
 
