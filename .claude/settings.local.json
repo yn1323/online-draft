@@ -66,13 +66,14 @@
       "Bash(terminal-notifier:*)",
       "Bash(pnpm e2e:*)",
       "Bash(pnpm storybook:test-ci:*)",
-      "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")"
+      "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")",
+      "WebFetch(domain:www.anthropic.com)"
     ],
     "deny": []
   },
+  "enableAllProjectMcpServers": true,
   "enabledMcpjsonServers": [
     "typescript",
     "playwright"
-  ],
-  "enableAllProjectMcpServers": true
+  ]
 }
