@@ -10,7 +10,6 @@ import {
   Box,
   Grid,
   HStack,
-  Spacer,
   Tabs,
   Text,
   VStack,
@@ -246,12 +245,12 @@ export const DraftPageSp = () => {
         <Tabs.List>
           <Tabs.Trigger value="draft" flex={1}>
             <Box w="full" textAlign="center">
-              ドラフト状況
+              ドラフト
             </Box>
           </Tabs.Trigger>
           <Tabs.Trigger value="chat" flex={1}>
             <Box w="full" textAlign="center">
-              チャット
+              チャット/ログ
             </Box>
           </Tabs.Trigger>
         </Tabs.List>
@@ -265,7 +264,7 @@ export const DraftPageSp = () => {
                 <Card variant="elevated" size="sm">
                   <VStack gap={2} w="full">
                     <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                      Round 4 - 現在の選択状況
+                      Round 4
                     </Text>
 
                     <Grid templateColumns="1fr 1fr 1fr" gap={1} w="full">
@@ -337,7 +336,7 @@ export const DraftPageSp = () => {
                   color="gray.800"
                   alignSelf="start"
                 >
-                  過去のドラフト結果
+                  ドラフト結果
                 </Text>
 
                 <Accordion.Root
@@ -350,10 +349,13 @@ export const DraftPageSp = () => {
                     <Accordion.Item
                       key={roundResult.round}
                       value={`round-${roundResult.round}`}
-                      mb={2}
                     >
                       <Accordion.ItemTrigger>
-                        <HStack justify="space-between" w="full">
+                        <HStack
+                          justify="space-between"
+                          w="full"
+                          cursor="pointer"
+                        >
                           <Text
                             fontSize="sm"
                             fontWeight="bold"
@@ -398,7 +400,10 @@ export const DraftPageSp = () => {
                                   {pick.playerName}
                                 </Text>
                                 <Text fontSize="xs" color="gray.600">
-                                  {pick.pick} ({pick.category})
+                                  {pick.pick}
+                                </Text>
+                                <Text fontSize="xs" color="gray.600">
+                                  ({pick.category})
                                 </Text>
                               </VStack>
                             </HStack>
