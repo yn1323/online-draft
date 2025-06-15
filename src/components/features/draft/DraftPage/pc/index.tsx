@@ -22,6 +22,45 @@ import { LuCheck } from 'react-icons/lu';
  * 2カラムレイアウト（7:3）: 左側に現在状況+過去結果、右側にチャット
  */
 export const DraftPagePC = () => {
+  // テーブル用の共通スタイル
+  const tableHeaderCellStyle = {
+    p: 2,
+    bg: 'gray.100',
+    borderRadius: 'md',
+    fontSize: 'xs',
+    fontWeight: 'bold',
+    textAlign: 'center' as const,
+    color: 'gray.700',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    minH: '40px',
+  };
+
+  const tableDataCellStyle = {
+    p: 2,
+    bg: 'white',
+    border: '1px solid',
+    borderColor: 'gray.200',
+    borderRadius: 'md',
+    fontSize: 'xs',
+    minH: '40px',
+    display: 'flex',
+    alignItems: 'center',
+  };
+
+  const currentRoundCellStyle = {
+    p: 2,
+    bg: 'orange.100',
+    border: '2px solid',
+    borderColor: 'orange.400',
+    borderRadius: 'md',
+    fontSize: 'xs',
+    minH: '40px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  };
   // アイテム選択モーダルの状態
   const [isItemSelectModalOpen, setIsItemSelectModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
@@ -287,36 +326,9 @@ export const DraftPagePC = () => {
 
                     {/* ヘッダー行（参加者名） */}
                     <Grid templateColumns="60px 1fr 1fr 1fr" gap={2} mb={2}>
-                      <Box
-                        p={2}
-                        bg="gray.100"
-                        borderRadius="md"
-                        fontSize="xs"
-                        fontWeight="bold"
-                        textAlign="center"
-                        color="gray.700"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        minH="40px"
-                      >
-                        Round
-                      </Box>
+                      <Box {...tableHeaderCellStyle}>Round</Box>
                       {mockParticipants.map((participant) => (
-                        <Box
-                          key={participant.id}
-                          p={2}
-                          bg="gray.100"
-                          borderRadius="md"
-                          fontSize="xs"
-                          fontWeight="bold"
-                          textAlign="center"
-                          color="gray.700"
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          minH="40px"
-                        >
+                        <Box key={participant.id} {...tableHeaderCellStyle}>
                           <HStack gap={1} justify="center">
                             <Avatar
                               avatarNumber={participant.avatar}
@@ -339,19 +351,12 @@ export const DraftPagePC = () => {
                             gap={2}
                           >
                             <Box
-                              p={2}
-                              bg="white"
-                              border="1px solid"
-                              borderColor="gray.200"
-                              borderRadius="md"
+                              {...tableDataCellStyle}
                               fontSize="sm"
                               fontWeight="bold"
                               textAlign="center"
                               color="gray.800"
-                              display="flex"
-                              alignItems="center"
                               justifyContent="center"
-                              minH="40px"
                             >
                               {roundResult.round}
                             </Box>
@@ -362,15 +367,7 @@ export const DraftPagePC = () => {
                               return (
                                 <Box
                                   key={participant.id}
-                                  p={2}
-                                  bg="white"
-                                  border="1px solid"
-                                  borderColor="gray.200"
-                                  borderRadius="md"
-                                  fontSize="xs"
-                                  minH="40px"
-                                  display="flex"
-                                  alignItems="center"
+                                  {...tableDataCellStyle}
                                   cursor={pick ? 'pointer' : 'default'}
                                   _hover={
                                     pick
@@ -420,35 +417,18 @@ export const DraftPagePC = () => {
                         {/* 現在ラウンド（Round 4）*/}
                         <Grid templateColumns="60px 1fr 1fr 1fr" gap={2}>
                           <Box
-                            p={2}
-                            bg="orange.100"
-                            border="2px solid"
-                            borderColor="orange.400"
-                            borderRadius="md"
+                            {...currentRoundCellStyle}
                             fontSize="sm"
                             fontWeight="bold"
                             textAlign="center"
                             color="orange.800"
-                            display="flex"
-                            alignItems="center"
-                            justifyContent="center"
-                            minH="40px"
                           >
                             4
                           </Box>
                           {mockParticipants.map((participant) => (
                             <Box
                               key={participant.id}
-                              p={2}
-                              bg="orange.100"
-                              border="2px solid"
-                              borderColor="orange.400"
-                              borderRadius="md"
-                              fontSize="xs"
-                              minH="40px"
-                              display="flex"
-                              alignItems="center"
-                              justifyContent="center"
+                              {...currentRoundCellStyle}
                             >
                               <Text color="orange.700" fontWeight="medium">
                                 [選択中...]

@@ -82,15 +82,9 @@ export const LobbyPage = () => {
                     </Text>
                     <IconButton
                       aria-label="URLをコピー"
-                      bg="blue.400"
-                      color="white"
+                      variant="solid"
+                      colorPalette="blue"
                       size="sm"
-                      _hover={{
-                        bg: 'blue.500',
-                      }}
-                      _active={{
-                        bg: 'blue.600',
-                      }}
                     >
                       <LuCopy />
                     </IconButton>
@@ -121,11 +115,11 @@ export const LobbyPage = () => {
                   {mockParticipants.map((participant) => (
                     <Box
                       key={participant.id}
-                      p={4}
-                      borderRadius="lg"
+                      p={3}
                       bg="white"
                       border="2px solid"
                       borderColor="gray.200"
+                      borderRadius="lg"
                       cursor="pointer"
                       transition="all 0.15s"
                       _hover={{
@@ -158,11 +152,11 @@ export const LobbyPage = () => {
 
                   {/* 新規参加ボタン */}
                   <Box
-                    p={4}
-                    borderRadius="lg"
+                    p={3}
                     bg="blue.50"
                     border="2px dashed"
                     borderColor="blue.300"
+                    borderRadius="lg"
                     cursor="pointer"
                     transition="all 0.15s"
                     onClick={() => setIsAvatarModalOpen(true)}

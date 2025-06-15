@@ -28,7 +28,7 @@ export const Chat: Story = {
     const canvas = within(canvasElement);
 
     // チャットタブをクリック
-    const chatTab = canvas.getByRole('tab', { name: 'チャット' });
+    const chatTab = canvas.getByRole('tab', { name: 'チャット/ログ' });
     await userEvent.click(chatTab);
   },
 };

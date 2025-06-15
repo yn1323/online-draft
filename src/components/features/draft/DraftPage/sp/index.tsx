@@ -22,6 +22,34 @@ import { LuCheck } from 'react-icons/lu';
  * タブ形式でリストとチャットを切り替え
  */
 export const DraftPageSp = () => {
+  // 参加者グリッド用の共通スタイル
+  const getParticipantCellStyle = (isActive: boolean) => ({
+    p: 1.5,
+    bg: isActive ? 'blue.50' : 'green.50',
+    border: '1px solid',
+    borderColor: isActive ? 'blue.300' : 'green.300',
+    borderRadius: 'md',
+    gap: 1,
+    align: 'center' as const,
+    textAlign: 'center' as const,
+  });
+
+  const getStatusBadgeStyle = (isActive: boolean) =>
+    isActive
+      ? {
+          bg: 'blue.400',
+          color: 'white',
+          px: 1,
+          py: 0.5,
+          borderRadius: 'sm',
+          fontSize: 'xs',
+          fontWeight: 'bold',
+        }
+      : {
+          gap: 1,
+          fontSize: 'xs',
+          color: 'green.600',
+        };
   // アイテム選択モーダルの状態
   const [isItemSelectModalOpen, setIsItemSelectModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState('');
@@ -268,51 +296,37 @@ export const DraftPageSp = () => {
                     </Text>
 
                     <Grid templateColumns="1fr 1fr 1fr" gap={1} w="full">
-                      {mockParticipants.map((participant, index) => (
-                        <VStack
-                          key={participant.id}
-                          p={1.5}
-                          bg={index === 2 ? 'blue.50' : 'green.50'}
-                          border="1px solid"
-                          borderColor={index === 2 ? 'blue.300' : 'green.300'}
-                          borderRadius="md"
-                          gap={1}
-                          align="center"
-                          textAlign="center"
-                        >
-                          <Avatar
-                            avatarNumber={participant.avatar}
-                            name={participant.name}
-                            size="xs"
-                          />
-                          <Text
-                            fontSize="xs"
-                            fontWeight="medium"
-                            truncate
-                            w="full"
+                      {mockParticipants.map((participant, index) => {
+                        const isActive = index === 2;
+                        return (
+                          <VStack
+                            key={participant.id}
+                            {...getParticipantCellStyle(isActive)}
                           >
-                            {participant.name}
-                          </Text>
-                          {index === 2 ? (
-                            <Box
-                              bg="blue.400"
-                              color="white"
-                              px={1}
-                              py={0.5}
-                              borderRadius="sm"
+                            <Avatar
+                              avatarNumber={participant.avatar}
+                              name={participant.name}
+                              size="xs"
+                            />
+                            <Text
                               fontSize="xs"
-                              fontWeight="bold"
+                              fontWeight="medium"
+                              truncate
+                              w="full"
                             >
-                              選択中
-                            </Box>
-                          ) : (
-                            <HStack gap={1} fontSize="xs" color="green.600">
-                              <LuCheck size={10} />
-                              <Text>完了</Text>
-                            </HStack>
-                          )}
-                        </VStack>
-                      ))}
+                              {participant.name}
+                            </Text>
+                            {isActive ? (
+                              <Box {...getStatusBadgeStyle(true)}>選択中</Box>
+                            ) : (
+                              <HStack {...getStatusBadgeStyle(false)}>
+                                <LuCheck size={10} />
+                                <Text>完了</Text>
+                              </HStack>
+                            )}
+                          </VStack>
+                        );
+                      })}
                     </Grid>
 
                     <Box w="full">
