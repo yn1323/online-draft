@@ -1,1 +1,0 @@
-import{r as n}from"./_interop_require_wildcard-BpaVepTj.js";import{b as o}from"./index-BXymfbzT.js";var e={},t;function f(){return t||(t=1,function(r){Object.defineProperty(r,"__esModule",{value:!0}),Object.defineProperty(r,"RouterContext",{enumerable:!0,get:function(){return u}});const u=n()._(o()).default.createContext(null)}(e)),e}export{f as r};

@@ -1,1 +1,0 @@
-import{j as o}from"./create-recipe-context-LbQq3bM7.js";import{r as a}from"./index-BXymfbzT.js";import{S as s}from"./stack-B-mkjmc_.js";const m=a.forwardRef(function(r,t){return o.jsx(s,{align:"center",...r,direction:"row",ref:t})});export{m as H};

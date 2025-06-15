@@ -1,5 +1,0 @@
-import{M as a}from"./index-LrM3eUZ6.js";import"./create-recipe-context-DNTG5mYw.js";import"./jsx-runtime-Bw5QeaCk.js";import"./index-BXymfbzT.js";import"./index-ZS65BhKO.js";import"./iconBase-BtwG8oUN.js";import"./index-DTSGLcC3.js";import"./index-CTQevISN.js";import"./router-context.shared-runtime-CczRXcu8.js";import"./add-base-path-_EOwhHC7.js";import"./use-merged-ref-0PvjutYQ.js";import"./button-Dz2diCo_.js";import"./box-DMcbo_cE.js";import"./v-stack-QJg7n52G.js";import"./stack-DVtSLI4T.js";import"./text-DJUdolDr.js";import"./simple-grid-D7DxtwhU.js";const m=()=>{console.log("Create draft clicked")},A={title:"Features/Top/MainActionsSection",component:a,parameters:{layout:"centered"}},t={args:{onCreateDraft:m}};var r,o,e;t.parameters={...t.parameters,docs:{...(r=t.parameters)==null?void 0:r.docs,source:{originalSource:`{
-  args: {
-    onCreateDraft: mockOnCreateDraft
-  }
-}`,...(e=(o=t.parameters)==null?void 0:o.docs)==null?void 0:e.source}}};const _=["Default"];export{t as Default,_ as __namedExportsOrder,A as default};
