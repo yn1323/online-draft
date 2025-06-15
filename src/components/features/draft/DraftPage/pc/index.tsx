@@ -413,77 +413,72 @@ export const DraftPagePC = () => {
 
           {/* 右側: チャット */}
           <GridItem h="full">
-            <Box h="full">
-              <Card variant="elevated" size="md">
-                <Box h="full" display="flex" flexDirection="column">
-                  <Text fontSize={['md', 'lg']} fontWeight="bold" mb={4}>
-                    チャット
-                  </Text>
-                  <Box flex="1" overflow="auto">
-                    <VStack gap={3} align="stretch" h="full">
-                      <Box flex="1" overflow="auto">
-                        <VStack gap={3} align="stretch">
-                          {mockChatMessages.map((message) => (
-                            <HStack key={message.id} align="start" gap={2}>
-                              <Avatar
-                                avatarNumber={message.avatar}
-                                name={message.userName}
-                                size="xs"
-                              />
-                              <Box
-                                p={3}
-                                borderRadius="lg"
-                                bg={message.isSystem ? 'orange.50' : 'gray.50'}
-                                border="1px solid"
-                                borderColor={
-                                  message.isSystem ? 'orange.200' : 'gray.200'
-                                }
-                                flex={1}
-                              >
-                                <HStack>
-                                  <Text
-                                    fontSize="xs"
-                                    color={
-                                      message.isSystem
-                                        ? 'orange.600'
-                                        : 'gray.700'
-                                    }
-                                    fontWeight="bold"
-                                  >
-                                    {message.userName}
-                                  </Text>
-                                  <Text fontSize="xs" color="gray.500">
-                                    {message.timestamp}
-                                  </Text>
-                                </HStack>
-                                <Text
-                                  fontSize={['xs', 'sm']}
-                                  color={
-                                    message.isSystem ? 'orange.800' : 'gray.800'
-                                  }
-                                  mt={1}
-                                >
-                                  {message.message}
-                                </Text>
-                              </Box>
-                            </HStack>
-                          ))}
-                        </VStack>
-                      </Box>
-
-                      {/* チャット入力エリア */}
-                      <Box pt={3} borderTop="1px solid" borderColor="gray.200">
+            <Box
+              h="full"
+              bg="white"
+              boxShadow="lg"
+              p={4}
+              borderRadius="lg"
+              display="flex"
+              flexDirection="column"
+            >
+              <Text fontSize={['md', 'lg']} fontWeight="bold" mb={4}>
+                チャット
+              </Text>
+              {/* チャットメッセージエリア */}
+              <Box flex="1" overflow="auto" mb={3}>
+                <VStack gap={3} align="stretch">
+                  {mockChatMessages.map((message) => (
+                    <HStack key={message.id} align="start" gap={2}>
+                      <Avatar
+                        avatarNumber={message.avatar}
+                        name={message.userName}
+                        size="xs"
+                      />
+                      <Box
+                        p={3}
+                        borderRadius="lg"
+                        bg={message.isSystem ? 'orange.50' : 'gray.50'}
+                        border="1px solid"
+                        borderColor={
+                          message.isSystem ? 'orange.200' : 'gray.200'
+                        }
+                        flex={1}
+                      >
                         <HStack>
-                          <Input placeholder="メッセージを入力..." size="sm" />
-                          <Button variant="secondary" size="sm">
-                            送信
-                          </Button>
+                          <Text
+                            fontSize="xs"
+                            color={message.isSystem ? 'orange.600' : 'gray.700'}
+                            fontWeight="bold"
+                          >
+                            {message.userName}
+                          </Text>
+                          <Text fontSize="xs" color="gray.500">
+                            {message.timestamp}
+                          </Text>
                         </HStack>
+                        <Text
+                          fontSize={['xs', 'sm']}
+                          color={message.isSystem ? 'orange.800' : 'gray.800'}
+                          mt={1}
+                        >
+                          {message.message}
+                        </Text>
                       </Box>
-                    </VStack>
-                  </Box>
-                </Box>
-              </Card>
+                    </HStack>
+                  ))}
+                </VStack>
+              </Box>
+
+              {/* チャット入力エリア */}
+              <Box pt={3} borderTop="1px solid" borderColor="gray.200">
+                <HStack>
+                  <Input placeholder="メッセージを入力..." size="sm" />
+                  <Button variant="secondary" size="sm">
+                    送信
+                  </Button>
+                </HStack>
+              </Box>
             </Box>
           </GridItem>
         </Grid>
