@@ -2,7 +2,9 @@
 
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
 import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import {
   Accordion,
   Box,
@@ -12,12 +14,59 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
+import { LuCheck } from 'react-icons/lu';
 
 /**
  * ドラフト実行画面コンポーネント（スマホ版）
  * タブ形式でリストとチャットを切り替え
  */
 export const DraftPageSp = () => {
+  // アイテム選択モーダルの状態
+  const [isItemSelectModalOpen, setIsItemSelectModalOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [comment, setComment] = useState('');
+
+  // 編集モーダルの状態
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingPick, setEditingPick] = useState<{
+    round: number;
+    playerId: string;
+    playerName: string;
+    currentPick: string;
+    category: string;
+  } | null>(null);
+
+  // アイテム選択確定ハンドラー
+  const handleItemSelect = () => {
+    if (selectedItem.trim()) {
+      console.log('アイテム選択:', { item: selectedItem, comment });
+      setIsItemSelectModalOpen(false);
+      setSelectedItem('');
+      setComment('');
+    }
+  };
+
+  // ピック編集ハンドラー
+  const handleEditClick = (
+    round: number,
+    playerId: string,
+    playerName: string,
+    currentPick: string,
+    category: string,
+  ) => {
+    setEditingPick({ round, playerId, playerName, currentPick, category });
+    setIsEditModalOpen(true);
+  };
+
+  // 編集保存ハンドラー
+  const handleEditSave = () => {
+    if (editingPick) {
+      console.log('ピック編集:', editingPick);
+      setIsEditModalOpen(false);
+      setEditingPick(null);
+    }
+  };
   // モックデータ
   const mockParticipants = [
     {
@@ -40,6 +89,97 @@ export const DraftPageSp = () => {
       name: '佐藤次郎',
       avatar: '5',
       acquisitions: [],
+    },
+  ];
+
+  // 過去のドラフト結果モックデータ
+  const pastDraftResults = [
+    {
+      round: 3,
+      picks: [
+        {
+          order: 1,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '候補アイテムG',
+          category: 'タイプA',
+        },
+        {
+          order: 2,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: '候補アイテムH',
+          category: 'タイプB',
+        },
+        {
+          order: 3,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: '候補アイテムI',
+          category: 'タイプC',
+        },
+      ],
+    },
+    {
+      round: 2,
+      picks: [
+        {
+          order: 1,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: '候補アイテムD',
+          category: 'タイプA',
+        },
+        {
+          order: 2,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: '候補アイテムE',
+          category: 'タイプB',
+        },
+        {
+          order: 3,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '候補アイテムF',
+          category: 'タイプC',
+        },
+      ],
+    },
+    {
+      round: 1,
+      picks: [
+        {
+          order: 1,
+          playerId: '1',
+          playerName: '田中太郎',
+          avatar: '1',
+          pick: '候補アイテムA',
+          category: 'タイプA',
+        },
+        {
+          order: 2,
+          playerId: '2',
+          playerName: '山田花子',
+          avatar: '3',
+          pick: '候補アイテムB',
+          category: 'タイプB',
+        },
+        {
+          order: 3,
+          playerId: '3',
+          playerName: '佐藤次郎',
+          avatar: '5',
+          pick: '候補アイテムC',
+          category: 'タイプC',
+        },
+      ],
     },
   ];
 
@@ -106,15 +246,15 @@ export const DraftPageSp = () => {
 
       {/* タブエリア */}
       <Tabs.Root
-        defaultValue="list"
+        defaultValue="draft"
         flex={1}
         display="flex"
         flexDirection="column"
         w="full"
       >
         <Tabs.List>
-          <Tabs.Trigger value="list" flex={1}>
-            取得リスト
+          <Tabs.Trigger value="draft" flex={1}>
+            ドラフト状況
           </Tabs.Trigger>
           <Tabs.Trigger value="chat" flex={1}>
             チャット
@@ -122,54 +262,136 @@ export const DraftPageSp = () => {
         </Tabs.List>
 
         <Box flex={1} overflow="hidden">
-          {/* 取得済みリストタブ */}
-          <Tabs.Content value="list" h="full" overflow="auto" p={4}>
-            <Accordion.Root multiple>
-              {mockParticipants.map((participant) => (
-                <Accordion.Item key={participant.id} value={participant.id}>
-                  <Accordion.ItemTrigger>
-                    <HStack flex={1}>
-                      <Avatar
-                        avatarNumber={participant.avatar}
-                        name={participant.name}
-                        size="xs"
-                      />
-                      <Text fontSize={['sm', 'md']}>{participant.name}</Text>
-                      <Spacer />
-                      <Text fontSize={['xs', 'sm']} color="gray.500">
-                        ({participant.acquisitions.length}/5)
-                      </Text>
-                    </HStack>
-                    <Accordion.ItemIndicator />
-                  </Accordion.ItemTrigger>
-                  <Accordion.ItemContent pb={4}>
-                    {participant.acquisitions.length > 0 ? (
-                      <VStack align="start" gap={2}>
-                        {participant.acquisitions.map((item, index) => (
-                          <Box key={index}>
-                            <HStack>
-                              <Text fontSize="sm">🏆</Text>
-                              <Text fontSize="sm" fontWeight="medium">
-                                {item.name}
-                              </Text>
-                            </HStack>
-                            {item.comment && (
-                              <Text fontSize="xs" color="gray.600" ml={6}>
-                                {item.comment}
-                              </Text>
-                            )}
+          {/* ドラフト状況タブ */}
+          <Tabs.Content value="draft" h="full" overflow="auto">
+            <VStack gap={4} p={4}>
+              {/* 現在ラウンドセクション */}
+              <Box w="full">
+                <Card variant="elevated" size="sm">
+                  <VStack gap={3} w="full">
+                  <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                    Round 4 - 現在の選択状況
+                  </Text>
+
+                  <VStack gap={2} w="full">
+                    {mockParticipants.map((participant, index) => (
+                      <HStack
+                        key={participant.id}
+                        w="full"
+                        p={2}
+                        bg={index === 2 ? 'blue.50' : 'green.50'}
+                        border="1px solid"
+                        borderColor={index === 2 ? 'blue.300' : 'green.300'}
+                        borderRadius="md"
+                      >
+                        <Avatar
+                          avatarNumber={participant.avatar}
+                          name={participant.name}
+                          size="xs"
+                        />
+                        <Text fontSize="sm" fontWeight="medium">
+                          {participant.name}
+                        </Text>
+                        <Spacer />
+                        {index === 2 ? (
+                          <Box
+                            bg="blue.400"
+                            color="white"
+                            px={2}
+                            py={0.5}
+                            borderRadius="sm"
+                            fontSize="xs"
+                            fontWeight="bold"
+                          >
+                            選択中
                           </Box>
-                        ))}
+                        ) : (
+                          <HStack gap={1} fontSize="xs" color="green.600">
+                            <LuCheck size={12} />
+                            <Text>完了</Text>
+                          </HStack>
+                        )}
+                      </HStack>
+                    ))}
+                  </VStack>
+
+                    <Box w="full">
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={() => setIsItemSelectModalOpen(true)}
+                      >
+                        アイテムを選択する
+                      </Button>
+                    </Box>
+                  </VStack>
+                </Card>
+              </Box>
+
+              {/* 過去ラウンド結果 */}
+              <VStack gap={3} w="full">
+                <Text
+                  fontSize="md"
+                  fontWeight="bold"
+                  color="gray.800"
+                  alignSelf="start"
+                >
+                  過去のドラフト結果
+                </Text>
+
+                {pastDraftResults.map((roundResult) => (
+                  <Box key={roundResult.round} w="full">
+                    <Card variant="outline" size="sm">
+                      <VStack gap={3} w="full">
+                        <Text fontSize="sm" fontWeight="bold" color="gray.700">
+                          Round {roundResult.round}
+                        </Text>
+
+                        <VStack gap={2} w="full">
+                          {roundResult.picks.map((pick) => (
+                            <HStack
+                            key={pick.playerId}
+                            w="full"
+                            p={2}
+                            bg="gray.50"
+                            borderRadius="md"
+                            cursor="pointer"
+                            _hover={{
+                              bg: 'gray.100',
+                              transition: 'all 0.15s ease',
+                            }}
+                            onClick={() => {
+                              handleEditClick(
+                                roundResult.round,
+                                pick.playerId,
+                                pick.playerName,
+                                pick.pick,
+                                pick.category,
+                              );
+                            }}
+                          >
+                            <Avatar
+                              avatarNumber={pick.avatar}
+                              name={pick.playerName}
+                              size="xs"
+                            />
+                            <VStack align="start" gap={0} flex={1}>
+                              <Text fontSize="sm" fontWeight="medium">
+                                {pick.playerName}
+                              </Text>
+                              <Text fontSize="xs" color="gray.600">
+                                {pick.pick} ({pick.category})
+                              </Text>
+                            </VStack>
+                            </HStack>
+                          ))}
+                        </VStack>
                       </VStack>
-                    ) : (
-                      <Text fontSize="sm" color="gray.500">
-                        まだ獲得なし
-                      </Text>
-                    )}
-                  </Accordion.ItemContent>
-                </Accordion.Item>
-              ))}
-            </Accordion.Root>
+                    </Card>
+                  </Box>
+                ))}
+              </VStack>
+            </VStack>
           </Tabs.Content>
 
           {/* チャット・ログタブ */}
@@ -209,7 +431,7 @@ export const DraftPageSp = () => {
         </Box>
       </Tabs.Root>
 
-      {/* 入力エリア（固定） */}
+      {/* 入力エリア（固定） - チャット専用 */}
       <Box
         bg="white"
         borderTop="1px"
@@ -219,16 +441,149 @@ export const DraftPageSp = () => {
         position="sticky"
         bottom={0}
       >
-        <VStack gap={3}>
-          <HStack w="full">
-            <Input placeholder="選択したいアイテム" size="md" />
-            <Button variant="primary" size="md">
-              送信
-            </Button>
-          </HStack>
-          <Input placeholder="コメント（選択理由など）" size="sm" />
-        </VStack>
+        <HStack w="full">
+          <Input placeholder="メッセージを入力..." size="md" />
+          <Button variant="secondary" size="md">
+            送信
+          </Button>
+        </HStack>
       </Box>
+
+      {/* アイテム選択モーダル */}
+      <ResponsiveModal
+        isOpen={isItemSelectModalOpen}
+        onClose={() => setIsItemSelectModalOpen(false)}
+        title="アイテムを選択"
+        actions={{
+          cancel: {
+            text: 'キャンセル',
+            onClick: () => setIsItemSelectModalOpen(false),
+          },
+          submit: {
+            text: '決定',
+            disabled: !selectedItem.trim(),
+            onClick: handleItemSelect,
+          },
+        }}
+      >
+        <VStack gap={4} w="full">
+          {/* アイテム名入力 */}
+          <VStack gap={2} align="start" w="full">
+            <Text fontSize="sm" fontWeight="bold" color="gray.700">
+              アイテム名
+            </Text>
+            <Input
+              placeholder="アイテム名を入力してください"
+              value={selectedItem}
+              onChange={setSelectedItem}
+              maxLength={50}
+              size="lg"
+            />
+          </VStack>
+
+          {/* コメント入力 */}
+          <VStack gap={2} align="start" w="full">
+            <Text fontSize="sm" fontWeight="bold" color="gray.700">
+              コメント（任意）
+            </Text>
+            <Input
+              placeholder="この選択についてのコメント..."
+              value={comment}
+              onChange={setComment}
+              maxLength={100}
+              size="lg"
+            />
+          </VStack>
+        </VStack>
+      </ResponsiveModal>
+
+      {/* ピック編集モーダル */}
+      <ResponsiveModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingPick(null);
+        }}
+        title="ピックを編集"
+        actions={{
+          cancel: {
+            text: 'キャンセル',
+            onClick: () => {
+              setIsEditModalOpen(false);
+              setEditingPick(null);
+            },
+          },
+          submit: {
+            text: '保存',
+            colorPalette: 'blue',
+            onClick: handleEditSave,
+          },
+        }}
+      >
+        {editingPick && (
+          <VStack gap={4} w="full">
+            {/* 編集対象情報 */}
+            <Box w="full" p={3} bg="gray.50" borderRadius="md">
+              <VStack gap={2} align="start">
+                <HStack>
+                  <Text fontSize="xs" color="gray.600">
+                    ラウンド:
+                  </Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    Round {editingPick.round}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Text fontSize="xs" color="gray.600">
+                    プレイヤー:
+                  </Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {editingPick.playerName}
+                  </Text>
+                </HStack>
+              </VStack>
+            </Box>
+
+            {/* アイテム名編集 */}
+            <VStack gap={2} align="start" w="full">
+              <Text fontSize="sm" fontWeight="bold" color="gray.700">
+                選択アイテム
+              </Text>
+              <Input
+                placeholder="アイテム名を入力してください"
+                value={editingPick.currentPick}
+                onChange={(value) =>
+                  setEditingPick({
+                    ...editingPick,
+                    currentPick: value,
+                  })
+                }
+                maxLength={50}
+                size="lg"
+              />
+            </VStack>
+
+            {/* カテゴリ編集 */}
+            <VStack gap={2} align="start" w="full">
+              <Text fontSize="sm" fontWeight="bold" color="gray.700">
+                カテゴリ
+              </Text>
+              <Input
+                placeholder="カテゴリを入力してください"
+                value={editingPick.category}
+                onChange={(value) =>
+                  setEditingPick({
+                    ...editingPick,
+                    category: value,
+                  })
+                }
+                maxLength={20}
+                size="lg"
+              />
+            </VStack>
+          </VStack>
+        )}
+      </ResponsiveModal>
     </VStack>
   );
 };
