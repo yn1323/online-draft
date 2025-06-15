@@ -8,6 +8,7 @@ import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import {
   Accordion,
   Box,
+  Grid,
   HStack,
   Spacer,
   Tabs,
@@ -264,40 +265,41 @@ export const DraftPageSp = () => {
         <Box flex={1} overflow="hidden">
           {/* ドラフト状況タブ */}
           <Tabs.Content value="draft" h="full" overflow="auto">
-            <VStack gap={4} p={4}>
+            <VStack gap={3} p={3}>
               {/* 現在ラウンドセクション */}
               <Box w="full">
                 <Card variant="elevated" size="sm">
-                  <VStack gap={3} w="full">
+                  <VStack gap={2} w="full">
                   <Text fontSize="sm" fontWeight="bold" color="gray.800">
                     Round 4 - 現在の選択状況
                   </Text>
 
-                  <VStack gap={2} w="full">
+                  <Grid templateColumns="1fr 1fr 1fr" gap={1} w="full">
                     {mockParticipants.map((participant, index) => (
-                      <HStack
+                      <VStack
                         key={participant.id}
-                        w="full"
-                        p={2}
+                        p={1.5}
                         bg={index === 2 ? 'blue.50' : 'green.50'}
                         border="1px solid"
                         borderColor={index === 2 ? 'blue.300' : 'green.300'}
                         borderRadius="md"
+                        gap={1}
+                        align="center"
+                        textAlign="center"
                       >
                         <Avatar
                           avatarNumber={participant.avatar}
                           name={participant.name}
                           size="xs"
                         />
-                        <Text fontSize="sm" fontWeight="medium">
+                        <Text fontSize="xs" fontWeight="medium" truncate w="full">
                           {participant.name}
                         </Text>
-                        <Spacer />
                         {index === 2 ? (
                           <Box
                             bg="blue.400"
                             color="white"
-                            px={2}
+                            px={1}
                             py={0.5}
                             borderRadius="sm"
                             fontSize="xs"
@@ -307,13 +309,13 @@ export const DraftPageSp = () => {
                           </Box>
                         ) : (
                           <HStack gap={1} fontSize="xs" color="green.600">
-                            <LuCheck size={12} />
+                            <LuCheck size={10} />
                             <Text>完了</Text>
                           </HStack>
                         )}
-                      </HStack>
+                      </VStack>
                     ))}
-                  </VStack>
+                  </Grid>
 
                     <Box w="full">
                       <Button
@@ -329,7 +331,7 @@ export const DraftPageSp = () => {
               </Box>
 
               {/* 過去ラウンド結果 */}
-              <VStack gap={3} w="full">
+              <VStack gap={2} w="full">
                 <Text
                   fontSize="md"
                   fontWeight="bold"
@@ -342,17 +344,17 @@ export const DraftPageSp = () => {
                 {pastDraftResults.map((roundResult) => (
                   <Box key={roundResult.round} w="full">
                     <Card variant="outline" size="sm">
-                      <VStack gap={3} w="full">
+                      <VStack gap={2} w="full">
                         <Text fontSize="sm" fontWeight="bold" color="gray.700">
                           Round {roundResult.round}
                         </Text>
 
-                        <VStack gap={2} w="full">
+                        <VStack gap={1} w="full">
                           {roundResult.picks.map((pick) => (
                             <HStack
                             key={pick.playerId}
                             w="full"
-                            p={2}
+                            p={1.5}
                             bg="gray.50"
                             borderRadius="md"
                             cursor="pointer"
@@ -395,8 +397,8 @@ export const DraftPageSp = () => {
           </Tabs.Content>
 
           {/* チャット・ログタブ */}
-          <Tabs.Content value="chat" h="full" overflow="auto" p={4}>
-            <VStack gap={3} align="stretch">
+          <Tabs.Content value="chat" h="full" overflow="auto" p={3}>
+            <VStack gap={2} align="stretch">
               {mockMessages.map((msg) => (
                 <HStack key={msg.id} align="start">
                   <Avatar
@@ -436,7 +438,7 @@ export const DraftPageSp = () => {
         bg="white"
         borderTop="1px"
         borderColor="gray.200"
-        p={4}
+        p={3}
         w="full"
         position="sticky"
         bottom={0}

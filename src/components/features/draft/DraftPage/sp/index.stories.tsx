@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { userEvent, within } from '@storybook/test';
 import { DraftPageSp } from '.';
 
 const meta: Meta<typeof DraftPageSp> = {
@@ -19,13 +20,15 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {};
 
 /**
- * スマートフォン表示
- * モバイル端末での表示確認
+ * チャットタブ表示
+ * チャット機能の表示確認
  */
-export const Mobile: Story = {
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
-    },
+export const Chat: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    
+    // チャットタブをクリック
+    const chatTab = canvas.getByRole('tab', { name: 'チャット' });
+    await userEvent.click(chatTab);
   },
 };
