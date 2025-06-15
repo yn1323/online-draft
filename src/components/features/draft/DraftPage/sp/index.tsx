@@ -230,19 +230,9 @@ export const DraftPageSp = () => {
         top={0}
         zIndex={10}
       >
-        <HStack justify="space-between">
-          <VStack align="start" gap={0}>
-            <Text fontSize={['md', 'lg']} fontWeight="bold">
-              第2巡目
-            </Text>
-            <Text fontSize={['xs', 'sm']} color="gray.500">
-              入力状況: 1/3人
-            </Text>
-          </VStack>
-          <Button size="sm" variant="ghost">
-            参加者
-          </Button>
-        </HStack>
+        <Text fontSize={['md', 'lg']} fontWeight="bold" textAlign="center">
+          ドラフト名がここに入ります
+        </Text>
       </Box>
 
       {/* タブエリア */}
@@ -255,10 +245,14 @@ export const DraftPageSp = () => {
       >
         <Tabs.List>
           <Tabs.Trigger value="draft" flex={1}>
-            ドラフト状況
+            <Box w="full" textAlign="center">
+              ドラフト状況
+            </Box>
           </Tabs.Trigger>
           <Tabs.Trigger value="chat" flex={1}>
-            チャット
+            <Box w="full" textAlign="center">
+              チャット
+            </Box>
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -270,52 +264,57 @@ export const DraftPageSp = () => {
               <Box w="full">
                 <Card variant="elevated" size="sm">
                   <VStack gap={2} w="full">
-                  <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                    Round 4 - 現在の選択状況
-                  </Text>
+                    <Text fontSize="sm" fontWeight="bold" color="gray.800">
+                      Round 4 - 現在の選択状況
+                    </Text>
 
-                  <Grid templateColumns="1fr 1fr 1fr" gap={1} w="full">
-                    {mockParticipants.map((participant, index) => (
-                      <VStack
-                        key={participant.id}
-                        p={1.5}
-                        bg={index === 2 ? 'blue.50' : 'green.50'}
-                        border="1px solid"
-                        borderColor={index === 2 ? 'blue.300' : 'green.300'}
-                        borderRadius="md"
-                        gap={1}
-                        align="center"
-                        textAlign="center"
-                      >
-                        <Avatar
-                          avatarNumber={participant.avatar}
-                          name={participant.name}
-                          size="xs"
-                        />
-                        <Text fontSize="xs" fontWeight="medium" truncate w="full">
-                          {participant.name}
-                        </Text>
-                        {index === 2 ? (
-                          <Box
-                            bg="blue.400"
-                            color="white"
-                            px={1}
-                            py={0.5}
-                            borderRadius="sm"
+                    <Grid templateColumns="1fr 1fr 1fr" gap={1} w="full">
+                      {mockParticipants.map((participant, index) => (
+                        <VStack
+                          key={participant.id}
+                          p={1.5}
+                          bg={index === 2 ? 'blue.50' : 'green.50'}
+                          border="1px solid"
+                          borderColor={index === 2 ? 'blue.300' : 'green.300'}
+                          borderRadius="md"
+                          gap={1}
+                          align="center"
+                          textAlign="center"
+                        >
+                          <Avatar
+                            avatarNumber={participant.avatar}
+                            name={participant.name}
+                            size="xs"
+                          />
+                          <Text
                             fontSize="xs"
-                            fontWeight="bold"
+                            fontWeight="medium"
+                            truncate
+                            w="full"
                           >
-                            選択中
-                          </Box>
-                        ) : (
-                          <HStack gap={1} fontSize="xs" color="green.600">
-                            <LuCheck size={10} />
-                            <Text>完了</Text>
-                          </HStack>
-                        )}
-                      </VStack>
-                    ))}
-                  </Grid>
+                            {participant.name}
+                          </Text>
+                          {index === 2 ? (
+                            <Box
+                              bg="blue.400"
+                              color="white"
+                              px={1}
+                              py={0.5}
+                              borderRadius="sm"
+                              fontSize="xs"
+                              fontWeight="bold"
+                            >
+                              選択中
+                            </Box>
+                          ) : (
+                            <HStack gap={1} fontSize="xs" color="green.600">
+                              <LuCheck size={10} />
+                              <Text>完了</Text>
+                            </HStack>
+                          )}
+                        </VStack>
+                      ))}
+                    </Grid>
 
                     <Box w="full">
                       <Button
@@ -341,57 +340,74 @@ export const DraftPageSp = () => {
                   過去のドラフト結果
                 </Text>
 
-                {pastDraftResults.map((roundResult) => (
-                  <Box key={roundResult.round} w="full">
-                    <Card variant="outline" size="sm">
-                      <VStack gap={2} w="full">
-                        <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                          Round {roundResult.round}
-                        </Text>
-
-                        <VStack gap={1} w="full">
+                <Accordion.Root
+                  defaultValue={[]}
+                  multiple
+                  w="full"
+                  variant="enclosed"
+                >
+                  {pastDraftResults.reverse().map((roundResult) => (
+                    <Accordion.Item
+                      key={roundResult.round}
+                      value={`round-${roundResult.round}`}
+                      mb={2}
+                    >
+                      <Accordion.ItemTrigger>
+                        <HStack justify="space-between" w="full">
+                          <Text
+                            fontSize="sm"
+                            fontWeight="bold"
+                            color="gray.700"
+                          >
+                            Round {roundResult.round}
+                          </Text>
+                          <Accordion.ItemIndicator />
+                        </HStack>
+                      </Accordion.ItemTrigger>
+                      <Accordion.ItemContent>
+                        <VStack gap={1} w="full" pt={2}>
                           {roundResult.picks.map((pick) => (
                             <HStack
-                            key={pick.playerId}
-                            w="full"
-                            p={1.5}
-                            bg="gray.50"
-                            borderRadius="md"
-                            cursor="pointer"
-                            _hover={{
-                              bg: 'gray.100',
-                              transition: 'all 0.15s ease',
-                            }}
-                            onClick={() => {
-                              handleEditClick(
-                                roundResult.round,
-                                pick.playerId,
-                                pick.playerName,
-                                pick.pick,
-                                pick.category,
-                              );
-                            }}
-                          >
-                            <Avatar
-                              avatarNumber={pick.avatar}
-                              name={pick.playerName}
-                              size="xs"
-                            />
-                            <VStack align="start" gap={0} flex={1}>
-                              <Text fontSize="sm" fontWeight="medium">
-                                {pick.playerName}
-                              </Text>
-                              <Text fontSize="xs" color="gray.600">
-                                {pick.pick} ({pick.category})
-                              </Text>
-                            </VStack>
+                              key={pick.playerId}
+                              w="full"
+                              p={1.5}
+                              bg="gray.50"
+                              borderRadius="md"
+                              cursor="pointer"
+                              _hover={{
+                                bg: 'gray.100',
+                                transition: 'all 0.15s ease',
+                              }}
+                              onClick={() => {
+                                handleEditClick(
+                                  roundResult.round,
+                                  pick.playerId,
+                                  pick.playerName,
+                                  pick.pick,
+                                  pick.category,
+                                );
+                              }}
+                            >
+                              <Avatar
+                                avatarNumber={pick.avatar}
+                                name={pick.playerName}
+                                size="xs"
+                              />
+                              <VStack align="start" gap={0} flex={1}>
+                                <Text fontSize="sm" fontWeight="medium">
+                                  {pick.playerName}
+                                </Text>
+                                <Text fontSize="xs" color="gray.600">
+                                  {pick.pick} ({pick.category})
+                                </Text>
+                              </VStack>
                             </HStack>
                           ))}
                         </VStack>
-                      </VStack>
-                    </Card>
-                  </Box>
-                ))}
+                      </Accordion.ItemContent>
+                    </Accordion.Item>
+                  ))}
+                </Accordion.Root>
               </VStack>
             </VStack>
           </Tabs.Content>

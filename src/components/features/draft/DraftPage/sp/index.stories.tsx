@@ -26,7 +26,7 @@ export const Default: Story = {};
 export const Chat: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    
+
     // チャットタブをクリック
     const chatTab = canvas.getByRole('tab', { name: 'チャット' });
     await userEvent.click(chatTab);
