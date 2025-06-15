@@ -1,4 +1,4 @@
-import { TopPage } from '@/src/components/features/top';
+import { TopPage } from '@/src/components/features/top/TopPage';
 import { Animation } from '@/src/components/templates/Animation';
 
 export const metadata = {

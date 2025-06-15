@@ -125,6 +125,7 @@ async function encryptSecret(
   publicKey: string,
 ): Promise<string> {
   // tweetnacl-sealedbox-jsを使って暗号化
+  // @ts-ignore
   const sealedbox = await import('tweetnacl-sealedbox-js');
   const encoder = new TextEncoder();
   const messageBytes = encoder.encode(value);

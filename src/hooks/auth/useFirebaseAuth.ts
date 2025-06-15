@@ -1,203 +1,89 @@
 'use client';
 
-import { isStorybookEnvironment } from '@/src/helpers/utils/env';
-import { getDraftGroup } from '@/src/services/firestore/draftGroups';
-import { getAuth, signInAnonymously } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { auth } from '@/src/lib/firebase';
+import { type User, signInAnonymously } from 'firebase/auth';
+import { useEffect, useState } from 'react';
+
+type AuthStateType = {
+  user: User | null;
+  loading: boolean;
+  error: Error | null;
+};
 
 /**
- * Firebase匿名認証とグループ存在確認を行うフック
- * Legacy の AnonymousAuth.tsx と同等の機能を提供
+ * Firebase匿名認証カスタムフック
+ * ユーザーの認証状態を管理し、匿名サインイン機能を提供
  */
-interface UseFirebaseAuthReturn {
-  // 認証状態
-  isAuthenticated: boolean;
-  groupExists: boolean;
-  loading: boolean;
+export const useFirebaseAuth = () => {
+  const [authState, setAuthState] = useState<AuthStateType>({
+    user: null,
+    loading: true,
+    error: null,
+  });
 
-  // エラー情報
-  authError: string | null;
-  groupError: string | null;
-
-  // 再実行用
-  retry: () => void;
-}
-
-export const useFirebaseAuth = (groupId: string): UseFirebaseAuthReturn => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [groupExists, setGroupExists] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [authError, setAuthError] = useState<string | null>(null);
-  const [groupError, setGroupError] = useState<string | null>(null);
-  const _router = useRouter();
-
-  /**
-   * Firebase匿名認証を実行
-   */
-  const authenticateUser = useCallback(async (): Promise<boolean> => {
-    try {
-      const auth = getAuth();
-
-      // 既に認証済みかチェック
-      if (auth.currentUser) {
-        console.log('✅ 既にFirebase認証済み:', {
-          uid: auth.currentUser.uid,
-          isAnonymous: auth.currentUser.isAnonymous,
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged(
+      (user) => {
+        setAuthState({
+          user,
+          loading: false,
+          error: null,
         });
-        setIsAuthenticated(true);
-        setAuthError(null);
-        return true;
-      }
+      },
+      (error) => {
+        setAuthState({
+          user: null,
+          loading: false,
+          error,
+        });
+      },
+    );
 
-      // 匿名ログイン実行
-      console.log('🔄 Firebase匿名認証開始...');
-      const userCredential = await signInAnonymously(auth);
-      console.log('✅ Firebase匿名認証成功:', {
-        uid: userCredential.user.uid,
-        isAnonymous: userCredential.user.isAnonymous,
-      });
-
-      setIsAuthenticated(true);
-      setAuthError(null);
-      return true;
-    } catch (error) {
-      console.error('❌ Firebase認証エラー:', error);
-      setAuthError(
-        '回線が混み合っています。しばらく経ってから再度お試しください。',
-      );
-      setIsAuthenticated(false);
-      return false;
-    }
+    return unsubscribe;
   }, []);
 
   /**
-   * グループ存在確認を実行
+   * 匿名認証サインイン
+   * Firebase Authenticationによる匿名ユーザー作成
    */
-  const checkGroupExists = useCallback(
-    async (groupId: string): Promise<boolean> => {
-      try {
-        console.log('🔍 グループ存在確認開始:', { groupId });
+  const signInAnonymous = async () => {
+    try {
+      setAuthState((prev) => ({ ...prev, loading: true, error: null }));
+      const result = await signInAnonymously(auth);
+      return result.user;
+    } catch (error) {
+      // 型ガードで安全に処理
+      if (error instanceof Error) {
+        // Firebase特化エラーハンドリング
+        let errorMessage = '予期しないエラーが発生しました';
 
-        const groupData = await getDraftGroup(groupId);
-
-        if (groupData) {
-          console.log('✅ グループ存在確認成功:', {
-            id: groupData.id,
-            name: groupData.groupName,
-            round: groupData.round,
-          });
-          setGroupExists(true);
-          setGroupError(null);
-          return true;
+        if (error.message.includes('permission-denied')) {
+          errorMessage = '認証権限エラー - この操作は許可されていません';
+        } else if (error.message.includes('unavailable')) {
+          errorMessage = '接続エラー - インターネット接続を確認してください';
         }
 
-        console.log('❌ グループが存在しません:', { groupId });
-        setGroupError('指定されたグループが見つかりません');
-        setGroupExists(false);
-        return false;
-      } catch (error) {
-        console.error('❌ グループ存在確認エラー:', error);
-        setGroupError('グループ情報の取得に失敗しました');
-        setGroupExists(false);
-        return false;
-      }
-    },
-    [],
-  );
-
-  /**
-   * 統合認証処理フロー
-   */
-  const initializeAuth = useCallback(async () => {
-    setLoading(true);
-    setAuthError(null);
-    setGroupError(null);
-    setIsAuthenticated(false);
-    setGroupExists(false);
-
-    try {
-      // Step 1: Firebase認証
-      const authSuccess = await authenticateUser();
-      if (!authSuccess) {
-        return;
+        const authError = new Error(errorMessage);
+        setAuthState((prev) => ({ ...prev, loading: false, error: authError }));
+        throw authError;
       }
 
-      // Step 2: グループ存在確認
-      const groupSuccess = await checkGroupExists(groupId);
-      if (!groupSuccess) {
-        return;
-      }
-
-      console.log('🎉 Firebase認証・グループ確認 完了');
-    } catch (error) {
-      console.error('❌ 認証初期化エラー:', error);
-    } finally {
-      setLoading(false);
+      // Error以外の場合の汎用エラー
+      const genericError = new Error('認証処理中にエラーが発生しました');
+      setAuthState((prev) => ({
+        ...prev,
+        loading: false,
+        error: genericError,
+      }));
+      throw genericError;
     }
-  }, [groupId, authenticateUser, checkGroupExists]);
-
-  /**
-   * retry関数
-   */
-  const retry = () => {
-    console.log('🔄 Firebase認証を再実行します...');
-    initializeAuth();
   };
 
-  // Storybook環境では処理をスキップ
-  useEffect(() => {
-    if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためFirebase認証をスキップ');
-
-      // Storybook環境ではグループIDによってモックの動作を変える
-      if (groupId === 'nonexistent') {
-        // グループが存在しないケース
-        setLoading(false);
-        setIsAuthenticated(true);
-        setGroupExists(false);
-        setGroupError('指定されたグループが見つかりません');
-      } else {
-        // 通常の成功ケース
-        setLoading(false);
-        setIsAuthenticated(true);
-        setGroupExists(true);
-      }
-      return;
-    }
-
-    if (!groupId) {
-      console.log('⚠️ groupIdが指定されていません');
-      setLoading(false);
-      return;
-    }
-
-    initializeAuth();
-  }, [groupId, initializeAuth]);
-
-  // Legacy同等のエラーハンドリング
-  useEffect(() => {
-    if (authError && !loading) {
-      // 認証エラー時のアラート表示（Legacy準拠）
-      alert(authError);
-    }
-  }, [authError, loading]);
-
-  // Legacy同等のエラーハンドリング（コメントアウト）
-  // useEffect(() => {
-  //   if (groupError && !loading && !groupExists) {
-  //     // グループ不存在時のリダイレクト（Legacy準拠）
-  //     console.log('🔄 グループが見つからないため/にリダイレクト');
-  //     router.push('/');
-  //   }
-  // }, [groupError, loading, groupExists, router]);
-
   return {
-    isAuthenticated,
-    groupExists,
-    loading,
-    authError,
-    groupError,
-    retry,
+    user: authState.user,
+    loading: authState.loading,
+    error: authState.error,
+    signInAnonymous,
+    isAuthenticated: !!authState.user,
   };
 };

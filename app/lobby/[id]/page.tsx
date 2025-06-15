@@ -1,4 +1,4 @@
-import LobbyPage from '@/src/components/features/lobby';
+import { LobbyPage } from '@/src/components/features/lobby/LobbyPage';
 import { Animation } from '@/src/components/templates/Animation';
 
 interface PageProps {
@@ -12,9 +12,11 @@ interface PageInnerProps {
 }
 
 function PageInner({ id }: PageInnerProps) {
+  // IDパラメータの利用は後の実装で追加予定
+  console.log('Lobby ID:', id);
   return (
     <Animation>
-      <LobbyPage groupId={id} />
+      <LobbyPage />
     </Animation>
   );
 }

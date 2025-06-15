@@ -51,9 +51,13 @@ const vitestConfig = defineConfig({
     setupFiles: ['./src/configs/vitest/vitest-setup.ts'],
     include: ['./src/**/*.{test,spec}.{ts,tsx}'], // tsx追加でコンポーネントテスト対応
     exclude: ['./src/**/*.stories.{ts,tsx}', './src/test-utils/**/*.{ts,tsx}'], // Storybook・test-utilsは除外
+    ui: true,
+    open: true,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: 'https://example.com',
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: 'example',
+      NEXT_PUBLIC_FIREBASE_PROJECT_ID: 'test-project',
+      NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: 'test-project.firebaseapp.com',
+      NEXT_PUBLIC_FIREBASE_API_KEY: 'test-api-key',
+      NEXT_PUBLIC_GTM_ID: 'GTM-TEST',
     },
     // カバレッジ設定追加
     coverage: {

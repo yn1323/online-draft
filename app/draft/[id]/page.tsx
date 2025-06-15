@@ -1,4 +1,4 @@
-import { DraftPage } from '@/src/components/features/draft/DraftPage';
+import { DraftPageSp } from '@/src/components/features/draft/DraftPage/sp';
 import { Animation } from '@/src/components/templates/Animation';
 
 interface DraftPageRouteProps {
@@ -8,10 +8,10 @@ interface DraftPageRouteProps {
 }
 
 export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
-  const resolvedParams = await params;
+  await params; // パラメータの取得（現在は未使用）
   return (
     <Animation>
-      <DraftPage groupId={resolvedParams.id} />
+      <DraftPageSp />
     </Animation>
   );
 }

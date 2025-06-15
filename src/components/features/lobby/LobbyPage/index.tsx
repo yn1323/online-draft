@@ -1,312 +1,230 @@
 'use client';
 
-import { useColorModeValue } from '@/src/components/ui/color-mode';
-import type { UserCreateForm } from '@/src/constants/schemas';
-import { checkUserNameExists, createUser } from '@/src/helpers/firebase/user';
-import { isStorybookEnvironment } from '@/src/helpers/utils/env';
-import { useAutoAuth } from '@/src/hooks/auth/useAutoAuth';
-import { useGroupData } from '@/src/hooks/data/useGroupData';
-import { useRealtimeUsers } from '@/src/hooks/realtime/useRealtimeUsers';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
 import {
-  currentUserAtom,
-  userRegistrationErrorAtom,
-  userRegistrationLoadingAtom,
-} from '@/src/stores/user';
-import {
-  Badge,
   Box,
   Container,
   HStack,
-  Heading,
-  Spinner,
+  IconButton,
+  SimpleGrid,
+  Spacer,
   Text,
   VStack,
 } from '@chakra-ui/react';
-import { useAtom, useSetAtom } from 'jotai';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { FiAlertCircle, FiUsers } from 'react-icons/fi';
-import UserCreateStep from '../UserCreateStep';
-import UserSelectStep from '../UserSelectStep';
-import StepIndicator, {
-  type Step,
-} from '../components/indicators/StepIndicator';
-import { AVATAR_IMAGES } from './mocks';
+import { LuCopy } from 'react-icons/lu';
+import { AvatarSelectionModal } from '../AvatarSelectionModal';
 
-interface LobbyPageProps {
-  groupId: string;
-}
+/**
+ * ロビー画面コンポーネント
+ * 参加者待機・ドラフト開始準備画面
+ */
+export const LobbyPage = () => {
+  // モックデータ
+  const mockParticipants = [
+    { id: '1', name: '田中太郎', avatar: '1' },
+    { id: '2', name: '山田花子', avatar: '3' },
+    { id: '3', name: '佐藤次郎', avatar: '5' },
+  ];
 
-export default function LobbyPage({ groupId }: LobbyPageProps) {
-  const [step, setStep] = useState<Step>('select');
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const roomUrl = 'https://example.com/lobby/AbCdEfGhIjKlMnOpQrSt';
 
-  // カスタムフック
-  useAutoAuth(); // 自動匿名ログイン処理
-  const { groupData, groupLoading, groupError } = useGroupData(groupId);
-  const { groupUsers } = useRealtimeUsers(groupId);
+  // 新規参加者かどうかの判定（モック）
+  const _isNewUser = false; // 実際にはJotaiやFirebase Authで判定
 
-  // Jotai状態管理
-  const setCurrentUser = useSetAtom(currentUserAtom);
-  const [userRegistrationLoading, setUserRegistrationLoading] = useAtom(
-    userRegistrationLoadingAtom,
-  );
-  const [userRegistrationError, setUserRegistrationError] = useAtom(
-    userRegistrationErrorAtom,
-  );
+  // アバター選択モーダルの状態
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
-  const bgColor = useColorModeValue('white', 'gray.800');
-  const borderColor = useColorModeValue('gray.200', 'gray.600');
-  const helpBgColor = useColorModeValue('blue.50', 'blue.900');
-  const helpBorderColor = useColorModeValue('blue.200', 'blue.700');
-  const helpTextColor = useColorModeValue('blue.700', 'blue.300');
+  // 使用中のアバター番号を取得
+  const usedAvatars = mockParticipants.map((p) => p.avatar);
 
-  const handleExistingUserLogin = async (userId: string) => {
-    setIsLoading(true);
-    try {
-      // 既存ユーザー情報を取得してJotai状態に保存
-      const selectedUser = groupUsers.find((user) => user.userId === userId);
-      if (selectedUser) {
-        setCurrentUser({
-          userId: selectedUser.userId as string,
-          groupId,
-          userName: selectedUser.userName,
-          avatar: selectedUser.avatar,
-          deleteFlg: selectedUser.deleteFlg || false,
-          createdAt: selectedUser.createdAt,
-          updatedAt: selectedUser.updatedAt,
-        });
-        console.log('✅ 既存ユーザーでログイン:', selectedUser.userName);
-
-        // ドラフトページへ遷移
-        router.push(`/draft/${groupId}`);
-      }
-    } catch (error) {
-      console.error('❌ ログインエラー:', error);
-    } finally {
-      setIsLoading(false);
-    }
+  // 新規参加確定時の処理
+  const handleJoinConfirm = (userData: { name: string; avatar: string }) => {
+    console.log('新規参加:', userData);
+    // 実際にはFirestoreにユーザー追加、Jotai更新など
+    setIsAvatarModalOpen(false);
   };
-
-  const handleCreateUser = async (data: UserCreateForm) => {
-    if (!groupId) {
-      console.error('❌ グループIDが指定されていません');
-      return;
-    }
-
-    // Storybook環境ではモック処理
-    if (isStorybookEnvironment()) {
-      console.log('📚 Storybook環境のためモック処理');
-      setIsLoading(true);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsLoading(false);
-      return;
-    }
-
-    try {
-      setUserRegistrationLoading(true);
-      setUserRegistrationError(null);
-      console.log('🔄 ユーザー作成開始:', data);
-
-      // 1. ユーザー名重複チェック
-      const nameExists = await checkUserNameExists(groupId, data.userName);
-      if (nameExists) {
-        setUserRegistrationError('そのユーザー名は既に使用されています');
-        return;
-      }
-
-      // 2. Firestoreにユーザー作成
-      const userId = await createUser({
-        groupId,
-        userName: data.userName,
-        avatar: data.avatarIndex,
-        deleteFlg: false,
-      });
-
-      // 3. Jotai状態に保存
-      const now = new Date();
-      const newUser = {
-        userId,
-        groupId,
-        userName: data.userName,
-        avatar: data.avatarIndex,
-        deleteFlg: false,
-        createdAt: now,
-        updatedAt: now,
-      };
-      setCurrentUser(newUser);
-
-      console.log('✅ ユーザー作成成功:', newUser);
-
-      // ドラフトページへ遷移
-      router.push(`/draft/${groupId}`);
-    } catch (error) {
-      console.error('❌ ユーザー作成エラー:', error);
-      setUserRegistrationError('ユーザーの作成に失敗しました');
-    } finally {
-      setUserRegistrationLoading(false);
-    }
-  };
-
-  // ローディング中の表示
-  if (groupLoading) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Spinner size="lg" color="blue.500" />
-          <Text color="gray.500">グループ情報を読み込み中...</Text>
-        </VStack>
-      </Container>
-    );
-  }
-
-  // エラー時の表示
-  if (groupError || !groupData) {
-    return (
-      <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-        <VStack gap={6} align="center" justify="center" minH="400px">
-          <Box as={FiAlertCircle} fontSize="48px" color="red.500" />
-          <VStack gap={2} textAlign="center">
-            <Heading size="md" color="red.500">
-              グループが見つかりません
-            </Heading>
-            <Text color="gray.500">
-              {groupError ||
-                '指定されたグループID のグループは存在しないか、削除されている可能性があります。'}
-            </Text>
-            <Badge variant="outline" colorScheme="red" fontSize="xs" mt={2}>
-              グループID: {groupId}
-            </Badge>
-          </VStack>
-        </VStack>
-      </Container>
-    );
-  }
 
   return (
-    <Container maxW="container.sm" py={{ base: 4, md: 8 }}>
-      <VStack gap={6} align="stretch">
-        {/* ヘッダー部分 - 改善版 */}
-        <Box textAlign="center">
-          <Badge
-            colorScheme="blue"
-            fontSize="xs"
-            px={3}
-            py={1}
-            borderRadius="full"
-            mb={3}
-          >
-            <HStack gap={1}>
-              <Box as={FiUsers} />
-              <Text>グループに参加</Text>
-            </HStack>
-          </Badge>
-          <Heading
-            size={{ base: 'md', md: 'lg' }}
-            mb={3}
-            color="gray.800"
-            _dark={{ color: 'gray.100' }}
-            fontWeight="bold"
-          >
-            {groupData.groupName}
-          </Heading>
-          <HStack justify="center" gap={2}>
-            <Text fontSize="sm" color="gray.500">
-              グループID:
-            </Text>
-            <Badge variant="outline" colorScheme="blue" fontSize="xs">
-              {groupId}
-            </Badge>
-            <Text fontSize="sm" color="gray.500">
-              •
-            </Text>
-            <Text fontSize="sm" color="gray.500">
-              ラウンド: {groupData.round}
-            </Text>
-          </HStack>
-        </Box>
-
-        {/* ステップインジケーター */}
-        <StepIndicator currentStep={step} />
-
-        {/* メインコンテンツ */}
-        <Box
-          bg={bgColor}
-          borderRadius="xl"
-          border="1px solid"
-          borderColor={borderColor}
-          p={{ base: 4, md: 6 }}
-          boxShadow="md"
-          overflow="hidden"
-        >
-          {step === 'select' && (
-            <UserSelectStep
-              users={groupUsers
-                .filter((user) => user.userId) // userIdが存在するもののみ
-                .map((user) => ({
-                  userId: user.userId as string, // フィルター後は必ず存在
-                  userName: user.userName,
-                  avatarIndex: user.avatar,
-                  avatar: `/img/${user.avatar}.png`,
-                }))}
-              onUserSelect={handleExistingUserLogin}
-              onCreateNewUser={() => setStep('create')}
-              isLoading={isLoading}
-            />
-          )}
-
-          {step === 'create' && (
-            <UserCreateStep
-              avatars={AVATAR_IMAGES}
-              onBack={() => setStep('select')}
-              onSubmit={handleCreateUser}
-              isLoading={userRegistrationLoading}
-            />
-          )}
-        </Box>
-
-        {/* エラー表示 */}
-        {userRegistrationError && (
-          <Box
-            bg="red.50"
-            border="1px solid"
-            borderColor="red.200"
-            borderRadius="lg"
-            p={4}
-            _dark={{
-              bg: 'red.900',
-              borderColor: 'red.700',
-            }}
-          >
-            <Text
-              fontSize="sm"
-              color="red.700"
-              _dark={{ color: 'red.300' }}
-              fontWeight="medium"
-            >
-              ❌ {userRegistrationError}
-            </Text>
-          </Box>
-        )}
-
-        {/* ヘルプテキスト - 改善版 */}
-        <Box
-          bg={helpBgColor}
-          border="1px solid"
-          borderColor={helpBorderColor}
-          borderRadius="lg"
-          p={4}
-          textAlign="center"
-        >
-          <Text fontSize="sm" color={helpTextColor} fontWeight="medium">
-            💡{' '}
-            {step === 'select'
-              ? '既存のユーザーを選択するか、新しいユーザーを作成してグループに参加しましょう'
-              : 'お気に入りのアバターを選んで、ドラフトで使う名前を決めてください'}
+    <Box bg="gray.50" minH="100vh" py={[4, 8]}>
+      <Container maxW="container.lg">
+        <VStack gap={6}>
+          {/* ヘッダー */}
+          <Text fontSize={['xl', '2xl']} fontWeight="bold" color="gray.800">
+            ドラフトルーム
           </Text>
-        </Box>
-      </VStack>
-    </Container>
+
+          {/* ルーム情報カード */}
+          <Card variant="elevated" size="md">
+            <Box w="full">
+              <VStack gap={4} align="stretch">
+                <Text fontSize="lg" fontWeight="bold">
+                  2025年プロ野球ドラフト会議
+                </Text>
+
+                {/* URL共有エリア */}
+                <Box>
+                  <Text fontSize="sm" color="gray.600" mb={2}>
+                    このURLを友達にシェアしよう！
+                  </Text>
+                  <HStack>
+                    <Text
+                      fontSize="sm"
+                      bg="gray.100"
+                      p={2}
+                      borderRadius="md"
+                      flex={1}
+                      truncate
+                    >
+                      {roomUrl}
+                    </Text>
+                    <IconButton
+                      aria-label="URLをコピー"
+                      variant="solid"
+                      colorPalette="blue"
+                      size="sm"
+                    >
+                      <LuCopy />
+                    </IconButton>
+                  </HStack>
+                </Box>
+
+                <Text fontSize={['xs', 'sm']} color="gray.500">
+                  音声通話アプリ（LINE、Discord等）を併用してお楽しみください
+                </Text>
+              </VStack>
+            </Box>
+          </Card>
+
+          {/* 参加者一覧カード */}
+          <Card variant="elevated" size="md">
+            <Box w="full">
+              <HStack mb={4}>
+                <Text fontWeight="bold" fontSize={['md', 'lg']}>
+                  参加者 ({mockParticipants.length}人)
+                </Text>
+                <Spacer />
+                <Text fontSize={['xs', 'sm']} color="gray.500">
+                  最小2人から開始可能
+                </Text>
+              </HStack>
+              <VStack gap={4} align="stretch">
+                <SimpleGrid columns={[2, 3]} gap={4}>
+                  {mockParticipants.map((participant) => (
+                    <Box
+                      key={participant.id}
+                      p={3}
+                      bg="white"
+                      border="2px solid"
+                      borderColor="gray.200"
+                      borderRadius="lg"
+                      cursor="pointer"
+                      transition="all 0.15s"
+                      _hover={{
+                        borderColor: 'blue.400',
+                        transform: 'translateY(-2px)',
+                        boxShadow: 'md',
+                      }}
+                      _active={{
+                        transform: 'translateY(0)',
+                        boxShadow: 'sm',
+                      }}
+                    >
+                      <HStack gap={3}>
+                        <Avatar
+                          avatarNumber={participant.avatar}
+                          name={participant.name}
+                          size="md"
+                        />
+                        <VStack align="start" gap={0}>
+                          <Text fontSize={['xs', 'sm']} fontWeight="medium">
+                            {participant.name}
+                          </Text>
+                          <Text fontSize="xs" color="green.500">
+                            参加中
+                          </Text>
+                        </VStack>
+                      </HStack>
+                    </Box>
+                  ))}
+
+                  {/* 新規参加ボタン */}
+                  <Box
+                    p={3}
+                    bg="blue.50"
+                    border="2px dashed"
+                    borderColor="blue.300"
+                    borderRadius="lg"
+                    cursor="pointer"
+                    transition="all 0.15s"
+                    onClick={() => setIsAvatarModalOpen(true)}
+                    _hover={{
+                      bg: 'blue.100',
+                      borderColor: 'blue.400',
+                      transform: 'translateY(-2px)',
+                    }}
+                    _active={{
+                      transform: 'translateY(0)',
+                    }}
+                  >
+                    <VStack gap={2}>
+                      <Box
+                        w="48px"
+                        h="48px"
+                        borderRadius="full"
+                        bg="blue.200"
+                        display="flex"
+                        alignItems="center"
+                        justifyContent="center"
+                      >
+                        <Text fontSize="2xl" color="blue.600">
+                          ＋
+                        </Text>
+                      </Box>
+                      <Text
+                        fontSize={['xs', 'sm']}
+                        color="blue.600"
+                        fontWeight="medium"
+                        textAlign="center"
+                      >
+                        参加する
+                      </Text>
+                    </VStack>
+                  </Box>
+                </SimpleGrid>
+
+                <Box textAlign="center" pt={2}>
+                  <Text
+                    fontSize={['xs', 'sm']}
+                    color="blue.500"
+                    fontWeight="medium"
+                  >
+                    参加者をタップしてドラフトを開始
+                  </Text>
+                  <Text fontSize="xs" color="gray.500" mt={1}>
+                    新規参加は「＋参加する」から・最小2人で開始可能
+                  </Text>
+                </Box>
+              </VStack>
+            </Box>
+          </Card>
+
+          {/* 退室ボタン */}
+          <Button variant="outline" size="sm">
+            ルームを退出
+          </Button>
+        </VStack>
+      </Container>
+
+      {/* アバター選択モーダル */}
+      <AvatarSelectionModal
+        isOpen={isAvatarModalOpen}
+        onClose={() => setIsAvatarModalOpen(false)}
+        onConfirm={handleJoinConfirm}
+        usedAvatars={usedAvatars}
+      />
+    </Box>
   );
-}
+};

@@ -28,11 +28,3 @@ export const clearLocalStorage = async (page: Page) => {
     sessionStorage.clear();
   });
 };
-
-/**
- * TODO: Firebase認証実装後に追加予定の関数
- * - mockLogin: テスト用ログイン
- * - mockLogout: テスト用ログアウト
- * - createTestDraftRoom: テスト用ドラフトルーム作成
- * - joinTestDraftRoom: テスト用ドラフトルーム参加
- */
