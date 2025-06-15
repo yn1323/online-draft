@@ -60,24 +60,24 @@ export const DraftPagePC = () => {
           playerId: '1',
           playerName: '田中太郎',
           avatar: '1',
-          pick: 'イチロー',
-          position: '外野手',
+          pick: '候補アイテムA',
+          category: 'タイプA',
         },
         {
           order: 2,
           playerId: '2',
           playerName: '山田花子',
           avatar: '3',
-          pick: '松井秀喜',
-          position: '内野手',
+          pick: '候補アイテムB',
+          category: 'タイプB',
         },
         {
           order: 3,
           playerId: '3',
           playerName: '佐藤次郎',
           avatar: '5',
-          pick: '野茂英雄',
-          position: '投手',
+          pick: '候補アイテムC',
+          category: 'タイプC',
         },
       ],
     },
@@ -89,24 +89,24 @@ export const DraftPagePC = () => {
           playerId: '3',
           playerName: '佐藤次郎',
           avatar: '5',
-          pick: 'ダルビッシュ有',
-          position: '投手',
+          pick: '候補アイテムD',
+          category: 'タイプA',
         },
         {
           order: 2,
           playerId: '1',
           playerName: '田中太郎',
           avatar: '1',
-          pick: '青木宣親',
-          position: '外野手',
+          pick: '候補アイテムE',
+          category: 'タイプB',
         },
         {
           order: 3,
           playerId: '2',
           playerName: '山田花子',
           avatar: '3',
-          pick: '筒香嘉智',
-          position: '内野手',
+          pick: '候補アイテムF',
+          category: 'タイプC',
         },
       ],
     },
@@ -118,24 +118,24 @@ export const DraftPagePC = () => {
           playerId: '2',
           playerName: '山田花子',
           avatar: '3',
-          pick: '前田健太',
-          position: '投手',
+          pick: '候補アイテムG',
+          category: 'タイプA',
         },
         {
           order: 2,
           playerId: '3',
           playerName: '佐藤次郎',
           avatar: '5',
-          pick: '柳田悠岐',
-          position: '外野手',
+          pick: '候補アイテムH',
+          category: 'タイプB',
         },
         {
           order: 3,
           playerId: '1',
           playerName: '田中太郎',
           avatar: '1',
-          pick: '山田哲人',
-          position: '内野手',
+          pick: '候補アイテムI',
+          category: 'タイプC',
         },
       ],
     },
@@ -146,21 +146,21 @@ export const DraftPagePC = () => {
       id: '1',
       userName: '田中太郎',
       avatar: '1',
-      message: 'トラウト指名！',
+      message: '候補アイテムA選択！',
       timestamp: '14:32',
     },
     {
       id: '2',
       userName: '山田花子',
       avatar: '3',
-      message: '大谷で行きます！',
+      message: '候補アイテムBで行きます！',
       timestamp: '14:35',
     },
     {
       id: '3',
       userName: 'システム',
       avatar: '99',
-      message: '佐藤次郎さんの選択中です（1分30秒）',
+      message: '佐藤次郎さんの選択中です',
       timestamp: '14:38',
       isSystem: true,
     },
@@ -238,7 +238,7 @@ export const DraftPagePC = () => {
                         size="sm"
                         onClick={() => setIsItemSelectModalOpen(true)}
                       >
-                        選手を選択する
+                        アイテムを選択する
                       </Button>
                     </Box>
                   </VStack>
@@ -350,7 +350,7 @@ export const DraftPagePC = () => {
                                         {pick.pick}
                                       </Text>
                                       <Text color="gray.500" fontSize="2xs">
-                                        ({pick.position})
+                                        ({pick.category})
                                       </Text>
                                     </VStack>
                                   ) : (
@@ -489,11 +489,11 @@ export const DraftPagePC = () => {
         </Grid>
       </Container>
 
-      {/* 選手選択モーダル */}
+      {/* アイテム選択モーダル */}
       <ResponsiveModal
         isOpen={isItemSelectModalOpen}
         onClose={() => setIsItemSelectModalOpen(false)}
-        title="選手を選択"
+        title="アイテムを選択"
         actions={{
           cancel: {
             text: 'キャンセル',
@@ -507,14 +507,14 @@ export const DraftPagePC = () => {
         }}
       >
         <VStack gap={4} w="full">
-          {/* 選手名入力 */}
+          {/* アイテム名入力 */}
           <VStack gap={2} align="start" w="full">
             <Text fontSize="sm" fontWeight="bold" color="gray.700">
-              選手名
+              アイテム名
             </Text>
             <Input
-              placeholder="選手名を入力してください"
-              value={setSelectedItem}
+              placeholder="アイテム名を入力してください"
+              value={selectedItem}
               onChange={setSelectedItem}
               maxLength={50}
               size="lg"
