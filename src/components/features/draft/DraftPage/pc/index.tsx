@@ -27,6 +27,16 @@ export const DraftPagePC = () => {
   const [selectedItem, setSelectedItem] = useState('');
   const [comment, setComment] = useState('');
 
+  // 編集モーダルの状態
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingPick, setEditingPick] = useState<{
+    round: number;
+    playerId: string;
+    playerName: string;
+    currentPick: string;
+    category: string;
+  } | null>(null);
+
   // アイテム選択確定ハンドラー
   const handleItemSelect = () => {
     if (selectedItem.trim()) {
@@ -35,6 +45,28 @@ export const DraftPagePC = () => {
       setIsItemSelectModalOpen(false);
       setSelectedItem('');
       setComment('');
+    }
+  };
+
+  // ピック編集ハンドラー
+  const handleEditClick = (
+    round: number,
+    playerId: string,
+    playerName: string,
+    currentPick: string,
+    category: string,
+  ) => {
+    setEditingPick({ round, playerId, playerName, currentPick, category });
+    setIsEditModalOpen(true);
+  };
+
+  // 編集保存ハンドラー
+  const handleEditSave = () => {
+    if (editingPick) {
+      console.log('ピック編集:', editingPick);
+      // 実際にはFirestoreに保存
+      setIsEditModalOpen(false);
+      setEditingPick(null);
     }
   };
 
@@ -339,6 +371,27 @@ export const DraftPagePC = () => {
                                   minH="40px"
                                   display="flex"
                                   alignItems="center"
+                                  cursor={pick ? 'pointer' : 'default'}
+                                  _hover={
+                                    pick
+                                      ? {
+                                          bg: 'gray.50',
+                                          borderColor: 'gray.300',
+                                          transition: 'all 0.15s ease',
+                                        }
+                                      : {}
+                                  }
+                                  onClick={() => {
+                                    if (pick) {
+                                      handleEditClick(
+                                        roundResult.round,
+                                        participant.id,
+                                        participant.name,
+                                        pick.pick,
+                                        pick.category,
+                                      );
+                                    }
+                                  }}
                                 >
                                   {pick ? (
                                     <VStack gap={0} align="start" w="full">
@@ -530,6 +583,94 @@ export const DraftPagePC = () => {
             />
           </VStack>
         </VStack>
+      </ResponsiveModal>
+
+      {/* ピック編集モーダル */}
+      <ResponsiveModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setEditingPick(null);
+        }}
+        title="ピックを編集"
+        actions={{
+          cancel: {
+            text: 'キャンセル',
+            onClick: () => {
+              setIsEditModalOpen(false);
+              setEditingPick(null);
+            },
+          },
+          submit: {
+            text: '保存',
+            colorPalette: 'blue',
+            onClick: handleEditSave,
+          },
+        }}
+      >
+        {editingPick && (
+          <VStack gap={4} w="full">
+            {/* 編集対象情報 */}
+            <Box w="full" p={3} bg="gray.50" borderRadius="md">
+              <VStack gap={2} align="start">
+                <HStack>
+                  <Text fontSize="xs" color="gray.600">
+                    ラウンド:
+                  </Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    Round {editingPick.round}
+                  </Text>
+                </HStack>
+                <HStack>
+                  <Text fontSize="xs" color="gray.600">
+                    プレイヤー:
+                  </Text>
+                  <Text fontSize="sm" fontWeight="bold">
+                    {editingPick.playerName}
+                  </Text>
+                </HStack>
+              </VStack>
+            </Box>
+
+            {/* アイテム名編集 */}
+            <VStack gap={2} align="start" w="full">
+              <Text fontSize="sm" fontWeight="bold" color="gray.700">
+                選択アイテム
+              </Text>
+              <Input
+                placeholder="アイテム名を入力してください"
+                value={editingPick.currentPick}
+                onChange={(value) =>
+                  setEditingPick({
+                    ...editingPick,
+                    currentPick: value,
+                  })
+                }
+                maxLength={50}
+                size="lg"
+              />
+            </VStack>
+
+            {/* カテゴリ編集 */}
+            <VStack gap={2} align="start" w="full">
+              <Text fontSize="sm" fontWeight="bold" color="gray.700">
+                カテゴリ
+              </Text>
+              <Input
+                placeholder="カテゴリを入力してください"
+                value={editingPick.category}
+                onChange={(value) =>
+                  setEditingPick({
+                    ...editingPick,
+                    category: value,
+                  })
+                }
+                maxLength={20}
+                size="lg"
+              />
+            </VStack>
+          </VStack>
+        )}
       </ResponsiveModal>
     </Box>
   );
