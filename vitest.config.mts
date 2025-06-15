@@ -48,6 +48,7 @@ const vitestConfig = defineConfig({
   test: {
     globals: true,
     name: 'vitest',
+    environment: 'jsdom',
     setupFiles: ['./src/configs/vitest/vitest-setup.ts'],
     include: ['./src/**/*.{test,spec}.{ts,tsx}'], // tsx追加でコンポーネントテスト対応
     exclude: ['./src/**/*.stories.{ts,tsx}', './src/test-utils/**/*.{ts,tsx}'], // Storybook・test-utilsは除外

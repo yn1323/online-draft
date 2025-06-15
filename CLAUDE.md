@@ -79,8 +79,7 @@ OnlineDraftは、Next.js 15とReact 19で構築されたリアルタイムマル
 ```
 src/components/features/draft/DraftRoom/
 ├── index.tsx           # メインコンポーネント
-├── index.stories.tsx   # Storybookファイル  
-├── index.test.tsx      # テストファイル
+├── index.stories.tsx   # Storybookファイル（パターン作成、簡単なテスト）
 └── hooks.ts           # ローカルカスタムフック（必要時）
 ```
 
