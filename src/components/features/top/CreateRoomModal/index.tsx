@@ -12,9 +12,9 @@ import { z } from 'zod';
 export const createRoomSchema = z.object({
   roomName: z
     .string()
+    .trim()
     .min(1, 'ルーム名を入力してください')
-    .max(30, 'ルーム名は30文字以内で入力してください')
-    .trim(),
+    .max(30, 'ルーム名は30文字以内で入力してください'),
 });
 
 type CreateRoomFormType = z.infer<typeof createRoomSchema>;
