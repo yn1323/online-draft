@@ -4,6 +4,11 @@ import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
 import { Input } from '@/src/components/atoms/Input';
 import {
+  CreateRoomModal,
+  useCreateRoomModal,
+} from '@/src/components/features/top/CreateRoomModal';
+import { useGroup } from '@/src/hooks/firebase/group/useGroup';
+import {
   Box,
   Container,
   Grid,
@@ -12,6 +17,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
 import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 
 /**
@@ -19,6 +25,27 @@ import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
  * URLシェアによる簡単参加と音声通話併用を前提としたシンプルなUI
  */
 export const TopPage = () => {
+  // ルーム作成モーダル管理
+  const { openModal, modalProps } = useCreateRoomModal();
+
+  // Firebase操作
+  const { createGroup } = useGroup();
+
+  // ページナビゲーション
+  const router = useRouter();
+
+  // ルーム作成処理
+  const handleCreateRoom = async (roomName: string) => {
+    try {
+      const groupId = await createGroup(roomName);
+      router.push(`/lobby/${groupId}`);
+    } catch (error) {
+      // エラーハンドリングは後で追加
+      console.error('ルーム作成エラー:', error);
+      throw error;
+    }
+  };
+
   // 共通のテキストスタイル
   const whiteTextStyle = {
     color: 'white',
@@ -56,7 +83,12 @@ export const TopPage = () => {
           {/* アクションエリア */}
           <VStack gap={6} w="full" maxW="sm">
             {/* ルーム作成ボタン */}
-            <Button variant="primary" size="lg" width="full">
+            <Button
+              variant="primary"
+              size="lg"
+              width="full"
+              onClick={openModal}
+            >
               ルームを作成する
             </Button>
 
@@ -184,6 +216,9 @@ export const TopPage = () => {
           </VStack>
         </VStack>
       </Container>
+
+      {/* ルーム作成モーダル */}
+      <CreateRoomModal {...modalProps} onCreateRoom={handleCreateRoom} />
     </Box>
   );
 };

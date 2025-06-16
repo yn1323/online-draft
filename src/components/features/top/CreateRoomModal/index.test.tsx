@@ -1,4 +1,4 @@
-import { CreateRoomModal, useCreateRoomModal, createRoomSchema } from './index';
+import { CreateRoomModal, createRoomSchema, useCreateRoomModal } from './index';
 
 describe('CreateRoomModal', () => {
   test('コンポーネントが正常に定義されている', () => {
@@ -20,7 +20,9 @@ describe('createRoomSchema', () => {
       const result = createRoomSchema.safeParse({ roomName: '' });
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe('ルーム名を入力してください');
+        expect(result.error.issues[0].message).toBe(
+          'ルーム名を入力してください',
+        );
       }
     });
 
@@ -29,7 +31,9 @@ describe('createRoomSchema', () => {
       // trimされて空文字列になるため、エラーになるはず
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe('ルーム名を入力してください');
+        expect(result.error.issues[0].message).toBe(
+          'ルーム名を入力してください',
+        );
       }
     });
 
@@ -38,7 +42,9 @@ describe('createRoomSchema', () => {
       const result = createRoomSchema.safeParse({ roomName: longText });
       expect(result.success).toBe(false);
       if (!result.success) {
-        expect(result.error.issues[0].message).toBe('ルーム名は30文字以内で入力してください');
+        expect(result.error.issues[0].message).toBe(
+          'ルーム名は30文字以内で入力してください',
+        );
       }
     });
 
@@ -50,7 +56,7 @@ describe('createRoomSchema', () => {
         'あ'.repeat(30),
       ];
 
-      testCases.forEach(roomName => {
+      testCases.forEach((roomName) => {
         const result = createRoomSchema.safeParse({ roomName });
         expect(result.success).toBe(true);
         if (result.success) {
@@ -60,7 +66,9 @@ describe('createRoomSchema', () => {
     });
 
     test('前後の空白はtrimされる', () => {
-      const result = createRoomSchema.safeParse({ roomName: '  テストルーム  ' });
+      const result = createRoomSchema.safeParse({
+        roomName: '  テストルーム  ',
+      });
       expect(result.success).toBe(true);
       if (result.success) {
         expect(result.data.roomName).toBe('テストルーム');
