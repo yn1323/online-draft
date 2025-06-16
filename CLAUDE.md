@@ -23,6 +23,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
   - linter自動修正: `pnpm lint:fix`
   - 型チェック: `pnpm type-check`
   - linter: `pnpm lint`
+  また、これらのテストを実施するときはSub Agentでタスクを並列化して確認すること。
 - YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
 
