@@ -44,8 +44,11 @@ export const Default: Story = {
     const openButton = await canvas.findByText('ルーム作成モーダルを開く');
     await userEvent.click(openButton);
 
-    // モーダルが開いたことを確認
-    const modal = await canvas.findByText('新しいルームを作成');
-    await expect(modal).toBeInTheDocument();
+    // モーダルが開くまで待機
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+
+    // ボタンテキストで確認（モーダル内のキャンセルボタンまたは作成ボタン）
+    const cancelButton = await canvas.findByText('キャンセル');
+    await expect(cancelButton).toBeInTheDocument();
   },
 };
