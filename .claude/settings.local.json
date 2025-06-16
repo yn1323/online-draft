@@ -70,7 +70,11 @@
       "WebFetch(domain:www.anthropic.com)",
       "Bash(pnpm update:*)",
       "Bash(pnpm exec:*)",
-      "mcp__playwright__playwright_evaluate"
+      "mcp__playwright__playwright_evaluate",
+      "Bash(pnpm storybook:*)",
+      "WebFetch(domain:vitest.dev)",
+      "WebFetch(domain:storybook.js.org)",
+      "Bash(timeout 30s pnpm test:storybook-vitest --run 2 >& 1)"
     ],
     "deny": []
   },

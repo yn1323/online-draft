@@ -294,7 +294,6 @@ const renderContent = () => {
 src/components/features/draft/DraftRoom/
 ├── index.tsx           # メインコンポーネント
 ├── index.stories.tsx           # Storybookファイル
-├── index.test.tsx      # テストファイル
 └── hooks.ts     # ローカルカスタムフック（必要あれば）
 ```
 
@@ -303,7 +302,6 @@ src/components/features/draft/DraftRoom/
 // 2回以上利用 → 共通化
 src/components/atoms/Button/
 ├── index.tsx
-├── index.test.tsx
 ├── index.stories.tsx
 └── types.ts
 ```

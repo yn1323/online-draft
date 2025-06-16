@@ -620,7 +620,7 @@ export const DraftPagePC = () => {
               <Input
                 placeholder="アイテム名を入力してください"
                 value={editingPick.currentPick}
-                onChange={(value) =>
+                onChange={(value: string) =>
                   setEditingPick({
                     ...editingPick,
                     currentPick: value,
@@ -639,7 +639,7 @@ export const DraftPagePC = () => {
               <Input
                 placeholder="カテゴリを入力してください"
                 value={editingPick.category}
-                onChange={(value) =>
+                onChange={(value: string) =>
                   setEditingPick({
                     ...editingPick,
                     category: value,
