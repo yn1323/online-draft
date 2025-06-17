@@ -3,6 +3,10 @@
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
+import { Loading } from '@/src/components/atoms/Loading';
+import { useToaster } from '@/src/components/ui/toaster';
+import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
+import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import {
   Box,
   Container,
@@ -17,35 +21,86 @@ import { useState } from 'react';
 import { LuCopy } from 'react-icons/lu';
 import { AvatarSelectionModal } from '../AvatarSelectionModal';
 
+type LobbyPageProps = {
+  groupId: string;
+};
+
 /**
  * ロビー画面コンポーネント
  * 参加者待機・ドラフト開始準備画面
  */
-export const LobbyPage = () => {
-  // モックデータ
-  const mockParticipants = [
-    { id: '1', name: '田中太郎', avatar: '1' },
-    { id: '2', name: '山田花子', avatar: '3' },
-    { id: '3', name: '佐藤次郎', avatar: '5' },
-  ];
+export const LobbyPage = ({ groupId }: LobbyPageProps) => {
+  // Firebase hooks
+  const {
+    group,
+    loading: groupLoading,
+    error: groupError,
+  } = useRealtimeGroup(groupId);
+  const {
+    users,
+    loading: usersLoading,
+    error: usersError,
+  } = useRealtimeUsers(groupId);
 
-  const roomUrl = 'https://example.com/lobby/AbCdEfGhIjKlMnOpQrSt';
-
-  // 新規参加者かどうかの判定（モック）
-  const _isNewUser = false; // 実際にはJotaiやFirebase Authで判定
-
-  // アバター選択モーダルの状態
+  // UI状態管理
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
+  // トースト表示
+  const { errorToast } = useToaster();
+
+  // 現在のページURL（実際のURLを取得）
+  const roomUrl =
+    typeof window !== 'undefined'
+      ? window.location.href
+      : `https://example.com/lobby/${groupId}`;
+
+  // ローディング状態
+  const isLoading = groupLoading || usersLoading;
+
+  // エラーハンドリング
+  if (groupError || usersError) {
+    console.error('Firebase Error:', { groupError, usersError });
+    errorToast('データの取得に失敗しました');
+  }
+
   // 使用中のアバター番号を取得
-  const usedAvatars = mockParticipants.map((p) => p.avatar);
+  const usedAvatars = users?.map((user) => user.avatar) || [];
 
   // 新規参加確定時の処理
   const handleJoinConfirm = (userData: { name: string; avatar: string }) => {
     console.log('新規参加:', userData);
-    // 実際にはFirestoreにユーザー追加、Jotai更新など
+    // TODO: Firestoreにユーザー追加の実装
     setIsAvatarModalOpen(false);
   };
+
+  // ローディング中の表示
+  if (isLoading) {
+    return (
+      <Box bg="gray.50" minH="100vh" py={[4, 8]}>
+        <Container maxW="container.lg">
+          <Loading message="ルーム情報を読み込み中..." />
+        </Container>
+      </Box>
+    );
+  }
+
+  // グループが存在しない場合
+  if (!group) {
+    return (
+      <Box bg="gray.50" minH="100vh" py={[4, 8]}>
+        <Container maxW="container.lg">
+          <VStack gap={6}>
+            <Text fontSize={['xl', '2xl']} fontWeight="bold" color="red.600">
+              ルームが見つかりません
+            </Text>
+            <Text color="gray.600">
+              指定されたルームが存在しないか、削除されている可能性があります。
+            </Text>
+          </VStack>
+        </Container>
+      </Box>
+    );
+  }
 
   return (
     <Box bg="gray.50" minH="100vh" py={[4, 8]}>
@@ -61,7 +116,7 @@ export const LobbyPage = () => {
             <Box w="full">
               <VStack gap={4} align="stretch">
                 <Text fontSize="lg" fontWeight="bold">
-                  2025年プロ野球ドラフト会議
+                  {group.groupName}
                 </Text>
 
                 {/* URL共有エリア */}
@@ -103,7 +158,7 @@ export const LobbyPage = () => {
             <Box w="full">
               <HStack mb={4}>
                 <Text fontWeight="bold" fontSize={['md', 'lg']}>
-                  参加者 ({mockParticipants.length}人)
+                  参加者 ({users?.length || 0}人)
                 </Text>
                 <Spacer />
                 <Text fontSize={['xs', 'sm']} color="gray.500">
@@ -112,9 +167,9 @@ export const LobbyPage = () => {
               </HStack>
               <VStack gap={4} align="stretch">
                 <SimpleGrid columns={[2, 3]} gap={4}>
-                  {mockParticipants.map((participant) => (
+                  {users?.map((participant) => (
                     <Box
-                      key={participant.id}
+                      key={participant.userId}
                       p={3}
                       bg="white"
                       border="2px solid"
@@ -135,15 +190,15 @@ export const LobbyPage = () => {
                       <HStack gap={3}>
                         <Avatar
                           avatarNumber={participant.avatar}
-                          name={participant.name}
+                          name={participant.userName}
                           size="md"
                         />
                         <VStack align="start" gap={0}>
                           <Text fontSize={['xs', 'sm']} fontWeight="medium">
-                            {participant.name}
+                            {participant.userName}
                           </Text>
                           <Text fontSize="xs" color="green.500">
-                            参加中
+                            {participant.isActive ? '参加中' : 'オフライン'}
                           </Text>
                         </VStack>
                       </HStack>
