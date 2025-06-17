@@ -7,6 +7,8 @@ import {
   CreateRoomModal,
   useCreateRoomModal,
 } from '@/src/components/features/top/CreateRoomModal';
+import { useToaster } from '@/src/components/ui/toaster';
+import { extractRoomId } from '@/src/helpers/utils/url';
 import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import {
   Box,
@@ -18,6 +20,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 
 /**
@@ -28,21 +31,63 @@ export const TopPage = () => {
   // ルーム作成モーダル管理
   const { openModal, modalProps } = useCreateRoomModal();
 
+  // ルーム参加用の入力値
+  const [roomInput, setRoomInput] = useState('');
+  const [isJoining, setIsJoining] = useState(false);
+
   // Firebase操作
-  const { createGroup } = useGroup();
+  const { createGroup, checkGroupExists } = useGroup();
 
   // ページナビゲーション
   const router = useRouter();
+
+  // トースト表示
+  const { successToast, errorToast } = useToaster();
 
   // ルーム作成処理
   const handleCreateRoom = async (roomName: string) => {
     try {
       const groupId = await createGroup(roomName);
+      successToast('ルームを作成しました');
       router.push(`/lobby/${groupId}`);
     } catch (error) {
-      // エラーハンドリングは後で追加
       console.error('ルーム作成エラー:', error);
-      throw error;
+      errorToast('ルーム作成に失敗しました');
+    }
+  };
+
+  // ルーム参加処理
+  const handleJoinRoom = async () => {
+    if (!roomInput.trim()) {
+      errorToast('ルームURLまたはIDを入力してください');
+      return;
+    }
+
+    setIsJoining(true);
+
+    try {
+      // 入力値からルームIDを抽出
+      const roomId = extractRoomId(roomInput);
+      if (!roomId) {
+        errorToast('正しいルームURLまたはIDを入力してください');
+        return;
+      }
+
+      // ルーム存在確認
+      const exists = await checkGroupExists(roomId);
+      if (!exists) {
+        errorToast('指定されたルームが見つかりません');
+        return;
+      }
+
+      // ロビーに遷移
+      successToast('ルームに参加します');
+      router.push(`/lobby/${roomId}`);
+    } catch (error) {
+      console.error('ルーム参加エラー:', error);
+      errorToast('ルーム参加に失敗しました');
+    } finally {
+      setIsJoining(false);
     }
   };
 
@@ -116,8 +161,19 @@ export const TopPage = () => {
                 既存のルームに参加
               </Text>
               <HStack w="full">
-                <Input placeholder="ルームURLまたはID" size="lg" />
-                <Button variant="secondary" size="lg">
+                <Input 
+                  placeholder="ルームURLまたはID" 
+                  size="lg"
+                  value={roomInput}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomInput(e.target.value)}
+                />
+                <Button 
+                  variant="secondary" 
+                  size="lg"
+                  onClick={handleJoinRoom}
+                  loading={isJoining}
+                  disabled={isJoining}
+                >
                   参加
                 </Button>
               </HStack>
