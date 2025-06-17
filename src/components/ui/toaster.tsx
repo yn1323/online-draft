@@ -41,3 +41,30 @@ export const Toaster = () => {
     </Portal>
   );
 };
+
+export const useToaster = () => {
+  const commonProps = {
+    duration: 3000,
+    closable: true,
+  };
+  const successToast = (description: string) => {
+    toaster.create({
+      description,
+      type: 'success',
+      ...commonProps,
+    });
+  };
+
+  const errorToast = (description: string) => {
+    toaster.create({
+      description,
+      type: 'error',
+      ...commonProps,
+    });
+  };
+
+  return {
+    successToast,
+    errorToast,
+  };
+};
