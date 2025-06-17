@@ -23,7 +23,7 @@ export const getOriginFromRequest = (requestUrl: string) => {
  * 入力値からルームIDを抽出する
  * 対応パターン:
  * - フルURL: https://example.com/lobby/abc123 → abc123
- * - 相対URL: /lobby/abc123 → abc123  
+ * - 相対URL: /lobby/abc123 → abc123
  * - ID直接: abc123 → abc123
  */
 export const extractRoomId = (input: string): string | null => {
