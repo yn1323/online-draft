@@ -25,7 +25,12 @@ export const Loading = ({
         borderWidth="4px"
         animationDuration="0.8s"
       />
-      <Text fontSize="lg" color="gray.600" fontWeight="medium" textAlign="center">
+      <Text
+        fontSize="lg"
+        color="gray.600"
+        fontWeight="medium"
+        textAlign="center"
+      >
         {message}
       </Text>
     </VStack>
