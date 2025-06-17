@@ -81,16 +81,16 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     // 幅のスタイル（カスタム幅が指定された場合は上書き）
     const widthStyles = width ? { width } : {};
 
-    // onChangeハンドラー: 文字列型とイベント型の両方に対応
+    // onChangeハンドラー: react-hook-formとの互換性を優先
     const handleChange = onChange
       ? (e: ChangeEvent<HTMLInputElement>) => {
-          // 既存コンポーネントとの互換性チェック
-          if (onChange.length === 1) {
-            // 引数が1つ = 文字列型のonChange（既存コンポーネント用）
-            (onChange as (value: string) => void)(e.target.value);
-          } else {
-            // 引数が2つ以上 = イベント型のonChange（react-hook-form用）
+          // react-hook-formのonChangeかどうかを判定
+          // react-hook-formの場合は関数として直接呼び出す
+          try {
             (onChange as (e: ChangeEvent<HTMLInputElement>) => void)(e);
+          } catch (_error) {
+            // fallback: 文字列型のonChangeとして処理
+            (onChange as (value: string) => void)(e.target.value);
           }
         }
       : undefined;

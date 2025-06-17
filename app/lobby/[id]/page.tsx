@@ -12,11 +12,9 @@ interface PageInnerProps {
 }
 
 function PageInner({ id }: PageInnerProps) {
-  // IDパラメータの利用は後の実装で追加予定
-  console.log('Lobby ID:', id);
   return (
     <Animation>
-      <LobbyPage />
+      <LobbyPage groupId={id} />
     </Animation>
   );
 }

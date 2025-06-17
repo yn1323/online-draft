@@ -16,7 +16,6 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 
 ### YOU MUST（必須事項）
 - YOU MUST: 作業完了前にCIを実行してエラーが0件になっていること（下記順番で実施すること）
-  - ファイル末尾改行
   - 単体テスト: `pnpm test`
   - Storybookテスト: `pnpm storybook:test-ci`
   - E2Eテスト: `pnpm e2e:no-report {必要なテストファイル名}`（まとめて実行してもOK）
@@ -26,6 +25,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
   また、これらのテストを実施するときはSub Agentでタスクを並列化して確認すること。
 - YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
+- 実装完了後のテスト確認は各々の確認をそれぞれのsub agentで行ってください
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠
