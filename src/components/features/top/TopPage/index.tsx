@@ -9,6 +9,7 @@ import {
 } from '@/src/components/features/top/CreateRoomModal';
 import { useToaster } from '@/src/components/ui/toaster';
 import { extractRoomId } from '@/src/helpers/utils/url';
+import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import {
   Box,
@@ -38,6 +39,9 @@ export const TopPage = () => {
   // Firebase操作
   const { createGroup, checkGroupExists } = useGroup();
 
+  // Firebase認証
+  const { signInAnonymous, isAuthenticated } = useFirebaseAuth();
+
   // ページナビゲーション
   const router = useRouter();
 
@@ -47,9 +51,14 @@ export const TopPage = () => {
   // ルーム作成処理
   const handleCreateRoom = async (roomName: string) => {
     try {
+      // 認証チェック & 自動ログイン
+      if (!isAuthenticated) {
+        await signInAnonymous();
+      }
+
       const groupId = await createGroup(roomName);
-      successToast('ルームを作成しました');
       router.push(`/lobby/${groupId}`);
+      successToast('ルームを作成しました');
     } catch (error) {
       console.error('ルーム作成エラー:', error);
       errorToast('ルーム作成に失敗しました');
@@ -62,10 +71,14 @@ export const TopPage = () => {
       errorToast('ルームURLまたはIDを入力してください');
       return;
     }
-
     setIsJoining(true);
 
     try {
+      // 認証チェック & 自動ログイン
+      if (!isAuthenticated) {
+        await signInAnonymous();
+      }
+
       // 入力値からルームIDを抽出
       const roomId = extractRoomId(roomInput);
       if (!roomId) {
@@ -81,8 +94,8 @@ export const TopPage = () => {
       }
 
       // ロビーに遷移
-      successToast('ルームに参加します');
       router.push(`/lobby/${roomId}`);
+      successToast('ルームに参加します');
     } catch (error) {
       console.error('ルーム参加エラー:', error);
       errorToast('ルーム参加に失敗しました');
@@ -161,14 +174,16 @@ export const TopPage = () => {
                 既存のルームに参加
               </Text>
               <HStack w="full">
-                <Input 
-                  placeholder="ルームURLまたはID" 
+                <Input
+                  placeholder="ルームURLまたはID"
                   size="lg"
                   value={roomInput}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setRoomInput(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setRoomInput(e.target.value)
+                  }
                 />
-                <Button 
-                  variant="secondary" 
+                <Button
+                  variant="secondary"
                   size="lg"
                   onClick={handleJoinRoom}
                   loading={isJoining}
