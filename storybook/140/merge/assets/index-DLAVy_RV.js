@@ -1,0 +1,2 @@
+import{j as e}from"./create-recipe-context-LbQq3bM7.js";import{B as t}from"./index-CZ0VaSOh.js";const o=({onLeaveRoom:u})=>e.jsx(t,{variant:"outline",size:"sm",onClick:u,children:"ルームを退出"});try{o.displayName="LobbyActions",o.__docgenInfo={description:`ロビーアクションコンポーネント
+退室ボタンやその他のアクション機能を提供`,displayName:"LobbyActions",props:{onLeaveRoom:{defaultValue:null,description:"",name:"onLeaveRoom",required:!0,type:{name:"() => void"}}}}}catch{}export{o as L};
