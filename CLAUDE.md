@@ -25,7 +25,8 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
   また、これらのテストを実施するときはSub Agentでタスクを並列化して確認すること。
 - YOU MUST: 作業完了時、通知を行うこと
   - `pnpm notify:slack ...`
-- 実装完了後のテスト確認は各々の確認をそれぞれのsub agentで行ってください
+- YOU MUS: 実装完了後のテスト確認は各々の確認をそれぞれのsub agentで行ってください
+- YOU MUS: 調査タスクを行う際は積極的にcontext7 mcp、sequential-thinking mcpを利用すること
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠

@@ -44,14 +44,3 @@ export const LongRoomName: Story = {
     roomUrl: 'https://onlinedraft.com/lobby/abc123',
   },
 };
-
-/**
- * 長いURLの場合
- */
-export const LongUrl: Story = {
-  args: {
-    group: mockGroup,
-    roomUrl:
-      'https://verylongdomainname.onlinedraft.example.com/lobby/verylongroomidthatexceedstypicallength',
-  },
-};

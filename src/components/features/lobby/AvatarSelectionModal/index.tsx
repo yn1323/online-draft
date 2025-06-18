@@ -4,12 +4,29 @@ import { Avatar } from '@/src/components/atoms/Avatar';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Box, SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+// フォームのバリデーションスキーマ
+const avatarSelectionSchema = z.object({
+  userName: z
+    .string()
+    .min(1, '名前を入力してください')
+    .max(20, 'ユーザー名は20文字以内で入力してください')
+    .trim(),
+});
+
+type AvatarSelectionFormData = z.infer<typeof avatarSelectionSchema>;
 
 type AvatarSelectionModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (userData: { name: string; avatar: string }) => void;
+  onConfirm: (userData: {
+    name: string;
+    avatar: string;
+  }) => void | Promise<void>;
   usedAvatars?: string[];
 };
 
@@ -24,43 +41,63 @@ export const AvatarSelectionModal = ({
   usedAvatars = [],
 }: AvatarSelectionModalProps) => {
   const [selectedAvatar, setSelectedAvatar] = useState<string>('');
-  const [userName, setUserName] = useState('');
+
+  // react-hook-form設定
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid, isSubmitting },
+    reset,
+  } = useForm<AvatarSelectionFormData>({
+    resolver: zodResolver(avatarSelectionSchema),
+    mode: 'onChange',
+    defaultValues: {
+      userName: '',
+    },
+  });
 
   // 1-18番のアバター番号配列
   const avatarNumbers = Array.from({ length: 18 }, (_, i) =>
     (i + 1).toString(),
   );
 
-  const handleConfirm = () => {
-    if (selectedAvatar && userName.trim()) {
-      onConfirm({
-        name: userName.trim(),
+  const onSubmit = async (data: AvatarSelectionFormData) => {
+    if (selectedAvatar) {
+      await onConfirm({
+        name: data.userName,
         avatar: selectedAvatar,
       });
       // リセット
+      reset();
       setSelectedAvatar('');
-      setUserName('');
     }
+  };
+
+  const handleClose = () => {
+    reset();
+    setSelectedAvatar('');
+    onClose();
   };
 
   const isAvatarUsed = (avatarNumber: string) =>
     usedAvatars.includes(avatarNumber);
-  const canConfirm = selectedAvatar && userName.trim().length > 0;
+  const canConfirm = selectedAvatar && isValid;
 
   return (
     <ResponsiveModal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
       title="ドラフトに参加"
       actions={{
         cancel: {
           text: 'キャンセル',
-          onClick: onClose,
+          onClick: handleClose,
         },
         submit: {
-          text: '参加する',
+          text: '登録する',
           disabled: !canConfirm,
-          onClick: handleConfirm,
+          loading: isSubmitting,
+          onClick: handleSubmit(onSubmit),
         },
       }}
     >
@@ -70,12 +107,17 @@ export const AvatarSelectionModal = ({
           あなたの名前
         </Text>
         <Input
+          {...register('userName')}
           placeholder="名前を入力してください"
-          value={userName}
-          onChange={setUserName}
           maxLength={20}
           size="lg"
+          error={!!errors.userName}
         />
+        {errors.userName && (
+          <Text fontSize="sm" color="red.500">
+            {errors.userName.message}
+          </Text>
+        )}
       </VStack>
 
       {/* アバター選択 */}

@@ -16,7 +16,7 @@ export async function createNewDraft(
   await page.goto('/');
 
   const createDraftButton = page.getByRole('button', {
-    name: 'ドラフトを作る',
+    name: 'ルームを作成する',
   });
   await createDraftButton.click();
 
@@ -27,11 +27,11 @@ export async function createNewDraft(
 
   // ドラフト名を入力（指定がない場合はテスト用デフォルト値を使用）
   const inputName = draftName || TEST_DATA.DRAFT_ROOM.NAME;
-  const nameInput = page.getByPlaceholder('例: 〇〇ドラフト会議');
+  const nameInput = page.getByPlaceholder('例: 2024年プロ野球ドラフト');
   await nameInput.fill(inputName);
 
   // 作成ボタンをクリック
-  const createButton = page.getByRole('button', { name: '作成する' });
+  const createButton = page.getByRole('button', { name: 'ルームを作成' });
   await createButton.click();
 
   // ロビーページに遷移するまで待機

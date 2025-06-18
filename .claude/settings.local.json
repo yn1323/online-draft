@@ -74,7 +74,11 @@
       "Bash(pnpm storybook:*)",
       "WebFetch(domain:vitest.dev)",
       "WebFetch(domain:storybook.js.org)",
-      "Bash(timeout 30s pnpm test:storybook-vitest --run 2 >& 1)"
+      "Bash(timeout 30s pnpm test:storybook-vitest --run 2 >& 1)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(git rm:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs"
     ],
     "deny": []
   },
