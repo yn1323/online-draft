@@ -3,14 +3,7 @@
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type { UserDataType } from '@/src/hooks/firebase/user/useUser';
-import {
-  Box,
-  HStack,
-  SimpleGrid,
-  Spacer,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 type ParticipantsListProps = {
   users: UserDataType[];
@@ -31,10 +24,6 @@ export const ParticipantsList = ({
         <HStack mb={4}>
           <Text fontWeight="bold" fontSize={['md', 'lg']}>
             参加者 ({users.length}人)
-          </Text>
-          <Spacer />
-          <Text fontSize={['xs', 'sm']} color="gray.500">
-            最小2人から開始可能
           </Text>
         </HStack>
 

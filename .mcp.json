@@ -1,12 +1,16 @@
 {
   "mcpServers": {
-    "typescript": {
+    "typescript-mcp": {
       "command": "npx",
-      "args": ["-y", "typescript-mcp"]
+      "args": ["-y", "typescript-mcp@latest"]
     },
-    "playwright": {
+    "context7": {
       "command": "npx",
-      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     }
   }
 }
