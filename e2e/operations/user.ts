@@ -21,9 +21,7 @@ export interface ExistingUser {
  * ユーザー選択ステップ → ユーザー作成ステップに遷移
  */
 export async function clickCreateNewUser(page: Page): Promise<void> {
-  const createButton = page.getByRole('button', {
-    name: '新しいユーザーとして参加',
-  });
+  const createButton = page.getByText('登録する');
   await createButton.click();
 
   // ページ遷移の待機
@@ -84,7 +82,7 @@ export async function selectAvatar(
  * ユーザー作成実行操作
  */
 export async function submitUserCreation(page: Page): Promise<void> {
-  const submitButton = page.getByText('作成して参加');
+  const submitButton = page.getByRole('button', { name: '登録する' });
   await submitButton.click();
 }
 
@@ -147,7 +145,7 @@ export async function getUserNameCharacterCount(page: Page): Promise<string> {
  * フォームバリデーション状態の確認
  */
 export async function isSubmitButtonEnabled(page: Page): Promise<boolean> {
-  const submitButton = page.getByRole('button', { name: '作成して参加' });
+  const submitButton = page.getByRole('button', { name: '登録する' });
   return !(await submitButton.isDisabled());
 }
 
