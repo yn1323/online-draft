@@ -3,8 +3,8 @@
 import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useToaster } from '@/src/components/ui/toaster';
-import { generateRandomId } from '@/src/helpers/utils/firebase';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
+import { generateRandomId } from '@/src/helpers/utils/firebase';
 import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
@@ -81,7 +81,11 @@ export const LobbyPageInner = ({
           <RoomInfo group={group} roomUrl={roomUrl} />
 
           {/* 参加者一覧カード */}
-          <ParticipantsList users={users || []} onJoinClick={onJoinClick} onUserSelect={onUserSelect} />
+          <ParticipantsList
+            users={users || []}
+            onJoinClick={onJoinClick}
+            onUserSelect={onUserSelect}
+          />
 
           {/* 退室ボタン */}
           <Link href="/">
@@ -114,7 +118,6 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     isAuthenticated,
     signInAnonymous,
     loading: authLoading,
-    user,
   } = useFirebaseAuth();
 
   // Firebase hooks
@@ -188,13 +191,13 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     try {
       // Firestoreにユーザー情報を保存
       await createUser(groupId, userData.name, userData.avatar, userId);
-      
+
       // sessionStorageに保存
       sessionStorage.setItem('onlinedraft_user_id', userId);
-      
+
       // ドラフト画面に遷移
       router.push(`/draft/${groupId}`);
-      
+
       // 成功メッセージ
       successToast('ドラフトに参加しました！');
     } catch (error) {
@@ -207,10 +210,10 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
   const handleUserSelect = (userId: string) => {
     // sessionStorageに保存
     sessionStorage.setItem('onlinedraft_user_id', userId);
-    
+
     // ドラフト画面に遷移
     router.push(`/draft/${groupId}`);
-    
+
     // 成功メッセージ
     successToast('ドラフトに参加しました！');
   };
