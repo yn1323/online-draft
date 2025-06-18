@@ -17,15 +17,3 @@ type Story = StoryObj<typeof meta>;
  * ルーム作成とルーム参加の両機能を含む基本レイアウト
  */
 export const Default: Story = {};
-
-/**
- * スマートフォン表示
- * 縦並びレイアウトでの表示確認
- */
-export const Mobile: Story = {
-  parameters: {
-    viewport: {
-      defaultViewport: 'mobile1',
-    },
-  },
-};
