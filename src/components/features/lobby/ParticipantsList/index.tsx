@@ -8,6 +8,7 @@ import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 type ParticipantsListProps = {
   users: UserDataType[];
   onJoinClick: () => void;
+  onUserSelect: (userId: string) => void;
 };
 
 /**
@@ -17,6 +18,7 @@ type ParticipantsListProps = {
 export const ParticipantsList = ({
   users,
   onJoinClick,
+  onUserSelect,
 }: ParticipantsListProps) => {
   return (
     <Card variant="elevated" size="md">
@@ -39,6 +41,7 @@ export const ParticipantsList = ({
                 borderRadius="lg"
                 cursor="pointer"
                 transition="all 0.15s"
+                onClick={() => onUserSelect(participant.userId)}
                 _hover={{
                   borderColor: 'blue.400',
                   transform: 'translateY(-2px)',
@@ -106,7 +109,7 @@ export const ParticipantsList = ({
                   fontWeight="medium"
                   textAlign="center"
                 >
-                  参加する
+                  登録する
                 </Text>
               </VStack>
             </Box>

@@ -74,25 +74,6 @@ export const Basic: Story = {
 };
 
 /**
- * ローディング状態
- */
-export const Loading: Story = {
-  args: {
-    group: null,
-    users: null,
-    roomUrl: '',
-    loading: true,
-    isAvatarModalOpen: false,
-    usedAvatars: [],
-    onJoinClick: () => {},
-    onLeaveRoom: () => {},
-    onAvatarModalClose: () => {},
-    onJoinConfirm: () => {},
-    loadingMessage: 'ルーム情報を読み込み中...',
-  },
-};
-
-/**
  * ルームが見つからない状態
  */
 export const RoomNotFound: Story = {

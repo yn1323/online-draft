@@ -23,7 +23,10 @@ type AvatarSelectionFormData = z.infer<typeof avatarSelectionSchema>;
 type AvatarSelectionModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (userData: { name: string; avatar: string }) => void | Promise<void>;
+  onConfirm: (userData: {
+    name: string;
+    avatar: string;
+  }) => void | Promise<void>;
   usedAvatars?: string[];
 };
 
@@ -91,7 +94,7 @@ export const AvatarSelectionModal = ({
           onClick: handleClose,
         },
         submit: {
-          text: '参加する',
+          text: '登録する',
           disabled: !canConfirm,
           loading: isSubmitting,
           onClick: handleSubmit(onSubmit),

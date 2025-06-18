@@ -3,6 +3,7 @@
 import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useToaster } from '@/src/components/ui/toaster';
+import { generateRandomId } from '@/src/helpers/utils/firebase';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
@@ -28,6 +29,7 @@ type LobbyPageInnerProps = {
   isAvatarModalOpen: boolean;
   usedAvatars: string[];
   onJoinClick: () => void;
+  onUserSelect: (userId: string) => void;
   onAvatarModalClose: () => void;
   onJoinConfirm: (userData: { name: string; avatar: string }) => void;
 };
@@ -44,6 +46,7 @@ export const LobbyPageInner = ({
   isAvatarModalOpen,
   usedAvatars,
   onJoinClick,
+  onUserSelect,
   onAvatarModalClose,
   onJoinConfirm,
 }: LobbyPageInnerProps) => {
@@ -78,7 +81,7 @@ export const LobbyPageInner = ({
           <RoomInfo group={group} roomUrl={roomUrl} />
 
           {/* 参加者一覧カード */}
-          <ParticipantsList users={users || []} onJoinClick={onJoinClick} />
+          <ParticipantsList users={users || []} onJoinClick={onJoinClick} onUserSelect={onUserSelect} />
 
           {/* 退室ボタン */}
           <Link href="/">
@@ -179,21 +182,37 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     name: string;
     avatar: string;
   }) => {
-    if (!user?.uid) {
-      errorToast('認証情報が取得できません');
-      return;
-    }
+    // ランダムIDを生成
+    const userId = generateRandomId();
 
     try {
-      await createUser(groupId, userData.name, userData.avatar, user.uid);
-      router.push(`/draft/${groupId}`);
-      successToast('ドラフトに参加しました！');
-
+      // Firestoreにユーザー情報を保存
+      await createUser(groupId, userData.name, userData.avatar, userId);
+      
+      // sessionStorageに保存
+      sessionStorage.setItem('onlinedraft_user_id', userId);
+      
       // ドラフト画面に遷移
+      router.push(`/draft/${groupId}`);
+      
+      // 成功メッセージ
+      successToast('ドラフトに参加しました！');
     } catch (error) {
       console.error('参加エラー:', error);
       errorToast(error instanceof Error ? error.message : '参加に失敗しました');
     }
+  };
+
+  // 既存ユーザー選択時の処理
+  const handleUserSelect = (userId: string) => {
+    // sessionStorageに保存
+    sessionStorage.setItem('onlinedraft_user_id', userId);
+    
+    // ドラフト画面に遷移
+    router.push(`/draft/${groupId}`);
+    
+    // 成功メッセージ
+    successToast('ドラフトに参加しました！');
   };
 
   // ローディング中の表示
@@ -216,6 +235,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
       isAvatarModalOpen={isAvatarModalOpen}
       usedAvatars={usedAvatars}
       onJoinClick={() => setIsAvatarModalOpen(true)}
+      onUserSelect={handleUserSelect}
       onAvatarModalClose={() => setIsAvatarModalOpen(false)}
       onJoinConfirm={handleJoinConfirm}
     />
