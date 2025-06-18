@@ -1,17 +1,19 @@
 'use client';
 
+import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useToaster } from '@/src/components/ui/toaster';
 import { isStorybookEnvironment } from '@/src/helpers/utils/env';
 import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
-import type { UserDataType } from '@/src/hooks/firebase/user/useUser';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
+import { type UserDataType, useUser } from '@/src/hooks/firebase/user/useUser';
 import { Box, Container, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AvatarSelectionModal } from '../AvatarSelectionModal';
-import { LobbyActions } from '../LobbyActions';
 import { ParticipantsList } from '../ParticipantsList';
 import { RoomInfo } from '../RoomInfo';
 
@@ -23,14 +25,11 @@ type LobbyPageInnerProps = {
   group: GroupDataType | null;
   users: UserDataType[] | null;
   roomUrl: string;
-  loading: boolean;
   isAvatarModalOpen: boolean;
   usedAvatars: string[];
   onJoinClick: () => void;
-  onLeaveRoom: () => void;
   onAvatarModalClose: () => void;
   onJoinConfirm: (userData: { name: string; avatar: string }) => void;
-  loadingMessage?: string;
 };
 
 /**
@@ -42,26 +41,12 @@ export const LobbyPageInner = ({
   group,
   users,
   roomUrl,
-  loading,
   isAvatarModalOpen,
   usedAvatars,
   onJoinClick,
-  onLeaveRoom,
   onAvatarModalClose,
   onJoinConfirm,
-  loadingMessage = 'ルーム情報を読み込み中...',
 }: LobbyPageInnerProps) => {
-  // ローディング中の表示
-  if (loading) {
-    return (
-      <Box bg="gray.50" minH="100vh" py={[4, 8]}>
-        <Container maxW="container.lg">
-          <Loading message={loadingMessage} />
-        </Container>
-      </Box>
-    );
-  }
-
   // グループが存在しない場合
   if (!group) {
     return (
@@ -95,8 +80,12 @@ export const LobbyPageInner = ({
           {/* 参加者一覧カード */}
           <ParticipantsList users={users || []} onJoinClick={onJoinClick} />
 
-          {/* アクションボタン */}
-          <LobbyActions onLeaveRoom={onLeaveRoom} />
+          {/* 退室ボタン */}
+          <Link href="/">
+            <Button variant="outline" size="sm">
+              ルームを退出
+            </Button>
+          </Link>
         </VStack>
       </Container>
 
@@ -122,6 +111,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     isAuthenticated,
     signInAnonymous,
     loading: authLoading,
+    user,
   } = useFirebaseAuth();
 
   // Firebase hooks
@@ -135,12 +125,16 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     loading: usersLoading,
     error: usersError,
   } = useRealtimeUsers(groupId);
+  const { createUser } = useUser();
+
+  // Next.js router
+  const router = useRouter();
 
   // UI状態管理
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
   // トースト表示
-  const { errorToast } = useToaster();
+  const { errorToast, successToast } = useToaster();
 
   // 認証チェック（Storybook環境では無効化）
   useEffect(() => {
@@ -169,9 +163,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
 
   // ローディング状態（認証も含める、ただしStorybook環境は除く）
   const isLoading =
-    groupLoading ||
-    usersLoading ||
-    (!isStorybookEnvironment() && authLoading);
+    groupLoading || usersLoading || (!isStorybookEnvironment() && authLoading);
 
   // エラーハンドリング
   if (groupError || usersError) {
@@ -183,23 +175,37 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
   const usedAvatars = users?.map((user) => user.avatar) || [];
 
   // 新規参加確定時の処理
-  const handleJoinConfirm = (userData: { name: string; avatar: string }) => {
-    console.log('新規参加:', userData);
-    // TODO: Firestoreにユーザー追加の実装
-    setIsAvatarModalOpen(false);
+  const handleJoinConfirm = async (userData: {
+    name: string;
+    avatar: string;
+  }) => {
+    if (!user?.uid) {
+      errorToast('認証情報が取得できません');
+      return;
+    }
+
+    try {
+      await createUser(groupId, userData.name, userData.avatar, user.uid);
+      router.push(`/draft/${groupId}`);
+      successToast('ドラフトに参加しました！');
+
+      // ドラフト画面に遷移
+    } catch (error) {
+      console.error('参加エラー:', error);
+      errorToast(error instanceof Error ? error.message : '参加に失敗しました');
+    }
   };
 
-  // 退室処理
-  const handleLeaveRoom = () => {
-    console.log('退室処理');
-    // TODO: 退室処理の実装
-  };
-
-  // ローディングメッセージの決定
-  const loadingMessage =
-    !isStorybookEnvironment() && authLoading && !isAuthenticated
-      ? '認証処理中...'
-      : 'ルーム情報を読み込み中...';
+  // ローディング中の表示
+  if (isLoading) {
+    return (
+      <Box bg="gray.50" minH="100vh" py={[4, 8]}>
+        <Container maxW="container.lg">
+          <Loading message="ローディング中..." />
+        </Container>
+      </Box>
+    );
+  }
 
   // LobbyPageInnerに全ての状態とハンドラーを渡す
   return (
@@ -207,14 +213,11 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
       group={group}
       users={users}
       roomUrl={roomUrl}
-      loading={isLoading}
       isAvatarModalOpen={isAvatarModalOpen}
       usedAvatars={usedAvatars}
       onJoinClick={() => setIsAvatarModalOpen(true)}
-      onLeaveRoom={handleLeaveRoom}
       onAvatarModalClose={() => setIsAvatarModalOpen(false)}
       onJoinConfirm={handleJoinConfirm}
-      loadingMessage={loadingMessage}
     />
   );
 };
