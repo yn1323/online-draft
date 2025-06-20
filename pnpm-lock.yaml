@@ -52,8 +52,8 @@ importers:
         specifier: 1.9.4
         version: 1.9.4
       '@chromatic-com/storybook':
-        specifier: 3.2.6
-        version: 3.2.6(react@19.1.0)(storybook@8.6.14)
+        specifier: 3.2.7
+        version: 3.2.7(react@19.1.0)(storybook@8.6.14)
       '@mdx-js/react':
         specifier: ^3.1.0
         version: 3.1.0(@types/react@19.1.6)(react@19.1.0)
@@ -428,8 +428,8 @@ packages:
       react: '>=18'
       react-dom: '>=18'
 
-  '@chromatic-com/storybook@3.2.6':
-    resolution: {integrity: sha512-FDmn5Ry2DzQdik+eq2sp/kJMMT36Ewe7ONXUXM2Izd97c7r6R/QyGli8eyh/F0iyqVvbLveNYFyF0dBOJNwLqw==}
+  '@chromatic-com/storybook@3.2.7':
+    resolution: {integrity: sha512-fCGhk4cd3VA8RNg55MZL5CScdHqljsQcL9g6Ss7YuobHpSo9yytEWNdgMd5QxAHSPBlLGFHjnSmliM3G/BeBqw==}
     engines: {node: '>=16.0.0', yarn: '>=1.22.18'}
     peerDependencies:
       storybook: ^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0
@@ -5877,7 +5877,7 @@ snapshots:
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
 
-  '@chromatic-com/storybook@3.2.6(react@19.1.0)(storybook@8.6.14)':
+  '@chromatic-com/storybook@3.2.7(react@19.1.0)(storybook@8.6.14)':
     dependencies:
       chromatic: 11.29.0
       filesize: 10.1.6
