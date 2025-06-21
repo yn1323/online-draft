@@ -45,8 +45,8 @@ importers:
         specifier: 5.5.0
         version: 5.5.0(react@19.1.0)
       zod:
-        specifier: 3.25.64
-        version: 3.25.64
+        specifier: 3.25.67
+        version: 3.25.67
     devDependencies:
       '@biomejs/biome':
         specifier: 1.9.4
@@ -5555,8 +5555,8 @@ packages:
     peerDependencies:
       zod: ^3.24.1
 
-  zod@3.25.64:
-    resolution: {integrity: sha512-hbP9FpSZf7pkS7hRVUrOjhwKJNyampPgtXKc3AN6DsWtoHsg2Sb4SQaS4Tcay380zSwd2VPo9G9180emBACp5g==}
+  zod@3.25.67:
+    resolution: {integrity: sha512-idA2YXwpCdqUSKRCACDE6ItZD9TZzy3OZMtpfLoh6oPR47lipysRrJfjzMqFxQ3uJuUPyUeWe1r9vLH33xO/Qw==}
 
 snapshots:
 
@@ -6842,8 +6842,8 @@ snapshots:
       express-rate-limit: 7.5.0(express@5.1.0)
       pkce-challenge: 5.0.0
       raw-body: 3.0.0
-      zod: 3.25.64
-      zod-to-json-schema: 3.24.5(zod@3.25.64)
+      zod: 3.25.67
+      zod-to-json-schema: 3.24.5(zod@3.25.67)
     transitivePeerDependencies:
       - supports-color
 
@@ -11660,7 +11660,7 @@ snapshots:
       neverthrow: 8.2.0
       ts-morph: 26.0.0
       typescript: 5.8.3
-      zod: 3.25.64
+      zod: 3.25.67
     transitivePeerDependencies:
       - supports-color
 
@@ -12060,8 +12060,8 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod-to-json-schema@3.24.5(zod@3.25.64):
+  zod-to-json-schema@3.24.5(zod@3.25.67):
     dependencies:
-      zod: 3.25.64
+      zod: 3.25.67
 
-  zod@3.25.64: {}
+  zod@3.25.67: {}
