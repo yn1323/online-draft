@@ -1,13 +1,13 @@
 'use client';
 
-import { Avatar } from '@/src/components/atoms/Avatar';
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Box, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
 // フォームのバリデーションスキーマ
 const avatarSelectionSchema = z.object({

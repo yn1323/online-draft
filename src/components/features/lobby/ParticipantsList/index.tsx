@@ -1,9 +1,9 @@
 'use client';
 
+import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type { UserDataType } from '@/src/hooks/firebase/user/useUser';
-import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 type ParticipantsListProps = {
   users: UserDataType[];

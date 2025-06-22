@@ -1,5 +1,5 @@
-import { FirebaseTest } from '@/src/components/dev/FirebaseTest';
 import { Container, Heading, VStack } from '@chakra-ui/react';
+import { FirebaseTest } from '@/src/components/dev/FirebaseTest';
 
 export default function AuthTestPage() {
   return (

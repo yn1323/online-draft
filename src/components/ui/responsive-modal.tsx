@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, VStack, useBreakpointValue } from '@chakra-ui/react';
+import { Button, useBreakpointValue, VStack } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 import {
   DialogActionTrigger,

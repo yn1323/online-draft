@@ -1,10 +1,10 @@
 'use client';
 
+import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
+import { LuCopy } from 'react-icons/lu';
 import { Card } from '@/src/components/atoms/Card';
 import { useToaster } from '@/src/components/ui/toaster';
 import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
-import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
-import { LuCopy } from 'react-icons/lu';
 
 type RoomInfoProps = {
   group: GroupDataType;

@@ -1,6 +1,5 @@
 'use client';
 
-import { db } from '@/src/lib/firebase';
 import {
   type CollectionReference,
   collection,
@@ -9,6 +8,7 @@ import {
   where,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { db } from '@/src/lib/firebase';
 import type { UserDataType } from './useUser';
 
 /**
