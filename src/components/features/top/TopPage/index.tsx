@@ -1,5 +1,17 @@
 'use client';
 
+import {
+  Box,
+  Container,
+  Grid,
+  Heading,
+  HStack,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
 import { Input } from '@/src/components/atoms/Input';
@@ -11,18 +23,6 @@ import { useToaster } from '@/src/components/ui/toaster';
 import { extractRoomId } from '@/src/helpers/utils/url';
 import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import { useGroup } from '@/src/hooks/firebase/group/useGroup';
-import {
-  Box,
-  Container,
-  Grid,
-  HStack,
-  Heading,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 
 /**
  * トップページコンポーネント

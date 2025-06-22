@@ -1,7 +1,7 @@
 'use client';
 
-import { db } from '@/src/lib/firebase';
 import { collection, doc } from 'firebase/firestore';
+import { db } from '@/src/lib/firebase';
 
 /**
  * FirestoreからランダムなドキュメントIDを生成する

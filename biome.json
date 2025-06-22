@@ -1,11 +1,15 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.0/schema.json",
-  "organizeImports": {
-    "enabled": true
-  },
+  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
-    "ignore": [".next", "node_modules", ".scaffdog", "legacy"],
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/node_modules",
+      "!**/.scaffdog",
+      "!**/legacy"
+    ],
     "indentStyle": "space"
   },
   "javascript": {
@@ -15,7 +19,13 @@
   },
   "linter": {
     "enabled": true,
-    "ignore": [".next", "node_modules", ".scaffdog", "legacy"],
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/node_modules",
+      "!**/.scaffdog",
+      "!**/legacy"
+    ],
     "rules": {
       "suspicious": {
         "noArrayIndexKey": "off"
@@ -31,7 +41,17 @@
       },
       "style": {
         "noNegationElse": "error",
-        "useBlockStatements": "error"
+        "useBlockStatements": "error",
+        "noParameterAssign": "error",
+        "useAsConstAssertion": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useSelfClosingElements": "error",
+        "useSingleVarDeclarator": "error",
+        "noUnusedTemplateLiteral": "error",
+        "useNumberNamespace": "error",
+        "noInferrableTypes": "error",
+        "noUselessElse": "error"
       }
     }
   }

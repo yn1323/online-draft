@@ -1,10 +1,5 @@
 'use client';
 
-import { Avatar } from '@/src/components/atoms/Avatar';
-import { Button } from '@/src/components/atoms/Button';
-import { Card } from '@/src/components/atoms/Card';
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import {
   Accordion,
   Box,
@@ -16,6 +11,11 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { LuCheck } from 'react-icons/lu';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
+import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
 /**
  * ドラフト実行画面コンポーネント（スマホ版）

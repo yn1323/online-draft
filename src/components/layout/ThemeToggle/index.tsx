@@ -1,17 +1,16 @@
 'use client';
 
-import { useColorMode } from '@/src/components/ui/color-mode';
 import {
   Box,
   Button,
   ClientOnly,
   IconButton,
-  Skeleton,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiSettings, FiX } from 'react-icons/fi';
+import { useColorMode } from '@/src/components/ui/color-mode';
 
 export const ThemeToggle = () => {
   const { colorMode, setColorMode } = useColorMode();

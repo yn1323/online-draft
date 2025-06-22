@@ -1,12 +1,12 @@
 'use client';
 
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
 // Zodスキーマ定義（30文字制限）
 export const createRoomSchema = z.object({
@@ -34,6 +34,8 @@ export const CreateRoomModal = ({
   onClose,
   onCreateRoom,
 }: CreateRoomModalProps) => {
+  const formId = useId();
+
   // react-hook-form設定
   const {
     register,
@@ -79,7 +81,7 @@ export const CreateRoomModal = ({
           text: 'ルームを作成',
           colorPalette: 'blue',
           type: 'submit',
-          form: 'create-room-form',
+          form: formId,
           disabled: !isValid,
           loading: isSubmitting,
         },
@@ -87,7 +89,7 @@ export const CreateRoomModal = ({
     >
       <VStack
         as="form"
-        id="create-room-form"
+        id={formId}
         onSubmit={handleSubmit(onSubmit)}
         gap={4}
         align="stretch"

@@ -1,8 +1,8 @@
 'use client';
 
-import { auth } from '@/src/lib/firebase';
-import { type User, signInAnonymously } from 'firebase/auth';
+import { signInAnonymously, type User } from 'firebase/auth';
 import { useEffect, useState } from 'react';
+import { auth } from '@/src/lib/firebase';
 
 type AuthStateType = {
   user: User | null;

@@ -1,8 +1,8 @@
 'use client';
 
-import { db } from '@/src/lib/firebase';
 import { type DocumentReference, doc, onSnapshot } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { db } from '@/src/lib/firebase';
 import type { GroupDataType } from './useGroup';
 
 /**

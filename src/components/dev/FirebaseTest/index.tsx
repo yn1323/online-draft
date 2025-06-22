@@ -1,9 +1,9 @@
 'use client';
 
-import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
-import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import { Badge, Button, Card, Text, VStack } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
+import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 
 /**
  * Firebase接続テスト用開発コンポーネント

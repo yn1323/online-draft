@@ -1,6 +1,6 @@
-import { betweenLength, select, time } from '@/src/helpers/validation';
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod';
+import { betweenLength, select, time } from '@/src/helpers/validation';
 
 describe('Validations', () => {
   it('betweenLength', () => {
