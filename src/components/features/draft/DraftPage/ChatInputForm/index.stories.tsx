@@ -25,12 +25,3 @@ export const Default: Story = {
     placeholder: 'メッセージを入力...',
   },
 };
-
-/**
- * カスタムプレースホルダー
- */
-export const CustomPlaceholder: Story = {
-  args: {
-    placeholder: 'ここにコメントを入力してください...',
-  },
-};

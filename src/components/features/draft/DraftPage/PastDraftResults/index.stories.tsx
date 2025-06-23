@@ -56,20 +56,3 @@ export const SP: Story = {
     ),
   ],
 };
-
-/**
- * 編集ハンドラーなし
- */
-export const WithoutEditHandler: Story = {
-  args: {
-    variant: 'sp',
-    onEditClick: undefined,
-  },
-  decorators: [
-    (Story) => (
-      <div style={{ width: '400px' }}>
-        <Story />
-      </div>
-    ),
-  ],
-};

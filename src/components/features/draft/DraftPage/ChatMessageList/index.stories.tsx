@@ -21,12 +21,3 @@ type Story = StoryObj<typeof meta>;
  * 統一されたボックススタイル
  */
 export const Default: Story = {};
-
-/**
- * 空のメッセージリスト
- */
-export const Empty: Story = {
-  args: {
-    messages: [],
-  },
-};

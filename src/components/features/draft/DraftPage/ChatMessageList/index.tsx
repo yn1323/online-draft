@@ -1,5 +1,5 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/src/components/atoms/Avatar';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import type { ChatMessageType } from '../mockData';
 
 type ChatMessageListProps = {

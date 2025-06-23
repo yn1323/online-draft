@@ -1,8 +1,8 @@
-import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { LuCheck } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
+import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { LuCheck } from 'react-icons/lu';
 import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
