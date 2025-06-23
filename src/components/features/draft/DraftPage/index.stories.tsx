@@ -13,7 +13,6 @@ const meta: Meta<typeof DraftPageInner> = {
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

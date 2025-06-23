@@ -7,7 +7,6 @@ const meta: Meta<typeof RoomInfo> = {
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

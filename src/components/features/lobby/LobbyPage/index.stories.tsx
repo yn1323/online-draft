@@ -9,7 +9,6 @@ const metaInner: Meta<typeof LobbyPageInner> = {
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
 };
 
 export default metaInner;

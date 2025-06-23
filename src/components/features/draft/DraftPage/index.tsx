@@ -16,12 +16,6 @@ import { LuList, LuMessageSquare } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
-import {
-  DraftModals,
-  useEditModal,
-  useItemSelectModal,
-  useOpenResultModal,
-} from '../DraftModals';
 import { useDraftChat } from '../hooks/useDraftChat';
 import { useDraftPicks } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
@@ -34,6 +28,9 @@ import {
   type ParticipantType,
   pastDraftResults,
 } from '../mockData';
+import { EditModal, useEditModal } from '../modals/EditModal';
+import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
+import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
 import { PastDraftResults } from '../PastDraftResults';
 
 type DraftPageInnerProps = {
@@ -255,21 +252,25 @@ export const DraftPageInner = ({
         )}
 
         {/* モーダル群 */}
-        <DraftModals
-          isItemSelectModalOpen={itemSelectModal.isOpen}
+        <ItemSelectModal
+          isOpen={itemSelectModal.isOpen}
           selectedItem={itemSelectModal.selectedItem}
           comment={itemSelectModal.comment}
           onSelectedItemChange={itemSelectModal.setSelectedItem}
           onCommentChange={itemSelectModal.setComment}
-          onItemSelectClose={itemSelectModal.close}
-          onItemSelect={handleItemSelect}
-          isEditModalOpen={editModal.isOpen}
+          onClose={itemSelectModal.close}
+          onSelect={handleItemSelect}
+        />
+        <EditModal
+          isOpen={editModal.isOpen}
           editingPick={editModal.editingPick}
-          onEditClose={editModal.close}
-          onEditSave={handleEditSave}
+          onClose={editModal.close}
+          onSave={handleEditSave}
           onEditingPickUpdate={editModal.updatePick}
-          isOpenResultConfirmModalOpen={openResultModal.isOpen}
-          onOpenResultConfirmClose={openResultModal.close}
+        />
+        <OpenResultModal
+          isOpen={openResultModal.isOpen}
+          onClose={openResultModal.close}
           onExecuteOpenResult={handleExecuteOpenResult}
         />
       </VStack>
@@ -337,21 +338,25 @@ export const DraftPageInner = ({
       </Container>
 
       {/* モーダル群 */}
-      <DraftModals
-        isItemSelectModalOpen={itemSelectModal.isOpen}
+      <ItemSelectModal
+        isOpen={itemSelectModal.isOpen}
         selectedItem={itemSelectModal.selectedItem}
         comment={itemSelectModal.comment}
         onSelectedItemChange={itemSelectModal.setSelectedItem}
         onCommentChange={itemSelectModal.setComment}
-        onItemSelectClose={itemSelectModal.close}
-        onItemSelect={handleItemSelect}
-        isEditModalOpen={editModal.isOpen}
+        onClose={itemSelectModal.close}
+        onSelect={handleItemSelect}
+      />
+      <EditModal
+        isOpen={editModal.isOpen}
         editingPick={editModal.editingPick}
-        onEditClose={editModal.close}
-        onEditSave={handleEditSave}
+        onClose={editModal.close}
+        onSave={handleEditSave}
         onEditingPickUpdate={editModal.updatePick}
-        isOpenResultConfirmModalOpen={openResultModal.isOpen}
-        onOpenResultConfirmClose={openResultModal.close}
+      />
+      <OpenResultModal
+        isOpen={openResultModal.isOpen}
+        onClose={openResultModal.close}
         onExecuteOpenResult={handleExecuteOpenResult}
       />
     </Box>

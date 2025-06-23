@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { EditingPickType } from '../DraftModals';
+import type { EditingPickType } from '../modals/EditModal';
 
 /**
  * ドラフトピック選択・編集のFirestore処理hooks
