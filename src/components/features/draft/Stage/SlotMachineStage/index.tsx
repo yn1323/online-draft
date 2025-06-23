@@ -11,7 +11,7 @@ import {
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 import { Avatar } from '@/src/components/atoms/Avatar';
-import type { getCommonResponsiveValues, ParticipantResult } from '../index';
+import type { ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
@@ -21,7 +21,6 @@ type SlotMachineStageProps = {
   isRevealing: boolean;
   onStartReveal: () => void;
   onReset: () => void;
-  getCommonResponsiveValues: typeof getCommonResponsiveValues;
 };
 
 export const SlotMachineStage = ({
@@ -29,7 +28,6 @@ export const SlotMachineStage = ({
   isRevealing,
   onStartReveal,
   onReset,
-  getCommonResponsiveValues,
 }: SlotMachineStageProps) => {
   const [spinningSlots, setSpinningSlots] = useState<number[]>([]);
   const [revealedResults, setRevealedResults] = useState<number[]>([]);
@@ -38,8 +36,6 @@ export const SlotMachineStage = ({
     new Array(participants.length).fill(0),
   );
 
-  // 共通のレスポンシブ値を使用
-  const responsive = getCommonResponsiveValues();
   const slotLayout = useBreakpointValue({ base: 'flex', md: 'grid' });
   const slotGap = useBreakpointValue({ base: 2, md: 2 }); // PCでも小さめのgap
 
@@ -134,7 +130,9 @@ export const SlotMachineStage = ({
       <Box
         display={slotLayout}
         flexDirection={slotLayout === 'flex' ? 'column' : undefined}
-        gridTemplateColumns={slotLayout === 'grid' ? 'repeat(3, 1fr)' : undefined}
+        gridTemplateColumns={
+          slotLayout === 'grid' ? 'repeat(3, 1fr)' : undefined
+        }
         gap={slotGap}
         justifyContent="center"
         w="full"
@@ -146,12 +144,7 @@ export const SlotMachineStage = ({
           const willLose = participant.willLose;
 
           return (
-            <VStack
-              key={participant.id}
-              gap={2}
-              w="full"
-              alignItems="center"
-            >
+            <VStack key={participant.id} gap={2} w="full" alignItems="center">
               {/* 1行目: 人名 */}
               <HStack gap={2} alignItems="center">
                 <Avatar
