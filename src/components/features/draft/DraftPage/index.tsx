@@ -12,11 +12,10 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { ChatInputForm } from './ChatInputForm';
 import { ChatMessageList } from './ChatMessageList';
 import { CurrentRoundStatus } from './CurrentRoundStatus';
+import { DraftModals } from './DraftModals';
 import {
   currentRound,
   mockChatMessages,
@@ -154,7 +153,7 @@ export const DraftPage = () => {
 
             {/* チャット・ログタブ */}
             <Tabs.Content value="chat" h="full" overflow="auto" p={3}>
-              <ChatMessageList messages={mockChatMessages} variant="sp" />
+              <ChatMessageList messages={mockChatMessages} />
             </Tabs.Content>
           </Box>
         </Tabs.Root>
@@ -170,12 +169,25 @@ export const DraftPage = () => {
             position="sticky"
             bottom={0}
           >
-            <ChatInputForm variant="sp" />
+            <ChatInputForm />
           </Box>
         )}
 
         {/* モーダル群 */}
-        {renderModals()}
+        <DraftModals
+          isItemSelectModalOpen={isItemSelectModalOpen}
+          selectedItem={selectedItem}
+          comment={comment}
+          onSelectedItemChange={setSelectedItem}
+          onCommentChange={setComment}
+          onItemSelectClose={closeItemSelectModal}
+          onItemSelect={handleItemSelect}
+          isEditModalOpen={isEditModalOpen}
+          editingPick={editingPick}
+          onEditClose={closeEditModal}
+          onEditSave={handleEditSave}
+          onEditingPickUpdate={updateEditingPick}
+        />
       </VStack>
     );
   }
@@ -229,149 +241,31 @@ export const DraftPage = () => {
               </Text>
               {/* チャットメッセージエリア */}
               <Box flex="1" overflow="auto" mb={3}>
-                <ChatMessageList messages={mockChatMessages} variant="pc" />
+                <ChatMessageList messages={mockChatMessages} />
               </Box>
 
               {/* チャット入力エリア */}
-              <ChatInputForm variant="pc" />
+              <ChatInputForm />
             </Box>
           </GridItem>
         </Grid>
       </Container>
 
       {/* モーダル群 */}
-      {renderModals()}
+      <DraftModals
+        isItemSelectModalOpen={isItemSelectModalOpen}
+        selectedItem={selectedItem}
+        comment={comment}
+        onSelectedItemChange={setSelectedItem}
+        onCommentChange={setComment}
+        onItemSelectClose={closeItemSelectModal}
+        onItemSelect={handleItemSelect}
+        isEditModalOpen={isEditModalOpen}
+        editingPick={editingPick}
+        onEditClose={closeEditModal}
+        onEditSave={handleEditSave}
+        onEditingPickUpdate={updateEditingPick}
+      />
     </Box>
   );
-
-  // モーダル共通レンダリング関数
-  function renderModals() {
-    return (
-      <>
-        {/* アイテム選択モーダル */}
-        <ResponsiveModal
-          isOpen={isItemSelectModalOpen}
-          onClose={closeItemSelectModal}
-          title="アイテムを選択"
-          actions={{
-            cancel: {
-              text: 'キャンセル',
-              onClick: closeItemSelectModal,
-            },
-            submit: {
-              text: '決定',
-              disabled: !selectedItem.trim(),
-              onClick: handleItemSelect,
-            },
-          }}
-        >
-          <VStack gap={4} w="full">
-            {/* アイテム名入力 */}
-            <VStack gap={2} align="start" w="full">
-              <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                アイテム名
-              </Text>
-              <Input
-                placeholder="アイテム名を入力してください"
-                value={selectedItem}
-                onChange={setSelectedItem}
-                maxLength={50}
-                size="lg"
-              />
-            </VStack>
-
-            {/* コメント入力 */}
-            <VStack gap={2} align="start" w="full">
-              <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                コメント（任意）
-              </Text>
-              <Input
-                placeholder="この選択についてのコメント..."
-                value={comment}
-                onChange={setComment}
-                maxLength={100}
-                size="lg"
-              />
-            </VStack>
-          </VStack>
-        </ResponsiveModal>
-
-        {/* ピック編集モーダル */}
-        <ResponsiveModal
-          isOpen={isEditModalOpen}
-          onClose={closeEditModal}
-          title="ピックを編集"
-          actions={{
-            cancel: {
-              text: 'キャンセル',
-              onClick: closeEditModal,
-            },
-            submit: {
-              text: '保存',
-              colorPalette: 'blue',
-              onClick: handleEditSave,
-            },
-          }}
-        >
-          {editingPick && (
-            <VStack gap={4} w="full">
-              {/* 編集対象情報 */}
-              <Box w="full" p={3} bg="gray.50" borderRadius="md">
-                <VStack gap={2} align="start">
-                  <HStack>
-                    <Text fontSize="xs" color="gray.600">
-                      ラウンド:
-                    </Text>
-                    <Text fontSize="sm" fontWeight="bold">
-                      Round {editingPick.round}
-                    </Text>
-                  </HStack>
-                  <HStack>
-                    <Text fontSize="xs" color="gray.600">
-                      プレイヤー:
-                    </Text>
-                    <Text fontSize="sm" fontWeight="bold">
-                      {editingPick.playerName}
-                    </Text>
-                  </HStack>
-                </VStack>
-              </Box>
-
-              {/* アイテム名編集 */}
-              <VStack gap={2} align="start" w="full">
-                <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                  選択アイテム
-                </Text>
-                <Input
-                  placeholder="アイテム名を入力してください"
-                  value={editingPick.currentPick}
-                  onChange={(value: string) =>
-                    updateEditingPick({ currentPick: value })
-                  }
-                  maxLength={50}
-                  size="lg"
-                />
-              </VStack>
-
-              {/* カテゴリ編集 */}
-              <VStack gap={2} align="start" w="full">
-                <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                  カテゴリ
-                </Text>
-                <Input
-                  placeholder="カテゴリを入力してください"
-                  value={editingPick.category}
-                  onChange={(value: string) =>
-                    updateEditingPick({ category: value })
-                  }
-                  maxLength={20}
-                  size="lg"
-                />
-              </VStack>
-            </VStack>
-          )}
-        </ResponsiveModal>
-      </>
-    );
-  }
 };

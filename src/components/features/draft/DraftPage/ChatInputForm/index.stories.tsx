@@ -22,7 +22,6 @@ type Story = StoryObj<typeof meta>;
  */
 export const Default: Story = {
   args: {
-    variant: 'sp',
     placeholder: 'メッセージを入力...',
   },
 };
@@ -32,7 +31,6 @@ export const Default: Story = {
  */
 export const CustomPlaceholder: Story = {
   args: {
-    variant: 'sp',
     placeholder: 'ここにコメントを入力してください...',
   },
 };

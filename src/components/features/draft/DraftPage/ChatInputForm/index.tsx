@@ -5,7 +5,6 @@ import { Input } from '@/src/components/atoms/Input';
 
 type ChatInputFormProps = {
   onSendMessage?: (message: string) => void;
-  variant?: 'pc' | 'sp';
   placeholder?: string;
 };
 
@@ -15,7 +14,6 @@ type ChatInputFormProps = {
  */
 export const ChatInputForm = ({
   onSendMessage,
-  variant = 'sp',
   placeholder = 'メッセージを入力...',
 }: ChatInputFormProps) => {
   const [message, setMessage] = useState('');

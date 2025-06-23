@@ -3,12 +3,12 @@ import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type {
   DraftPickType,
-  DraftResultType,
+  DraftRoundType,
   ParticipantType,
 } from '../mockData';
 
 type PastDraftResultsProps = {
-  pastResults: DraftResultType[];
+  pastResults: DraftRoundType[];
   participants: ParticipantType[];
   variant?: 'pc' | 'sp';
   onEditClick?: (

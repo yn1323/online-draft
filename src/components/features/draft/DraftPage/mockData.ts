@@ -32,18 +32,13 @@ export type DraftRoundType = {
   picks: DraftPickType[];
 };
 
-// DraftResultType: PastDraftResults用の型エイリアス
-export type DraftResultType = DraftRoundType;
-
 export type ChatMessageType = {
   id: string;
   userName: string;
   avatar: string;
-  content?: string;
-  message?: string;
+  content: string;
   timestamp: string;
   isSystem?: boolean;
-  type?: 'system' | 'user';
 };
 
 // 参加者データ
@@ -174,14 +169,12 @@ export const mockChatMessages: ChatMessageType[] = [
     content: 'ドラフトを開始しました！',
     timestamp: '14:00',
     isSystem: true,
-    type: 'system',
   },
   {
     id: '2',
     userName: '田中太郎',
     avatar: '1',
     content: '今年は投手中心でいきます！',
-    message: '候補アイテムA選択！',
     timestamp: '14:01',
   },
   {
@@ -191,14 +184,12 @@ export const mockChatMessages: ChatMessageType[] = [
     content: '第1巡目が完了しました',
     timestamp: '14:05',
     isSystem: true,
-    type: 'system',
   },
   {
     id: '4',
     userName: '山田花子',
     avatar: '3',
     content: '大谷取られた〜😭',
-    message: '候補アイテムBで行きます！',
     timestamp: '14:05',
   },
   {
@@ -208,7 +199,6 @@ export const mockChatMessages: ChatMessageType[] = [
     content: '佐藤次郎さんの選択中です',
     timestamp: '14:38',
     isSystem: true,
-    type: 'system',
   },
 ];
 

@@ -20,18 +20,13 @@ type Story = StoryObj<typeof meta>;
  * デフォルト表示
  * 統一されたボックススタイル
  */
-export const Default: Story = {
-  args: {
-    variant: 'sp',
-  },
-};
+export const Default: Story = {};
 
 /**
  * 空のメッセージリスト
  */
 export const Empty: Story = {
   args: {
-    variant: 'sp',
     messages: [],
   },
 };

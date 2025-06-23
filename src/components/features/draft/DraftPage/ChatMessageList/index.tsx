@@ -4,21 +4,17 @@ import type { ChatMessageType } from '../mockData';
 
 type ChatMessageListProps = {
   messages: ChatMessageType[];
-  variant?: 'pc' | 'sp';
 };
 
 /**
  * チャットメッセージ一覧を表示する共通コンポーネント
  * 見やすいボックススタイルで統一
  */
-export const ChatMessageList = ({
-  messages,
-  variant = 'sp',
-}: ChatMessageListProps) => {
+export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
   return (
     <VStack gap={3} align="stretch">
       {messages.map((message) => {
-        const content = message.content || message.message || '';
+        const content = message.content;
 
         // 統一ボックススタイル（旧PC版デザイン）
         return (

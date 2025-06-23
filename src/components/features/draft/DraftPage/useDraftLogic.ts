@@ -30,8 +30,7 @@ export const useDraftLogic = () => {
   // アイテム選択確定ハンドラー
   const handleItemSelect = () => {
     if (selectedItem.trim()) {
-      console.log('アイテム選択:', { item: selectedItem, comment });
-      // 実際にはFirestoreに保存、Jotai更新など
+      // TODO: Firestore保存とJotai更新処理を実装
       setIsItemSelectModalOpen(false);
       setSelectedItem('');
       setComment('');
@@ -65,8 +64,7 @@ export const useDraftLogic = () => {
   // 編集保存ハンドラー
   const handleEditSave = () => {
     if (editingPick) {
-      console.log('ピック編集:', editingPick);
-      // 実際にはFirestoreに保存
+      // TODO: Firestore保存処理を実装
       setIsEditModalOpen(false);
       setEditingPick(null);
     }
