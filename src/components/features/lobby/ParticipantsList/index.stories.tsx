@@ -3,12 +3,11 @@ import { Timestamp } from 'firebase/firestore';
 import { ParticipantsList } from './index';
 
 const meta: Meta<typeof ParticipantsList> = {
-  title: 'Features/Lobby/ParticipantsList',
+  title: 'features/lobby/ParticipantsList',
   component: ParticipantsList,
   parameters: {
     layout: 'centered',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

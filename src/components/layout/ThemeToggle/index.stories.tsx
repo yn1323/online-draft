@@ -8,7 +8,6 @@ const meta: Meta<typeof ThemeToggle> = {
   parameters: {
     layout: 'fullscreen',
   },
-  tags: ['autodocs'],
 };
 
 export default meta;

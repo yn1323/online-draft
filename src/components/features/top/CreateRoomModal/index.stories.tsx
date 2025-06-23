@@ -4,7 +4,7 @@ import { expect, screen, userEvent, within } from '@storybook/test';
 import { CreateRoomModal, useCreateRoomModal } from './index';
 
 const meta: Meta<typeof CreateRoomModal> = {
-  title: 'Features/Top/CreateRoomModal',
+  title: 'features/top/CreateRoomModal',
   component: CreateRoomModal,
   parameters: {
     layout: 'centered',

@@ -57,3 +57,5 @@ __screenshots__
 
 # claude config (keep custom commands)
 !.claude/
+
+log
