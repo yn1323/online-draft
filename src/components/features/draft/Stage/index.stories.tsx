@@ -27,7 +27,9 @@ type Story = StoryObj<typeof meta>;
 
 export const CompetitionMode: Story = {
   render: () => {
-    const [currentVariant, setCurrentVariant] = useState<'card' | 'typing' | 'slot'>('card');
+    const [currentVariant, setCurrentVariant] = useState<
+      'card' | 'typing' | 'slot'
+    >('card');
     const [hasConflict, setHasConflict] = useState(false);
     const [isRevealing, setIsRevealing] = useState(false);
 
@@ -53,7 +55,8 @@ export const CompetitionMode: Story = {
               Opening Result Animation Competition
             </Text>
             <Text color="gray.600" textAlign="center">
-              Compare 4 different animation patterns and choose the most exciting one!
+              Compare 4 different animation patterns and choose the most
+              exciting one!
             </Text>
           </VStack>
 
@@ -83,14 +86,15 @@ export const CompetitionMode: Story = {
               textAlign="center"
             >
               <Text fontSize="lg" fontWeight="bold" color="gray.700">
-                Currently Selected: {variants.find(v => v.key === currentVariant)?.label}
+                Currently Selected:{' '}
+                {variants.find((v) => v.key === currentVariant)?.label}
               </Text>
             </Box>
 
             <HStack gap={4}>
               <Button
-                colorPalette={hasConflict ? "gray" : "blue"}
-                variant={!hasConflict ? "solid" : "outline"}
+                colorPalette={hasConflict ? 'gray' : 'blue'}
+                variant={hasConflict ? 'outline' : 'solid'}
                 onClick={() => {
                   setHasConflict(false);
                   setIsRevealing(false);
@@ -99,8 +103,8 @@ export const CompetitionMode: Story = {
                 Normal Pattern
               </Button>
               <Button
-                colorPalette={hasConflict ? "red" : "gray"}
-                variant={hasConflict ? "solid" : "outline"}
+                colorPalette={hasConflict ? 'red' : 'gray'}
+                variant={hasConflict ? 'solid' : 'outline'}
                 onClick={() => {
                   setHasConflict(true);
                   setIsRevealing(false);
@@ -111,13 +115,7 @@ export const CompetitionMode: Story = {
             </HStack>
           </VStack>
 
-          <Box
-            bg="white"
-            borderRadius="xl"
-            boxShadow="xl"
-            p={6}
-            w="full"
-          >
+          <Box bg="white" borderRadius="xl" boxShadow="xl" p={6} w="full">
             <Stage
               variant={currentVariant}
               hasConflict={hasConflict}
@@ -127,13 +125,7 @@ export const CompetitionMode: Story = {
             />
           </Box>
 
-          <Box
-            bg="blue.50"
-            p={6}
-            borderRadius="lg"
-            w="full"
-            textAlign="center"
-          >
+          <Box bg="blue.50" p={6} borderRadius="lg" w="full" textAlign="center">
             <Text fontSize="lg" fontWeight="bold" color="blue.800" mb={2}>
               What's your rating?
             </Text>
