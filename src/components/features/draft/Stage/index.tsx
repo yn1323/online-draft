@@ -63,7 +63,6 @@ export const Stage = ({
           isRevealing={isRevealing}
           onStartReveal={onStartReveal}
           onReset={onReset}
-          getCommonResponsiveValues={getCommonResponsiveValues}
         />
       )}
     </Box>
