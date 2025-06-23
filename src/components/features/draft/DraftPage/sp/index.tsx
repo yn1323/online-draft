@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { LuCheck } from 'react-icons/lu';
+import { LuCheck, LuList, LuMessageSquare } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
@@ -22,6 +22,9 @@ import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
  * タブ形式でリストとチャットを切り替え
  */
 export const DraftPageSp = () => {
+  // タブの状態管理
+  const [activeTab, setActiveTab] = useState('draft');
+
   // 参加者グリッド用の共通スタイル
   const getParticipantCellStyle = (isActive: boolean) => ({
     p: 1.5,
@@ -264,22 +267,58 @@ export const DraftPageSp = () => {
 
       {/* タブエリア */}
       <Tabs.Root
-        defaultValue="draft"
+        value={activeTab}
+        onValueChange={(details) => setActiveTab(details.value)}
         flex={1}
         display="flex"
         flexDirection="column"
         w="full"
       >
-        <Tabs.List>
-          <Tabs.Trigger value="draft" flex={1}>
-            <Box w="full" textAlign="center">
-              ドラフト
-            </Box>
+        <Tabs.List
+          bg="gray.50"
+          borderBottom="2px solid"
+          borderColor="gray.200"
+          position="sticky"
+          top="65px"
+          zIndex={5}
+        >
+          <Tabs.Trigger
+            value="draft"
+            flex={1}
+            py={3}
+            px={4}
+            _selected={{
+              bg: 'white',
+              color: 'blue.600',
+              borderBottom: '2px solid',
+              borderColor: 'blue.500',
+              fontWeight: 'bold',
+            }}
+            transition="all 0.15s ease"
+          >
+            <HStack gap={2} justify="center" w="full">
+              <LuList size={18} />
+              <Text fontSize="sm">取得リスト</Text>
+            </HStack>
           </Tabs.Trigger>
-          <Tabs.Trigger value="chat" flex={1}>
-            <Box w="full" textAlign="center">
-              チャット/ログ
-            </Box>
+          <Tabs.Trigger
+            value="chat"
+            flex={1}
+            py={3}
+            px={4}
+            _selected={{
+              bg: 'white',
+              color: 'blue.600',
+              borderBottom: '2px solid',
+              borderColor: 'blue.500',
+              fontWeight: 'bold',
+            }}
+            transition="all 0.15s ease"
+          >
+            <HStack gap={2} justify="center" w="full">
+              <LuMessageSquare size={18} />
+              <Text fontSize="sm">チャット</Text>
+            </HStack>
           </Tabs.Trigger>
         </Tabs.List>
 
@@ -469,22 +508,24 @@ export const DraftPageSp = () => {
       </Tabs.Root>
 
       {/* 入力エリア（固定） - チャット専用 */}
-      <Box
-        bg="white"
-        borderTop="1px"
-        borderColor="gray.200"
-        p={3}
-        w="full"
-        position="sticky"
-        bottom={0}
-      >
-        <HStack w="full">
-          <Input placeholder="メッセージを入力..." size="md" />
-          <Button variant="secondary" size="md">
-            送信
-          </Button>
-        </HStack>
-      </Box>
+      {activeTab === 'chat' && (
+        <Box
+          bg="white"
+          borderTop="1px"
+          borderColor="gray.200"
+          p={3}
+          w="full"
+          position="sticky"
+          bottom={0}
+        >
+          <HStack w="full">
+            <Input placeholder="メッセージを入力..." size="md" />
+            <Button variant="secondary" size="md">
+              送信
+            </Button>
+          </HStack>
+        </Box>
+      )}
 
       {/* アイテム選択モーダル */}
       <ResponsiveModal
