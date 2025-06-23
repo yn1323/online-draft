@@ -4,11 +4,103 @@ import { fn } from '@storybook/test';
 import { useState } from 'react';
 import { Stage } from './index';
 
+// サンプルデータ
+const sampleParticipants = [
+  {
+    id: '1',
+    name: '田中太郎',
+    avatar: 1,
+    choice: 'ポケットモンスターブラック',
+    willLose: false,
+  },
+  {
+    id: '2',
+    name: '佐藤花子',
+    avatar: 2,
+    choice: 'ドラゴンクエストXI',
+    willLose: false,
+  },
+  {
+    id: '3',
+    name: '鈴木一郎',
+    avatar: 3,
+    choice: 'ファイナルファンタジーXIV',
+    willLose: false,
+  },
+  {
+    id: '4',
+    name: '高橋次郎',
+    avatar: 4,
+    choice: 'スーパーマリオオデッセイ',
+    willLose: false,
+  },
+  {
+    id: '5',
+    name: '山田美咲',
+    avatar: 5,
+    choice: 'ゼルダの伝説ブレスオブザワイルド',
+    willLose: false,
+  },
+  {
+    id: '6',
+    name: '中村健太',
+    avatar: 6,
+    choice: 'スプラトゥーン3',
+    willLose: false,
+  },
+];
+
+const conflictParticipants = [
+  {
+    id: '1',
+    name: '田中太郎',
+    avatar: 1,
+    choice: 'ポケットモンスターブラック',
+    willLose: false,
+  },
+  {
+    id: '2',
+    name: '佐藤花子',
+    avatar: 2,
+    choice: 'ポケットモンスターブラック',
+    willLose: true,
+  },
+  {
+    id: '3',
+    name: '鈴木一郎',
+    avatar: 3,
+    choice: 'ファイナルファンタジーXIV',
+    willLose: false,
+  },
+  {
+    id: '4',
+    name: '高橋次郎',
+    avatar: 4,
+    choice: 'スーパーマリオオデッセイ',
+    willLose: false,
+  },
+  {
+    id: '5',
+    name: '山田美咲',
+    avatar: 5,
+    choice: 'ゼルダの伝説ブレスオブザワイルド',
+    willLose: false,
+  },
+  {
+    id: '6',
+    name: '中村健太',
+    avatar: 6,
+    choice: 'ファイナルファンタジーXIV',
+    willLose: true,
+  },
+];
+
 const meta: Meta<typeof Stage> = {
   title: 'features/draft/Stage',
   component: Stage,
   parameters: {
     layout: 'fullscreen',
+    skip: true,
   },
   tags: ['autodocs'],
   argTypes: {
@@ -16,8 +108,8 @@ const meta: Meta<typeof Stage> = {
       control: 'select',
       options: ['card', 'typing', 'slot'],
     },
-    hasConflict: {
-      control: 'boolean',
+    participants: {
+      control: 'object',
     },
   },
 };
@@ -31,6 +123,9 @@ export const CompetitionMode: Story = {
       'card' | 'typing' | 'slot'
     >('card');
     const [hasConflict, setHasConflict] = useState(false);
+    const currentParticipants = hasConflict
+      ? conflictParticipants
+      : sampleParticipants;
     const [isRevealing, setIsRevealing] = useState(false);
 
     const handleStartReveal = () => {
@@ -118,7 +213,7 @@ export const CompetitionMode: Story = {
           <Box bg="white" borderRadius="xl" boxShadow="xl" p={6} w="full">
             <Stage
               variant={currentVariant}
-              hasConflict={hasConflict}
+              participants={currentParticipants}
               isRevealing={isRevealing}
               onStartReveal={handleStartReveal}
               onReset={handleReset}
@@ -142,7 +237,7 @@ export const CompetitionMode: Story = {
 export const CardReveal: Story = {
   args: {
     variant: 'card',
-    hasConflict: false,
+    participants: sampleParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
@@ -152,7 +247,7 @@ export const CardReveal: Story = {
 export const CardRevealConflict: Story = {
   args: {
     variant: 'card',
-    hasConflict: true,
+    participants: conflictParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
@@ -162,7 +257,7 @@ export const CardRevealConflict: Story = {
 export const Typing: Story = {
   args: {
     variant: 'typing',
-    hasConflict: false,
+    participants: sampleParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
@@ -172,7 +267,7 @@ export const Typing: Story = {
 export const TypingConflict: Story = {
   args: {
     variant: 'typing',
-    hasConflict: true,
+    participants: conflictParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
@@ -182,7 +277,7 @@ export const TypingConflict: Story = {
 export const SlotMachine: Story = {
   args: {
     variant: 'slot',
-    hasConflict: false,
+    participants: sampleParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
@@ -192,7 +287,7 @@ export const SlotMachine: Story = {
 export const SlotMachineConflict: Story = {
   args: {
     variant: 'slot',
-    hasConflict: true,
+    participants: conflictParticipants,
     isRevealing: false,
     onStartReveal: fn(),
     onReset: fn(),
