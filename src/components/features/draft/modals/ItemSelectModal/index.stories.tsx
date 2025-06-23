@@ -30,27 +30,3 @@ export const Default: Story = {
     comment: '',
   },
 };
-
-/**
- * 入力済み状態
- * アイテム名とコメントが入力されている状態
- */
-export const WithInput: Story = {
-  args: {
-    isOpen: true,
-    selectedItem: 'サンプルアイテム',
-    comment: '良い選択です！',
-  },
-};
-
-/**
- * モーダル閉じた状態
- * 通常は表示されない
- */
-export const Closed: Story = {
-  args: {
-    isOpen: false,
-    selectedItem: '',
-    comment: '',
-  },
-};

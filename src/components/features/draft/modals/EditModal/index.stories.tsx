@@ -34,31 +34,3 @@ export const Default: Story = {
     },
   },
 };
-
-/**
- * 空の状態での編集
- * アイテム名とカテゴリが空の状態
- */
-export const EmptyPick: Story = {
-  args: {
-    isOpen: true,
-    editingPick: {
-      round: 1,
-      playerId: '2',
-      playerName: '佐藤花子',
-      currentPick: '',
-      category: '',
-    },
-  },
-};
-
-/**
- * モーダル閉じた状態
- * 通常は表示されない
- */
-export const Closed: Story = {
-  args: {
-    isOpen: false,
-    editingPick: null,
-  },
-};

@@ -26,13 +26,3 @@ export const Default: Story = {
     isOpen: true,
   },
 };
-
-/**
- * モーダル閉じた状態
- * 通常は表示されない
- */
-export const Closed: Story = {
-  args: {
-    isOpen: false,
-  },
-};
