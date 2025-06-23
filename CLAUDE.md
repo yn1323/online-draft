@@ -35,6 +35,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - IMPORTANT: 作業開始前に計画することを好む
 - IMPORTANT: モーダルは @src/components/ui/responsive-modal.tsx を利用すること
 - IMPORTANT: `pnpm dev`, `pnpm storybook`コマンドはこちらで実施済みです。あなたはコマンドを必要はありません。
+- IMPORTANT: バレルエクスポート禁止
 
 ## 📋 Claude Code開発ワークフロー
 

@@ -1,7 +1,98 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { useState } from 'react';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
-import type { EditingPickType } from '../DraftPage/useDraftLogic';
+/**
+ * ピック編集情報の型定義
+ */
+export type EditingPickType = {
+  round: number;
+  playerId: string;
+  playerName: string;
+  currentPick: string;
+  category: string;
+};
+
+/**
+ * アイテム選択モーダル用hooks
+ */
+export const useItemSelectModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState('');
+  const [comment, setComment] = useState('');
+
+  const open = () => setIsOpen(true);
+
+  const close = () => {
+    setIsOpen(false);
+    setSelectedItem('');
+    setComment('');
+  };
+
+  const reset = () => {
+    setSelectedItem('');
+    setComment('');
+  };
+
+  return {
+    isOpen,
+    selectedItem,
+    comment,
+    setSelectedItem,
+    setComment,
+    open,
+    close,
+    reset,
+  };
+};
+
+/**
+ * 編集モーダル用hooks
+ */
+export const useEditModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
+
+  const open = (pick: EditingPickType) => {
+    setEditingPick(pick);
+    setIsOpen(true);
+  };
+
+  const close = () => {
+    setIsOpen(false);
+    setEditingPick(null);
+  };
+
+  const updatePick = (updates: Partial<EditingPickType>) => {
+    if (editingPick) {
+      setEditingPick({ ...editingPick, ...updates });
+    }
+  };
+
+  return {
+    isOpen,
+    editingPick,
+    open,
+    close,
+    updatePick,
+  };
+};
+
+/**
+ * 開票確認モーダル用hooks
+ */
+export const useOpenResultModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
+  return {
+    isOpen,
+    open,
+    close,
+  };
+};
 
 type DraftModalsProps = {
   // アイテム選択モーダル

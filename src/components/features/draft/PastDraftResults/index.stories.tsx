@@ -3,7 +3,7 @@ import { mockParticipants, pastDraftResults } from '../mockData';
 import { PastDraftResults } from './index';
 
 const meta: Meta<typeof PastDraftResults> = {
-  title: 'Features/DraftPage/PastDraftResults',
+  title: 'Features/draft/PastDraftResults',
   component: PastDraftResults,
   parameters: {
     layout: 'centered',

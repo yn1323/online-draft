@@ -11,46 +11,126 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
-import { ChatInputForm } from './ChatInputForm';
-import { ChatMessageList } from './ChatMessageList';
-import { CurrentRoundStatus } from './CurrentRoundStatus';
-import { DraftModals } from './DraftModals';
+import { ChatInputForm } from '../ChatInputForm';
+import { ChatMessageList } from '../ChatMessageList';
+import { CurrentRoundStatus } from '../CurrentRoundStatus';
 import {
+  DraftModals,
+  useEditModal,
+  useItemSelectModal,
+  useOpenResultModal,
+} from '../DraftModals';
+import { useDraftChat } from '../hooks/useDraftChat';
+import { useDraftPicks } from '../hooks/useDraftPicks';
+import { useDraftResult } from '../hooks/useDraftResult';
+import {
+  type ChatMessageType,
   currentRound,
+  type DraftRoundType,
   mockChatMessages,
   mockParticipants,
+  type ParticipantType,
   pastDraftResults,
-} from './mockData';
-import { PastDraftResults } from './PastDraftResults';
-import { useDraftLogic } from './useDraftLogic';
+} from '../mockData';
+import { PastDraftResults } from '../PastDraftResults';
+
+type DraftPageInnerProps = {
+  // データ
+  currentRound: number;
+  participants: ParticipantType[];
+  pastResults: DraftRoundType[];
+  chatMessages: ChatMessageType[];
+};
 
 /**
- * ドラフト実行画面コンポーネント（統合版）
- * レスポンシブ対応: PC版は2カラムレイアウト、SP版はタブ切り替え
+ * ドラフト実行画面Innerコンポーネント（Presenter）
+ * UI描画と状態管理を担当、新しいhooks構造を使用
  */
-export const DraftPage = () => {
+export const DraftPageInner = ({
+  currentRound,
+  participants,
+  pastResults,
+  chatMessages,
+}: DraftPageInnerProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
-  // カスタムフックで共通ロジックを取得
-  const {
-    activeTab,
-    setActiveTab,
-    isItemSelectModalOpen,
-    selectedItem,
-    comment,
-    setSelectedItem,
-    setComment,
-    isEditModalOpen,
-    editingPick,
-    handleItemSelect,
-    openItemSelectModal,
-    closeItemSelectModal,
-    handleEditClick,
-    handleEditSave,
-    closeEditModal,
-    updateEditingPick,
-  } = useDraftLogic();
+  // タブ状態（SP版用）- DraftPageInner内で管理
+  const [activeTab, setActiveTab] = useState('draft');
+
+  // モーダル状態管理
+  const itemSelectModal = useItemSelectModal();
+  const editModal = useEditModal();
+  const openResultModal = useOpenResultModal();
+
+  // Firestore処理hooks
+  const { selectItem } = useDraftPicks();
+  const { sendMessage } = useDraftChat();
+  const { executeOpenResult, checkParticipantStatus } = useDraftResult();
+
+  // ハンドラー関数
+  const handleItemSelect = async () => {
+    try {
+      await selectItem(itemSelectModal.selectedItem, itemSelectModal.comment);
+      itemSelectModal.close();
+    } catch (error) {
+      console.error('アイテム選択エラー:', error);
+    }
+  };
+
+  const handleEditSave = async () => {
+    if (!editModal.editingPick) {
+      return;
+    }
+
+    try {
+      await selectItem(editModal.editingPick.currentPick); // 編集も同じAPIを使用
+      editModal.close();
+    } catch (error) {
+      console.error('編集保存エラー:', error);
+    }
+  };
+
+  const handleEditClick = (
+    round: number,
+    playerId: string,
+    playerName: string,
+    currentPick: string,
+    category: string,
+  ) => {
+    editModal.open({ round, playerId, playerName, currentPick, category });
+  };
+
+  const handleOpenResult = async () => {
+    try {
+      const status = await checkParticipantStatus();
+      if (status.allCompleted) {
+        await executeOpenResult();
+      } else {
+        openResultModal.open();
+      }
+    } catch (error) {
+      console.error('開票処理エラー:', error);
+    }
+  };
+
+  const handleExecuteOpenResult = async () => {
+    try {
+      await executeOpenResult();
+      openResultModal.close();
+    } catch (error) {
+      console.error('開票実行エラー:', error);
+    }
+  };
+
+  const handleSendMessage = async (message: string) => {
+    try {
+      await sendMessage(message);
+    } catch (error) {
+      console.error('チャット送信エラー:', error);
+    }
+  };
 
   if (isMobile) {
     // SP版: タブレイアウト
@@ -135,16 +215,17 @@ export const DraftPage = () => {
               <VStack gap={3} p={3}>
                 {/* 現在ラウンドセクション */}
                 <CurrentRoundStatus
-                  participants={mockParticipants}
+                  participants={participants}
                   currentRound={currentRound}
                   variant="sp"
-                  onItemSelect={openItemSelectModal}
+                  onItemSelect={itemSelectModal.open}
+                  onOpenResult={handleOpenResult}
                 />
 
                 {/* 過去ラウンド結果 */}
                 <PastDraftResults
-                  pastResults={pastDraftResults}
-                  participants={mockParticipants}
+                  pastResults={pastResults}
+                  participants={participants}
                   variant="sp"
                   onEditClick={handleEditClick}
                 />
@@ -153,7 +234,7 @@ export const DraftPage = () => {
 
             {/* チャット・ログタブ */}
             <Tabs.Content value="chat" h="full" overflow="auto" p={3}>
-              <ChatMessageList messages={mockChatMessages} />
+              <ChatMessageList messages={chatMessages} />
             </Tabs.Content>
           </Box>
         </Tabs.Root>
@@ -169,24 +250,27 @@ export const DraftPage = () => {
             position="sticky"
             bottom={0}
           >
-            <ChatInputForm />
+            <ChatInputForm onSendMessage={handleSendMessage} />
           </Box>
         )}
 
         {/* モーダル群 */}
         <DraftModals
-          isItemSelectModalOpen={isItemSelectModalOpen}
-          selectedItem={selectedItem}
-          comment={comment}
-          onSelectedItemChange={setSelectedItem}
-          onCommentChange={setComment}
-          onItemSelectClose={closeItemSelectModal}
+          isItemSelectModalOpen={itemSelectModal.isOpen}
+          selectedItem={itemSelectModal.selectedItem}
+          comment={itemSelectModal.comment}
+          onSelectedItemChange={itemSelectModal.setSelectedItem}
+          onCommentChange={itemSelectModal.setComment}
+          onItemSelectClose={itemSelectModal.close}
           onItemSelect={handleItemSelect}
-          isEditModalOpen={isEditModalOpen}
-          editingPick={editingPick}
-          onEditClose={closeEditModal}
+          isEditModalOpen={editModal.isOpen}
+          editingPick={editModal.editingPick}
+          onEditClose={editModal.close}
           onEditSave={handleEditSave}
-          onEditingPickUpdate={updateEditingPick}
+          onEditingPickUpdate={editModal.updatePick}
+          isOpenResultConfirmModalOpen={openResultModal.isOpen}
+          onOpenResultConfirmClose={openResultModal.close}
+          onExecuteOpenResult={handleExecuteOpenResult}
         />
       </VStack>
     );
@@ -209,16 +293,17 @@ export const DraftPage = () => {
             <VStack gap={4} h="full" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
-                participants={mockParticipants}
+                participants={participants}
                 currentRound={currentRound}
                 variant="pc"
-                onItemSelect={openItemSelectModal}
+                onItemSelect={itemSelectModal.open}
+                onOpenResult={handleOpenResult}
               />
 
               {/* 下部: 過去のドラフト結果 */}
               <PastDraftResults
-                pastResults={pastDraftResults}
-                participants={mockParticipants}
+                pastResults={pastResults}
+                participants={participants}
                 variant="pc"
                 onEditClick={handleEditClick}
               />
@@ -241,11 +326,11 @@ export const DraftPage = () => {
               </Text>
               {/* チャットメッセージエリア */}
               <Box flex="1" overflow="auto" mb={3}>
-                <ChatMessageList messages={mockChatMessages} />
+                <ChatMessageList messages={chatMessages} />
               </Box>
 
               {/* チャット入力エリア */}
-              <ChatInputForm />
+              <ChatInputForm onSendMessage={handleSendMessage} />
             </Box>
           </GridItem>
         </Grid>
@@ -253,19 +338,37 @@ export const DraftPage = () => {
 
       {/* モーダル群 */}
       <DraftModals
-        isItemSelectModalOpen={isItemSelectModalOpen}
-        selectedItem={selectedItem}
-        comment={comment}
-        onSelectedItemChange={setSelectedItem}
-        onCommentChange={setComment}
-        onItemSelectClose={closeItemSelectModal}
+        isItemSelectModalOpen={itemSelectModal.isOpen}
+        selectedItem={itemSelectModal.selectedItem}
+        comment={itemSelectModal.comment}
+        onSelectedItemChange={itemSelectModal.setSelectedItem}
+        onCommentChange={itemSelectModal.setComment}
+        onItemSelectClose={itemSelectModal.close}
         onItemSelect={handleItemSelect}
-        isEditModalOpen={isEditModalOpen}
-        editingPick={editingPick}
-        onEditClose={closeEditModal}
+        isEditModalOpen={editModal.isOpen}
+        editingPick={editModal.editingPick}
+        onEditClose={editModal.close}
         onEditSave={handleEditSave}
-        onEditingPickUpdate={updateEditingPick}
+        onEditingPickUpdate={editModal.updatePick}
+        isOpenResultConfirmModalOpen={openResultModal.isOpen}
+        onOpenResultConfirmClose={openResultModal.close}
+        onExecuteOpenResult={handleExecuteOpenResult}
       />
     </Box>
+  );
+};
+
+/**
+ * ドラフト実行画面コンポーネント（Container）
+ * モックデータの提供のみを担当
+ */
+export const DraftPage = () => {
+  return (
+    <DraftPageInner
+      currentRound={currentRound}
+      participants={mockParticipants}
+      pastResults={pastDraftResults}
+      chatMessages={mockChatMessages}
+    />
   );
 };

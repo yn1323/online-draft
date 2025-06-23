@@ -3,7 +3,7 @@ import { mockChatMessages } from '../mockData';
 import { ChatMessageList } from './index';
 
 const meta: Meta<typeof ChatMessageList> = {
-  title: 'Features/DraftPage/ChatMessageList',
+  title: 'Features/draft/ChatMessageList',
   component: ChatMessageList,
   parameters: {
     layout: 'centered',

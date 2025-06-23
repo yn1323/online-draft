@@ -1,28 +1,45 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DraftPage } from './index';
+import {
+  currentRound,
+  mockChatMessages,
+  mockParticipants,
+  pastDraftResults,
+} from '../mockData';
+import { DraftPageInner } from './index';
 
-const meta: Meta<typeof DraftPage> = {
+const meta: Meta<typeof DraftPageInner> = {
   title: 'features/draft/DraftPage',
-  component: DraftPage,
+  component: DraftPageInner,
   parameters: {
     layout: 'fullscreen',
   },
+  tags: ['autodocs'],
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 /**
- * 統合版ドラフトページ
- * ブラウザのサイズを変更してレスポンシブ動作を確認できます
+ * デフォルトのドラフトページ表示
+ * 新しいhooks構造を使用した純粋なUIテスト
  */
-export const Default: Story = {};
+export const Default: Story = {
+  args: {
+    currentRound,
+    participants: mockParticipants,
+    pastResults: pastDraftResults,
+    chatMessages: mockChatMessages,
+  },
+};
 
 /**
  * SP表示の強制確認用
  * ビューポートを小さく設定してSP版レイアウトを確認
  */
 export const SPLayout: Story = {
+  args: {
+    ...Default.args,
+  },
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

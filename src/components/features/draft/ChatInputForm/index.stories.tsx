@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { ChatInputForm } from './index';
 
 const meta: Meta<typeof ChatInputForm> = {
-  title: 'Features/DraftPage/ChatInputForm',
+  title: 'Features/draft/ChatInputForm',
   component: ChatInputForm,
   parameters: {
     layout: 'centered',

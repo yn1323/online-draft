@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { DraftModals } from './index';
 
 const meta: Meta<typeof DraftModals> = {
-  title: 'Features/DraftPage/DraftModals',
+  title: 'Features/draft/DraftModals',
   component: DraftModals,
   parameters: {
     layout: 'centered',

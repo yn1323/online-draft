@@ -3,7 +3,7 @@ import { mockParticipants } from '../mockData';
 import { CurrentRoundStatus } from './index';
 
 const meta: Meta<typeof CurrentRoundStatus> = {
-  title: 'Features/DraftPage/CurrentRoundStatus',
+  title: 'Features/draft/CurrentRoundStatus',
   component: CurrentRoundStatus,
   parameters: {
     layout: 'centered',

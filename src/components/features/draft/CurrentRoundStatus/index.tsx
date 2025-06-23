@@ -1,8 +1,8 @@
+import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { LuCheck } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
-import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { LuCheck } from 'react-icons/lu';
 import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
@@ -10,6 +10,7 @@ type CurrentRoundStatusProps = {
   currentRound: number;
   variant?: 'pc' | 'sp';
   onItemSelect?: () => void;
+  onOpenResult?: () => void;
 };
 
 /**
@@ -21,6 +22,7 @@ export const CurrentRoundStatus = ({
   currentRound,
   variant = 'sp',
   onItemSelect,
+  onOpenResult,
 }: CurrentRoundStatusProps) => {
   // 参加者グリッド用の共通スタイル
   const getParticipantCellStyle = (isActive: boolean) => ({
@@ -104,11 +106,59 @@ export const CurrentRoundStatus = ({
           </Grid>
 
           {/* 選択アクションボタン */}
-          {onItemSelect && (
+          {(onItemSelect || onOpenResult) && (
             <Box w="full" pt={variant === 'pc' ? 1 : 0}>
-              <Button variant="primary" size="sm" onClick={onItemSelect}>
-                アイテムを選択する
-              </Button>
+              {variant === 'pc' ? (
+                <HStack gap={2} w="full">
+                  {onItemSelect && (
+                    <Box flex={1}>
+                      <Button
+                        variant="primary"
+                        size="sm"
+                        onClick={onItemSelect}
+                        width="full"
+                      >
+                        アイテムを選択する
+                      </Button>
+                    </Box>
+                  )}
+                  {onOpenResult && (
+                    <Box flex={1}>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={onOpenResult}
+                        width="full"
+                      >
+                        開票する
+                      </Button>
+                    </Box>
+                  )}
+                </HStack>
+              ) : (
+                <VStack gap={2} w="full">
+                  {onItemSelect && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      onClick={onItemSelect}
+                      width="full"
+                    >
+                      アイテムを選択する
+                    </Button>
+                  )}
+                  {onOpenResult && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={onOpenResult}
+                      width="full"
+                    >
+                      開票する
+                    </Button>
+                  )}
+                </VStack>
+              )}
             </Box>
           )}
         </VStack>
