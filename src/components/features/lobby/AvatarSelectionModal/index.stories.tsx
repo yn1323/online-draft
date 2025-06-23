@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { AvatarSelectionModal } from './index';
 
 const meta: Meta<typeof AvatarSelectionModal> = {
-  title: 'Features/Lobby/AvatarSelectionModal',
+  title: 'features/lobby/AvatarSelectionModal',
   component: AvatarSelectionModal,
   parameters: {
     layout: 'centered',

@@ -4,7 +4,7 @@ import { LobbyPageInner } from './index';
 
 // LobbyPageInner用のmeta
 const metaInner: Meta<typeof LobbyPageInner> = {
-  title: 'Features/Lobby/LobbyPage',
+  title: 'features/lobby/LobbyPage',
   component: LobbyPageInner,
   parameters: {
     layout: 'fullscreen',

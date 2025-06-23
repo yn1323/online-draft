@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { RoomInfo } from './index';
 
 const meta: Meta<typeof RoomInfo> = {
-  title: 'Features/Lobby/RoomInfo',
+  title: 'features/lobby/RoomInfo',
   component: RoomInfo,
   parameters: {
     layout: 'centered',
