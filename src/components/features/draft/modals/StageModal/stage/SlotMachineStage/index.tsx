@@ -1,16 +1,15 @@
 'use client';
 
+import { Avatar } from '@/src/components/atoms/Avatar';
 import {
   Box,
-  Button,
   HStack,
   Text,
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import { Avatar } from '@/src/components/atoms/Avatar';
+import { useCallback, useEffect, useState } from 'react';
 import type { ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);
@@ -32,6 +31,7 @@ export const SlotMachineStage = ({
   const [spinningSlots, setSpinningSlots] = useState<number[]>([]);
   const [revealedResults, setRevealedResults] = useState<number[]>([]);
   const [showEffect, setShowEffect] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false); // 演出開始済みフラグ
   const [randomSlotIndexes, setRandomSlotIndexes] = useState<number[]>(
     new Array(participants.length).fill(0),
   );
@@ -40,14 +40,38 @@ export const SlotMachineStage = ({
   const slotGap = useBreakpointValue({ base: 2, md: 2 }); // PCでも小さめのgap
 
   // スロットマシンの選択肢（回転中に表示される候補）
-  const slotOptions = [
-    'ポケットモンスター',
-    'ドラゴンクエスト',
-    'ファイナルファンタジー',
-    'スーパーマリオ',
-    'ゼルダの伝説',
-    'スプラトゥーン',
-  ];
+  const slotOptions = participants.map(({ choice }) => choice);
+
+  const handleSpin = useCallback(() => {
+    setSpinningSlots([]);
+    setRevealedResults([]);
+    setShowEffect(false);
+    setHasStarted(true); // 演出開始をマーク
+    onStartReveal();
+
+    // 各参加者のスロットを順番に回転開始
+    participants.forEach((_, index) => {
+      setTimeout(() => {
+        setSpinningSlots((prev) => [...prev, index]);
+
+        // 3秒後にスロット停止
+        setTimeout(() => {
+          setSpinningSlots((prev) => prev.filter((i) => i !== index));
+          setRevealedResults((prev) => {
+            const newRevealed = [...prev, index];
+            // 全スロットが停止したかチェック
+            if (newRevealed.length === participants.length) {
+              // 0.5秒後にエフェクト開始
+              setTimeout(() => {
+                setShowEffect(true);
+              }, 500);
+            }
+            return newRevealed;
+          });
+        }, 3000);
+      }, index * 500); // 0.5秒間隔でスロット開始
+    });
+  }, [participants, onStartReveal]);
 
   // 各スロットの回転アニメーション管理
   useEffect(() => {
@@ -75,58 +99,26 @@ export const SlotMachineStage = ({
     return () => {
       intervals.forEach((interval) => clearInterval(interval));
     };
-  }, [spinningSlots]);
+  }, [spinningSlots, slotOptions.length]);
 
-  const handleSpin = () => {
-    setSpinningSlots([]);
-    setRevealedResults([]);
-    setShowEffect(false);
-    onStartReveal();
+  // 自動開始ロジック（一度だけ実行）
+  useEffect(() => {
+    if (isRevealing && !hasStarted) {
+      handleSpin();
+    }
+  }, [isRevealing, hasStarted, handleSpin]);
 
-    // 各参加者のスロットを順番に回転開始
-    participants.forEach((_, index) => {
-      setTimeout(() => {
-        setSpinningSlots((prev) => [...prev, index]);
-
-        // 3秒後にスロット停止
-        setTimeout(() => {
-          setSpinningSlots((prev) => prev.filter((i) => i !== index));
-          setRevealedResults((prev) => {
-            const newRevealed = [...prev, index];
-            // 全スロットが停止したかチェック
-            if (newRevealed.length === participants.length) {
-              // 0.5秒後にエフェクト開始
-              setTimeout(() => {
-                setShowEffect(true);
-              }, 500);
-            }
-            return newRevealed;
-          });
-        }, 3000);
-      }, index * 500); // 0.5秒間隔でスロット開始
-    });
-  };
-
-  const handleReset = () => {
+  const _handleReset = () => {
     setSpinningSlots([]);
     setRevealedResults([]);
     setRandomSlotIndexes(new Array(participants.length).fill(0));
     setShowEffect(false);
+    setHasStarted(false); // リセット時に演出開始フラグもリセット
     onReset();
   };
 
   return (
-    <VStack
-      gap={[3, 6]}
-      p={[3, 6]}
-      bg="red.900"
-      borderRadius="xl"
-      minH={['350px', '400px']}
-    >
-      <Text fontSize={['lg', '2xl']} fontWeight="bold" color="white">
-        スロットマシン演出
-      </Text>
-
+    <VStack gap={[3, 6]} p={[3, 6]} minH={['350px', '400px']} w="full">
       <Box
         display={slotLayout}
         flexDirection={slotLayout === 'flex' ? 'column' : undefined}
@@ -154,7 +146,6 @@ export const SlotMachineStage = ({
                 />
                 <Text
                   fontSize="xs"
-                  color="white"
                   fontWeight="bold"
                   textAlign="center"
                   lineClamp={1}
@@ -269,27 +260,6 @@ export const SlotMachineStage = ({
           );
         })}
       </Box>
-
-      <HStack gap={[2, 4]}>
-        <Button
-          colorPalette="red"
-          onClick={handleSpin}
-          disabled={isRevealing}
-          size={['sm', 'md']}
-          fontSize={['xs', 'sm']}
-        >
-          🎰 スロット開始
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={handleReset}
-          color="white"
-          size={['sm', 'md']}
-          fontSize={['xs', 'sm']}
-        >
-          リセット
-        </Button>
-      </HStack>
     </VStack>
   );
 };

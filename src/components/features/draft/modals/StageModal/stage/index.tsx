@@ -38,7 +38,7 @@ export const Stage = ({
   onReset,
 }: StageProps) => {
   return (
-    <Box w="full" maxW="600px" mx="auto">
+    <Box w="full">
       {variant === 'card' && (
         <CardRevealStage
           participants={participants}

@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { EditModal } from './index';
 
 const meta: Meta<typeof EditModal> = {
-  title: 'features/draft/DraftModals/EditModal',
+  title: 'features/draft/modals/EditModal',
   component: EditModal,
   parameters: {
     layout: 'centered',

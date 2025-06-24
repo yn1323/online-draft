@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { OpenResultModal } from './index';
 
 const meta: Meta<typeof OpenResultModal> = {
-  title: 'features/draft/DraftModals/OpenResultModal',
+  title: 'features/draft/modals/OpenResultModal',
   component: OpenResultModal,
   parameters: {
     layout: 'centered',

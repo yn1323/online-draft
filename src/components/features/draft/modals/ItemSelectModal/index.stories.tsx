@@ -3,7 +3,7 @@ import { fn } from '@storybook/test';
 import { ItemSelectModal } from './index';
 
 const meta: Meta<typeof ItemSelectModal> = {
-  title: 'features/draft/DraftModals/ItemSelectModal',
+  title: 'features/draft/modals/ItemSelectModal',
   component: ItemSelectModal,
   parameters: {
     layout: 'centered',
