@@ -1,9 +1,9 @@
 'use client';
 
-import { Avatar } from '@/src/components/atoms/Avatar';
 import { Box, Grid, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+import { Avatar } from '@/src/components/atoms/Avatar';
 import type { getCommonResponsiveValues, ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);

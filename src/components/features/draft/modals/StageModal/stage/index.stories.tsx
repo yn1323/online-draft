@@ -96,7 +96,7 @@ const conflictParticipants = [
 ];
 
 const meta: Meta<typeof Stage> = {
-  title: 'features/draft/Stage',
+  title: 'features/draft/modals/StageModal/Stage',
   component: Stage,
   parameters: {
     layout: 'fullscreen',

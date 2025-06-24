@@ -1,6 +1,5 @@
 'use client';
 
-import { Avatar } from '@/src/components/atoms/Avatar';
 import {
   Box,
   HStack,
@@ -10,6 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
+import { Avatar } from '@/src/components/atoms/Avatar';
 import type { ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);

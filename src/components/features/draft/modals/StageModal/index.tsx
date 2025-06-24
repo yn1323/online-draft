@@ -1,5 +1,5 @@
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { useEffect, useState } from 'react';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { type ParticipantResult, Stage } from './stage/index';
 
 /**
