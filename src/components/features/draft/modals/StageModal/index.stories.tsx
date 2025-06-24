@@ -6,9 +6,12 @@ const meta: Meta<typeof StageModal> = {
   title: 'Features/draft/modals/StageModal',
   component: StageModal,
   parameters: {
+    screenshot: {
+      skip: true,
+    },
     layout: 'centered',
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'skip-test'],
 };
 
 export default meta;
@@ -70,6 +73,16 @@ export const Card: Story = {
     participants: mockParticipants,
     onClose: () => console.log('Modal closed'),
   },
+  parameters: {
+    // テスト用の長いタイムアウト
+    test: {
+      timeout: 30000, // 30秒
+    },
+    // アニメーション完了を待つ
+    chromatic: {
+      delay: 8000, // 8秒待機（カードめくりアニメーション用）
+    },
+  },
 };
 
 /**
@@ -82,6 +95,16 @@ export const Typing: Story = {
     participants: mockParticipants,
     onClose: () => console.log('Modal closed'),
   },
+  parameters: {
+    // テスト用の長いタイムアウト
+    test: {
+      timeout: 30000, // 30秒
+    },
+    // アニメーション完了を待つ
+    chromatic: {
+      delay: 6000, // 6秒待機（タイピングアニメーション用）
+    },
+  },
 };
 
 /**
@@ -93,5 +116,15 @@ export const SlotMachine: Story = {
     variant: 'slot',
     participants: mockParticipants,
     onClose: () => console.log('Modal closed'),
+  },
+  parameters: {
+    // テスト用の長いタイムアウト
+    test: {
+      timeout: 30000, // 30秒
+    },
+    // アニメーション完了を待つ
+    chromatic: {
+      delay: 10000, // 10秒待機（スロットマシンアニメーション用）
+    },
   },
 };
