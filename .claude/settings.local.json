@@ -81,7 +81,10 @@
       "mcp__context7__get-library-docs",
       "mcp__ide__executeCode",
       "Bash(python3:*)",
-      "mcp__playwright__playwright_get_visible_text"
+      "mcp__playwright__playwright_get_visible_text",
+      "mcp__playwright__playwright_console_logs",
+      "mcp__playwright__playwright_fill",
+      "mcp__playwright__playwright_get_visible_html"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -97,5 +100,8 @@
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["typescript", "playwright"]
+  "enabledMcpjsonServers": [
+    "typescript",
+    "playwright"
+  ]
 }

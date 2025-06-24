@@ -38,7 +38,7 @@ export const ChatInputForm = ({
       <Input
         placeholder={placeholder}
         value={message}
-        onChange={setMessage}
+        onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyPress}
         size="md"
       />

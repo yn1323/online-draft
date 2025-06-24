@@ -1,11 +1,13 @@
 import { useState } from 'react';
+import { useChat } from '@/src/hooks/firebase/chat/useChat';
 
 /**
  * ドラフトチャットのFirestore処理hooks
  */
-export const useDraftChat = () => {
+export const useDraftChat = (groupId: string, userId: string) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { sendMessage: sendFirebaseMessage } = useChat();
 
   /**
    * チャットメッセージを送信してFirestoreに保存
@@ -19,9 +21,7 @@ export const useDraftChat = () => {
     setError(null);
 
     try {
-      // TODO: Firestore保存処理を実装
-      console.log('チャット送信:', message);
-      await new Promise((resolve) => setTimeout(resolve, 500)); // モック処理
+      await sendFirebaseMessage(groupId, userId, message);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'メッセージ送信に失敗しました',

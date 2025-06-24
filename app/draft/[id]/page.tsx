@@ -8,10 +8,10 @@ interface DraftPageRouteProps {
 }
 
 export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
-  await params; // パラメータの取得（現在は未使用）
+  const { id: groupId } = await params;
   return (
     <Animation>
-      <DraftPage />
+      <DraftPage groupId={groupId} />
     </Animation>
   );
 }
