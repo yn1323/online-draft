@@ -1,9 +1,9 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/src/components/atoms/Avatar';
-import type { ChatMessageType } from '../mockData';
+import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
 
 type ChatMessageListProps = {
-  messages: ChatMessageType[];
+  messages: ChatMessageUIType[];
 };
 
 /**
@@ -15,27 +15,51 @@ export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
     <VStack gap={3} align="stretch">
       {messages.map((message) => {
         const content = message.content;
+        const isCurrentUser = message.isCurrentUser || false;
+        const isSystem = message.isSystem || false;
 
-        // 統一ボックススタイル（旧PC版デザイン）
+        // 常に[左要素, メッセージボックス, 右要素]の3要素構造
         return (
-          <HStack key={message.id} align="start" gap={2}>
-            <Avatar
-              avatarNumber={message.avatar}
-              name={message.userName}
-              size="xs"
-            />
+          <HStack key={message.id} align="start" gap={2} w="full">
+            {/* 左要素: 他人の場合はアバター、自分の場合は空のスペーサー */}
+            {isCurrentUser ? (
+              <Box w="32px" flexShrink={0} /> // Avatar size="xs"と同じ幅のスペーサー
+            ) : (
+              <Avatar
+                avatarNumber={message.avatar}
+                name={message.userName}
+                size="xs"
+                flexShrink={0}
+              />
+            )}
+
+            {/* 中央: メッセージボックス（残りの幅を全て使用） */}
             <Box
               p={3}
               borderRadius="lg"
-              bg={message.isSystem ? 'orange.50' : 'gray.50'}
+              bg={
+                isSystem ? 'orange.50' : isCurrentUser ? 'blue.50' : 'gray.50'
+              }
               border="1px solid"
-              borderColor={message.isSystem ? 'orange.200' : 'gray.200'}
+              borderColor={
+                isSystem
+                  ? 'orange.200'
+                  : isCurrentUser
+                    ? 'blue.200'
+                    : 'gray.200'
+              }
               flex={1}
             >
               <HStack>
                 <Text
                   fontSize="xs"
-                  color={message.isSystem ? 'orange.600' : 'gray.700'}
+                  color={
+                    isSystem
+                      ? 'orange.600'
+                      : isCurrentUser
+                        ? 'blue.700'
+                        : 'gray.700'
+                  }
                   fontWeight="bold"
                 >
                   {message.userName}
@@ -46,12 +70,29 @@ export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
               </HStack>
               <Text
                 fontSize={['xs', 'sm']}
-                color={message.isSystem ? 'orange.800' : 'gray.800'}
+                color={
+                  isSystem
+                    ? 'orange.800'
+                    : isCurrentUser
+                      ? 'blue.800'
+                      : 'gray.800'
+                }
                 mt={1}
               >
                 {content}
               </Text>
             </Box>
+
+            {/* 右要素: 自分の場合はアバター、他人の場合は空のスペーサー */}
+            {isCurrentUser ? (
+              <Avatar
+                avatarNumber={message.avatar}
+                name={message.userName}
+                size="xs"
+              />
+            ) : (
+              <Box w="32px" flexShrink={0} /> // Avatar size="xs"と同じ幅のスペーサー
+            )}
           </HStack>
         );
       })}

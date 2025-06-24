@@ -166,14 +166,13 @@ export const DraftPageInner = ({
           display="flex"
           flexDirection="column"
           w="full"
+          overflow="hidden"
         >
           <Tabs.List
             bg="gray.50"
             borderBottom="2px solid"
             borderColor="gray.200"
-            position="sticky"
-            top="65px"
-            zIndex={5}
+            flexShrink={0}
           >
             <Tabs.Trigger
               value="draft"
@@ -215,7 +214,7 @@ export const DraftPageInner = ({
             </Tabs.Trigger>
           </Tabs.List>
 
-          <Box flex={1} overflow="hidden">
+          <Box flex={1} overflow="hidden" minH={0}>
             {/* ドラフト状況タブ */}
             <Tabs.Content value="draft" h="full" overflow="auto">
               <VStack gap={3} p={3}>
@@ -240,8 +239,16 @@ export const DraftPageInner = ({
             </Tabs.Content>
 
             {/* チャット・ログタブ */}
-            <Tabs.Content value="chat" h="full" overflow="auto" p={3}>
-              <ChatMessageList messages={realtimeChatMessages} />
+            <Tabs.Content
+              value="chat"
+              h="full"
+              overflow="hidden"
+              display="flex"
+              flexDirection="column"
+            >
+              <Box flex={1} overflow="auto" p={3}>
+                <ChatMessageList messages={realtimeChatMessages} />
+              </Box>
             </Tabs.Content>
           </Box>
         </Tabs.Root>
@@ -300,8 +307,8 @@ export const DraftPageInner = ({
 
         <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 200px)">
           {/* 左側: ドラフト状況エリア */}
-          <GridItem>
-            <VStack gap={4} h="full" w="full" align="stretch">
+          <GridItem h="100%">
+            <VStack gap={4} h="100%" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
                 participants={participants}
@@ -323,26 +330,30 @@ export const DraftPageInner = ({
           </GridItem>
 
           {/* 右側: チャット */}
-          <GridItem h="full">
+          <GridItem h="100%">
             <Box
-              h="full"
+              h="100%"
+              maxH="calc(100vh - 200px)"
               bg="white"
               boxShadow="lg"
               p={4}
               borderRadius="lg"
               display="flex"
               flexDirection="column"
+              overflow="hidden"
             >
-              <Text fontSize="lg" fontWeight="bold" mb={4}>
+              <Text fontSize="lg" fontWeight="bold" mb={4} flexShrink={0}>
                 チャット
               </Text>
               {/* チャットメッセージエリア */}
-              <Box flex="1" overflow="auto" mb={3}>
+              <Box flex="1" overflow="auto" mb={3} minH={0}>
                 <ChatMessageList messages={realtimeChatMessages} />
               </Box>
 
               {/* チャット入力エリア */}
-              <ChatInputForm onSendMessage={handleSendMessage} />
+              <Box flexShrink={0}>
+                <ChatInputForm onSendMessage={handleSendMessage} />
+              </Box>
             </Box>
           </GridItem>
         </Grid>
@@ -396,7 +407,8 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
   }, [groupId, router]);
 
   // Firestoreから参加者情報をリアルタイム取得
-  const { users: realtimeUsers, loading: usersLoading } = useRealtimeUsers(groupId);
+  const { users: realtimeUsers, loading: usersLoading } =
+    useRealtimeUsers(groupId);
 
   // ユーザー情報のlookupオブジェクト生成
   const userLookup = useMemo(() => {
@@ -416,6 +428,7 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
   const { messages: realtimeChatMessages } = useRealtimeChat(
     groupId,
     userLookup,
+    userId,
   );
 
   // userIdが設定されるまで、またはユーザー情報取得中はローディング表示

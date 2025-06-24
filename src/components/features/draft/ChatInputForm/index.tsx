@@ -1,5 +1,5 @@
 import { HStack } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { Button } from '@/src/components/atoms/Button';
 import { Input } from '@/src/components/atoms/Input';
 
@@ -17,19 +17,28 @@ export const ChatInputForm = ({
   placeholder = 'メッセージを入力...',
 }: ChatInputFormProps) => {
   const [message, setMessage] = useState('');
+  const [isComposing, setIsComposing] = useState(false);
 
-  const handleSend = () => {
+  const handleSend = useCallback(() => {
     if (message.trim()) {
       onSendMessage?.(message.trim());
       setMessage('');
     }
-  };
+  }, [message, onSendMessage]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !isComposing) {
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setIsComposing(false);
   };
 
   // 統一スタイル: ボーダーなし、サイズmd
@@ -40,6 +49,8 @@ export const ChatInputForm = ({
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyPress}
+        onCompositionStart={handleCompositionStart}
+        onCompositionEnd={handleCompositionEnd}
         size="md"
       />
       <Button

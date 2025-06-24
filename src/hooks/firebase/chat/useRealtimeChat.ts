@@ -23,6 +23,7 @@ export type ChatMessageUIType = {
   content: string;
   timestamp: string;
   isSystem?: boolean;
+  isCurrentUser?: boolean;
 };
 
 /**
@@ -33,6 +34,7 @@ export type ChatMessageUIType = {
 export const useRealtimeChat = (
   groupId: string | null,
   userLookup?: Record<string, { name: string; avatar: string }>,
+  currentUserId?: string,
 ) => {
   const [messages, setMessages] = useState<ChatMessageUIType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -86,6 +88,7 @@ export const useRealtimeChat = (
             content: data.message,
             timestamp: timeString,
             isSystem,
+            isCurrentUser: !isSystem && data.userId === currentUserId,
           };
         });
 
@@ -101,7 +104,7 @@ export const useRealtimeChat = (
     );
 
     return unsubscribe;
-  }, [groupId, userLookup]);
+  }, [groupId, userLookup, currentUserId]);
 
   return {
     messages,
