@@ -11,8 +11,15 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
+import { Loading } from '@/src/components/atoms/Loading';
+import {
+  type ChatMessageUIType,
+  useRealtimeChat,
+} from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
@@ -20,11 +27,8 @@ import { useDraftChat } from '../hooks/useDraftChat';
 import { useDraftPicks } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
 import {
-  type ChatMessageType,
   currentRound,
   type DraftRoundType,
-  mockChatMessages,
-  mockParticipants,
   type ParticipantType,
   pastDraftResults,
 } from '../mockData';
@@ -38,7 +42,10 @@ type DraftPageInnerProps = {
   currentRound: number;
   participants: ParticipantType[];
   pastResults: DraftRoundType[];
-  chatMessages: ChatMessageType[];
+  realtimeChatMessages: ChatMessageUIType[];
+  // Firestore関連
+  groupId: string;
+  userId: string;
 };
 
 /**
@@ -49,7 +56,9 @@ export const DraftPageInner = ({
   currentRound,
   participants,
   pastResults,
-  chatMessages,
+  realtimeChatMessages,
+  groupId,
+  userId,
 }: DraftPageInnerProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
@@ -63,7 +72,7 @@ export const DraftPageInner = ({
 
   // Firestore処理hooks
   const { selectItem } = useDraftPicks();
-  const { sendMessage } = useDraftChat();
+  const { sendMessage } = useDraftChat(groupId, userId);
   const { executeOpenResult, checkParticipantStatus } = useDraftResult();
 
   // ハンドラー関数
@@ -157,14 +166,13 @@ export const DraftPageInner = ({
           display="flex"
           flexDirection="column"
           w="full"
+          overflow="hidden"
         >
           <Tabs.List
             bg="gray.50"
             borderBottom="2px solid"
             borderColor="gray.200"
-            position="sticky"
-            top="65px"
-            zIndex={5}
+            flexShrink={0}
           >
             <Tabs.Trigger
               value="draft"
@@ -206,7 +214,7 @@ export const DraftPageInner = ({
             </Tabs.Trigger>
           </Tabs.List>
 
-          <Box flex={1} overflow="hidden">
+          <Box flex={1} overflow="hidden" minH={0}>
             {/* ドラフト状況タブ */}
             <Tabs.Content value="draft" h="full" overflow="auto">
               <VStack gap={3} p={3}>
@@ -215,6 +223,7 @@ export const DraftPageInner = ({
                   participants={participants}
                   currentRound={currentRound}
                   variant="sp"
+                  currentUserId={userId}
                   onItemSelect={itemSelectModal.open}
                   onOpenResult={handleOpenResult}
                 />
@@ -230,8 +239,16 @@ export const DraftPageInner = ({
             </Tabs.Content>
 
             {/* チャット・ログタブ */}
-            <Tabs.Content value="chat" h="full" overflow="auto" p={3}>
-              <ChatMessageList messages={chatMessages} />
+            <Tabs.Content
+              value="chat"
+              h="full"
+              overflow="hidden"
+              display="flex"
+              flexDirection="column"
+            >
+              <Box flex={1} overflow="auto" p={3}>
+                <ChatMessageList messages={realtimeChatMessages} />
+              </Box>
             </Tabs.Content>
           </Box>
         </Tabs.Root>
@@ -288,15 +305,16 @@ export const DraftPageInner = ({
           </Text>
         </Box>
 
-        <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 200px)">
+        <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 130px)">
           {/* 左側: ドラフト状況エリア */}
-          <GridItem>
-            <VStack gap={4} h="full" w="full" align="stretch">
+          <GridItem h="100%">
+            <VStack gap={4} h="100%" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
                 participants={participants}
                 currentRound={currentRound}
                 variant="pc"
+                currentUserId={userId}
                 onItemSelect={itemSelectModal.open}
                 onOpenResult={handleOpenResult}
               />
@@ -312,26 +330,30 @@ export const DraftPageInner = ({
           </GridItem>
 
           {/* 右側: チャット */}
-          <GridItem h="full">
+          <GridItem h="100%">
             <Box
-              h="full"
+              h="100%"
+              maxH="calc(100vh - 130px)"
               bg="white"
               boxShadow="lg"
               p={4}
               borderRadius="lg"
               display="flex"
               flexDirection="column"
+              overflow="hidden"
             >
-              <Text fontSize="lg" fontWeight="bold" mb={4}>
+              <Text fontSize="lg" fontWeight="bold" mb={4} flexShrink={0}>
                 チャット
               </Text>
               {/* チャットメッセージエリア */}
-              <Box flex="1" overflow="auto" mb={3}>
-                <ChatMessageList messages={chatMessages} />
+              <Box flex="1" overflow="auto" mb={3} minH={0}>
+                <ChatMessageList messages={realtimeChatMessages} />
               </Box>
 
               {/* チャット入力エリア */}
-              <ChatInputForm onSendMessage={handleSendMessage} />
+              <Box flexShrink={0}>
+                <ChatInputForm onSendMessage={handleSendMessage} />
+              </Box>
             </Box>
           </GridItem>
         </Grid>
@@ -367,13 +389,77 @@ export const DraftPageInner = ({
  * ドラフト実行画面コンポーネント（Container）
  * モックデータの提供のみを担当
  */
-export const DraftPage = () => {
+export const DraftPage = ({ groupId }: { groupId: string }) => {
+  const router = useRouter();
+
+  // sessionStorageからuserIdを取得
+  const [userId, setUserId] = useState<string>('');
+
+  useEffect(() => {
+    // クライアントサイドでのみ実行
+    const storedUserId = sessionStorage.getItem('onlinedraft_user_id');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    } else {
+      // userIdがない場合はロビーへリダイレクト（認証チェック）
+      router.push(`/lobby/${groupId}`);
+    }
+  }, [groupId, router]);
+
+  // Firestoreから参加者情報をリアルタイム取得
+  const { users: realtimeUsers, loading: usersLoading } =
+    useRealtimeUsers(groupId);
+
+  // ユーザー情報のlookupオブジェクト生成
+  const userLookup = useMemo(() => {
+    return realtimeUsers.reduce(
+      (acc, user) => {
+        acc[user.userId] = {
+          name: user.userName,
+          avatar: user.avatar,
+        };
+        return acc;
+      },
+      {} as Record<string, { name: string; avatar: string }>,
+    );
+  }, [realtimeUsers]);
+
+  // リアルタイムチャット監視
+  const { messages: realtimeChatMessages } = useRealtimeChat(
+    groupId,
+    userLookup,
+    userId,
+  );
+
+  // userIdが設定されるまで、またはユーザー情報取得中はローディング表示
+  if (!userId || usersLoading) {
+    return (
+      <Box bg="gray.50" minH="100vh" py={[4, 8]}>
+        <Container maxW="container.lg">
+          <Loading message="ローディング中..." />
+        </Container>
+      </Box>
+    );
+  }
+
+  // Firestore形式からアプリ形式に変換
+  const participants: ParticipantType[] = realtimeUsers.map((user) => ({
+    id: user.userId,
+    name: user.userName,
+    avatar: user.avatar,
+    // TODO: 実際の取得アイテム情報と連携
+    acquisitions: [],
+    currentPick: '選択中...',
+  }));
+
   return (
     <DraftPageInner
       currentRound={currentRound}
-      participants={mockParticipants}
+      participants={participants}
       pastResults={pastDraftResults}
-      chatMessages={mockChatMessages}
+      realtimeChatMessages={realtimeChatMessages}
+      groupId={groupId}
+      userId={userId}
     />
   );
 };

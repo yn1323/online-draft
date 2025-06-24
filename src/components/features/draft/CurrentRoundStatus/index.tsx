@@ -9,6 +9,7 @@ type CurrentRoundStatusProps = {
   participants: ParticipantType[];
   currentRound: number;
   variant?: 'pc' | 'sp';
+  currentUserId?: string;
   onItemSelect?: () => void;
   onOpenResult?: () => void;
 };
@@ -21,15 +22,28 @@ export const CurrentRoundStatus = ({
   participants,
   currentRound,
   variant = 'sp',
+  currentUserId,
   onItemSelect,
   onOpenResult,
 }: CurrentRoundStatusProps) => {
   // 参加者グリッド用の共通スタイル
-  const getParticipantCellStyle = (isActive: boolean) => ({
+  const getParticipantCellStyle = (isActive: boolean, isCurrentUser: boolean) => ({
     p: variant === 'pc' ? 2 : 1.5,
-    bg: isActive ? 'blue.50' : 'green.50',
-    border: '1px solid',
-    borderColor: isActive ? 'blue.300' : 'green.300',
+    bg: isCurrentUser 
+      ? isActive 
+        ? 'blue.100'  // 自分 & 選択中
+        : 'green.100' // 自分 & 完了
+      : isActive 
+        ? 'blue.50'   // 他人 & 選択中
+        : 'green.50', // 他人 & 完了
+    border: isCurrentUser ? '2px solid' : '1px solid',
+    borderColor: isCurrentUser
+      ? isActive
+        ? 'blue.500'  // 自分 & 選択中
+        : 'green.500' // 自分 & 完了
+      : isActive 
+        ? 'blue.300'  // 他人 & 選択中
+        : 'green.300', // 他人 & 完了
     borderRadius: 'md',
     gap: 1,
     align: 'center' as const,
@@ -74,10 +88,11 @@ export const CurrentRoundStatus = ({
             {participants.map((participant, index) => {
               // 最後の参加者を選択中とする（モック用）
               const isActive = index === participants.length - 1;
+              const isCurrentUser = participant.id === currentUserId;
               return (
                 <VStack
                   key={participant.id}
-                  {...getParticipantCellStyle(isActive)}
+                  {...getParticipantCellStyle(isActive, isCurrentUser)}
                 >
                   <Avatar
                     avatarNumber={participant.avatar}

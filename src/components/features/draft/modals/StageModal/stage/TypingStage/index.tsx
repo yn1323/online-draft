@@ -1,15 +1,8 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  HStack,
-  Text,
-  useBreakpointValue,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import type { getCommonResponsiveValues, ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);
@@ -30,7 +23,7 @@ export const TypingStage = ({
   onReset,
   getCommonResponsiveValues,
 }: TypingStageProps) => {
-  const [typedResults, setTypedResults] = useState<string[]>([]);
+  const [typedChoices, setTypedChoices] = useState<string[]>([]); // 選択肢のタイピング状況
   const [currentlyTyping, setCurrentlyTyping] = useState(-1);
   const [showEffect, setShowEffect] = useState(false);
 
@@ -40,8 +33,8 @@ export const TypingStage = ({
   const textFontSize = useBreakpointValue({ base: 'sm', md: 'md' });
   const minHeight = useBreakpointValue({ base: '300px', md: '250px' });
 
-  const handleType = () => {
-    setTypedResults([]);
+  const handleType = useCallback(() => {
+    setTypedChoices([]);
     setCurrentlyTyping(-1);
     setShowEffect(false);
     onStartReveal();
@@ -51,18 +44,18 @@ export const TypingStage = ({
     participants.forEach((participant, participantIndex) => {
       setTimeout(() => {
         setCurrentlyTyping(participantIndex);
-        const fullText = `${participant.name}\n${participant.choice}`;
+        const choiceText = participant.choice;
 
-        for (let i = 0; i <= fullText.length; i++) {
+        for (let i = 0; i <= choiceText.length; i++) {
           setTimeout(() => {
-            const currentText = fullText.substring(0, i);
-            setTypedResults((prev) => {
-              const newResults = [...prev];
-              newResults[participantIndex] = currentText;
-              return newResults;
+            const currentChoice = choiceText.substring(0, i);
+            setTypedChoices((prev) => {
+              const newChoices = [...prev];
+              newChoices[participantIndex] = currentChoice;
+              return newChoices;
             });
 
-            if (i === fullText.length) {
+            if (i === choiceText.length) {
               setCurrentlyTyping(-1);
               completedCount++;
               // 全員のタイピングが完了したかチェック
@@ -70,39 +63,31 @@ export const TypingStage = ({
                 // 0.5秒後にエフェクト開始
                 setTimeout(() => {
                   setShowEffect(true);
-                }, 500);
+                }, 300);
               }
             }
           }, i * 80);
         }
-      }, participantIndex * 2000);
+      }, participantIndex * 1000);
     });
-  };
+  }, [participants, onStartReveal]);
 
-  const handleReset = () => {
-    setTypedResults([]);
+  // 自動開始ロジック
+  useEffect(() => {
+    if (isRevealing && typedChoices.length === 0) {
+      handleType();
+    }
+  }, [isRevealing, typedChoices.length, handleType]);
+
+  const _handleReset = () => {
+    setTypedChoices([]);
     setCurrentlyTyping(-1);
     setShowEffect(false);
     onReset();
   };
 
   return (
-    <VStack
-      gap={[3, 6]}
-      p={[3, 6]}
-      bg="gray.900"
-      borderRadius="xl"
-      minH={['350px', '400px']}
-    >
-      <Text
-        fontSize={['lg', '2xl']}
-        fontWeight="bold"
-        color="green.400"
-        fontFamily="mono"
-      >
-        タイピング演出
-      </Text>
-
+    <VStack gap={[3, 6]} p={[3, 6]} minH={['350px', '400px']} w="full">
       <Box
         bg={showEffect ? 'green.900' : 'black'}
         borderRadius="lg"
@@ -115,17 +100,13 @@ export const TypingStage = ({
         boxShadow={showEffect ? '0 0 20px rgba(72, 187, 120, 0.5)' : 'none'}
         overflowX="auto"
       >
-        <Text color="green.400" fontSize="sm" mb={2}>
-          開票結果を表示中...
-        </Text>
-
-        {typedResults.map((result, index) => {
-          const participant = participants[index];
+        {participants.map((participant, index) => {
           const willLose = participant?.willLose || false;
+          const typedChoice = typedChoices[index] || '';
 
           return (
             <MotionText
-              key={index}
+              key={participant.id}
               color={
                 willLose && showEffect
                   ? 'red.400'
@@ -157,7 +138,7 @@ export const TypingStage = ({
                   : {}
               }
             >
-              {result}
+              {participant.name}: {typedChoice}
               {currentlyTyping === index && (
                 <MotionBox
                   as="span"
@@ -177,19 +158,6 @@ export const TypingStage = ({
           );
         })}
       </Box>
-
-      <HStack gap={4}>
-        <Button
-          colorPalette="green"
-          onClick={handleType}
-          disabled={isRevealing}
-        >
-          タイピング開始
-        </Button>
-        <Button variant="ghost" onClick={handleReset} color="white">
-          リセット
-        </Button>
-      </HStack>
     </VStack>
   );
 };

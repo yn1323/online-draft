@@ -1,16 +1,8 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  Grid,
-  HStack,
-  Text,
-  useBreakpointValue,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Grid, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import type { getCommonResponsiveValues, ParticipantResult } from '../index';
 
@@ -42,7 +34,7 @@ export const CardRevealStage = ({
   const avatarSize = useBreakpointValue(responsive.avatarSize);
   const cardGap = useBreakpointValue(responsive.gap);
 
-  const handleReveal = () => {
+  const handleReveal = useCallback(() => {
     setRevealedCards([]);
     setShowEffect(false);
     onStartReveal();
@@ -65,26 +57,23 @@ export const CardRevealStage = ({
         (index + 1) * 800,
       );
     });
-  };
+  }, [participants, onStartReveal]);
 
-  const handleReset = () => {
+  // 自動開始ロジック
+  useEffect(() => {
+    if (isRevealing && revealedCards.length === 0) {
+      handleReveal();
+    }
+  }, [isRevealing, revealedCards.length, handleReveal]);
+
+  const _handleReset = () => {
     setRevealedCards([]);
     setShowEffect(false);
     onReset();
   };
 
   return (
-    <VStack
-      gap={[3, 6]}
-      p={[3, 6]}
-      bg="purple.900"
-      borderRadius="xl"
-      minH={['350px', '400px']}
-    >
-      <Text fontSize={['lg', '2xl']} fontWeight="bold" color="white">
-        カードめくり演出
-      </Text>
-
+    <VStack gap={[3, 6]} p={[3, 6]} minH={['350px', '400px']} w="full">
       <Grid templateColumns={gridColumns} gap={cardGap} w="full">
         {participants.map((participant, index) => {
           const isRevealed = revealedCards.includes(index);
@@ -128,12 +117,51 @@ export const CardRevealStage = ({
                   bg="gradient-to-br from-purple-500 to-purple-700"
                   borderRadius="lg"
                   backfaceVisibility="hidden"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
+                  p={3}
                   boxShadow="xl"
                 >
-                  <Text fontSize="4xl">?</Text>
+                  {/* カード表面：アバター + 名前 + ？マーク */}
+                  <Box
+                    display="flex"
+                    flexDirection={['row', 'column']}
+                    alignItems="center"
+                    justifyContent={['flex-start', 'center']}
+                    h="full"
+                    w="full"
+                    gap={[2, 1]}
+                    px={[2, 3]}
+                    py={[1, 2]}
+                  >
+                    <Avatar
+                      avatarNumber={participant.avatar.toString()}
+                      name={participant.name}
+                      size={avatarSize}
+                    />
+                    <VStack
+                      gap={[0, 1]}
+                      flex={['1', 'none']}
+                      align={['flex-start', 'center']}
+                    >
+                      <Text
+                        fontSize={fontSize}
+                        fontWeight="bold"
+                        textAlign={['left', 'center']}
+                        color="white"
+                        lineHeight="1.2"
+                        lineClamp={1}
+                      >
+                        {participant.name}
+                      </Text>
+                      <Text
+                        fontSize="2xl"
+                        textAlign="center"
+                        color="yellow.300"
+                        fontWeight="bold"
+                      >
+                        ?
+                      </Text>
+                    </VStack>
+                  </Box>
                 </Box>
 
                 <Box
@@ -217,27 +245,6 @@ export const CardRevealStage = ({
           );
         })}
       </Grid>
-
-      <HStack gap={[2, 4]}>
-        <Button
-          colorPalette="purple"
-          onClick={handleReveal}
-          disabled={isRevealing}
-          size={['sm', 'md']}
-          fontSize={['xs', 'sm']}
-        >
-          カードをめくる
-        </Button>
-        <Button
-          variant="ghost"
-          onClick={handleReset}
-          color="white"
-          size={['sm', 'md']}
-          fontSize={['xs', 'sm']}
-        >
-          リセット
-        </Button>
-      </HStack>
     </VStack>
   );
 };

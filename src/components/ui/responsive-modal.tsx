@@ -28,6 +28,7 @@ interface ResponsiveModalProps {
   onClose: () => void;
   title: string;
   children: ReactNode;
+  dialogMaxWidth?: string; // PC版モーダルの最大幅（デフォルト: "md"）
   actions?: {
     cancel?: {
       text: string;
@@ -50,6 +51,7 @@ export const ResponsiveModal = ({
   onClose,
   title,
   children,
+  dialogMaxWidth = 'md', // デフォルト値
   actions,
 }: ResponsiveModalProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
@@ -65,7 +67,7 @@ export const ResponsiveModal = ({
       >
         <DrawerContent
           borderTopRadius="xl"
-          maxH="80vh"
+          maxH="95vh"
           display="flex"
           flexDirection="column"
         >
@@ -129,7 +131,7 @@ export const ResponsiveModal = ({
   // デスクトップ用のDialog
   return (
     <DialogRoot open={isOpen} onOpenChange={(e) => e.open || onClose()}>
-      <DialogContent maxW="md" mx={4}>
+      <DialogContent maxW={dialogMaxWidth} mx={4}>
         <DialogCloseTrigger />
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>

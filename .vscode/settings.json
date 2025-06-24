@@ -18,7 +18,6 @@
   "editor.codeActionsOnSave": {
     "quickfix.biome": "explicit",
     "source.addMissingImports": "explicit",
-    "source.organizeImports": "explicit",
     "source.organizeImports.biome": "explicit"
   },
   "editor.defaultFormatter": "biomejs.biome",
