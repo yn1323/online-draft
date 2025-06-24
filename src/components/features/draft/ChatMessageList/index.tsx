@@ -29,7 +29,6 @@ export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
                 avatarNumber={message.avatar}
                 name={message.userName}
                 size="xs"
-                flexShrink={0}
               />
             )}
 

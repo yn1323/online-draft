@@ -3,6 +3,8 @@
  * PC版・SP版両方で使用
  */
 
+import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
+
 export type ParticipantType = {
   id: string;
   name: string;
@@ -160,8 +162,8 @@ export const pastDraftResults: DraftRoundType[] = [
   },
 ];
 
-// チャットメッセージ
-export const mockChatMessages: ChatMessageType[] = [
+// チャットメッセージ（ChatMessageUIType対応版）
+export const mockChatMessages: ChatMessageUIType[] = [
   {
     id: '1',
     userName: 'システム',
@@ -169,6 +171,7 @@ export const mockChatMessages: ChatMessageType[] = [
     content: 'ドラフトを開始しました！',
     timestamp: '14:00',
     isSystem: true,
+    isCurrentUser: false,
   },
   {
     id: '2',
@@ -176,6 +179,8 @@ export const mockChatMessages: ChatMessageType[] = [
     avatar: '1',
     content: '今年は投手中心でいきます！',
     timestamp: '14:01',
+    isSystem: false,
+    isCurrentUser: true, // テスト用に自分のメッセージとして設定
   },
   {
     id: '3',
@@ -184,6 +189,7 @@ export const mockChatMessages: ChatMessageType[] = [
     content: '第1巡目が完了しました',
     timestamp: '14:05',
     isSystem: true,
+    isCurrentUser: false,
   },
   {
     id: '4',
@@ -191,6 +197,8 @@ export const mockChatMessages: ChatMessageType[] = [
     avatar: '3',
     content: '大谷取られた〜😭',
     timestamp: '14:05',
+    isSystem: false,
+    isCurrentUser: false,
   },
   {
     id: '5',
@@ -199,6 +207,7 @@ export const mockChatMessages: ChatMessageType[] = [
     content: '佐藤次郎さんの選択中です',
     timestamp: '14:38',
     isSystem: true,
+    isCurrentUser: false,
   },
 ];
 

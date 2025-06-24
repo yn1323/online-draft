@@ -27,7 +27,9 @@ export const Default: Story = {
     currentRound,
     participants: mockParticipants,
     pastResults: pastDraftResults,
-    chatMessages: mockChatMessages,
+    realtimeChatMessages: mockChatMessages,
+    groupId: 'test-group-id',
+    userId: 'test-user-id',
   },
 };
 
