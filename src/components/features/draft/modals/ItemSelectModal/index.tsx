@@ -6,16 +6,26 @@ import { z } from 'zod';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
+// 定数定義
+const MAX_ITEM_LENGTH = 50;
+const MAX_CATEGORY_LENGTH = 20;
+const MAX_COMMENT_LENGTH = 100;
+
 // バリデーションスキーマ（編集時用）
-const createItemSelectSchema = (isEditing: boolean) =>
+const getValidationSchema = (isEditMode: boolean) =>
   z.object({
     item: z
       .string()
       .min(1, 'アイテム名を入力してください')
-      .max(50, '50文字以内で入力してください'),
+      .max(MAX_ITEM_LENGTH, `${MAX_ITEM_LENGTH}文字以内で入力してください`),
     comment: z
       .string()
-      .max(isEditing ? 20 : 100, isEditing ? '20文字以内で入力してください' : '100文字以内で入力してください')
+      .max(
+        isEditMode ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH,
+        isEditMode
+          ? `${MAX_CATEGORY_LENGTH}文字以内で入力してください`
+          : `${MAX_COMMENT_LENGTH}文字以内で入力してください`,
+      )
       .default(''),
   });
 
@@ -43,8 +53,8 @@ type ItemSelectModalProps = {
   onSubmit: (data: { item: string; comment: string }) => void | Promise<void>;
   defaultItem?: string;
   defaultComment?: string;
-  title?: string;
-  editingInfo?: {
+  modalTitle?: string;
+  editContext?: {
     round: number;
     playerName: string;
   };
@@ -60,20 +70,19 @@ export const ItemSelectModal = ({
   onSubmit,
   defaultItem = '',
   defaultComment = '',
-  title = 'アイテムを選択',
-  editingInfo,
+  modalTitle = 'アイテムを選択',
+  editContext,
 }: ItemSelectModalProps) => {
   const formId = useId();
-  const isEditing = !!editingInfo;
+  const isEditMode = !!editContext;
 
-  // react-hook-form設定
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    resolver: zodResolver(createItemSelectSchema(isEditing)),
+    resolver: zodResolver(getValidationSchema(isEditMode)),
     mode: 'onChange',
     defaultValues: {
       item: defaultItem,
@@ -81,7 +90,6 @@ export const ItemSelectModal = ({
     },
   });
 
-  // フォーム送信処理
   const onFormSubmit = async (data: { item: string; comment: string }) => {
     try {
       await onSubmit({
@@ -95,7 +103,6 @@ export const ItemSelectModal = ({
     }
   };
 
-  // モーダルクローズ時の処理
   const handleClose = () => {
     if (!isSubmitting) {
       reset();
@@ -107,7 +114,7 @@ export const ItemSelectModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={handleClose}
-      title={title}
+      title={modalTitle}
       actions={{
         cancel: {
           text: 'キャンセル',
@@ -129,8 +136,7 @@ export const ItemSelectModal = ({
         gap={4}
         w="full"
       >
-        {/* 編集対象情報（編集時のみ表示） */}
-        {editingInfo && (
+        {editContext && (
           <Box w="full" p={3} bg="gray.50" borderRadius="md">
             <VStack gap={2} align="start">
               <HStack>
@@ -138,7 +144,7 @@ export const ItemSelectModal = ({
                   ラウンド:
                 </Text>
                 <Text fontSize="sm" fontWeight="bold">
-                  Round {editingInfo.round}
+                  Round {editContext.round}
                 </Text>
               </HStack>
               <HStack>
@@ -146,14 +152,13 @@ export const ItemSelectModal = ({
                   プレイヤー:
                 </Text>
                 <Text fontSize="sm" fontWeight="bold">
-                  {editingInfo.playerName}
+                  {editContext.playerName}
                 </Text>
               </HStack>
             </VStack>
           </Box>
         )}
 
-        {/* アイテム名入力 */}
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
             アイテム名
@@ -161,7 +166,7 @@ export const ItemSelectModal = ({
           <Input
             {...register('item')}
             placeholder="アイテム名を入力してください"
-            maxLength={50}
+            maxLength={MAX_ITEM_LENGTH}
             size="lg"
             error={!!errors.item}
           />
@@ -172,17 +177,16 @@ export const ItemSelectModal = ({
           )}
         </VStack>
 
-        {/* コメント入力 */}
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            {editingInfo ? 'カテゴリ' : 'コメント（任意）'}
+            {editContext ? 'カテゴリ' : 'コメント（任意）'}
           </Text>
           <Input
             {...register('comment')}
             placeholder={
-              editingInfo ? 'カテゴリを入力してください' : 'この選択についてのコメント...'
+              editContext ? 'カテゴリを入力してください' : 'この選択についてのコメント...'
             }
-            maxLength={editingInfo ? 20 : 100}
+            maxLength={editContext ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH}
             size="lg"
             error={!!errors.comment}
           />

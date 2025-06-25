@@ -279,10 +279,10 @@ export const DraftPageInner = ({
             setEditingPick(null);
           }}
           onSubmit={editingPick ? handleEditSave : handleItemSelect}
-          title={editingPick ? 'ピックを編集' : 'アイテムを選択'}
+          modalTitle={editingPick ? 'ピックを編集' : 'アイテムを選択'}
           defaultItem={editingPick?.currentPick}
           defaultComment={editingPick?.category}
-          editingInfo={
+          editContext={
             editingPick
               ? {
                   round: editingPick.round,
@@ -374,10 +374,10 @@ export const DraftPageInner = ({
           setEditingPick(null);
         }}
         onSubmit={editingPick ? handleEditSave : handleItemSelect}
-        title={editingPick ? 'ピックを編集' : 'アイテムを選択'}
+        modalTitle={editingPick ? 'ピックを編集' : 'アイテムを選択'}
         defaultItem={editingPick?.currentPick}
         defaultComment={editingPick?.category}
-        editingInfo={
+        editContext={
           editingPick
             ? {
                 round: editingPick.round,
