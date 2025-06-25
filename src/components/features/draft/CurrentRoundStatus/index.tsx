@@ -95,11 +95,7 @@ export const CurrentRoundStatus = ({
         <VStack gap={variant === 'pc' ? 2 : 3} w="full">
           <VStack gap={1} w="full">
             <HStack w="full" justify="space-between">
-              <Text
-                fontSize={variant === 'pc' ? 'sm' : 'sm'}
-                fontWeight="bold"
-                color="gray.800"
-              >
+              <Text fontSize="sm" fontWeight="bold" color="gray.800">
                 Round {currentRound}
                 {variant === 'pc' && ' - 現在の選択状況'}
               </Text>
@@ -107,13 +103,7 @@ export const CurrentRoundStatus = ({
                 {selectedCount}/{participants.length} 人選択完了
               </Text>
             </HStack>
-            <Box
-              w="full"
-              h="4px"
-              bg="gray.200"
-              borderRadius="full"
-              overflow="hidden"
-            >
+            <Box w="full" h="4px" bg="gray.200" borderRadius="full">
               <Box
                 h="full"
                 bg="blue.500"

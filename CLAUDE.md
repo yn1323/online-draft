@@ -38,6 +38,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - IMPORTANT: バレルエクスポート禁止
 - IMPORTANT: utf-8を利用すること
 - IMPORTANT: TypeScriptの型は推論を利用すること
+- IMPORTANT: 定数化は2箇所以上で利用しているときのみとする
 
 ## 📋 Claude Code開発ワークフロー
 

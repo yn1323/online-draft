@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card as ChakraCard } from '@chakra-ui/react';
+import { Card as ChakraCard } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 
 type CardProps = {
