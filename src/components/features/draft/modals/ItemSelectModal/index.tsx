@@ -1,4 +1,4 @@
-import { Text, VStack } from '@chakra-ui/react';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useId, useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -6,17 +6,18 @@ import { z } from 'zod';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
-// バリデーションスキーマ
-const itemSelectSchema = z.object({
-  item: z
-    .string()
-    .min(1, 'アイテム名を入力してください')
-    .max(50, '50文字以内で入力してください'),
-  comment: z
-    .string()
-    .max(100, '100文字以内で入力してください')
-    .default(''),
-});
+// バリデーションスキーマ（編集時用）
+const createItemSelectSchema = (isEditing: boolean) =>
+  z.object({
+    item: z
+      .string()
+      .min(1, 'アイテム名を入力してください')
+      .max(50, '50文字以内で入力してください'),
+    comment: z
+      .string()
+      .max(isEditing ? 20 : 100, isEditing ? '20文字以内で入力してください' : '100文字以内で入力してください')
+      .default(''),
+  });
 
 
 /**
@@ -42,6 +43,11 @@ type ItemSelectModalProps = {
   onSubmit: (data: { item: string; comment: string }) => void | Promise<void>;
   defaultItem?: string;
   defaultComment?: string;
+  title?: string;
+  editingInfo?: {
+    round: number;
+    playerName: string;
+  };
 };
 
 /**
@@ -54,8 +60,11 @@ export const ItemSelectModal = ({
   onSubmit,
   defaultItem = '',
   defaultComment = '',
+  title = 'アイテムを選択',
+  editingInfo,
 }: ItemSelectModalProps) => {
   const formId = useId();
+  const isEditing = !!editingInfo;
 
   // react-hook-form設定
   const {
@@ -64,7 +73,7 @@ export const ItemSelectModal = ({
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    resolver: zodResolver(itemSelectSchema),
+    resolver: zodResolver(createItemSelectSchema(isEditing)),
     mode: 'onChange',
     defaultValues: {
       item: defaultItem,
@@ -98,7 +107,7 @@ export const ItemSelectModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="アイテムを選択"
+      title={title}
       actions={{
         cancel: {
           text: 'キャンセル',
@@ -120,6 +129,30 @@ export const ItemSelectModal = ({
         gap={4}
         w="full"
       >
+        {/* 編集対象情報（編集時のみ表示） */}
+        {editingInfo && (
+          <Box w="full" p={3} bg="gray.50" borderRadius="md">
+            <VStack gap={2} align="start">
+              <HStack>
+                <Text fontSize="xs" color="gray.600">
+                  ラウンド:
+                </Text>
+                <Text fontSize="sm" fontWeight="bold">
+                  Round {editingInfo.round}
+                </Text>
+              </HStack>
+              <HStack>
+                <Text fontSize="xs" color="gray.600">
+                  プレイヤー:
+                </Text>
+                <Text fontSize="sm" fontWeight="bold">
+                  {editingInfo.playerName}
+                </Text>
+              </HStack>
+            </VStack>
+          </Box>
+        )}
+
         {/* アイテム名入力 */}
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
@@ -142,12 +175,14 @@ export const ItemSelectModal = ({
         {/* コメント入力 */}
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            コメント（任意）
+            {editingInfo ? 'カテゴリ' : 'コメント（任意）'}
           </Text>
           <Input
             {...register('comment')}
-            placeholder="この選択についてのコメント..."
-            maxLength={100}
+            placeholder={
+              editingInfo ? 'カテゴリを入力してください' : 'この選択についてのコメント...'
+            }
+            maxLength={editingInfo ? 20 : 100}
             size="lg"
             error={!!errors.comment}
           />

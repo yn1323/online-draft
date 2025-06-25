@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
-import type { EditingPickType } from '../modals/EditModal';
+
+// 編集対象ピックの型定義
+export type EditingPickType = {
+  round: number;
+  playerId: string;
+  playerName: string;
+  currentPick: string;
+  category: string;
+};
 
 /**
  * ドラフトピック選択・編集のFirestore処理hooks

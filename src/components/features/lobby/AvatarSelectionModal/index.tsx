@@ -195,3 +195,25 @@ export const AvatarSelectionModal = ({
     </ResponsiveModal>
   );
 };
+
+/**
+ * AvatarSelectionModal用カスタムフック
+ * 他のモーダルと同じパターンで開閉制御を提供
+ */
+export const useAvatarSelectionModal = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
+  return {
+    isOpen,
+    open,
+    close,
+    // コンポーネント用プロパティ
+    modalProps: {
+      isOpen,
+      onClose: close,
+    },
+  };
+};

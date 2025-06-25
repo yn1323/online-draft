@@ -26,7 +26,7 @@ import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
 import { useDraftChat } from '../hooks/useDraftChat';
-import { useDraftPicks } from '../hooks/useDraftPicks';
+import { useDraftPicks, type EditingPickType } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
 import {
   currentRound,
@@ -34,7 +34,6 @@ import {
   type ParticipantType,
   pastDraftResults,
 } from '../mockData';
-import { EditModal, useEditModal } from '../modals/EditModal';
 import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
 import { PastDraftResults } from '../PastDraftResults';
@@ -71,8 +70,10 @@ export const DraftPageInner = ({
 
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
-  const editModal = useEditModal();
   const openResultModal = useOpenResultModal();
+  
+  // 編集用のstate
+  const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
 
   // Firestore処理hooks
   const { selectItem } = useDraftPicks(groupId, userId, currentRound);
@@ -88,14 +89,11 @@ export const DraftPageInner = ({
     }
   };
 
-  const handleEditSave = async () => {
-    if (!editModal.editingPick) {
-      return;
-    }
-
+  const handleEditSave = async (data: { item: string; comment: string }) => {
     try {
-      await selectItem(editModal.editingPick.currentPick); // 編集も同じAPIを使用
-      editModal.close();
+      await selectItem(data.item); // 編集も同じAPIを使用
+      setEditingPick(null);
+      itemSelectModal.close();
     } catch (error) {
       console.error('編集保存エラー:', error);
     }
@@ -108,7 +106,8 @@ export const DraftPageInner = ({
     currentPick: string,
     category: string,
   ) => {
-    editModal.open({ round, playerId, playerName, currentPick, category });
+    setEditingPick({ round, playerId, playerName, currentPick, category });
+    itemSelectModal.open();
   };
 
   const handleOpenResult = async () => {
@@ -275,15 +274,22 @@ export const DraftPageInner = ({
         {/* モーダル群 */}
         <ItemSelectModal
           isOpen={itemSelectModal.isOpen}
-          onClose={itemSelectModal.close}
-          onSubmit={handleItemSelect}
-        />
-        <EditModal
-          isOpen={editModal.isOpen}
-          editingPick={editModal.editingPick}
-          onClose={editModal.close}
-          onSave={handleEditSave}
-          onEditingPickUpdate={editModal.updatePick}
+          onClose={() => {
+            itemSelectModal.close();
+            setEditingPick(null);
+          }}
+          onSubmit={editingPick ? handleEditSave : handleItemSelect}
+          title={editingPick ? 'ピックを編集' : 'アイテムを選択'}
+          defaultItem={editingPick?.currentPick}
+          defaultComment={editingPick?.category}
+          editingInfo={
+            editingPick
+              ? {
+                  round: editingPick.round,
+                  playerName: editingPick.playerName,
+                }
+              : undefined
+          }
         />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
@@ -363,15 +369,22 @@ export const DraftPageInner = ({
       {/* モーダル群 */}
       <ItemSelectModal
         isOpen={itemSelectModal.isOpen}
-        onClose={itemSelectModal.close}
-        onSubmit={handleItemSelect}
-      />
-      <EditModal
-        isOpen={editModal.isOpen}
-        editingPick={editModal.editingPick}
-        onClose={editModal.close}
-        onSave={handleEditSave}
-        onEditingPickUpdate={editModal.updatePick}
+        onClose={() => {
+          itemSelectModal.close();
+          setEditingPick(null);
+        }}
+        onSubmit={editingPick ? handleEditSave : handleItemSelect}
+        title={editingPick ? 'ピックを編集' : 'アイテムを選択'}
+        defaultItem={editingPick?.currentPick}
+        defaultComment={editingPick?.category}
+        editingInfo={
+          editingPick
+            ? {
+                round: editingPick.round,
+                playerName: editingPick.playerName,
+              }
+            : undefined
+        }
       />
       <OpenResultModal
         isOpen={openResultModal.isOpen}
