@@ -80,10 +80,9 @@ export const DraftPageInner = ({
   const { executeOpenResult, checkParticipantStatus } = useDraftResult();
 
   // ハンドラー関数
-  const handleItemSelect = async () => {
+  const handleItemSelect = async (data: { item: string; comment: string }) => {
     try {
-      await selectItem(itemSelectModal.selectedItem, itemSelectModal.comment);
-      itemSelectModal.close();
+      await selectItem(data.item, data.comment);
     } catch (error) {
       console.error('アイテム選択エラー:', error);
     }
@@ -276,12 +275,8 @@ export const DraftPageInner = ({
         {/* モーダル群 */}
         <ItemSelectModal
           isOpen={itemSelectModal.isOpen}
-          selectedItem={itemSelectModal.selectedItem}
-          comment={itemSelectModal.comment}
-          onSelectedItemChange={itemSelectModal.setSelectedItem}
-          onCommentChange={itemSelectModal.setComment}
           onClose={itemSelectModal.close}
-          onSelect={handleItemSelect}
+          onSubmit={handleItemSelect}
         />
         <EditModal
           isOpen={editModal.isOpen}
@@ -368,12 +363,8 @@ export const DraftPageInner = ({
       {/* モーダル群 */}
       <ItemSelectModal
         isOpen={itemSelectModal.isOpen}
-        selectedItem={itemSelectModal.selectedItem}
-        comment={itemSelectModal.comment}
-        onSelectedItemChange={itemSelectModal.setSelectedItem}
-        onCommentChange={itemSelectModal.setComment}
         onClose={itemSelectModal.close}
-        onSelect={handleItemSelect}
+        onSubmit={handleItemSelect}
       />
       <EditModal
         isOpen={editModal.isOpen}
