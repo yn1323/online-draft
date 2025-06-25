@@ -1,0 +1,21 @@
+{
+  "contextFileName": ["CLAUDE.md"],
+  "mcpServers": {
+    "typescript-mcp": {
+      "command": "npx",
+      "args": ["-y", "typescript-mcp@latest"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@executeautomation/playwright-mcp-server"]
+    }
+  }
+}

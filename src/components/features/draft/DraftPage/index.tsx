@@ -26,7 +26,7 @@ import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
 import { useDraftChat } from '../hooks/useDraftChat';
-import { useDraftPicks, type EditingPickType } from '../hooks/useDraftPicks';
+import { type EditingPickType, useDraftPicks } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
 import {
   currentRound,
@@ -71,7 +71,7 @@ export const DraftPageInner = ({
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
-  
+
   // 編集用のstate
   const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
 
@@ -84,7 +84,11 @@ export const DraftPageInner = ({
   // Firestore処理hooks
   const { selectItem } = useDraftPicks(groupId, userId, currentRound);
   const { sendMessage } = useDraftChat(groupId, userId);
-  const { executeOpenResult, checkParticipantStatus } = useDraftResult();
+  const { executeOpenResult, checkParticipantStatus } = useDraftResult(
+    participants,
+    selections,
+    currentRound,
+  );
 
   // ハンドラー関数
   const handleItemSelect = async (data: { item: string; comment: string }) => {
@@ -286,14 +290,16 @@ export const DraftPageInner = ({
           }}
           onSubmit={editingPick ? handleEditSave : handleItemSelect}
           modalTitle={
-            editingPick 
-              ? 'ピックを編集' 
-              : currentUserSelection 
-                ? '選択を編集' 
+            editingPick
+              ? 'ピックを編集'
+              : currentUserSelection
+                ? '選択を編集'
                 : 'アイテムを選択'
           }
           defaultItem={editingPick?.currentPick || currentUserSelection?.item}
-          defaultComment={editingPick?.category || currentUserSelection?.comment}
+          defaultComment={
+            editingPick?.category || currentUserSelection?.comment
+          }
           editContext={
             editingPick
               ? {
@@ -387,10 +393,10 @@ export const DraftPageInner = ({
         }}
         onSubmit={editingPick ? handleEditSave : handleItemSelect}
         modalTitle={
-          editingPick 
-            ? 'ピックを編集' 
-            : currentUserSelection 
-              ? '選択を編集' 
+          editingPick
+            ? 'ピックを編集'
+            : currentUserSelection
+              ? '選択を編集'
               : 'アイテムを選択'
         }
         defaultItem={editingPick?.currentPick || currentUserSelection?.item}

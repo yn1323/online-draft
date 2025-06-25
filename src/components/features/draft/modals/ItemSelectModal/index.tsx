@@ -29,7 +29,6 @@ const getValidationSchema = (isEditMode: boolean) =>
       .default(''),
   });
 
-
 /**
  * アイテム選択モーダル用hooks
  * 開閉制御のみを管理
@@ -184,7 +183,9 @@ export const ItemSelectModal = ({
           <Input
             {...register('comment')}
             placeholder={
-              editContext ? 'カテゴリを入力してください' : 'この選択についてのコメント...'
+              editContext
+                ? 'カテゴリを入力してください'
+                : 'この選択についてのコメント...'
             }
             maxLength={editContext ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH}
             size="lg"
