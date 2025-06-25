@@ -1,8 +1,10 @@
 'use client';
 
 import {
+  addDoc,
   type CollectionReference,
   collection,
+  serverTimestamp,
   type Timestamp,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
@@ -16,9 +18,9 @@ export type SelectionItemType = {
   comment: string;
   round: number;
   userId: string;
+  groupId: string;
   randomNumber: number;
   success?: boolean;
-  createdAt: Timestamp;
 };
 
 export type SelectionDataType = {
@@ -39,12 +41,49 @@ export const useSelection = () => {
   ) as CollectionReference<SelectionDataType>;
 
   /**
-   * 選択データ作成（将来実装予定）
+   * 選択データ作成
+   * @param groupId グループID
+   * @param userId ユーザーID
+   * @param item 選択したアイテム名
+   * @param comment コメント
+   * @param round 現在のラウンド
    */
-  const createSelection = useCallback(async () => {
-    // TODO: Phase D で実装予定
-    throw new Error('選択機能は Phase D で実装予定です');
-  }, []);
+  const createSelection = useCallback(
+    async (
+      groupId: string,
+      userId: string,
+      item: string,
+      comment: string,
+      round: number,
+    ) => {
+      try {
+        // 競合解決用のランダムナンバー生成（0〜999999）
+        const randomNumber = Math.floor(Math.random() * 1000000);
+
+        const selectionItem: SelectionItemType = {
+          item,
+          comment,
+          round,
+          userId,
+          groupId,
+          randomNumber,
+        };
+
+        // Firestoreに選択データを保存
+        const docRef = await addDoc(selectionCollection, {
+          selection: [selectionItem],
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        });
+
+        return docRef.id;
+      } catch (error) {
+        console.error('選択データの作成に失敗しました:', error);
+        throw error;
+      }
+    },
+    [selectionCollection],
+  );
 
   return {
     createSelection,

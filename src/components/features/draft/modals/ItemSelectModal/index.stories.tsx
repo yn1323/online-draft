@@ -9,10 +9,8 @@ const meta: Meta<typeof ItemSelectModal> = {
     layout: 'centered',
   },
   args: {
-    onSelectedItemChange: fn(),
-    onCommentChange: fn(),
     onClose: fn(),
-    onSelect: fn(),
+    onSubmit: fn(),
   },
 };
 
@@ -26,7 +24,17 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     isOpen: true,
-    selectedItem: '',
-    comment: '',
+  },
+};
+
+/**
+ * デフォルト値ありのパターン
+ * 編集時に使用
+ */
+export const WithDefaultValues: Story = {
+  args: {
+    isOpen: true,
+    defaultItem: 'プロ野球選手',
+    defaultComment: '速い球投げそう',
   },
 };

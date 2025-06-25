@@ -1,9 +1,15 @@
 import { useState } from 'react';
+import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
+import type { ParticipantType } from '../mockData';
 
 /**
  * ドラフト開票のFirestore処理hooks
  */
-export const useDraftResult = () => {
+export const useDraftResult = (
+  participants: ParticipantType[],
+  selections: SelectionItemType[],
+  currentRound: number,
+) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,13 +40,15 @@ export const useDraftResult = () => {
    */
   const checkParticipantStatus = async () => {
     try {
-      // TODO: Firestoreから参加者の入力状況を取得
-      console.log('参加者状況チェック');
+      const completedCount = selections.filter(
+        (s) => s.round === currentRound,
+      ).length;
+      const allCompleted = completedCount === participants.length;
+      const pendingCount = participants.length - completedCount;
 
-      // モック：未入力者がいる状態を返す
       return {
-        allCompleted: false,
-        pendingCount: 2,
+        allCompleted,
+        pendingCount,
       };
     } catch (err) {
       setError(err instanceof Error ? err.message : '状況確認に失敗しました');

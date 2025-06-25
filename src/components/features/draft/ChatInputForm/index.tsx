@@ -47,7 +47,9 @@ export const ChatInputForm = ({
       <Input
         placeholder={placeholder}
         value={message}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setMessage(e.target.value)}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          setMessage(e.target.value)
+        }
         onKeyDown={handleKeyPress}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}

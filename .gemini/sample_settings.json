@@ -1,0 +1,45 @@
+{
+  // (1) 見た目と操作性に関する設定
+  "theme": "GitHub", // CLIの見た目をGitHub風のテーマにするよ！
+  "autoAccept": true, // `read_file`みたいな安全な読み取り操作は、いちいち確認なしで実行しちゃう！スピードアップ！
+
+  // (2) ファイルの検索方法に関する設定
+  "contextFileName": ["GEMINI.md", "CLAUDE.md"], // プロジェクトの指示書として`GEMINI.md`と`CLAUDE.md`の両方を読み込むようにするよ！
+  "fileFiltering": {
+    "respectGitIgnore": true, // .gitignoreをちゃんと見て、node_modulesとかを無視するよ！
+    "enableRecursiveFileSearch": true // @ファイル名って入力した時に、サブフォルダまで探しに行ってくれる！
+  },
+
+  // (3) ツール（機能）の制御に関する設定
+  "excludeTools": ["run_shell_command"], // 安全のために、シェルの実行コマンドはデフォルトでオフにしておくね！
+  "sandbox": true, // ツールを実行する時は、安全なサンドボックス環境を使うようにするよ！
+
+  // (4) 外部ツールとの連携（MCPサーバー）
+  "mcpServers": {
+    "github_mcp": {
+      "command": "/path/to/your/github-mcp-server",
+      "args": ["stdio"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "$GITHUB_TOKEN" // 環境変数からトークンを読み込むよ！
+      },
+      "description": "GitHubリポジトリと連携するためのサーバーだよ！"
+    }
+  },
+
+  // (5) 会話の保存と復元（チェックポイント機能）
+  "checkpointing": {
+    "enabled": true, // `/restore`コマンドを使えるようにして、前の会話を復元できるようにするよ！
+    "preferredEditor": "vscode" // 差分を表示する時はVSCodeを使うように指定！
+  },
+
+  // (6) デバッグと改善のための設定
+  "bugCommand": {
+    // `/bug`コマンドで報告する先を、このプロジェクトのGitHubリポジトリのIssueテンプレートにするよ！
+    "urlTemplate": "https://github.com/yn1323/online-draft/issues/new?template=ai-bug-fix.yml&title={title}&body={body}"
+  },
+  "telemetry": {
+    "enabled": false, // テレメトリー（利用状況の送信）はオフにしておくね！
+    "logPrompts": false
+  },
+  "usageStatisticsEnabled": false // 利用統計の収集もオフ！プライバシー大事！
+}

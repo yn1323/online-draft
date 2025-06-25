@@ -28,6 +28,7 @@ export const Default: Story = {
     participants: mockParticipants,
     pastResults: pastDraftResults,
     realtimeChatMessages: mockChatMessages,
+    selections: [],
     groupId: 'test-group-id',
     userId: 'test-user-id',
   },

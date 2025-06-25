@@ -19,12 +19,14 @@ import {
   type ChatMessageUIType,
   useRealtimeChat,
 } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
+import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
 import { useDraftChat } from '../hooks/useDraftChat';
-import { useDraftPicks } from '../hooks/useDraftPicks';
+import { type EditingPickType, useDraftPicks } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
 import {
   currentRound,
@@ -32,7 +34,6 @@ import {
   type ParticipantType,
   pastDraftResults,
 } from '../mockData';
-import { EditModal, useEditModal } from '../modals/EditModal';
 import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
 import { PastDraftResults } from '../PastDraftResults';
@@ -43,6 +44,7 @@ type DraftPageInnerProps = {
   participants: ParticipantType[];
   pastResults: DraftRoundType[];
   realtimeChatMessages: ChatMessageUIType[];
+  selections: SelectionItemType[];
   // Firestore関連
   groupId: string;
   userId: string;
@@ -57,6 +59,7 @@ export const DraftPageInner = ({
   participants,
   pastResults,
   realtimeChatMessages,
+  selections,
   groupId,
   userId,
 }: DraftPageInnerProps) => {
@@ -67,32 +70,40 @@ export const DraftPageInner = ({
 
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
-  const editModal = useEditModal();
   const openResultModal = useOpenResultModal();
 
+  // 編集用のstate
+  const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
+
+  // 現在ユーザーの選択データを取得
+  const currentUserSelection = selections.find(
+    (selection) =>
+      selection.userId === userId && selection.round === currentRound,
+  );
+
   // Firestore処理hooks
-  const { selectItem } = useDraftPicks();
+  const { selectItem } = useDraftPicks(groupId, userId, currentRound);
   const { sendMessage } = useDraftChat(groupId, userId);
-  const { executeOpenResult, checkParticipantStatus } = useDraftResult();
+  const { executeOpenResult, checkParticipantStatus } = useDraftResult(
+    participants,
+    selections,
+    currentRound,
+  );
 
   // ハンドラー関数
-  const handleItemSelect = async () => {
+  const handleItemSelect = async (data: { item: string; comment: string }) => {
     try {
-      await selectItem(itemSelectModal.selectedItem, itemSelectModal.comment);
-      itemSelectModal.close();
+      await selectItem(data.item, data.comment);
     } catch (error) {
       console.error('アイテム選択エラー:', error);
     }
   };
 
-  const handleEditSave = async () => {
-    if (!editModal.editingPick) {
-      return;
-    }
-
+  const handleEditSave = async (data: { item: string; comment: string }) => {
     try {
-      await selectItem(editModal.editingPick.currentPick); // 編集も同じAPIを使用
-      editModal.close();
+      await selectItem(data.item, data.comment); // 編集もコメント含めて保存
+      setEditingPick(null);
+      itemSelectModal.close();
     } catch (error) {
       console.error('編集保存エラー:', error);
     }
@@ -105,7 +116,8 @@ export const DraftPageInner = ({
     currentPick: string,
     category: string,
   ) => {
-    editModal.open({ round, playerId, playerName, currentPick, category });
+    setEditingPick({ round, playerId, playerName, currentPick, category });
+    itemSelectModal.open();
   };
 
   const handleOpenResult = async () => {
@@ -224,6 +236,7 @@ export const DraftPageInner = ({
                   currentRound={currentRound}
                   variant="sp"
                   currentUserId={userId}
+                  selections={selections}
                   onItemSelect={itemSelectModal.open}
                   onOpenResult={handleOpenResult}
                 />
@@ -271,19 +284,30 @@ export const DraftPageInner = ({
         {/* モーダル群 */}
         <ItemSelectModal
           isOpen={itemSelectModal.isOpen}
-          selectedItem={itemSelectModal.selectedItem}
-          comment={itemSelectModal.comment}
-          onSelectedItemChange={itemSelectModal.setSelectedItem}
-          onCommentChange={itemSelectModal.setComment}
-          onClose={itemSelectModal.close}
-          onSelect={handleItemSelect}
-        />
-        <EditModal
-          isOpen={editModal.isOpen}
-          editingPick={editModal.editingPick}
-          onClose={editModal.close}
-          onSave={handleEditSave}
-          onEditingPickUpdate={editModal.updatePick}
+          onClose={() => {
+            itemSelectModal.close();
+            setEditingPick(null);
+          }}
+          onSubmit={editingPick ? handleEditSave : handleItemSelect}
+          modalTitle={
+            editingPick
+              ? 'ピックを編集'
+              : currentUserSelection
+                ? '選択を編集'
+                : 'アイテムを選択'
+          }
+          defaultItem={editingPick?.currentPick || currentUserSelection?.item}
+          defaultComment={
+            editingPick?.category || currentUserSelection?.comment
+          }
+          editContext={
+            editingPick
+              ? {
+                  round: editingPick.round,
+                  playerName: editingPick.playerName,
+                }
+              : undefined
+          }
         />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
@@ -315,6 +339,7 @@ export const DraftPageInner = ({
                 currentRound={currentRound}
                 variant="pc"
                 currentUserId={userId}
+                selections={selections}
                 onItemSelect={itemSelectModal.open}
                 onOpenResult={handleOpenResult}
               />
@@ -362,19 +387,28 @@ export const DraftPageInner = ({
       {/* モーダル群 */}
       <ItemSelectModal
         isOpen={itemSelectModal.isOpen}
-        selectedItem={itemSelectModal.selectedItem}
-        comment={itemSelectModal.comment}
-        onSelectedItemChange={itemSelectModal.setSelectedItem}
-        onCommentChange={itemSelectModal.setComment}
-        onClose={itemSelectModal.close}
-        onSelect={handleItemSelect}
-      />
-      <EditModal
-        isOpen={editModal.isOpen}
-        editingPick={editModal.editingPick}
-        onClose={editModal.close}
-        onSave={handleEditSave}
-        onEditingPickUpdate={editModal.updatePick}
+        onClose={() => {
+          itemSelectModal.close();
+          setEditingPick(null);
+        }}
+        onSubmit={editingPick ? handleEditSave : handleItemSelect}
+        modalTitle={
+          editingPick
+            ? 'ピックを編集'
+            : currentUserSelection
+              ? '選択を編集'
+              : 'アイテムを選択'
+        }
+        defaultItem={editingPick?.currentPick || currentUserSelection?.item}
+        defaultComment={editingPick?.category || currentUserSelection?.comment}
+        editContext={
+          editingPick
+            ? {
+                round: editingPick.round,
+                playerName: editingPick.playerName,
+              }
+            : undefined
+        }
       />
       <OpenResultModal
         isOpen={openResultModal.isOpen}
@@ -431,6 +465,9 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
     userId,
   );
 
+  // リアルタイム選択監視
+  const { selections } = useRealtimeSelection(groupId);
+
   // userIdが設定されるまで、またはユーザー情報取得中はローディング表示
   if (!userId || usersLoading) {
     return (
@@ -443,14 +480,22 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
   }
 
   // Firestore形式からアプリ形式に変換
-  const participants: ParticipantType[] = realtimeUsers.map((user) => ({
-    id: user.userId,
-    name: user.userName,
-    avatar: user.avatar,
-    // TODO: 実際の取得アイテム情報と連携
-    acquisitions: [],
-    currentPick: '選択中...',
-  }));
+  const participants: ParticipantType[] = realtimeUsers.map((user) => {
+    // 現在ラウンドでのユーザーの選択を取得
+    const currentSelection = selections.find(
+      (selection) =>
+        selection.userId === user.userId && selection.round === currentRound,
+    );
+
+    return {
+      id: user.userId,
+      name: user.userName,
+      avatar: user.avatar,
+      // TODO: 実際の取得アイテム情報と連携
+      acquisitions: [],
+      currentPick: currentSelection?.item || '選択中...',
+    };
+  });
 
   return (
     <DraftPageInner
@@ -458,6 +503,7 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
       participants={participants}
       pastResults={pastDraftResults}
       realtimeChatMessages={realtimeChatMessages}
+      selections={selections}
       groupId={groupId}
       userId={userId}
     />

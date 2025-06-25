@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Card as ChakraCard } from '@chakra-ui/react';
+import { Card as ChakraCard } from '@chakra-ui/react';
 import type { ReactNode } from 'react';
 
 type CardProps = {
@@ -68,9 +68,7 @@ export const Card = ({
       borderRadius="lg"
       transition="all 0.15s ease"
     >
-      <ChakraCard.Body p={0}>
-        <Box>{children}</Box>
-      </ChakraCard.Body>
+      {children}
     </ChakraCard.Root>
   );
 };
