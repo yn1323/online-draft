@@ -19,6 +19,8 @@ import {
   type ChatMessageUIType,
   useRealtimeChat,
 } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
+import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
@@ -43,6 +45,7 @@ type DraftPageInnerProps = {
   participants: ParticipantType[];
   pastResults: DraftRoundType[];
   realtimeChatMessages: ChatMessageUIType[];
+  selections: SelectionItemType[];
   // Firestore関連
   groupId: string;
   userId: string;
@@ -57,6 +60,7 @@ export const DraftPageInner = ({
   participants,
   pastResults,
   realtimeChatMessages,
+  selections,
   groupId,
   userId,
 }: DraftPageInnerProps) => {
@@ -224,6 +228,7 @@ export const DraftPageInner = ({
                   currentRound={currentRound}
                   variant="sp"
                   currentUserId={userId}
+                  selections={selections}
                   onItemSelect={itemSelectModal.open}
                   onOpenResult={handleOpenResult}
                 />
@@ -315,6 +320,7 @@ export const DraftPageInner = ({
                 currentRound={currentRound}
                 variant="pc"
                 currentUserId={userId}
+                selections={selections}
                 onItemSelect={itemSelectModal.open}
                 onOpenResult={handleOpenResult}
               />
@@ -431,6 +437,9 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
     userId,
   );
 
+  // リアルタイム選択監視
+  const { selections } = useRealtimeSelection(groupId);
+
   // userIdが設定されるまで、またはユーザー情報取得中はローディング表示
   if (!userId || usersLoading) {
     return (
@@ -458,6 +467,7 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
       participants={participants}
       pastResults={pastDraftResults}
       realtimeChatMessages={realtimeChatMessages}
+      selections={selections}
       groupId={groupId}
       userId={userId}
     />

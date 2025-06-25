@@ -3,6 +3,7 @@ import { LuCheck } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
+import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
 import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
@@ -10,6 +11,7 @@ type CurrentRoundStatusProps = {
   currentRound: number;
   variant?: 'pc' | 'sp';
   currentUserId?: string;
+  selections?: SelectionItemType[];
   onItemSelect?: () => void;
   onOpenResult?: () => void;
 };
@@ -23,9 +25,17 @@ export const CurrentRoundStatus = ({
   currentRound,
   variant = 'sp',
   currentUserId,
+  selections = [],
   onItemSelect,
   onOpenResult,
 }: CurrentRoundStatusProps) => {
+  // ユーザーが選択済みかチェックする関数
+  const isUserSelected = (userId: string) => {
+    return selections.some(
+      (selection) =>
+        selection.userId === userId && selection.round === currentRound,
+    );
+  };
   // 参加者グリッド用の共通スタイル
   const getParticipantCellStyle = (
     isActive: boolean,
@@ -88,9 +98,10 @@ export const CurrentRoundStatus = ({
             gap={variant === 'pc' ? 2 : 1}
             w="full"
           >
-            {participants.map((participant, index) => {
-              // 最後の参加者を選択中とする（モック用）
-              const isActive = index === participants.length - 1;
+            {participants.map((participant) => {
+              // 実際の選択状態から判定
+              const hasSelected = isUserSelected(participant.id);
+              const isActive = !hasSelected; // 未選択なら選択中
               const isCurrentUser = participant.id === currentUserId;
               return (
                 <VStack
