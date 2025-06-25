@@ -27,22 +27,25 @@ export const CurrentRoundStatus = ({
   onOpenResult,
 }: CurrentRoundStatusProps) => {
   // 参加者グリッド用の共通スタイル
-  const getParticipantCellStyle = (isActive: boolean, isCurrentUser: boolean) => ({
+  const getParticipantCellStyle = (
+    isActive: boolean,
+    isCurrentUser: boolean,
+  ) => ({
     p: variant === 'pc' ? 2 : 1.5,
-    bg: isCurrentUser 
-      ? isActive 
-        ? 'blue.100'  // 自分 & 選択中
+    bg: isCurrentUser
+      ? isActive
+        ? 'blue.100' // 自分 & 選択中
         : 'green.100' // 自分 & 完了
-      : isActive 
-        ? 'blue.50'   // 他人 & 選択中
+      : isActive
+        ? 'blue.50' // 他人 & 選択中
         : 'green.50', // 他人 & 完了
     border: isCurrentUser ? '2px solid' : '1px solid',
     borderColor: isCurrentUser
       ? isActive
-        ? 'blue.500'  // 自分 & 選択中
+        ? 'blue.500' // 自分 & 選択中
         : 'green.500' // 自分 & 完了
-      : isActive 
-        ? 'blue.300'  // 他人 & 選択中
+      : isActive
+        ? 'blue.300' // 他人 & 選択中
         : 'green.300', // 他人 & 完了
     borderRadius: 'md',
     gap: 1,

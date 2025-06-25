@@ -1,10 +1,16 @@
 import { useState } from 'react';
+import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
 import type { EditingPickType } from '../modals/EditModal';
 
 /**
  * ドラフトピック選択・編集のFirestore処理hooks
  */
-export const useDraftPicks = () => {
+export const useDraftPicks = (
+  groupId: string,
+  userId: string,
+  currentRound: number,
+) => {
+  const { createSelection } = useSelection();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,9 +22,8 @@ export const useDraftPicks = () => {
     setError(null);
 
     try {
-      // TODO: Firestore保存処理を実装
-      console.log('アイテム選択:', { item, comment });
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // モック処理
+      // Firestoreに選択データを保存
+      await createSelection(groupId, userId, item, comment || '', currentRound);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'アイテム選択に失敗しました',

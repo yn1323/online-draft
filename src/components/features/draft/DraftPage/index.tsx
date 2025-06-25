@@ -71,7 +71,7 @@ export const DraftPageInner = ({
   const openResultModal = useOpenResultModal();
 
   // Firestore処理hooks
-  const { selectItem } = useDraftPicks();
+  const { selectItem } = useDraftPicks(groupId, userId, currentRound);
   const { sendMessage } = useDraftChat(groupId, userId);
   const { executeOpenResult, checkParticipantStatus } = useDraftResult();
 
