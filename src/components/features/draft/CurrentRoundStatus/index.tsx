@@ -36,6 +36,15 @@ export const CurrentRoundStatus = ({
         selection.userId === userId && selection.round === currentRound,
     );
   };
+
+  // 選択済みユーザー数を計算
+  const selectedCount = participants.filter((p) => isUserSelected(p.id)).length;
+
+  // 選択進捗率を計算
+  const progressPercentage =
+    participants.length > 0
+      ? Math.round((selectedCount / participants.length) * 100)
+      : 0;
   // 参加者グリッド用の共通スタイル
   const getParticipantCellStyle = (
     isActive: boolean,
@@ -84,14 +93,36 @@ export const CurrentRoundStatus = ({
     <Box w="full">
       <Card variant="elevated" size="sm">
         <VStack gap={variant === 'pc' ? 2 : 3} w="full">
-          <Text
-            fontSize={variant === 'pc' ? 'sm' : 'sm'}
-            fontWeight="bold"
-            color="gray.800"
-          >
-            Round {currentRound}
-            {variant === 'pc' && ' - 現在の選択状況'}
-          </Text>
+          <VStack gap={1} w="full">
+            <HStack w="full" justify="space-between">
+              <Text
+                fontSize={variant === 'pc' ? 'sm' : 'sm'}
+                fontWeight="bold"
+                color="gray.800"
+              >
+                Round {currentRound}
+                {variant === 'pc' && ' - 現在の選択状況'}
+              </Text>
+              <Text fontSize="xs" color="gray.600">
+                {selectedCount}/{participants.length} 人選択完了
+              </Text>
+            </HStack>
+            <Box
+              w="full"
+              h="4px"
+              bg="gray.200"
+              borderRadius="full"
+              overflow="hidden"
+            >
+              <Box
+                h="full"
+                bg="blue.500"
+                borderRadius="full"
+                transition="width 0.3s ease"
+                width={`${progressPercentage}%`}
+              />
+            </Box>
+          </VStack>
 
           <Grid
             templateColumns="1fr 1fr 1fr"
