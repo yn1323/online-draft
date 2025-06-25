@@ -21,7 +21,6 @@ export type SelectionItemType = {
   groupId: string;
   randomNumber: number;
   success?: boolean;
-  createdAt: Timestamp;
 };
 
 export type SelectionDataType = {
@@ -68,7 +67,6 @@ export const useSelection = () => {
           userId,
           groupId,
           randomNumber,
-          createdAt: serverTimestamp() as Timestamp,
         };
 
         // Firestoreに選択データを保存

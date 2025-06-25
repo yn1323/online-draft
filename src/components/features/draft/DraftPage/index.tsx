@@ -75,6 +75,12 @@ export const DraftPageInner = ({
   // 編集用のstate
   const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
 
+  // 現在ユーザーの選択データを取得
+  const currentUserSelection = selections.find(
+    (selection) =>
+      selection.userId === userId && selection.round === currentRound,
+  );
+
   // Firestore処理hooks
   const { selectItem } = useDraftPicks(groupId, userId, currentRound);
   const { sendMessage } = useDraftChat(groupId, userId);
@@ -91,7 +97,7 @@ export const DraftPageInner = ({
 
   const handleEditSave = async (data: { item: string; comment: string }) => {
     try {
-      await selectItem(data.item); // 編集も同じAPIを使用
+      await selectItem(data.item, data.comment); // 編集もコメント含めて保存
       setEditingPick(null);
       itemSelectModal.close();
     } catch (error) {
@@ -279,9 +285,15 @@ export const DraftPageInner = ({
             setEditingPick(null);
           }}
           onSubmit={editingPick ? handleEditSave : handleItemSelect}
-          modalTitle={editingPick ? 'ピックを編集' : 'アイテムを選択'}
-          defaultItem={editingPick?.currentPick}
-          defaultComment={editingPick?.category}
+          modalTitle={
+            editingPick 
+              ? 'ピックを編集' 
+              : currentUserSelection 
+                ? '選択を編集' 
+                : 'アイテムを選択'
+          }
+          defaultItem={editingPick?.currentPick || currentUserSelection?.item}
+          defaultComment={editingPick?.category || currentUserSelection?.comment}
           editContext={
             editingPick
               ? {
@@ -374,9 +386,15 @@ export const DraftPageInner = ({
           setEditingPick(null);
         }}
         onSubmit={editingPick ? handleEditSave : handleItemSelect}
-        modalTitle={editingPick ? 'ピックを編集' : 'アイテムを選択'}
-        defaultItem={editingPick?.currentPick}
-        defaultComment={editingPick?.category}
+        modalTitle={
+          editingPick 
+            ? 'ピックを編集' 
+            : currentUserSelection 
+              ? '選択を編集' 
+              : 'アイテムを選択'
+        }
+        defaultItem={editingPick?.currentPick || currentUserSelection?.item}
+        defaultComment={editingPick?.category || currentUserSelection?.comment}
         editContext={
           editingPick
             ? {
@@ -456,14 +474,22 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
   }
 
   // Firestore形式からアプリ形式に変換
-  const participants: ParticipantType[] = realtimeUsers.map((user) => ({
-    id: user.userId,
-    name: user.userName,
-    avatar: user.avatar,
-    // TODO: 実際の取得アイテム情報と連携
-    acquisitions: [],
-    currentPick: '選択中...',
-  }));
+  const participants: ParticipantType[] = realtimeUsers.map((user) => {
+    // 現在ラウンドでのユーザーの選択を取得
+    const currentSelection = selections.find(
+      (selection) =>
+        selection.userId === user.userId && selection.round === currentRound,
+    );
+
+    return {
+      id: user.userId,
+      name: user.userName,
+      avatar: user.avatar,
+      // TODO: 実際の取得アイテム情報と連携
+      acquisitions: [],
+      currentPick: currentSelection?.item || '選択中...',
+    };
+  });
 
   return (
     <DraftPageInner

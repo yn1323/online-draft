@@ -145,10 +145,25 @@ export const CurrentRoundStatus = ({
                   {isActive ? (
                     <Box {...getStatusBadgeStyle(true)}>選択中</Box>
                   ) : (
-                    <HStack {...getStatusBadgeStyle(false)}>
-                      <LuCheck size={10} />
-                      <Text>完了</Text>
-                    </HStack>
+                    <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
+                      <HStack gap={1}>
+                        <LuCheck size={10} />
+                        <Text>完了</Text>
+                      </HStack>
+                      {/* 自分の選択のみ表示、他人は秘匿 */}
+                      {isCurrentUser && (
+                        <Text
+                          fontSize="2xs"
+                          color="green.700"
+                          fontWeight="medium"
+                          truncate
+                          w="full"
+                          textAlign="center"
+                        >
+                          {participant.currentPick}
+                        </Text>
+                      )}
+                    </VStack>
                   )}
                 </VStack>
               );
