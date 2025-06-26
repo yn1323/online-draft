@@ -4,11 +4,9 @@
  */
 
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import type { BaseParticipant } from './shared/types';
 
-export type ParticipantType = {
-  id: string;
-  name: string;
-  avatar: string;
+export type ParticipantType = BaseParticipant & {
   acquisitions?: AcquisitionType[];
   currentPick?: string;
 };

@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
+import { useAsyncOperation } from './common/useAsyncOperation';
 
 // 編集対象ピックの型定義
 export type EditingPickType = {
@@ -12,6 +12,7 @@ export type EditingPickType = {
 
 /**
  * ドラフトピック選択・編集のFirestore処理hooks
+ * 汎用useAsyncOperationを利用した軽量実装
  */
 export const useDraftPicks = (
   groupId: string,
@@ -19,47 +20,35 @@ export const useDraftPicks = (
   currentRound: number,
 ) => {
   const { createSelection } = useSelection();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  /**
-   * アイテムを選択してFirestoreに保存
-   */
-  const selectItem = async (item: string, comment?: string) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // Firestoreに選択データを保存
-      await createSelection(groupId, userId, item, comment || '', currentRound);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : 'アイテム選択に失敗しました',
-      );
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  // アイテム選択処理を定義
+  const selectItemOperation = async (item: string, comment?: string) => {
+    // Firestoreに選択データを保存
+    await createSelection(groupId, userId, item, comment || '', currentRound);
   };
 
-  /**
-   * ピックを編集してFirestoreに保存
-   */
-  const editPick = async (pick: EditingPickType) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      // TODO: Firestore更新処理を実装
-      console.log('ピック編集:', pick);
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // モック処理
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'ピック編集に失敗しました');
-      throw err;
-    } finally {
-      setLoading(false);
-    }
+  // ピック編集処理を定義
+  const editPickOperation = async (pick: EditingPickType) => {
+    // TODO: Firestore更新処理を実装
+    console.log('ピック編集:', pick);
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // モック処理
   };
+
+  const {
+    loading: selectLoading,
+    error: selectError,
+    execute: selectItem,
+  } = useAsyncOperation(selectItemOperation);
+
+  const {
+    loading: editLoading,
+    error: editError,
+    execute: editPick,
+  } = useAsyncOperation(editPickOperation);
+
+  // 統合されたloading/error状態
+  const loading = selectLoading || editLoading;
+  const error = selectError || editError;
 
   return {
     loading,

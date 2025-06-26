@@ -86,7 +86,8 @@
       "mcp__playwright__playwright_fill",
       "mcp__playwright__playwright_get_visible_html",
       "Bash(similarity-ts .)",
-      "mcp__playwright__playwright_press_key"
+      "mcp__playwright__playwright_press_key",
+      "mcp__typescript-mcp__get_module_symbols"
     ],
     "deny": [
       "Bash(sudo:*)",

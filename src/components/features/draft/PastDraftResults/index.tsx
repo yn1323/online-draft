@@ -1,5 +1,4 @@
 import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { a } from 'framer-motion/client';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type {

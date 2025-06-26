@@ -1,30 +1,15 @@
 import { useEffect, useState } from 'react';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useModalWithVariant } from '../../hooks/common/useModal';
 import { type ParticipantResult, Stage } from './stage/index';
 
 /**
  * StageModal用のカスタムフック
+ * 汎用useModalWithVariantを利用した軽量実装
  */
 export const useStageModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [variant, setVariant] = useState<'card' | 'typing' | 'slot'>('card');
-
-  const open = (selectedVariant?: 'card' | 'typing' | 'slot') => {
-    // ランダムに選択、または指定されたバリエーションを使用
-    const variants: ('card' | 'typing' | 'slot')[] = ['card', 'typing', 'slot'];
-    const randomVariant = variants[Math.floor(Math.random() * variants.length)];
-    setVariant(selectedVariant || randomVariant);
-    setIsOpen(true);
-  };
-
-  const close = () => setIsOpen(false);
-
-  return {
-    isOpen,
-    variant,
-    open,
-    close,
-  };
+  const variants: ('card' | 'typing' | 'slot')[] = ['card', 'typing', 'slot'];
+  return useModalWithVariant(variants, 'card');
 };
 
 type StageModalProps = {

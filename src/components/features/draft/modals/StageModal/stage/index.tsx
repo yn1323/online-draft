@@ -1,12 +1,10 @@
 import { Box } from '@chakra-ui/react';
+import type { BaseParticipant } from '../../../shared/types';
 import { CardRevealStage } from './CardRevealStage';
 import { SlotMachineStage } from './SlotMachineStage';
 import { TypingStage } from './TypingStage';
 
-export type ParticipantResult = {
-  id: string;
-  name: string;
-  avatar: number;
+export type ParticipantResult = BaseParticipant & {
   choice: string;
   willLose: boolean;
 };

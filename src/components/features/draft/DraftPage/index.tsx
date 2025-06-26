@@ -123,7 +123,7 @@ export const DraftPageInner = ({
         return {
           id: participant.id,
           name: participant.name,
-          avatar: Number(participant.avatar),
+          avatar: participant.avatar,
           choice: '',
           willLose: true,
         };
@@ -137,7 +137,7 @@ export const DraftPageInner = ({
         return {
           id: participant.id,
           name: participant.name,
-          avatar: Number(participant.avatar),
+          avatar: participant.avatar,
           choice: selectedItem,
           willLose: false,
         };
@@ -152,7 +152,7 @@ export const DraftPageInner = ({
       return {
         id: participant.id,
         name: participant.name,
-        avatar: Number(participant.avatar),
+        avatar: participant.avatar,
         choice: selectedItem,
         willLose: !isWinner,
       };

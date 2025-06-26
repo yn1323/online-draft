@@ -1,10 +1,11 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useId, useState } from 'react';
+import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useModal } from '../../hooks/common/useModal';
 
 // 定数定義
 const MAX_ITEM_LENGTH = 50;
@@ -31,20 +32,9 @@ const getValidationSchema = (isEditMode: boolean) =>
 
 /**
  * アイテム選択モーダル用hooks
- * 開閉制御のみを管理
+ * 汎用useModalを利用した軽量実装
  */
-export const useItemSelectModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
-
-  return {
-    isOpen,
-    open,
-    close,
-  };
-};
+export const useItemSelectModal = useModal;
 
 type ItemSelectModalProps = {
   isOpen: boolean;

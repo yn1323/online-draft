@@ -1,22 +1,12 @@
 import { Text, VStack } from '@chakra-ui/react';
-import { useState } from 'react';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useModal } from '../../hooks/common/useModal';
 
 /**
  * 開票確認モーダル用hooks
+ * 汎用useModalを利用した軽量実装
  */
-export const useOpenResultModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
-
-  return {
-    isOpen,
-    open,
-    close,
-  };
-};
+export const useOpenResultModal = useModal;
 
 type OpenResultModalProps = {
   isOpen: boolean;
