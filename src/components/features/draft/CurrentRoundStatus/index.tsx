@@ -148,7 +148,7 @@ export const CurrentRoundStatus = ({
                     <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
                       <HStack gap={1}>
                         <LuCheck size={10} />
-                        <Text>完了</Text>
+                        <Text>入力完了</Text>
                       </HStack>
                       {/* 自分の選択のみ表示、他人は秘匿 */}
                       {isCurrentUser && (

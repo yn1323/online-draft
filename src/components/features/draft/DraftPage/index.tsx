@@ -12,7 +12,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
 import { Loading } from '@/src/components/atoms/Loading';
 import {
@@ -36,6 +36,7 @@ import {
 } from '../mockData';
 import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
+import { StageModal, useStageModal } from '../modals/StageModal';
 import { PastDraftResults } from '../PastDraftResults';
 
 type DraftPageInnerProps = {
@@ -71,6 +72,10 @@ export const DraftPageInner = ({
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
+  const stageModal = useStageModal();
+
+  // 演出完了フラグ管理
+  const [shouldExecuteOpenResult, setShouldExecuteOpenResult] = useState(false);
 
   // 編集用のstate
   const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
@@ -89,6 +94,72 @@ export const DraftPageInner = ({
     selections,
     currentRound,
   );
+
+  // ParticipantType → ParticipantResult 変換関数
+  const convertToParticipantResults = () => {
+    // 現在ラウンドの選択データを取得
+    const currentRoundSelections = selections.filter(
+      (selection) => selection.round === currentRound,
+    );
+
+    // 選択アイテム別にグループ化
+    const itemGroups: Record<string, typeof currentRoundSelections> = {};
+    for (const selection of currentRoundSelections) {
+      const item = selection.item;
+      if (!itemGroups[item]) {
+        itemGroups[item] = [];
+      }
+      itemGroups[item].push(selection);
+    }
+
+    // 競合判定とwillLoseフラグの設定
+    const participantResults = participants.map((participant) => {
+      const userSelection = currentRoundSelections.find(
+        (selection) => selection.userId === participant.id,
+      );
+
+      // 選択していない場合は空文字とwillLose=true
+      if (!userSelection) {
+        return {
+          id: participant.id,
+          name: participant.name,
+          avatar: Number(participant.avatar),
+          choice: '',
+          willLose: true,
+        };
+      }
+
+      const selectedItem = userSelection.item;
+      const competingSelections = itemGroups[selectedItem] || [];
+
+      // 競合がない場合（1人だけが選択）はwillLose=false
+      if (competingSelections.length === 1) {
+        return {
+          id: participant.id,
+          name: participant.name,
+          avatar: Number(participant.avatar),
+          choice: selectedItem,
+          willLose: false,
+        };
+      }
+
+      // 競合がある場合はrandomNumberで勝者判定
+      const isWinner = competingSelections.every(
+        (selection) =>
+          selection.randomNumber >= (userSelection.randomNumber || 0),
+      );
+
+      return {
+        id: participant.id,
+        name: participant.name,
+        avatar: Number(participant.avatar),
+        choice: selectedItem,
+        willLose: !isWinner,
+      };
+    });
+
+    return participantResults;
+  };
 
   // ハンドラー関数
   const handleItemSelect = async (data: { item: string; comment: string }) => {
@@ -124,7 +195,9 @@ export const DraftPageInner = ({
     try {
       const status = await checkParticipantStatus();
       if (status.allCompleted) {
-        await executeOpenResult();
+        // 開票処理フラグを立ててからStageModalを表示
+        setShouldExecuteOpenResult(true);
+        stageModal.open();
       } else {
         openResultModal.open();
       }
@@ -135,12 +208,40 @@ export const DraftPageInner = ({
 
   const handleExecuteOpenResult = async () => {
     try {
-      await executeOpenResult();
+      // OpenResultModalからもStageModalを表示（開票処理フラグあり）
       openResultModal.close();
+      setShouldExecuteOpenResult(true);
+      stageModal.open();
     } catch (error) {
       console.error('開票実行エラー:', error);
     }
   };
+
+  // 手動でStageModalを閉じる（開票処理なし）
+  const handleStageModalClose = () => {
+    setShouldExecuteOpenResult(false); // フラグをリセット
+    stageModal.close();
+  };
+
+  // 演出完了後の開票処理
+  const handleStageRevealComplete = useCallback(async () => {
+    try {
+      await executeOpenResult();
+      stageModal.close();
+    } catch (error) {
+      console.error('開票処理エラー:', error);
+      stageModal.close();
+    }
+  }, [executeOpenResult, stageModal]);
+
+  // StageModalの状態変化を監視して演出完了を検知
+  useEffect(() => {
+    // StageModalが閉じられて、かつ開票処理フラグが立っている場合
+    if (!stageModal.isOpen && shouldExecuteOpenResult) {
+      handleStageRevealComplete();
+      setShouldExecuteOpenResult(false); // フラグをリセット
+    }
+  }, [stageModal.isOpen, shouldExecuteOpenResult, handleStageRevealComplete]);
 
   const handleSendMessage = async (message: string) => {
     try {
@@ -314,6 +415,12 @@ export const DraftPageInner = ({
           onClose={openResultModal.close}
           onExecuteOpenResult={handleExecuteOpenResult}
         />
+        <StageModal
+          isOpen={stageModal.isOpen}
+          onClose={handleStageModalClose}
+          variant={stageModal.variant}
+          participants={convertToParticipantResults()}
+        />
       </VStack>
     );
   }
@@ -414,6 +521,12 @@ export const DraftPageInner = ({
         isOpen={openResultModal.isOpen}
         onClose={openResultModal.close}
         onExecuteOpenResult={handleExecuteOpenResult}
+      />
+      <StageModal
+        isOpen={stageModal.isOpen}
+        onClose={handleStageModalClose}
+        variant={stageModal.variant}
+        participants={convertToParticipantResults()}
       />
     </Box>
   );
