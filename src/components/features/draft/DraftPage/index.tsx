@@ -19,6 +19,7 @@ import {
   type ChatMessageUIType,
   useRealtimeChat,
 } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
 import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
@@ -29,7 +30,6 @@ import { useDraftChat } from '../hooks/useDraftChat';
 import { type EditingPickType, useDraftPicks } from '../hooks/useDraftPicks';
 import { useDraftResult } from '../hooks/useDraftResult';
 import {
-  currentRound,
   type DraftRoundType,
   type ParticipantType,
   pastDraftResults,
@@ -344,6 +344,7 @@ export const DraftPageInner = ({
 
                 {/* 過去ラウンド結果 */}
                 <PastDraftResults
+                  currentRound={currentRound}
                   pastResults={pastResults}
                   participants={participants}
                   variant="sp"
@@ -453,6 +454,7 @@ export const DraftPageInner = ({
 
               {/* 下部: 過去のドラフト結果 */}
               <PastDraftResults
+                currentRound={currentRound}
                 pastResults={pastResults}
                 participants={participants}
                 variant="pc"
@@ -578,11 +580,13 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
     userId,
   );
 
+  const { group } = useRealtimeGroup(groupId);
+
   // リアルタイム選択監視
   const { selections } = useRealtimeSelection(groupId);
 
   // userIdが設定されるまで、またはユーザー情報取得中はローディング表示
-  if (!userId || usersLoading) {
+  if (!userId || usersLoading || !group) {
     return (
       <Box bg="gray.50" minH="100vh" py={[4, 8]}>
         <Container maxW="container.lg">
@@ -591,6 +595,7 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
       </Box>
     );
   }
+  const { round: currentRound } = group;
 
   // Firestore形式からアプリ形式に変換
   const participants: ParticipantType[] = realtimeUsers.map((user) => {

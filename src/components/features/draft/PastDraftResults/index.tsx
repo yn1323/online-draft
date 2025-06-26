@@ -9,6 +9,7 @@ import type {
 } from '../mockData';
 
 type PastDraftResultsProps = {
+  currentRound: number;
   pastResults: DraftRoundType[];
   participants: ParticipantType[];
   variant?: 'pc' | 'sp';
@@ -27,6 +28,7 @@ type PastDraftResultsProps = {
  * SP版: アコーディオン形式表示
  */
 export const PastDraftResults = ({
+  currentRound,
   pastResults,
   participants,
   variant = 'sp',
@@ -59,6 +61,33 @@ export const PastDraftResults = ({
       display: 'flex',
       alignItems: 'center',
     };
+
+    if (currentRound === 1) {
+      return (
+        <Box flex={1} w="full">
+          <Card variant="elevated" size="md">
+            <Box h="full" display="flex" flexDirection="column">
+              <Text fontSize="md" fontWeight="bold" mb={3}>
+                過去のドラフト結果
+              </Text>
+              <Box
+                flex={1}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                py={8}
+              >
+                <Text fontSize="sm" color="gray.500" textAlign="center">
+                  まだ開票が始まっていません
+                  <br />
+                  最初のRoundの抽選をお待ちください
+                </Text>
+              </Box>
+            </Box>
+          </Card>
+        </Box>
+      );
+    }
 
     return (
       <Box flex={1} w="full">
@@ -168,6 +197,38 @@ export const PastDraftResults = ({
   }
 
   // SP版: アコーディオン形式
+  if (currentRound === 1) {
+    return (
+      <VStack gap={2} w="full">
+        <Text
+          fontSize="md"
+          fontWeight="bold"
+          color="gray.800"
+          alignSelf="start"
+        >
+          ドラフト結果
+        </Text>
+        <Box
+          w="full"
+          py={12}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          bg="gray.50"
+          borderRadius="lg"
+          border="1px solid"
+          borderColor="gray.200"
+        >
+          <Text fontSize="sm" color="gray.500" textAlign="center">
+            まだ開票が始まっていません
+            <br />
+            最初のRoundの抽選を開始してください
+          </Text>
+        </Box>
+      </VStack>
+    );
+  }
+
   return (
     <VStack gap={2} w="full">
       <Text fontSize="md" fontWeight="bold" color="gray.800" alignSelf="start">
