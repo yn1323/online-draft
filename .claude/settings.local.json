@@ -85,7 +85,8 @@
       "mcp__playwright__playwright_console_logs",
       "mcp__playwright__playwright_fill",
       "mcp__playwright__playwright_get_visible_html",
-      "Bash(similarity-ts .)"
+      "Bash(similarity-ts .)",
+      "mcp__playwright__playwright_press_key"
     ],
     "deny": [
       "Bash(sudo:*)",
