@@ -2,12 +2,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { useHydrateAtoms } from 'jotai/utils';
 import { ItemSelectModal } from './index';
-import {
-  itemSelectRoundAtom,
-  itemSelectUserIdAtom,
-  selectionsAtom,
-  usersAtom,
-} from '../../states';
+import { selectionsAtom, usersAtom } from '../../states';
 
 // Jotai公式推奨パターン: Provider + useHydrateAtoms
 // biome-ignore lint/suspicious/noExplicitAny: storybook
@@ -66,14 +61,14 @@ export const NewSelection: Story = {
       initialValues={[
         [usersAtom, testUsers],
         [selectionsAtom, []],
-        [itemSelectUserIdAtom, 'user1'],
-        [itemSelectRoundAtom, 1],
       ]}
     >
       <ItemSelectModal
         isOpen={true}
         onClose={fn()}
         onSubmit={fn()}
+        userId="user1"
+        round={1}
       />
     </HydrateAtoms>
   ),
@@ -89,14 +84,14 @@ export const EditMode: Story = {
       initialValues={[
         [usersAtom, testUsers],
         [selectionsAtom, existingSelections],
-        [itemSelectUserIdAtom, 'user1'],
-        [itemSelectRoundAtom, 1],
       ]}
     >
       <ItemSelectModal
         isOpen={true}
         onClose={fn()}
         onSubmit={fn()}
+        userId="user1"
+        round={1}
       />
     </HydrateAtoms>
   ),
@@ -112,14 +107,14 @@ export const Default: Story = {
       initialValues={[
         [usersAtom, testUsers],
         [selectionsAtom, []],
-        [itemSelectUserIdAtom, null],
-        [itemSelectRoundAtom, null],
       ]}
     >
       <ItemSelectModal
         isOpen={true}
         onClose={fn()}
         onSubmit={fn()}
+        userId={null}
+        round={null}
       />
     </HydrateAtoms>
   ),

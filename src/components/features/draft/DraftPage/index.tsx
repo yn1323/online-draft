@@ -13,7 +13,7 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useSetAtom } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
@@ -23,12 +23,7 @@ import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
 import { StageModal, useStageModal } from '../modals/StageModal';
 import { PastDraftResults } from '../PastDraftResults';
-import {
-  currentUserIdAtom,
-  groupAtom,
-  itemSelectRoundAtom,
-  itemSelectUserIdAtom,
-} from '../states';
+import { currentUserIdAtom, groupAtom } from '../states';
 
 /**
  * ドラフト実行画面Innerコンポーネント（Presenter）
@@ -44,20 +39,16 @@ export const DraftPageInner = () => {
   const openResultModal = useOpenResultModal();
   const stageModal = useStageModal();
 
-  // ItemSelectModal用atom setter
-  const setItemSelectUserId = useSetAtom(itemSelectUserIdAtom);
-  const setItemSelectRound = useSetAtom(itemSelectRoundAtom);
-
   // アイテム選択モーダルを開く（新規選択用）
   const handleItemSelect = () => {
-    // 現在のユーザーIDとラウンドをatomにセット
-    setItemSelectUserId('current-user-id'); // TODO: 実際のユーザーIDに置換
-    setItemSelectRound(1); // TODO: 実際のラウンドに置換
     itemSelectModal.open();
   };
 
   // アイテム選択の送信処理
-  const handleItemSelectSubmit = async (data: { item: string; comment: string }) => {
+  const handleItemSelectSubmit = async (data: {
+    item: string;
+    comment: string;
+  }) => {
     console.log('Item selected:', data);
     // TODO: 実際の送信処理を実装
   };
@@ -197,6 +188,8 @@ export const DraftPageInner = () => {
           isOpen={itemSelectModal.isOpen}
           onClose={itemSelectModal.close}
           onSubmit={handleItemSelectSubmit}
+          userId="user1"
+          round={1}
         />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
@@ -274,6 +267,8 @@ export const DraftPageInner = () => {
         isOpen={itemSelectModal.isOpen}
         onClose={itemSelectModal.close}
         onSubmit={handleItemSelectSubmit}
+        userId="user1"
+        round={1}
       />
       <OpenResultModal
         isOpen={openResultModal.isOpen}

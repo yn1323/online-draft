@@ -1,11 +1,64 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useHydrateAtoms } from 'jotai/utils';
 import {
   currentRound,
   mockChatMessages,
   mockParticipants,
   pastDraftResults,
 } from '../mockData';
+import {
+  chatsAtom,
+  currentUserIdAtom,
+  groupAtom,
+  groupIdAtom,
+  selectionsAtom,
+  usersAtom,
+} from '../states';
 import { DraftPageInner } from './index';
+
+// Jotai公式推奨パターン: Provider + useHydrateAtoms
+// biome-ignore lint/suspicious/noExplicitAny: storybook
+type AtomTuple = [any, any];
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: AtomTuple[];
+  children: React.ReactNode;
+}) => {
+  useHydrateAtoms(initialValues);
+  return children;
+};
+
+// mockDataからatom形式にデータ変換
+const testUsers = mockParticipants.map((p) => ({
+  id: p.id,
+  name: p.name,
+  avatar: p.avatar,
+}));
+
+const testChats = mockChatMessages.map((msg) => ({
+  date: { toDate: () => new Date(), toMillis: () => Date.now() } as any,
+  message: msg.content,
+  userId: msg.userName === '田中太郎' ? 'user1' : 'user2',
+}));
+
+const testSelections = pastDraftResults.flatMap((round) =>
+  round.picks.map((pick) => ({
+    item: pick.pick,
+    comment: pick.category,
+    round: round.round,
+    userId: pick.playerId,
+    groupId: 'test-group-id',
+    randomNumber: Math.random(),
+  })),
+);
+
+const testGroup = {
+  round: currentRound,
+  groupName: 'テストドラフト会議',
+};
 
 const meta: Meta<typeof DraftPageInner> = {
   title: 'features/draft/DraftPage',
@@ -20,18 +73,23 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * デフォルトのドラフトページ表示
- * 新しいhooks構造を使用した純粋なUIテスト
+ * Jotai atomを使用した状態管理テスト
  */
 export const Default: Story = {
-  args: {
-    currentRound,
-    participants: mockParticipants,
-    pastResults: pastDraftResults,
-    realtimeChatMessages: mockChatMessages,
-    selections: [],
-    groupId: 'test-group-id',
-    userId: 'test-user-id',
-  },
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [groupIdAtom, 'test-group-id'],
+        [currentUserIdAtom, 'user1'],
+        [groupAtom, testGroup],
+        [usersAtom, testUsers],
+        [chatsAtom, testChats],
+        [selectionsAtom, testSelections],
+      ]}
+    >
+      <DraftPageInner />
+    </HydrateAtoms>
+  ),
 };
 
 /**
@@ -39,9 +97,20 @@ export const Default: Story = {
  * ビューポートを小さく設定してSP版レイアウトを確認
  */
 export const SPLayout: Story = {
-  args: {
-    ...Default.args,
-  },
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [groupIdAtom, 'test-group-id'],
+        [currentUserIdAtom, 'user1'],
+        [groupAtom, testGroup],
+        [usersAtom, testUsers],
+        [chatsAtom, testChats],
+        [selectionsAtom, testSelections],
+      ]}
+    >
+      <DraftPageInner />
+    </HydrateAtoms>
+  ),
   parameters: {
     viewport: {
       defaultViewport: 'mobile1',

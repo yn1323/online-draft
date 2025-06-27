@@ -7,12 +7,7 @@ import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useModal } from '../../hooks/common/useModal';
-import {
-  itemSelectRoundAtom,
-  itemSelectUserIdAtom,
-  selectionsAtom,
-  usersAtom,
-} from '../../states';
+import { selectionsAtom, usersAtom } from '../../states';
 
 // 定数定義
 const MAX_ITEM_LENGTH = 50;
@@ -20,17 +15,17 @@ const MAX_CATEGORY_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 100;
 
 /**
- * ItemSelectModalのUI状態を計算する派生atom
+ * ItemSelectModalのUI状態を計算する関数
  * userId, roundから現在の選択状況を判定し、必要な情報を生成
  */
-const itemSelectUIAtom = atom((get) => {
-  const userId = get(itemSelectUserIdAtom);
-  const round = get(itemSelectRoundAtom);
-  const selections = get(selectionsAtom);
-  const users = get(usersAtom);
-
+const getItemSelectUIState = (
+  userId: string | null | undefined,
+  round: number | null | undefined,
+  selections: any[],
+  users: any[],
+) => {
   // userId/roundが未設定の場合はデフォルト状態
-  if (!userId || round === null) {
+  if (!userId || round === null || round === undefined) {
     return {
       modalTitle: 'アイテムを選択',
       defaultItem: '',
@@ -61,7 +56,7 @@ const itemSelectUIAtom = atom((get) => {
           }
         : undefined,
   };
-});
+};
 
 // バリデーションスキーマ（編集時用）
 const getValidationSchema = (isEditMode: boolean) =>
@@ -91,6 +86,8 @@ type ItemSelectModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: { item: string; comment: string }) => void | Promise<void>;
+  userId?: string | null;
+  round?: number | null;
 };
 
 /**
@@ -101,12 +98,18 @@ export const ItemSelectModal = ({
   isOpen,
   onClose,
   onSubmit,
+  userId,
+  round,
 }: ItemSelectModalProps) => {
   const formId = useId();
 
-  // 派生atomからUI状態を取得
-  const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
-    useAtomValue(itemSelectUIAtom);
+  // atomからデータを取得
+  const selections = useAtomValue(selectionsAtom);
+  const users = useAtomValue(usersAtom);
+  
+  // propsとatomデータからUI状態を計算
+  const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } = 
+    getItemSelectUIState(userId, round, selections, users);
 
   const {
     register,
