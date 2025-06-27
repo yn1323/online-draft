@@ -1,6 +1,6 @@
 'use client';
 
-import { collection, doc } from 'firebase/firestore';
+import { collection, doc, type Timestamp } from 'firebase/firestore';
 import { db } from '@/src/lib/firebase';
 
 /**
@@ -12,4 +12,40 @@ export const generateRandomId = (): string => {
   const tempCollectionRef = collection(db, '_temp');
   const newDocRef = doc(tempCollectionRef);
   return newDocRef.id;
+};
+
+/**
+ * Firebase TimestampをUI表示用の文字列に変換
+ * @param timestamp Firebase Timestamp
+ * @returns 相対時刻の文字列（例: "今", "3分前", "2時間前"）
+ */
+export const formatTimestamp = (timestamp: Timestamp): string => {
+  const date = timestamp.toDate();
+  const now = new Date();
+  const diff = now.getTime() - date.getTime();
+
+  // 1分未満
+  if (diff < 60000) {
+    return '今';
+  }
+
+  // 1時間未満
+  if (diff < 3600000) {
+    const minutes = Math.floor(diff / 60000);
+    return `${minutes}分前`;
+  }
+
+  // 24時間未満
+  if (diff < 86400000) {
+    const hours = Math.floor(diff / 3600000);
+    return `${hours}時間前`;
+  }
+
+  // それ以上は日付表示
+  return date.toLocaleDateString('ja-JP', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 };

@@ -1,19 +1,49 @@
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
+import {
+  chatsAtom,
+  currentUserIdAtom,
+  usersAtom,
+} from '@/src/components/features/draft/states';
+import { formatTimestamp } from '@/src/helpers/utils/firebase';
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
 
-type ChatMessageListProps = {
-  messages: ChatMessageUIType[];
-};
+/**
+ * チャットメッセージをUI表示用に変換するAtom
+ */
+const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
+  const chats = get(chatsAtom);
+  const users = get(usersAtom);
+  const currentUserId = get(currentUserIdAtom);
+
+  return chats.map((chat) => {
+    const user = users.find((u) => u.id === chat.userId);
+    const isCurrentUser = chat.userId === currentUserId;
+
+    return {
+      id: `${chat.userId}-${chat.date.toMillis()}`,
+      userName: user?.name || 'Unknown User',
+      avatar: user?.avatar || '1',
+      content: chat.message,
+      timestamp: formatTimestamp(chat.date),
+      isCurrentUser,
+      isSystem: false,
+    };
+  });
+});
 
 /**
  * チャットメッセージ一覧を表示する共通コンポーネント
  * 見やすいボックススタイルで統一
  */
-export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
+export const ChatMessageList = () => {
+  // Atomから派生したUIメッセージを取得（propsのmessagesよりも優先）
+  const chatMessages = useAtomValue(chatMessageUIAtom);
+
   return (
     <VStack gap={3} align="stretch">
-      {messages.map((message) => {
+      {chatMessages.map((message) => {
         const content = message.content;
         const isCurrentUser = message.isCurrentUser || false;
         const isSystem = message.isSystem || false;
