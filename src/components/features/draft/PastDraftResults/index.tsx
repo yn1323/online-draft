@@ -1,5 +1,3 @@
-import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import {
@@ -7,6 +5,8 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
+import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import type {
   DraftPickType,
   DraftRoundType,
@@ -32,38 +32,45 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
   const selections = get(selectionsAtom);
   const users = get(usersAtom);
   const { round: currentRound } = get(groupAtom);
-  
+
   // 現在のラウンドより前のラウンドの結果のみを取得
-  const pastSelections = selections.filter(selection => selection.round < currentRound);
-  
+  const pastSelections = selections.filter(
+    (selection) => selection.round < currentRound,
+  );
+
   // ラウンド別にグループ化
-  const roundGroups = pastSelections.reduce((acc, selection) => {
-    if (!acc[selection.round]) {
-      acc[selection.round] = [];
-    }
-    acc[selection.round].push(selection);
-    return acc;
-  }, {} as Record<number, typeof pastSelections>);
-  
+  const roundGroups = pastSelections.reduce(
+    (acc, selection) => {
+      if (!acc[selection.round]) {
+        acc[selection.round] = [];
+      }
+      acc[selection.round].push(selection);
+      return acc;
+    },
+    {} as Record<number, typeof pastSelections>,
+  );
+
   // DraftRoundType[]に変換
-  return Object.entries(roundGroups).map(([round, selections]) => {
-    const picks: DraftPickType[] = selections.map((selection, index) => {
-      const user = users.find(u => u.id === selection.userId);
+  return Object.entries(roundGroups)
+    .map(([round, selections]) => {
+      const picks: DraftPickType[] = selections.map((selection, index) => {
+        const user = users.find((u) => u.id === selection.userId);
+        return {
+          order: index + 1,
+          playerId: selection.userId,
+          playerName: user?.name || 'Unknown User',
+          avatar: user?.avatar || '1',
+          pick: selection.item,
+          category: 'カテゴリ未設定', // selectionsAtomにはcategoryがないため仮値
+        };
+      });
+
       return {
-        order: index + 1,
-        playerId: selection.userId,
-        playerName: user?.name || 'Unknown User',
-        avatar: user?.avatar || '1',
-        pick: selection.item,
-        category: 'カテゴリ未設定', // selectionsAtomにはcategoryがないため仮値
+        round: Number(round),
+        picks,
       };
-    });
-    
-    return {
-      round: Number(round),
-      picks,
-    };
-  }).sort((a, b) => a.round - b.round);
+    })
+    .sort((a, b) => a.round - b.round);
 });
 
 /**
@@ -71,8 +78,8 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
  */
 const participantsUIAtom = atom<ParticipantType[]>((get) => {
   const users = get(usersAtom);
-  
-  return users.map(user => ({
+
+  return users.map((user) => ({
     id: user.id,
     name: user.name,
     avatar: user.avatar,

@@ -28,3 +28,7 @@ type SelectionAtom = {
   randomNumber: number;
 };
 export const selectionsAtom = atom<SelectionAtom[]>([]);
+
+// ItemSelectModal用の状態管理
+export const itemSelectUserIdAtom = atom<string | null>(null);
+export const itemSelectRoundAtom = atom<number | null>(null);

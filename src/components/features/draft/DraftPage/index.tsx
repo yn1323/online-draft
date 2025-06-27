@@ -1,5 +1,7 @@
 'use client';
 
+import { Loading } from '@/src/components/atoms/Loading';
+import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
   Box,
   Container,
@@ -11,17 +13,22 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useState } from 'react';
+import { useSetAtom } from 'jotai';
+import { useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
-import { Loading } from '@/src/components/atoms/Loading';
-import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
-import { useItemSelectModal } from '../modals/ItemSelectModal';
+import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
 import { StageModal, useStageModal } from '../modals/StageModal';
 import { PastDraftResults } from '../PastDraftResults';
+import {
+  currentUserIdAtom,
+  groupAtom,
+  itemSelectRoundAtom,
+  itemSelectUserIdAtom,
+} from '../states';
 
 /**
  * ドラフト実行画面Innerコンポーネント（Presenter）
@@ -36,6 +43,24 @@ export const DraftPageInner = () => {
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
   const stageModal = useStageModal();
+
+  // ItemSelectModal用atom setter
+  const setItemSelectUserId = useSetAtom(itemSelectUserIdAtom);
+  const setItemSelectRound = useSetAtom(itemSelectRoundAtom);
+
+  // アイテム選択モーダルを開く（新規選択用）
+  const handleItemSelect = () => {
+    // 現在のユーザーIDとラウンドをatomにセット
+    setItemSelectUserId('current-user-id'); // TODO: 実際のユーザーIDに置換
+    setItemSelectRound(1); // TODO: 実際のラウンドに置換
+    itemSelectModal.open();
+  };
+
+  // アイテム選択の送信処理
+  const handleItemSelectSubmit = async (data: { item: string; comment: string }) => {
+    console.log('Item selected:', data);
+    // TODO: 実際の送信処理を実装
+  };
 
   const handleOpenResult = () => {};
   const handleEditClick = () => {};
@@ -128,7 +153,7 @@ export const DraftPageInner = () => {
                 {/* 現在ラウンドセクション */}
                 <CurrentRoundStatus
                   variant="sp"
-                  onItemSelect={itemSelectModal.open}
+                  onItemSelect={handleItemSelect}
                   onOpenResult={handleOpenResult}
                 />
 
@@ -168,33 +193,11 @@ export const DraftPageInner = () => {
         )}
 
         {/* モーダル群 */}
-        {/* <ItemSelectModal
+        <ItemSelectModal
           isOpen={itemSelectModal.isOpen}
-          onClose={() => {
-            itemSelectModal.close();
-            setEditingPick(null);
-          }}
-          onSubmit={editingPick ? handleEditSave : handleItemSelect}
-          modalTitle={
-            editingPick
-              ? 'ピックを編集'
-              : currentUserSelection
-                ? '選択を編集'
-                : 'アイテムを選択'
-          }
-          defaultItem={editingPick?.currentPick || currentUserSelection?.item}
-          defaultComment={
-            editingPick?.category || currentUserSelection?.comment
-          }
-          editContext={
-            editingPick
-              ? {
-                  round: editingPick.round,
-                  playerName: editingPick.playerName,
-                }
-              : undefined
-          }
-        /> */}
+          onClose={itemSelectModal.close}
+          onSubmit={handleItemSelectSubmit}
+        />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
           onClose={openResultModal.close}
@@ -227,7 +230,7 @@ export const DraftPageInner = () => {
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
                 variant="pc"
-                onItemSelect={itemSelectModal.open}
+                onItemSelect={handleItemSelect}
                 onOpenResult={handleOpenResult}
               />
 
@@ -267,31 +270,11 @@ export const DraftPageInner = () => {
       </Container>
 
       {/* モーダル群 */}
-      {/* <ItemSelectModal
+      <ItemSelectModal
         isOpen={itemSelectModal.isOpen}
-        onClose={() => {
-          itemSelectModal.close();
-          setEditingPick(null);
-        }}
-        onSubmit={editingPick ? handleEditSave : handleItemSelect}
-        modalTitle={
-          editingPick
-            ? 'ピックを編集'
-            : currentUserSelection
-              ? '選択を編集'
-              : 'アイテムを選択'
-        }
-        defaultItem={editingPick?.currentPick || currentUserSelection?.item}
-        defaultComment={editingPick?.category || currentUserSelection?.comment}
-        editContext={
-          editingPick
-            ? {
-                round: editingPick.round,
-                playerName: editingPick.playerName,
-              }
-            : undefined
-        }
-      /> */}
+        onClose={itemSelectModal.close}
+        onSubmit={handleItemSelectSubmit}
+      />
       <OpenResultModal
         isOpen={openResultModal.isOpen}
         onClose={openResultModal.close}
