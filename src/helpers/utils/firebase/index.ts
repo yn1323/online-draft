@@ -49,3 +49,17 @@ export const formatTimestamp = (timestamp: Timestamp): string => {
     minute: '2-digit',
   });
 };
+
+/**
+ * Firebase Timestampを日本時間のHH:mm形式に変換
+ * @param timestamp Firebase Timestamp
+ * @returns 日本時間の時刻文字列（例: "14:30"）
+ */
+export const formatChatTime = (timestamp: Timestamp): string => {
+  return timestamp.toDate().toLocaleTimeString('ja-JP', {
+    timeZone: 'Asia/Tokyo',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+};

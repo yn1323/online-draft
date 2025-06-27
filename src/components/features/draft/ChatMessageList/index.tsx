@@ -4,7 +4,6 @@ import {
   currentUserIdAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
-import { formatTimestamp } from '@/src/helpers/utils/firebase';
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { atom, useAtomValue } from 'jotai';
@@ -26,7 +25,7 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
       userName: user?.name || 'Unknown User',
       avatar: user?.avatar || '1',
       content: chat.message,
-      timestamp: formatTimestamp(chat.date),
+      timestamp: chat.date,
       isCurrentUser,
       isSystem: false,
     };
@@ -92,9 +91,6 @@ export const ChatMessageList = () => {
                   fontWeight="bold"
                 >
                   {message.userName}
-                </Text>
-                <Text fontSize="xs" color="gray.500">
-                  {message.timestamp}
                 </Text>
               </HStack>
               <Text

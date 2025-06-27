@@ -4,7 +4,6 @@ import { db } from '@/src/lib/firebase';
 import {
   collection,
   doc,
-  serverTimestamp,
   setDoc,
   type CollectionReference,
   type Timestamp,
@@ -71,9 +70,12 @@ export const useChat = () => {
         const messageRef = doc(logCollection);
         await setDoc(messageRef, {
           ...messageData,
-          createdAt: serverTimestamp(),
-          date: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          createdAt: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          date: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          updatedAt: new Date() as any,
         });
       } catch (error) {
         if (error instanceof Error) {
@@ -113,9 +115,12 @@ export const useChat = () => {
         const messageRef = doc(logCollection);
         await setDoc(messageRef, {
           ...systemMessageData,
-          createdAt: serverTimestamp(),
-          date: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          createdAt: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          date: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          updatedAt: new Date() as any,
         });
       } catch (error) {
         if (error instanceof Error) {

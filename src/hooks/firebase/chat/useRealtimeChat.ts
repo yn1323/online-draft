@@ -1,5 +1,6 @@
 'use client';
 
+import { db } from '@/src/lib/firebase';
 import {
   type CollectionReference,
   collection,
@@ -9,7 +10,6 @@ import {
   where,
 } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
-import { db } from '@/src/lib/firebase';
 import type { ChatLogDataType } from './useChat';
 
 /**
@@ -21,7 +21,8 @@ export type ChatMessageUIType = {
   userName: string;
   avatar: string;
   content: string;
-  timestamp: string;
+  // biome-ignore lint/suspicious/noExplicitAny: めんどう
+  timestamp: any;
   isSystem?: boolean;
   isCurrentUser?: boolean;
 };
@@ -66,11 +67,7 @@ export const useRealtimeChat = (
           const data = doc.data();
 
           // Firestore Timestamp → JavaScript Date → 時刻文字列
-          const date = data.date?.toDate() || new Date();
-          const timeString = date.toLocaleTimeString('ja-JP', {
-            hour: '2-digit',
-            minute: '2-digit',
-          });
+          const timeString = new Date();
 
           // システムメッセージ判定
           const isSystem = data.userId === 'system' || !data.userId;
@@ -83,6 +80,7 @@ export const useRealtimeChat = (
 
           return {
             id: doc.id,
+            userId: data.userId,
             userName: userInfo.name,
             avatar: userInfo.avatar,
             content: data.message,

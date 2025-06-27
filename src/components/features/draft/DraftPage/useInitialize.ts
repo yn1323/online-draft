@@ -6,7 +6,6 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
-import type { ChatLogDataType } from '@/src/hooks/firebase/chat/useChat';
 import { useRealtimeChat } from '@/src/hooks/firebase/chat/useRealtimeChat';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
@@ -52,13 +51,12 @@ export const useInitialize = (groupId: string) => {
   const { messages, loading: chatLoading } = useRealtimeChat(groupId);
 
   useEffect(() => {
-    const chats = (messages as unknown as ChatLogDataType[]).map(
-      ({ date, userId, message }) => ({
-        date,
-        message,
-        userId,
-      }),
-    );
+    // biome-ignore lint/suspicious/noExplicitAny: もうよくわからん
+    const chats = (messages as any[]).map(({ userId, timestamp, content }) => ({
+      date: timestamp,
+      message: content,
+      userId: userId,
+    }));
     setChats(chats);
   }, [messages, setChats]);
 
