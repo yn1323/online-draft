@@ -196,7 +196,76 @@ export const formatTimestamp = (timestamp: Timestamp): string => {
 
 ## Storybookでの実装パターン
 
-### 推奨パターン: Provider + useHydrateAtoms
+### 推奨パターン1: Provider + useHydrateAtoms（親でProvider設定済み）
+
+**最新パターン**: .storybook/preview.tsxで既にProviderが設定されている場合の簡潔な書き方
+
+```typescript
+// src/components/features/draft/ChatMessageList/index.stories.tsx
+import { useHydrateAtoms } from 'jotai/utils'
+import { ChatMessageList } from './index'
+import { chatsAtom, usersAtom, currentUserIdAtom } from '../states'
+
+// Jotai公式推奨パターン: Provider + useHydrateAtoms
+// biome-ignore lint/suspicious/noExplicitAny: storybook
+type AtomTuple = [any, any]
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: AtomTuple[]
+  children: React.ReactNode
+}) => {
+  useHydrateAtoms(initialValues)
+  return children
+}
+
+// テストデータ
+const testUsers = [
+  { id: 'user1', name: 'タナカ', avatar: '1' },
+  { id: 'user2', name: 'サトウ', avatar: '2' },
+]
+
+const defaultChats = [
+  {
+    userId: 'user1',
+    message: 'こんにちは〜！',
+    date: Timestamp.now(),
+  },
+]
+
+// 直接HydrateAtomsを使用（Wrapperコンポーネント不要）
+export const Default: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, defaultChats],
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
+}
+
+export const NoMessage: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, []], // 空のチャット
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
+}
+```
+
+### 推奨パターン2: Provider + useHydrateAtoms（個別Provider設定）
 
 storybook-addon-jotaiが使用できない場合の公式推奨パターンです。
 
@@ -285,6 +354,7 @@ export const NoMessage: Story = {
 - **安定性**: storybook-addon-jotaiに依存しない
 - **柔軟性**: 複雑な初期状態も設定可能
 - **テスト互換**: 同じパターンをテストでも使用可能
+- **簡潔性**: パターン1では中間コンポーネントが不要で読みやすい
 
 ## ファイル構成とベストプラクティス
 
@@ -543,8 +613,63 @@ export const ChatMessageList = () => {
 
 ### Storybookテンプレート
 
+#### パターン1: シンプル版（親でProvider設定済み）
+
 ```typescript
-// テンプレート: 新しいコンポーネントのStorybook作成時に使用
+// テンプレート: 新しいコンポーネントのStorybook作成時に使用（推奨）
+import { useHydrateAtoms } from 'jotai/utils'
+import { YourComponent } from './index'
+import { yourAtom1, yourAtom2 } from '../states'
+
+// biome-ignore lint/suspicious/noExplicitAny: storybook
+type AtomTuple = [any, any]
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: AtomTuple[]
+  children: React.ReactNode
+}) => {
+  useHydrateAtoms(initialValues)
+  return children
+}
+
+// テストデータ
+const testData1 = 'initial value'
+const testData2: YourType[] = []
+
+export const Default: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [yourAtom1, testData1],
+        [yourAtom2, testData2],
+      ]}
+    >
+      <YourComponent />
+    </HydrateAtoms>
+  ),
+}
+
+export const EmptyState: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [yourAtom1, ''],
+        [yourAtom2, []],
+      ]}
+    >
+      <YourComponent />
+    </HydrateAtoms>
+  ),
+}
+```
+
+#### パターン2: Provider個別設定版
+
+```typescript
+// 個別Provider設定が必要な場合
 import { Provider } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import { YourComponent } from './index'

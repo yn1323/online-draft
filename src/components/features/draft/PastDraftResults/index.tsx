@@ -1,6 +1,12 @@
 import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
+import {
+  groupAtom,
+  selectionsAtom,
+  usersAtom,
+} from '@/src/components/features/draft/states';
 import type {
   DraftPickType,
   DraftRoundType,
@@ -8,9 +14,6 @@ import type {
 } from '../mockData';
 
 type PastDraftResultsProps = {
-  currentRound: number;
-  pastResults: DraftRoundType[];
-  participants: ParticipantType[];
   variant?: 'pc' | 'sp';
   onEditClick?: (
     round: number,
@@ -22,17 +25,79 @@ type PastDraftResultsProps = {
 };
 
 /**
+ * 過去のドラフト結果をUI表示用に変換するAtom
+ * selectionsとusersを組み合わせてDraftRoundType[]を生成
+ */
+const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
+  const selections = get(selectionsAtom);
+  const users = get(usersAtom);
+  const { round: currentRound } = get(groupAtom);
+  
+  // 現在のラウンドより前のラウンドの結果のみを取得
+  const pastSelections = selections.filter(selection => selection.round < currentRound);
+  
+  // ラウンド別にグループ化
+  const roundGroups = pastSelections.reduce((acc, selection) => {
+    if (!acc[selection.round]) {
+      acc[selection.round] = [];
+    }
+    acc[selection.round].push(selection);
+    return acc;
+  }, {} as Record<number, typeof pastSelections>);
+  
+  // DraftRoundType[]に変換
+  return Object.entries(roundGroups).map(([round, selections]) => {
+    const picks: DraftPickType[] = selections.map((selection, index) => {
+      const user = users.find(u => u.id === selection.userId);
+      return {
+        order: index + 1,
+        playerId: selection.userId,
+        playerName: user?.name || 'Unknown User',
+        avatar: user?.avatar || '1',
+        pick: selection.item,
+        category: 'カテゴリ未設定', // selectionsAtomにはcategoryがないため仮値
+      };
+    });
+    
+    return {
+      round: Number(round),
+      picks,
+    };
+  }).sort((a, b) => a.round - b.round);
+});
+
+/**
+ * 参加者情報をUI表示用に変換するAtom
+ */
+const participantsUIAtom = atom<ParticipantType[]>((get) => {
+  const users = get(usersAtom);
+  
+  return users.map(user => ({
+    id: user.id,
+    name: user.name,
+    avatar: user.avatar,
+    acquisitions: [], // 今回は使用しないため空配列
+  }));
+});
+
+/**
+ * 過去のドラフト結果表示の共通コンポーネント
+ * PC版: テーブル形式表示
+ * SP版: アコーディオン形式表示
+ */
+/**
  * 過去のドラフト結果表示の共通コンポーネント
  * PC版: テーブル形式表示
  * SP版: アコーディオン形式表示
  */
 export const PastDraftResults = ({
-  currentRound,
-  pastResults,
-  participants,
   variant = 'sp',
   onEditClick,
 }: PastDraftResultsProps) => {
+  // Atomからデータを取得
+  const pastResults = useAtomValue(pastDraftResultsUIAtom);
+  const participants = useAtomValue(participantsUIAtom);
+  const { round: currentRound } = useAtomValue(groupAtom);
   if (variant === 'pc') {
     // PC版: テーブル形式
     const tableHeaderCellStyle = {

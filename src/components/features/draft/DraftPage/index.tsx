@@ -1,5 +1,7 @@
 'use client';
 
+import { Loading } from '@/src/components/atoms/Loading';
+import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
   Box,
   Container,
@@ -13,9 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
-import { Loading } from '@/src/components/atoms/Loading';
-import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
-import { currentRound } from '@/src/components/features/draft/mockData';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
@@ -37,6 +36,9 @@ export const DraftPageInner = () => {
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
   const stageModal = useStageModal();
+
+  const handleOpenResult = () => {};
+  const handleEditClick = () => {};
 
   if (isMobile) {
     // SP版: タブレイアウト
@@ -120,23 +122,13 @@ export const DraftPageInner = () => {
               <VStack gap={3} p={3}>
                 {/* 現在ラウンドセクション */}
                 <CurrentRoundStatus
-                  participants={participants}
-                  currentRound={currentRound}
                   variant="sp"
-                  currentUserId={userId}
-                  selections={selections}
                   onItemSelect={itemSelectModal.open}
                   onOpenResult={handleOpenResult}
                 />
 
                 {/* 過去ラウンド結果 */}
-                <PastDraftResults
-                  currentRound={currentRound}
-                  pastResults={pastResults}
-                  participants={participants}
-                  variant="sp"
-                  onEditClick={handleEditClick}
-                />
+                <PastDraftResults variant="sp" onEditClick={handleEditClick} />
               </VStack>
             </Tabs.Content>
 
@@ -230,23 +222,13 @@ export const DraftPageInner = () => {
             <VStack gap={4} h="100%" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
-                participants={participants}
-                currentRound={currentRound}
                 variant="pc"
-                currentUserId={userId}
-                selections={selections}
                 onItemSelect={itemSelectModal.open}
                 onOpenResult={handleOpenResult}
               />
 
               {/* 下部: 過去のドラフト結果 */}
-              <PastDraftResults
-                currentRound={currentRound}
-                pastResults={pastResults}
-                participants={participants}
-                variant="pc"
-                onEditClick={handleEditClick}
-              />
+              <PastDraftResults variant="pc" onEditClick={handleEditClick} />
             </VStack>
           </GridItem>
 

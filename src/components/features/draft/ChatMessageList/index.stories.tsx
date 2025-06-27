@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { Timestamp } from 'firebase/firestore';
-import { Provider } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import { chatsAtom, currentUserIdAtom, usersAtom } from '../states';
 import { ChatMessageList } from './index';
@@ -57,7 +56,7 @@ const defaultChats: ChatAtom[] = [
 ];
 
 // Jotai公式推奨パターン: Provider + useHydrateAtoms
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+// biome-ignore lint/suspicious/noExplicitAny: storybook
 type AtomTuple = [any, any];
 
 const HydrateAtoms = ({
@@ -69,48 +68,6 @@ const HydrateAtoms = ({
 }) => {
   useHydrateAtoms(initialValues);
   return children;
-};
-
-const TestProvider = ({
-  initialValues,
-  children,
-}: {
-  initialValues: AtomTuple[];
-  children: React.ReactNode;
-}) => (
-  <Provider>
-    <HydrateAtoms initialValues={initialValues}>{children}</HydrateAtoms>
-  </Provider>
-);
-
-// Default用のWrapperコンポーネント
-const DefaultWrapper = () => {
-  return (
-    <TestProvider
-      initialValues={[
-        [usersAtom, testUsers],
-        [currentUserIdAtom, 'user1'],
-        [chatsAtom, defaultChats],
-      ]}
-    >
-      <ChatMessageList />
-    </TestProvider>
-  );
-};
-
-// NoMessage用のWrapperコンポーネント
-const NoMessageWrapper = () => {
-  return (
-    <TestProvider
-      initialValues={[
-        [usersAtom, testUsers],
-        [currentUserIdAtom, 'user1'],
-        [chatsAtom, []], // 空のチャット
-      ]}
-    >
-      <ChatMessageList />
-    </TestProvider>
-  );
 };
 
 const meta: Meta<typeof ChatMessageList> = {
@@ -129,7 +86,17 @@ type Story = StoryObj<typeof meta>;
  * 複数ユーザーの会話を表示
  */
 export const Default: Story = {
-  render: () => <DefaultWrapper />,
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, defaultChats],
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
 };
 
 /**
@@ -137,5 +104,15 @@ export const Default: Story = {
  * チャットメッセージが空の状態
  */
 export const NoMessage: Story = {
-  render: () => <NoMessageWrapper />,
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, []], // 空のチャット
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
 };

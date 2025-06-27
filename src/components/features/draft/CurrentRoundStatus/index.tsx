@@ -1,34 +1,63 @@
 import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import { LuCheck } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
-import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
+import {
+  currentUserIdAtom,
+  groupAtom,
+  selectionsAtom,
+  usersAtom,
+} from '@/src/components/features/draft/states';
 import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
-  participants: ParticipantType[];
-  currentRound: number;
   variant?: 'pc' | 'sp';
-  currentUserId?: string;
-  selections?: SelectionItemType[];
   onItemSelect?: () => void;
   onOpenResult?: () => void;
 };
+
+/**
+ * 参加者情報をUI表示用に変換するAtom
+ * users、selections、currentRoundを組み合わせてParticipantType[]を生成
+ */
+const participantsUIAtom = atom<ParticipantType[]>((get) => {
+  const users = get(usersAtom);
+  const selections = get(selectionsAtom);
+  const { round: currentRound } = get(groupAtom);
+
+  return users.map((user) => {
+    // 現在のラウンドでのユーザーの選択を取得
+    const userSelection = selections.find(
+      (selection) =>
+        selection.userId === user.id && selection.round === currentRound,
+    );
+
+    return {
+      id: user.id,
+      name: user.name,
+      avatar: user.avatar,
+      currentPick: userSelection?.item || undefined,
+      acquisitions: [], // 今回は使用しないため空配列
+    };
+  });
+});
 
 /**
  * 現在のラウンドの参加者選択状況を表示する共通コンポーネント
  * PC版とSP版で表示スタイルを切り替え可能
  */
 export const CurrentRoundStatus = ({
-  participants,
-  currentRound,
   variant = 'sp',
-  currentUserId,
-  selections = [],
   onItemSelect,
   onOpenResult,
 }: CurrentRoundStatusProps) => {
+  // Atomからデータを取得
+  const participants = useAtomValue(participantsUIAtom);
+  const { round: currentRound } = useAtomValue(groupAtom);
+  const currentUserId = useAtomValue(currentUserIdAtom);
+  const selections = useAtomValue(selectionsAtom);
   // ユーザーが選択済みかチェックする関数
   const isUserSelected = (userId: string) => {
     return selections.some(
