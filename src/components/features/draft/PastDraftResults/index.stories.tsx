@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useHydrateAtoms } from 'jotai/utils';
-import {
-  groupAtom,
-  selectionsAtom,
-  usersAtom,
-} from '../states';
+import { groupAtom, selectionsAtom, usersAtom } from '../states';
 import { PastDraftResults } from './index';
 
 // Storybook用の型定義（statesファイルの型と同じ）

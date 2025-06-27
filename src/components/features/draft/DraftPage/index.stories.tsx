@@ -39,7 +39,10 @@ const testUsers = mockParticipants.map((p) => ({
 }));
 
 const testChats = mockChatMessages.map((msg) => ({
-  date: { toDate: () => new Date(), toMillis: () => Date.now() } as any,
+  date: {
+    toDate: () => new Date(),
+    toMillis: () => Date.now(),
+  } as unknown as { toDate: () => Date; toMillis: () => number },
   message: msg.content,
   userId: msg.userName === '田中太郎' ? 'user1' : 'user2',
 }));

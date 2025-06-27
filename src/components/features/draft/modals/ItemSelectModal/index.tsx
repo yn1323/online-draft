@@ -1,13 +1,29 @@
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { atom, useAtomValue } from 'jotai';
+import { useAtomValue } from 'jotai';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { useModal } from '../../hooks/common/useModal';
 import { selectionsAtom, usersAtom } from '../../states';
+
+// 型定義をimport
+type UserAtom = {
+  id: string;
+  name: string;
+  avatar: string;
+};
+
+type SelectionAtom = {
+  item: string;
+  comment: string;
+  round: number;
+  userId: string;
+  groupId: string;
+  randomNumber: number;
+};
 
 // 定数定義
 const MAX_ITEM_LENGTH = 50;
@@ -21,8 +37,8 @@ const MAX_COMMENT_LENGTH = 100;
 const getItemSelectUIState = (
   userId: string | null | undefined,
   round: number | null | undefined,
-  selections: any[],
-  users: any[],
+  selections: SelectionAtom[],
+  users: UserAtom[],
 ) => {
   // userId/roundが未設定の場合はデフォルト状態
   if (!userId || round === null || round === undefined) {
@@ -106,9 +122,9 @@ export const ItemSelectModal = ({
   // atomからデータを取得
   const selections = useAtomValue(selectionsAtom);
   const users = useAtomValue(usersAtom);
-  
+
   // propsとatomデータからUI状態を計算
-  const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } = 
+  const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
     getItemSelectUIState(userId, round, selections, users);
 
   const {

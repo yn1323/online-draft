@@ -1,6 +1,3 @@
-import { useSetAtom } from 'jotai';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import {
   chatsAtom,
   currentUserIdAtom,
@@ -14,6 +11,9 @@ import { useRealtimeChat } from '@/src/hooks/firebase/chat/useRealtimeChat';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
+import { useSetAtom } from 'jotai';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const useInitialize = (groupId: string) => {
   const router = useRouter();

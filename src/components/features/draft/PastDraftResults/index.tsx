@@ -1,3 +1,5 @@
+import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import {
@@ -5,8 +7,6 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
-import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
 import type {
   DraftPickType,
   DraftRoundType,

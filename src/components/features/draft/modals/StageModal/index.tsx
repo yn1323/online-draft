@@ -1,11 +1,11 @@
+import { atom, useAtomValue } from 'jotai';
+import { useEffect, useState } from 'react';
 import {
   groupAtom,
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
-import { atom, useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
 import { useModalWithVariant } from '../../hooks/common/useModal';
 import { type ParticipantResult, Stage } from './stage/index';
 

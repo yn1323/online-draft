@@ -14,10 +14,8 @@ export const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
       }
       if (issue.minimum === 1) {
         return { message: '必須項目です' };
-        // biome-ignore lint/style/noUselessElse: 明示的なelse文で可読性を保つ
-      } else {
-        return { message: `${issue.minimum}文字以上で入力してください` };
       }
+      return { message: `${issue.minimum}文字以上で入力してください` };
 
     case zod.ZodIssueCode.too_big:
       return { message: `${issue.maximum}文字以内で入力してください` };

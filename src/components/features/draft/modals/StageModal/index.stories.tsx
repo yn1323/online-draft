@@ -1,10 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { useHydrateAtoms } from 'jotai/utils';
-import {
-  groupAtom,
-  selectionsAtom,
-  usersAtom,
-} from '../../states';
+import { groupAtom, selectionsAtom, usersAtom } from '../../states';
 import { StageModal } from './index';
 
 const meta: Meta<typeof StageModal> = {

@@ -1,15 +1,15 @@
 'use client';
 
+import { db } from '@/src/lib/firebase';
 import {
-  type CollectionReference,
   collection,
   doc,
   serverTimestamp,
   setDoc,
+  type CollectionReference,
   type Timestamp,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
-import { db } from '@/src/lib/firebase';
 
 /**
  * Firestore Chat データ型

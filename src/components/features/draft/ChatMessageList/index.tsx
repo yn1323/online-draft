@@ -1,5 +1,3 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import {
   chatsAtom,
@@ -8,6 +6,8 @@ import {
 } from '@/src/components/features/draft/states';
 import { formatTimestamp } from '@/src/helpers/utils/firebase';
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 
 /**
  * チャットメッセージをUI表示用に変換するAtom
@@ -22,7 +22,7 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
     const isCurrentUser = chat.userId === currentUserId;
 
     return {
-      id: `${chat.userId}-${chat.date.toMillis()}`,
+      id: `${chat.userId}-${Math.random()}`,
       userName: user?.name || 'Unknown User',
       avatar: user?.avatar || '1',
       content: chat.message,

@@ -1,6 +1,3 @@
-import { HStack } from '@chakra-ui/react';
-import { useAtomValue } from 'jotai';
-import { useCallback, useState } from 'react';
 import { Button } from '@/src/components/atoms/Button';
 import { Input } from '@/src/components/atoms/Input';
 import {
@@ -8,6 +5,9 @@ import {
   groupIdAtom,
 } from '@/src/components/features/draft/states';
 import { useChat } from '@/src/hooks/firebase/chat/useChat';
+import { HStack } from '@chakra-ui/react';
+import { useAtomValue } from 'jotai';
+import { useCallback, useState } from 'react';
 
 type ChatInputFormProps = {
   placeholder?: string;

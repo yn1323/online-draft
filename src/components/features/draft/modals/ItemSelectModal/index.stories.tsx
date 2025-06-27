@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { useHydrateAtoms } from 'jotai/utils';
-import { ItemSelectModal } from './index';
 import { selectionsAtom, usersAtom } from '../../states';
+import { ItemSelectModal } from './index';
 
 // Jotai公式推奨パターン: Provider + useHydrateAtoms
 // biome-ignore lint/suspicious/noExplicitAny: storybook

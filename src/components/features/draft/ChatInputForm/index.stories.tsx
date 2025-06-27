@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import { ChatInputForm } from './index';
 
 const meta: Meta<typeof ChatInputForm> = {
@@ -8,9 +7,7 @@ const meta: Meta<typeof ChatInputForm> = {
   parameters: {
     layout: 'centered',
   },
-  args: {
-    onSendMessage: fn(),
-  },
+  args: {},
 };
 
 export default meta;
