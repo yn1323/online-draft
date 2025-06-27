@@ -1,7 +1,5 @@
 'use client';
 
-import { Loading } from '@/src/components/atoms/Loading';
-import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
   Box,
   Container,
@@ -13,8 +11,10 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
+import { Loading } from '@/src/components/atoms/Loading';
+import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
@@ -39,6 +39,11 @@ export const DraftPageInner = () => {
 
   const handleOpenResult = () => {};
   const handleEditClick = () => {};
+
+  const handleExecuteOpenResult = () => {
+    openResultModal.close();
+    stageModal.open();
+  };
 
   if (isMobile) {
     // SP版: タブレイアウト
@@ -197,9 +202,8 @@ export const DraftPageInner = () => {
         />
         <StageModal
           isOpen={stageModal.isOpen}
-          onClose={handleStageModalClose}
+          onClose={stageModal.close}
           variant={stageModal.variant}
-          participants={convertToParticipantResults()}
         />
       </VStack>
     );
@@ -295,9 +299,8 @@ export const DraftPageInner = () => {
       />
       <StageModal
         isOpen={stageModal.isOpen}
-        onClose={handleStageModalClose}
+        onClose={stageModal.close}
         variant={stageModal.variant}
-        participants={convertToParticipantResults()}
       />
     </Box>
   );
