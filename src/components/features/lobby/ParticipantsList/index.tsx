@@ -36,6 +36,7 @@ export const ParticipantsList = ({
                 key={participant.userId}
                 p={3}
                 bg="white"
+                h="110px"
                 border="2px solid"
                 borderColor="gray.200"
                 borderRadius="lg"
