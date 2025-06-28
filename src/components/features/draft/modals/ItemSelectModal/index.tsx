@@ -10,6 +10,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useModal } from '../../hooks/common/useModal';
 import {
+  currentUserIdAtom,
   groupAtom,
   groupIdAtom,
   selectionsAtom,
@@ -150,8 +151,12 @@ export const ItemSelectModal = ({
   // atomからデータを取得
   const selections = useAtomValue(selectionsAtom);
   const users = useAtomValue(usersAtom);
+  const currentUserId = useAtomValue(currentUserIdAtom);
+
   const groupId = useAtomValue(groupIdAtom);
   const { round: currentRound } = useAtomValue(groupAtom);
+
+  const myInfo = users.find(({ id }) => id === currentUserId);
 
   const { sendSystemMessage } = useChat();
 
@@ -188,9 +193,11 @@ export const ItemSelectModal = ({
         currentSelections: selections,
       });
       if (currentRound !== round && defaultItem !== data.item) {
+        const editedUserName = myInfo?.name;
+
         await sendSystemMessage(
           groupId,
-          `[${round}R-${editContext?.playerName}] ${defaultItem}→${data.item}`,
+          `[${round}R-${editContext?.playerName}] ${defaultItem}→${data.item} by ${editedUserName}`,
         );
       }
       onClose();
