@@ -147,13 +147,10 @@ export const PC: Story = {
       <div style={{ width: '800px', height: '400px' }}>
         <PastDraftResults
           variant="pc"
-          onEditClick={(round, playerId, playerName, pick, category) =>
+          onEditClick={({ userId, round }) =>
             console.log('編集クリック:', {
+              userId,
               round,
-              playerId,
-              playerName,
-              pick,
-              category,
             })
           }
         />
@@ -178,13 +175,10 @@ export const SP: Story = {
       <div style={{ width: '400px', height: '500px' }}>
         <PastDraftResults
           variant="sp"
-          onEditClick={(round, playerId, playerName, pick, category) =>
+          onEditClick={({ userId, round }) =>
             console.log('編集クリック:', {
+              userId,
               round,
-              playerId,
-              playerName,
-              pick,
-              category,
             })
           }
         />
@@ -207,7 +201,15 @@ export const NoResults: Story = {
       ]}
     >
       <div style={{ width: '400px', height: '300px' }}>
-        <PastDraftResults variant="sp" />
+        <PastDraftResults 
+          variant="sp" 
+          onEditClick={({ userId, round }) =>
+            console.log('編集クリック:', {
+              userId,
+              round,
+            })
+          }
+        />
       </div>
     </HydrateAtoms>
   ),

@@ -47,15 +47,17 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
   // DraftRoundType[]に変換
   return Object.entries(roundGroups)
     .map(([round, selections]) => {
-      const picks: DraftPickType[] = selections.map((selection, index) => {
-        const user = users.find((u) => u.id === selection.userId);
+      // 全参加者ベースでpicksを生成（途中参加ユーザーの空欄対応）
+      const picks: DraftPickType[] = users.map((user, index) => {
+        const selection = selections.find((s) => s.userId === user.id);
+
         return {
           order: index + 1,
-          userId: selection.userId,
-          userName: user?.name || 'Unknown User',
-          avatar: user?.avatar || '1',
-          item: selection.item,
-          comment: selection.comment || '-',
+          userId: user.id,
+          userName: user.name,
+          avatar: user.avatar,
+          item: selection?.item || '', // 空の場合は空文字
+          comment: selection?.comment || '', // 空の場合は空文字
         };
       });
 
@@ -208,16 +210,15 @@ export const PastDraftResults = ({
                           <Box
                             key={participant.id}
                             {...tableDataCellStyle}
-                            cursor={pick ? 'pointer' : 'default'}
-                            _hover={
-                              pick
-                                ? {
-                                    bg: 'gray.50',
-                                    borderColor: 'gray.300',
-                                    transition: 'all 0.15s ease',
-                                  }
-                                : {}
-                            }
+                            cursor="pointer"
+                            border="1px solid"
+                            borderColor={pick?.item ? 'gray.200' : 'gray.300'}
+                            borderStyle={pick?.item ? 'solid' : 'dashed'}
+                            _hover={{
+                              bg: 'gray.50',
+                              borderColor: 'gray.300',
+                              transition: 'all 0.15s ease',
+                            }}
                             onClick={() => {
                               onEditClick({
                                 round: roundResult.round,
@@ -225,7 +226,7 @@ export const PastDraftResults = ({
                               });
                             }}
                           >
-                            {pick ? (
+                            {pick?.item ? (
                               <VStack gap={0} align="start" w="full">
                                 <Text
                                   fontWeight="medium"
@@ -235,12 +236,14 @@ export const PastDraftResults = ({
                                   {pick.item}
                                 </Text>
                                 <Text color="gray.500" fontSize="2xs">
-                                  ({pick.comment})
+                                  {pick.comment !== ''
+                                    ? `(${pick.comment})`
+                                    : ' '}
                                 </Text>
                               </VStack>
                             ) : (
                               <Text color="gray.400" fontSize="2xs">
-                                -
+                                + 追加
                               </Text>
                             )}
                           </Box>
@@ -312,44 +315,64 @@ export const PastDraftResults = ({
                 </HStack>
               </Accordion.ItemTrigger>
               <Accordion.ItemContent>
-                <VStack gap={1} w="full" pt={2}>
-                  {roundResult.picks.map((pick: DraftPickType) => (
-                    <HStack
-                      key={pick.userId}
-                      w="full"
-                      p={1.5}
-                      bg="gray.50"
-                      borderRadius="md"
-                      cursor="pointer"
-                      _hover={{
-                        bg: 'gray.100',
-                        transition: 'all 0.15s ease',
-                      }}
-                      onClick={() => {
-                        onEditClick({
-                          round: roundResult.round,
-                          userId: pick.userId,
-                        });
-                      }}
-                    >
-                      <Avatar
-                        avatarNumber={pick.avatar}
-                        name={pick.userName}
-                        size="xs"
-                      />
-                      <VStack align="start" gap={0} flex={1}>
-                        <Text fontSize="sm" fontWeight="medium">
-                          {pick.userName}
-                        </Text>
-                        <Text fontSize="xs" color="gray.600">
-                          {pick.item}
-                        </Text>
-                        <Text fontSize="xs" color="gray.600">
-                          ({pick.comment})
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  ))}
+                <VStack gap={1} w="full" py={2}>
+                  {participants.map((participant) => {
+                    const pick = roundResult.picks.find(
+                      (p: DraftPickType) => p.userId === participant.id,
+                    );
+                    return (
+                      <HStack
+                        key={participant.id}
+                        w="full"
+                        p={1.5}
+                        bg={pick?.item ? 'gray.50' : 'transparent'}
+                        border="1px solid"
+                        borderColor={pick?.item ? 'gray.200' : 'gray.300'}
+                        borderStyle={pick?.item ? 'solid' : 'dashed'}
+                        borderRadius="md"
+                        cursor="pointer"
+                        _hover={{
+                          bg: 'gray.100',
+                          transition: 'all 0.15s ease',
+                        }}
+                        onClick={() => {
+                          onEditClick({
+                            round: roundResult.round,
+                            userId: participant.id,
+                          });
+                        }}
+                      >
+                        <Avatar
+                          avatarNumber={participant.avatar}
+                          name={participant.name}
+                          size="xs"
+                        />
+                        <VStack align="start" gap={0} flex={1}>
+                          <Text fontSize="sm" fontWeight="medium">
+                            {participant.name}
+                          </Text>
+                          {pick?.item ? (
+                            <>
+                              <Text fontSize="sm" color="gray.600">
+                                {pick.item}
+                              </Text>
+                              <Text
+                                fontSize="xs"
+                                color="gray.600"
+                                py={pick.comment !== '' ? 0 : 2}
+                              >
+                                {pick.comment !== '' ? `(${pick.comment})` : ''}
+                              </Text>
+                            </>
+                          ) : (
+                            <Text fontSize="xs" color="gray.400" py={2}>
+                              + 追加
+                            </Text>
+                          )}
+                        </VStack>
+                      </HStack>
+                    );
+                  })}
                 </VStack>
               </Accordion.ItemContent>
             </Accordion.Item>

@@ -165,7 +165,7 @@ export const ItemSelectModal = ({
       if (currentRound !== round && defaultItem !== data.item) {
         await sendSystemMessage(
           groupId,
-          `[${round}R] ${defaultItem}→${data.item}`,
+          `[${round}R-${editContext?.playerName}] ${defaultItem}→${data.item}`,
         );
       }
       reset();
