@@ -68,8 +68,6 @@ export const useSelection = () => {
           randomNumber,
         };
 
-        console.log(newSelectionItem);
-
         // groupIdをドキュメントIDとして使用
         const docRef = doc(
           db,
