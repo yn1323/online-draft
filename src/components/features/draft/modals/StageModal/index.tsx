@@ -12,7 +12,8 @@ import { type ParticipantResult, Stage } from './stage/index';
 /**
  * ステージ演出用の参加者情報をUI表示用に変換するAtom
  * users、selections、currentRoundを組み合わせてParticipantResult[]を生成
- * 同じアイテムを選んだ人の中でrandomNumberが最小の人がwillLose=trueになる
+ * 同じアイテムを選んだ人の中でrandomNumberが最大の人が勝者（willLose=false）
+ * それ以外の競合者は全員敗者（willLose=true）になる
  */
 const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
   const users = get(usersAtom);
@@ -37,16 +38,18 @@ const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
     {} as Record<string, typeof currentRoundSelections>,
   );
 
-  // 各アイテムグループで最小randomNumberを持つuserIdを特定
+  // 各アイテムグループで最大randomNumber以外のuserIdを敗者として特定
   const losingUserIds = new Set<string>();
   Object.values(itemGroups).forEach((group) => {
     if (group.length > 1) {
       // 複数人が同じアイテムを選択した場合のみ
-      const minRandomNumber = Math.min(...group.map((s) => s.randomNumber));
-      const loser = group.find((s) => s.randomNumber === minRandomNumber);
-      if (loser) {
-        losingUserIds.add(loser.userId);
-      }
+      const maxRandomNumber = Math.max(...group.map((s) => s.randomNumber));
+      // 最大値以外の全員が敗者
+      group.forEach((selection) => {
+        if (selection.randomNumber !== maxRandomNumber) {
+          losingUserIds.add(selection.userId);
+        }
+      });
     }
   });
 
@@ -59,7 +62,7 @@ const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
       name: user.name,
       avatar: user.avatar,
       choice: selection?.item || '選択中...',
-      willLose: losingUserIds.has(user.id), // randomNumberが最小の人がwillLose
+      willLose: losingUserIds.has(user.id), // randomNumberが最大でない人がwillLose
     };
   });
 });

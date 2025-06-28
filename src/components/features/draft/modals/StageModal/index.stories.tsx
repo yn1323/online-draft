@@ -203,3 +203,56 @@ export const SlotMachine: Story = {
     },
   },
 };
+
+/**
+ * 3人競合テストケース
+ * 3人が同じアイテムを選択した場合の演出確認
+ * randomNumber最大の人が勝者（緑）、他の2人が敗者（赤）
+ */
+export const ThreeWayConflict: Story = {
+  render: () => {
+    const conflictSelections: SelectionAtom[] = [
+      {
+        item: '競合アイテム',
+        comment: 'コメントA',
+        round: 2, // 現在のラウンド
+        userId: 'user1',
+        groupId: 'group1',
+        randomNumber: 100, // 最大値（勝者）
+      },
+      {
+        item: '競合アイテム',
+        comment: 'コメントB',
+        round: 2, // 現在のラウンド
+        userId: 'user2',
+        groupId: 'group1',
+        randomNumber: 50, // 中間値（敗者）
+      },
+      {
+        item: '競合アイテム',
+        comment: 'コメントC',
+        round: 2, // 現在のラウンド
+        userId: 'user3',
+        groupId: 'group1',
+        randomNumber: 30, // 最小値（敗者）
+      },
+    ];
+
+    return (
+      <HydrateAtoms
+        initialValues={[
+          [usersAtom, testUsers],
+          [groupAtom, { round: 3, groupName: 'テストグループ' }], // 現在Round3、表示はRound2の結果
+          [selectionsAtom, conflictSelections],
+        ]}
+      >
+        <StageModal isOpen={true} onClose={() => {}} variant="card" />
+      </HydrateAtoms>
+    );
+  },
+  parameters: {
+    chromatic: {
+      delay: 3000, // 3秒待機（カード演出用）
+    },
+  },
+};
