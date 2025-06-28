@@ -214,3 +214,61 @@ export const NoResults: Story = {
     </HydrateAtoms>
   ),
 };
+
+/**
+ * 3人競合テストケース（競合解決機能の動作確認用）
+ * Round 1で3人全員が同じアイテムを選択した状態
+ */
+export const ThreeWayConflict: Story = {
+  render: () => {
+    // 3人競合のテストデータ（全員が同じアイテムを選択）
+    const conflictSelections: SelectionAtom[] = [
+      {
+        item: '競合アイテム',
+        comment: 'コメントA',
+        round: 1,
+        userId: 'user1',
+        groupId: 'group1',
+        randomNumber: 100, // 最大値（勝者）
+      },
+      {
+        item: '競合アイテム',
+        comment: 'コメントB',
+        round: 1,
+        userId: 'user2',
+        groupId: 'group1',
+        randomNumber: 50, // 中間値（敗者）
+      },
+      {
+        item: '競合アイテム',
+        comment: 'コメントC',
+        round: 1,
+        userId: 'user3',
+        groupId: 'group1',
+        randomNumber: 30, // 最小値（敗者）
+      },
+    ];
+
+    return (
+      <HydrateAtoms
+        initialValues={[
+          [usersAtom, testUsers],
+          [groupAtom, { round: 2, groupName: 'テストグループ' }], // 現在Round2なので1が過去結果
+          [selectionsAtom, conflictSelections],
+        ]}
+      >
+        <div style={{ width: '800px', height: '400px' }}>
+          <PastDraftResults
+            variant="pc"
+            onEditClick={({ userId, round }) =>
+              console.log('編集クリック:', {
+                userId,
+                round,
+              })
+            }
+          />
+        </div>
+      </HydrateAtoms>
+    );
+  },
+};

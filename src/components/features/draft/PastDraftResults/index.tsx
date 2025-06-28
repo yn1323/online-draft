@@ -224,13 +224,28 @@ export const PastDraftResults = ({
       ) {
         onEditClick({ userId, round });
       } else {
-        // 他のカードをクリックした場合はtoasterで促す
+        // クリックされたカードが競合の敗者かどうかを確認
+        const clickedConflict = conflicts.find(
+          (c) =>
+            c.round === round &&
+            c.conflictUsers.some((u) => u.userId === userId && !u.isWinner),
+        );
+
         const targetUser = participants.find(
           (p) => p.id === currentEditTarget.userId,
         );
-        errorToast(
-          `競合解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
-        );
+
+        if (clickedConflict) {
+          // 競合の敗者をクリックした場合
+          errorToast(
+            `このカードは競合で負けたため編集が必要です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}から順番に編集してください。`,
+          );
+        } else {
+          // その他のカードをクリックした場合
+          errorToast(
+            `競合解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
+          );
+        }
       }
     } else {
       // 通常モードの場合は普通にモーダルを開く
@@ -358,12 +373,10 @@ export const PastDraftResults = ({
                             {...conflictStyle}
                             cursor={isClickable ? 'pointer' : 'not-allowed'}
                             onClick={() => {
-                              if (isClickable) {
-                                handleEditClick(
-                                  participant.id,
-                                  roundResult.round,
-                                );
-                              }
+                              handleEditClick(
+                                participant.id,
+                                roundResult.round,
+                              );
                             }}
                           >
                             {pick?.item ? (
@@ -478,9 +491,7 @@ export const PastDraftResults = ({
                         borderRadius="md"
                         cursor={isClickable ? 'pointer' : 'not-allowed'}
                         onClick={() => {
-                          if (isClickable) {
-                            handleEditClick(participant.id, roundResult.round);
-                          }
+                          handleEditClick(participant.id, roundResult.round);
                         }}
                       >
                         <Avatar

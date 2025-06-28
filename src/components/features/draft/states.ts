@@ -163,14 +163,14 @@ export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
     Object.entries(itemGroups).forEach(([item, itemSelections]) => {
       if (itemSelections.length > 1) {
         // 競合発生！勝敗を決定
-        const minRandomNumber = Math.min(
+        const maxRandomNumber = Math.max(
           ...itemSelections.map((s) => s.randomNumber),
         );
 
         const conflictUsers = itemSelections.map((selection) => ({
           userId: selection.userId,
           randomNumber: selection.randomNumber,
-          isWinner: selection.randomNumber !== minRandomNumber,
+          isWinner: selection.randomNumber === maxRandomNumber,
         }));
 
         // 敗者の中でrandomNumber最大の人を次の編集対象に
