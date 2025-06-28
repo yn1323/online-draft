@@ -1,0 +1,6 @@
+import{f as t}from"./index-C0w2AICy.js";import{O as s}from"./index-KLPtWtD9.js";import"./stack-sIG82sc5.js";import"./index-BXymfbzT.js";import"./jsx-runtime-Bw5QeaCk.js";import"./responsive-modal-D5A2kpYK.js";import"./index-C8TKjGAI.js";import"./icon-button-BMOvYjPj.js";import"./button-DjnAWujM.js";import"./attr-C3Jtgmrz.js";import"./spinner-DZhPCgXI.js";import"./index-DMj7MLAN.js";import"./index-BEZemFFB.js";import"./index-AgY_G2te.js";import"./factory-B9itGFAb.js";import"./index-DGKHe-6Q.js";import"./index-CrjboX4Z.js";import"./create-slot-recipe-context-CoQUVIKL.js";import"./render-strategy-h56bYfmP.js";import"./index-FjGTHYjR.js";import"./index-BgxHbLYw.js";import"./use-breakpoint-CHS6HYzw.js";import"./v-stack-B_OqZo12.js";import"./text-DDJjvodc.js";const w={title:"features/draft/modals/OpenResultModal",component:s,parameters:{layout:"centered"},args:{onClose:t(),onExecuteOpenResult:t()}},r={args:{isOpen:!0}};var o,e,p,m,i;r.parameters={...r.parameters,docs:{...(o=r.parameters)==null?void 0:o.docs,source:{originalSource:`{
+  args: {
+    isOpen: true
+  }
+}`,...(p=(e=r.parameters)==null?void 0:e.docs)==null?void 0:p.source},description:{story:`モーダル開いた状態（デフォルト）
+開票確認のメッセージ表示`,...(i=(m=r.parameters)==null?void 0:m.docs)==null?void 0:i.description}}};const z=["Default"];export{r as Default,z as __namedExportsOrder,w as default};
