@@ -152,7 +152,7 @@ export const CurrentRoundStatus = ({
             <Box w="full" h="4px" bg="gray.200" borderRadius="full">
               <Box
                 h="full"
-                bg="blue.500"
+                bg="green.500"
                 borderRadius="full"
                 transition="width 0.3s ease"
                 width={`${progressPercentage}%`}
@@ -303,9 +303,7 @@ export const CurrentRoundStatus = ({
                       size="sm"
                       onClick={() => onItemSelect({})}
                       width="full"
-                      disabled={
-                        selectedCount < 1 || conflictResolution.isActive
-                      }
+                      disabled={conflictResolution.isActive}
                     >
                       {isSelfSelected ? '指名を変更する' : '指名する'}
                     </Button>

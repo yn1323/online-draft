@@ -1,18 +1,11 @@
 import { expect, test } from '@playwright/test';
-import { TEST_DATA, TIMEOUTS } from '../constants';
-import {
-  createNewDraft,
-  selectItem,
-  openResult,
-  editPastResult,
-  shareRoom,
-  switchToTab,
-} from '../operations/draft';
+import { TIMEOUTS } from '../constants';
+import { createNewDraft, shareRoom, switchToTab } from '../operations/draft';
 
 test.describe('ドラフトページ機能', () => {
   let groupId: string;
 
-  test.beforeEach(async ({ page, context }) => {
+  test.beforeEach(async ({ page }) => {
     // テスト用のドラフトルームを作成
     groupId = await createNewDraft(page, 'E2Eテスト用ドラフト機能');
 

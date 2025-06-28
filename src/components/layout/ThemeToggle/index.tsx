@@ -1,21 +1,6 @@
 'use client';
 
-import {
-  Box,
-  Button,
-  ClientOnly,
-  IconButton,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { useState } from 'react';
-import { FiSettings, FiX } from 'react-icons/fi';
-import { useColorMode } from '@/src/components/ui/color-mode';
-
 export const ThemeToggle = () => {
-  const { colorMode, setColorMode } = useColorMode();
-  const [isMinimized, setIsMinimized] = useState(true);
-
   // ライトモード強制時はThemeToggleを無効化
   // 開発時にのみ表示したい場合は以下をコメントアウト
   return null;

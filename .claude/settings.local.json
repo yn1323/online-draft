@@ -90,7 +90,8 @@
       "mcp__typescript-mcp__get_module_symbols",
       "mcp__github__search_issues",
       "mcp__github__search_code",
-      "mcp__playwright__start_codegen_session"
+      "mcp__playwright__start_codegen_session",
+      "Bash(pnpm biome check:*)"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -106,8 +107,5 @@
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": [
-    "typescript",
-    "playwright"
-  ]
+  "enabledMcpjsonServers": ["typescript", "playwright"]
 }
