@@ -19,11 +19,12 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
   return chats.map((chat) => {
     const user = users.find((u) => u.id === chat.userId);
     const isCurrentUser = chat.userId === currentUserId;
+    const isSystem = chat.userId === 'system';
 
     return {
       id: `${chat.userId}-${Math.random()}`,
-      userName: user?.name || 'Unknown User',
-      avatar: user?.avatar || '1',
+      userName: isSystem ? '自動ログ' : (user?.name ?? ''),
+      avatar: isSystem ? '99' : (user?.avatar ?? '1'),
       content: chat.message,
       timestamp: chat.date,
       isCurrentUser,

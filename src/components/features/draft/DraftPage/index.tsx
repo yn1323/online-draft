@@ -84,7 +84,11 @@ export const DraftPageInner = () => {
       openResultModal.open();
     }
   };
-  const handleEditClick = () => {};
+  const handleEditClick = async (
+    args: Parameters<typeof handleItemSelect>[0],
+  ) => {
+    await handleItemSelect(args);
+  };
 
   const handleExecuteOpenResult = async () => {
     await incrementRound(groupId);

@@ -1,5 +1,6 @@
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useChat } from '@/src/hooks/firebase/chat/useChat';
 import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -8,7 +9,12 @@ import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useModal } from '../../hooks/common/useModal';
-import { groupIdAtom, selectionsAtom, usersAtom } from '../../states';
+import {
+  groupAtom,
+  groupIdAtom,
+  selectionsAtom,
+  usersAtom,
+} from '../../states';
 
 // 型定義をimport
 type UserAtom = {
@@ -122,6 +128,9 @@ export const ItemSelectModal = ({
   const selections = useAtomValue(selectionsAtom);
   const users = useAtomValue(usersAtom);
   const groupId = useAtomValue(groupIdAtom);
+  const { round: currentRound } = useAtomValue(groupAtom);
+
+  const { sendSystemMessage } = useChat();
 
   // propsとatomデータからUI状態を計算
   const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
@@ -153,6 +162,12 @@ export const ItemSelectModal = ({
         round,
         currentSelections: selections,
       });
+      if (currentRound !== round && defaultItem !== data.item) {
+        await sendSystemMessage(
+          groupId,
+          `[${round}R] ${defaultItem}→${data.item}`,
+        );
+      }
       reset();
       onClose();
     } catch (error) {

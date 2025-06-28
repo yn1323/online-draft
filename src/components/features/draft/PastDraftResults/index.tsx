@@ -15,13 +15,7 @@ import type {
 
 type PastDraftResultsProps = {
   variant?: 'pc' | 'sp';
-  onEditClick?: (
-    round: number,
-    userId: string,
-    userName: string,
-    currentItem: string,
-    comment: string,
-  ) => void;
+  onEditClick: ({ userId, round }: { userId?: string; round?: number }) => void;
 };
 
 /**
@@ -225,15 +219,10 @@ export const PastDraftResults = ({
                                 : {}
                             }
                             onClick={() => {
-                              if (pick && onEditClick) {
-                                onEditClick(
-                                  roundResult.round,
-                                  participant.id,
-                                  participant.name,
-                                  pick.item,
-                                  pick.comment,
-                                );
-                              }
+                              onEditClick({
+                                round: roundResult.round,
+                                userId: participant.id,
+                              });
                             }}
                           >
                             {pick ? (
@@ -337,15 +326,10 @@ export const PastDraftResults = ({
                         transition: 'all 0.15s ease',
                       }}
                       onClick={() => {
-                        if (onEditClick) {
-                          onEditClick(
-                            roundResult.round,
-                            pick.userId,
-                            pick.userName,
-                            pick.item,
-                            pick.comment,
-                          );
-                        }
+                        onEditClick({
+                          round: roundResult.round,
+                          userId: pick.userId,
+                        });
                       }}
                     >
                       <Avatar
