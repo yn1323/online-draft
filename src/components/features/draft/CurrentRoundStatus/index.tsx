@@ -34,8 +34,6 @@ const participantsUIAtom = atom<ParticipantType[]>((get) => {
   const selections = get(selectionsAtom);
   const { round: currentRound } = get(groupAtom);
 
-  console.log(users);
-
   return users
     .filter((user) => user?.id) // undefinedやnullのidを除外
     .map((user) => {

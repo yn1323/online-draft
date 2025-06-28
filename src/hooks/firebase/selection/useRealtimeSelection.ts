@@ -58,12 +58,13 @@ export const useRealtimeSelection = (groupId: string | null) => {
 
           if (docSnapshot.exists()) {
             const userDocument = docSnapshot.data();
-            console.log(userDocument);
 
-            // 既存のロジック：インデックス番号フィールドを処理
-            Object.keys(userDocument).forEach((key) => {
-              if (/^\d+$/.test(key)) {
-                const selection = userDocument[key];
+            // selection配列を直接処理
+            if (
+              userDocument?.selection &&
+              Array.isArray(userDocument.selection)
+            ) {
+              userDocument.selection.forEach((selection) => {
                 if (!selection.groupId || selection.groupId === groupId) {
                   userSelections.push({
                     ...selection,
@@ -71,8 +72,8 @@ export const useRealtimeSelection = (groupId: string | null) => {
                     groupId: selection.groupId || groupId,
                   });
                 }
-              }
-            });
+              });
+            }
           }
 
           // ユーザーの選択データを更新

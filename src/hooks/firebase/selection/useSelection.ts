@@ -84,17 +84,14 @@ export const useSelection = () => {
           newSelectionForStorage,
         ];
 
-        // 実際のDB構造に合わせて、配列をインデックス番号フィールドのオブジェクトに変換
-        const selectionObject: Record<string, unknown> = {
-          userId, // userIdフィールドも保存
+        // シンプルな配列構造でドキュメント更新
+        const selectionDocument = {
+          userId,
+          selection: updatedSelections,
         };
 
-        updatedSelections.forEach((selection, index) => {
-          selectionObject[index.toString()] = selection;
-        });
-
         // ドキュメント更新
-        await setDoc(docRef, selectionObject);
+        await setDoc(docRef, selectionDocument);
 
         return groupId;
       } catch (error) {
