@@ -192,6 +192,7 @@ export const DraftPageInner = () => {
 
         {/* モーダル群 */}
         <ItemSelectModal
+          key={Math.random()}
           isOpen={itemSelectModal.isOpen}
           onClose={itemSelectModal.close}
           round={selectedItem.round}
@@ -270,6 +271,7 @@ export const DraftPageInner = () => {
 
       {/* モーダル群 */}
       <ItemSelectModal
+        key={Math.random()}
         isOpen={itemSelectModal.isOpen}
         onClose={itemSelectModal.close}
         round={selectedItem.round}

@@ -118,6 +118,8 @@ export const CurrentRoundStatus = ({
           color: 'green.600',
         };
 
+  const isSelfSelected = isUserSelected(currentUserId);
+
   return (
     <Box w="full">
       <Card variant="elevated" size="sm">
@@ -211,7 +213,7 @@ export const CurrentRoundStatus = ({
                       onClick={onItemSelect}
                       width="full"
                     >
-                      アイテムを選択する
+                      {isSelfSelected ? '指名を変更する' : '指名する'}
                     </Button>
                   </Box>
                 )}
