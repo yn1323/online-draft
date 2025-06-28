@@ -317,7 +317,7 @@ export const PastDraftResults = ({
 
             {/* ヘッダー行（参加者名） */}
             <Grid
-              templateColumns={`60px ${'1fr '.repeat(participants.length)}`}
+              templateColumns={`60px ${'minmax(120px, 1fr) '.repeat(participants.length)}`}
               gap={2}
               mb={2}
             >
@@ -344,7 +344,7 @@ export const PastDraftResults = ({
                   .map((roundResult) => (
                     <Grid
                       key={roundResult.round}
-                      templateColumns={`60px ${'1fr '.repeat(participants.length)}`}
+                      templateColumns={`60px ${'minmax(120px, 1fr) '.repeat(participants.length)}`}
                       gap={2}
                     >
                       <Box
@@ -388,7 +388,10 @@ export const PastDraftResults = ({
                                 <Text
                                   fontWeight="medium"
                                   color="gray.800"
-                                  truncate
+                                  overflow="hidden"
+                                  textOverflow="ellipsis"
+                                  whiteSpace="nowrap"
+                                  w="full"
                                 >
                                   {pick.item}
                                 </Text>
@@ -396,6 +399,10 @@ export const PastDraftResults = ({
                                   color="gray.500"
                                   fontSize="2xs"
                                   py={pick.comment !== '' ? 0 : 2}
+                                  overflow="hidden"
+                                  textOverflow="ellipsis"
+                                  whiteSpace="nowrap"
+                                  w="full"
                                 >
                                   {pick.comment !== ''
                                     ? `(${pick.comment})`

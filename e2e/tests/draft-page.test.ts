@@ -1,6 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { TEST_DATA, TIMEOUTS } from '../constants';
-import { createNewDraft, selectItem, openResult, editPastResult, shareRoom, switchToTab } from '../operations/draft';
+import {
+  createNewDraft,
+  selectItem,
+  openResult,
+  editPastResult,
+  shareRoom,
+  switchToTab,
+} from '../operations/draft';
 
 test.describe('ドラフトページ機能', () => {
   let groupId: string;
@@ -91,7 +98,9 @@ test.describe('ドラフトページ機能', () => {
     await shareRoom(page);
 
     // クリップボードにコピーされたことを確認
-    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    const clipboardText = await page.evaluate(() =>
+      navigator.clipboard.readText(),
+    );
     expect(clipboardText).toContain(`/lobby/${groupId}`);
   });
 
@@ -106,7 +115,9 @@ test.describe('ドラフトページ機能', () => {
     await switchToTab(page, 'チャット');
 
     // チャットエリアが表示される
-    await expect(page.getByRole('textbox', { name: 'メッセージを入力' })).toBeVisible();
+    await expect(
+      page.getByRole('textbox', { name: 'メッセージを入力' }),
+    ).toBeVisible();
 
     // テストメッセージを送信
     const testMessage = 'タブ切り替えテスト';

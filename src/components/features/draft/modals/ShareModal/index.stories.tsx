@@ -33,6 +33,7 @@ export const LongGroupName: Story = {
     isOpen: true,
     onClose: () => console.log('Modal closed'),
     groupId: 'example-group-id',
-    groupName: 'とても長いグループ名のドラフト会議室です。この名前は非常に長いので表示がどうなるかテストしています。',
+    groupName:
+      'とても長いグループ名のドラフト会議室です。この名前は非常に長いので表示がどうなるかテストしています。',
   },
 };

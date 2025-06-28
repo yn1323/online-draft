@@ -142,7 +142,9 @@ export async function selectItem(
   }
 
   // 指名を確定ボタンをクリック（submit typeを使用）
-  const confirmButton = page.locator('button[type="submit"]:has-text("指名を確定")');
+  const confirmButton = page.locator(
+    'button[type="submit"]:has-text("指名を確定")',
+  );
   await confirmButton.click();
 
   // モーダルが閉じるまで待機
@@ -160,7 +162,7 @@ export async function openResult(page: Page): Promise<void> {
 
   // 確認モーダルが表示される場合の処理
   await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
-  
+
   // 「開票する」ボタンがあれば実行
   const executeButton = page.getByRole('button', { name: '開票する' });
   if (await executeButton.isVisible()) {
@@ -182,7 +184,7 @@ export async function editPastResult(
 ): Promise<void> {
   // SP版の場合、アコーディオンを開く必要がある場合を考慮
   const isMobile = await page.evaluate(() => window.innerWidth < 768);
-  
+
   if (isMobile) {
     // Round数のボタンを探してクリック（アコーディオンを開く）
     const roundButton = page.getByRole('button', { name: /Round \d+/ }).first();
@@ -244,8 +246,13 @@ export async function shareRoom(page: Page): Promise<void> {
 /**
  * SP版タブ切り替え操作
  */
-export async function switchToTab(page: Page, tabName: 'ドラフト' | 'チャット'): Promise<void> {
-  const tabButton = page.getByRole('tab', { name: tabName === 'チャット' ? 'チャット/ログ' : tabName });
+export async function switchToTab(
+  page: Page,
+  tabName: 'ドラフト' | 'チャット',
+): Promise<void> {
+  const tabButton = page.getByRole('tab', {
+    name: tabName === 'チャット' ? 'チャット/ログ' : tabName,
+  });
   await tabButton.click();
   await page.waitForTimeout(TIMEOUTS.SHORT);
 }
