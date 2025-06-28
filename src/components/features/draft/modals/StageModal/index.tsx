@@ -185,7 +185,7 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
     >
       <VStack gap={4} w="full">
         <Stage
-          variant={'card'}
+          variant={variant}
           participants={participants}
           isRevealing={isRevealing}
           onStartReveal={handleStartReveal}
