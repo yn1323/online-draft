@@ -454,19 +454,36 @@ export const PastDraftResults = ({
       <Accordion.Root defaultValue={[]} multiple w="full" variant="enclosed">
         {pastResults
           .sort((a, b) => a.round - b.round)
-          .map((roundResult) => (
-            <Accordion.Item
-              key={roundResult.round}
-              value={`round-${roundResult.round}`}
-            >
-              <Accordion.ItemTrigger>
-                <HStack justify="space-between" w="full" cursor="pointer">
-                  <Text fontSize="sm" fontWeight="bold" color="gray.700">
-                    Round {roundResult.round}
-                  </Text>
-                  <Accordion.ItemIndicator />
-                </HStack>
-              </Accordion.ItemTrigger>
+          .map((roundResult) => {
+            // 該当ラウンドで競合があるかチェック
+            const hasConflict = conflicts.some((c) => c.round === roundResult.round);
+            
+            return (
+              <Accordion.Item
+                key={roundResult.round}
+                value={`round-${roundResult.round}`}
+              >
+                <Accordion.ItemTrigger
+                  bg={hasConflict ? 'red.50' : undefined}
+                  borderColor={hasConflict ? 'red.200' : undefined}
+                  _hover={{
+                    bg: hasConflict ? 'red.100' : 'gray.50',
+                  }}
+                >
+                  <HStack justify="space-between" w="full" cursor="pointer">
+                    <Text 
+                      fontSize="sm" 
+                      fontWeight="bold" 
+                      color={hasConflict ? 'red.700' : 'gray.700'}
+                    >
+                      Round {roundResult.round}
+                      {hasConflict && ' 🔥'}
+                    </Text>
+                    <Accordion.ItemIndicator 
+                      color={hasConflict ? 'red.500' : undefined}
+                    />
+                  </HStack>
+                </Accordion.ItemTrigger>
               <Accordion.ItemContent>
                 <VStack gap={1} w="full" py={2}>
                   {participants.map((participant) => {
@@ -528,7 +545,8 @@ export const PastDraftResults = ({
                 </VStack>
               </Accordion.ItemContent>
             </Accordion.Item>
-          ))}
+            );
+          })}
       </Accordion.Root>
     </VStack>
   );

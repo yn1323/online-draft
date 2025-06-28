@@ -1,13 +1,18 @@
 import {
+  conflictAnalysisAtom,
   groupAtom,
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { Box, Text, VStack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { atom, useAtomValue } from 'jotai';
 import { useEffect, useState } from 'react';
 import { useModalWithVariant } from '../../hooks/common/useModal';
 import { type ParticipantResult, Stage } from './stage/index';
+
+const MotionBox = motion(Box);
 
 /**
  * ステージ演出用の参加者情報をUI表示用に変換するAtom
@@ -93,16 +98,65 @@ type StageModalProps = {
 export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
   // Atomからデータを取得
   const participants = useAtomValue(stageParticipantsUIAtom);
+  const conflicts = useAtomValue(conflictAnalysisAtom);
+  const { round } = useAtomValue(groupAtom);
   const [isRevealing, setIsRevealing] = useState(false);
+  const [showConflictMessage, setShowConflictMessage] = useState(false);
 
   // モーダルが開かれたら自動で演出開始
   useEffect(() => {
     if (isOpen) {
       setIsRevealing(true);
+      setShowConflictMessage(false); // 開く時にメッセージをリセット
     } else {
       setIsRevealing(false);
+      setShowConflictMessage(false); // 閉じる時にメッセージをリセット
     }
   }, [isOpen]);
+
+  // アニメーション完了後の競合メッセージ表示
+  useEffect(() => {
+    if (isOpen && isRevealing) {
+      // 表示中のラウンド（round - 1）で競合があるかチェック
+      const currentDisplayRound = round - 1;
+      const hasConflict = conflicts.some((c) => c.round === currentDisplayRound);
+      
+      if (hasConflict) {
+        // variantに応じた正確なアニメーション時間を計算
+        let animationDuration = 0;
+        const participantCount = participants.length;
+        
+        switch (variant) {
+          case 'card':
+            // CardRevealStage: (参加者数) * 800 + 600 + 500 + 1000
+            // 順次開始(800ms間隔) + カード回転(600ms) + エフェクト待機(500ms) + 余裕(1000ms)
+            animationDuration = participantCount * 800 + 600 + 500 + 1000;
+            break;
+          case 'typing': {
+            // TypingStage: 参加者数 * 1000 + 最長文字数 * 80 + 300 + 1000
+            // 順次開始(1000ms間隔) + タイピング(80ms/文字) + エフェクト待機(300ms) + 余裕(1000ms)
+            const maxChoiceLength = Math.max(
+              ...participants.map((p) => p.choice.length),
+            );
+            animationDuration = participantCount * 1000 + maxChoiceLength * 80 + 300 + 1000;
+            break;
+          }
+          case 'slot':
+            // SlotMachineStage: (参加者数 - 1) * 500 + 3000 + 500 + 1000
+            // 順次開始(500ms間隔) + スロット回転(3000ms) + エフェクト待機(500ms) + 余裕(1000ms)
+            animationDuration = (participantCount - 1) * 500 + 3000 + 500 + 1000;
+            break;
+        }
+
+        // アニメーション完了後にメッセージ表示
+        const timer = setTimeout(() => {
+          setShowConflictMessage(true);
+        }, animationDuration);
+
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [isOpen, isRevealing, variant, conflicts, round, participants]);
 
   const handleStartReveal = () => {
     setIsRevealing(true);
@@ -125,13 +179,42 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
         },
       }}
     >
-      <Stage
-        variant={variant}
-        participants={participants}
-        isRevealing={isRevealing}
-        onStartReveal={handleStartReveal}
-        onReset={handleReset}
-      />
+      <VStack gap={4} w="full">
+        <Stage
+          variant={variant}
+          participants={participants}
+          isRevealing={isRevealing}
+          onStartReveal={handleStartReveal}
+          onReset={handleReset}
+        />
+        
+        {/* 競合メッセージエリア */}
+        {showConflictMessage && (
+          <MotionBox
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            w="full"
+            bg="red.50"
+            border="2px solid"
+            borderColor="red.200"
+            borderRadius="lg"
+            p={4}
+          >
+            <VStack gap={2} align="start">
+              <Box display="flex" alignItems="center" gap={2}>
+                <Text fontSize="lg">⚠️</Text>
+                <Text fontSize="md" fontWeight="bold" color="red.700">
+                  競合が発生しました！
+                </Text>
+              </Box>
+              <Text fontSize="sm" color="red.600" lineHeight="1.5">
+                赤枠のカードから順番に編集してください。競合解決が完了するまで次のラウンドに進めません。
+              </Text>
+            </VStack>
+          </MotionBox>
+        )}
+      </VStack>
     </ResponsiveModal>
   );
 };

@@ -221,6 +221,9 @@ export const CurrentRoundStatus = ({
                       size="sm"
                       onClick={() => onItemSelect({})}
                       width="full"
+                      disabled={
+                        selectedCount < 1 || conflictResolution.isActive
+                      }
                     >
                       {isSelfSelected ? '指名を変更する' : '指名する'}
                     </Button>
@@ -242,16 +245,6 @@ export const CurrentRoundStatus = ({
                       >
                         開票する
                       </Button>
-                      {selectedCount < 1 && (
-                        <Text fontSize="xs" color="red.500">
-                          最低1名は指名してください
-                        </Text>
-                      )}
-                      {selectedCount >= 1 && conflictResolution.isActive && (
-                        <Text fontSize="xs" color="red.500">
-                          競合を解決してから開票してください
-                        </Text>
-                      )}
                     </VStack>
                   </Box>
                 )}
