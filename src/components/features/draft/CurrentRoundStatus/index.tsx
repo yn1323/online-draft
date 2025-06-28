@@ -2,6 +2,7 @@ import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
 import {
+  conflictResolutionAtom,
   currentUserIdAtom,
   groupAtom,
   selectionsAtom,
@@ -64,6 +65,7 @@ export const CurrentRoundStatus = ({
   const { round: currentRound } = useAtomValue(groupAtom);
   const currentUserId = useAtomValue(currentUserIdAtom);
   const selections = useAtomValue(selectionsAtom);
+  const conflictResolution = useAtomValue(conflictResolutionAtom);
   // ユーザーが選択済みかチェックする関数
   const isUserSelected = (userId: string) => {
     return selections.some(
@@ -226,16 +228,31 @@ export const CurrentRoundStatus = ({
                 )}
                 {onOpenResult && (
                   <Box flex={[undefined, 1]} w="full">
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      onClick={() =>
-                        onOpenResult({ allSelected: isAllSelected })
-                      }
-                      width="full"
-                    >
-                      開票する
-                    </Button>
+                    <VStack gap={1} w="full">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() =>
+                          onOpenResult({ allSelected: isAllSelected })
+                        }
+                        width="full"
+                        disabled={
+                          selectedCount < 1 || conflictResolution.isActive
+                        }
+                      >
+                        開票する
+                      </Button>
+                      {selectedCount < 1 && (
+                        <Text fontSize="xs" color="red.500">
+                          最低1名は指名してください
+                        </Text>
+                      )}
+                      {selectedCount >= 1 && conflictResolution.isActive && (
+                        <Text fontSize="xs" color="red.500">
+                          競合を解決してから開票してください
+                        </Text>
+                      )}
+                    </VStack>
                   </Box>
                 )}
               </Flex>
