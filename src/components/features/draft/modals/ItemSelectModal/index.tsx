@@ -1,5 +1,6 @@
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtomValue } from 'jotai';
@@ -7,7 +8,7 @@ import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useModal } from '../../hooks/common/useModal';
-import { selectionsAtom, usersAtom } from '../../states';
+import { groupIdAtom, selectionsAtom, usersAtom } from '../../states';
 
 // 型定義をimport
 type UserAtom = {
@@ -120,10 +121,13 @@ export const ItemSelectModal = ({
   // atomからデータを取得
   const selections = useAtomValue(selectionsAtom);
   const users = useAtomValue(usersAtom);
+  const groupId = useAtomValue(groupIdAtom);
 
   // propsとatomデータからUI状態を計算
   const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
     getItemSelectUIState(userId, round, selections, users);
+
+  const { upsertSelection } = useSelection();
 
   const {
     register,
@@ -141,9 +145,13 @@ export const ItemSelectModal = ({
 
   const onFormSubmit = async (data: { item: string; comment: string }) => {
     try {
-      await onSubmit({
+      await upsertSelection({
+        groupId,
+        userId,
         item: data.item,
         comment: data.comment,
+        round,
+        currentSelections: selections,
       });
       reset();
       onClose();

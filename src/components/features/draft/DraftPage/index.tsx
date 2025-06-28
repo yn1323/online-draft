@@ -3,6 +3,10 @@
 import { Loading } from '@/src/components/atoms/Loading';
 import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
+  currentUserIdAtom,
+  groupAtom,
+} from '@/src/components/features/draft/states';
+import {
   Box,
   Container,
   Grid,
@@ -13,6 +17,7 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
+import { useAtomValue } from 'jotai';
 import { useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
@@ -28,6 +33,8 @@ import { PastDraftResults } from '../PastDraftResults';
  * UI描画と状態管理を担当、新しいhooks構造を使用
  */
 export const DraftPageInner = () => {
+  const currentUserId = useAtomValue(currentUserIdAtom);
+  const { round: currentRound } = useAtomValue(groupAtom);
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [selectedItem, setSelectedItem] = useState({ round: -1, userId: '' });
 
@@ -43,10 +50,13 @@ export const DraftPageInner = () => {
     userId,
     round,
   }: {
-    userId: string;
-    round: number;
+    userId?: string;
+    round?: number;
   }) => {
-    setSelectedItem({ round, userId });
+    setSelectedItem({
+      round: round ?? currentRound,
+      userId: userId ?? currentUserId,
+    });
     itemSelectModal.open();
   };
 
@@ -184,8 +194,8 @@ export const DraftPageInner = () => {
         <ItemSelectModal
           isOpen={itemSelectModal.isOpen}
           onClose={itemSelectModal.close}
-          userId="user1"
-          round={1}
+          round={selectedItem.round}
+          userId={selectedItem.userId}
         />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
@@ -262,7 +272,8 @@ export const DraftPageInner = () => {
       <ItemSelectModal
         isOpen={itemSelectModal.isOpen}
         onClose={itemSelectModal.close}
-        {...selectedItem}
+        round={selectedItem.round}
+        userId={selectedItem.userId}
       />
       <OpenResultModal
         isOpen={openResultModal.isOpen}
