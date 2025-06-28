@@ -96,14 +96,14 @@ export const useGroup = () => {
       try {
         const groupRef = doc(groupCollection, groupId);
         const groupSnap = await getDoc(groupRef);
-        
+
         if (!groupSnap.exists()) {
           throw new Error('グループが見つかりません');
         }
-        
+
         const currentData = groupSnap.data();
         const newRound = currentData.round + 1;
-        
+
         await updateDoc(groupRef, {
           round: newRound,
           updatedAt: serverTimestamp(),

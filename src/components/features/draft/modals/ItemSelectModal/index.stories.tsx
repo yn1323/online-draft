@@ -44,7 +44,6 @@ const meta: Meta<typeof ItemSelectModal> = {
   },
   args: {
     onClose: fn(),
-    onSubmit: fn(),
   },
 };
 
@@ -63,13 +62,7 @@ export const NewSelection: Story = {
         [selectionsAtom, []],
       ]}
     >
-      <ItemSelectModal
-        isOpen={true}
-        onClose={fn()}
-        onSubmit={fn()}
-        userId="user1"
-        round={1}
-      />
+      <ItemSelectModal isOpen={true} onClose={fn()} userId="user1" round={1} />
     </HydrateAtoms>
   ),
 };
@@ -86,20 +79,14 @@ export const EditMode: Story = {
         [selectionsAtom, existingSelections],
       ]}
     >
-      <ItemSelectModal
-        isOpen={true}
-        onClose={fn()}
-        onSubmit={fn()}
-        userId="user1"
-        round={1}
-      />
+      <ItemSelectModal isOpen={true} onClose={fn()} userId="user1" round={1} />
     </HydrateAtoms>
   ),
 };
 
 /**
- * 未設定状態
- * userId/roundが未設定の状態（デフォルトタイトル表示）
+ * デフォルト状態
+ * 基本的なモーダル表示（round=0で初期状態）
  */
 export const Default: Story = {
   render: () => (
@@ -109,13 +96,7 @@ export const Default: Story = {
         [selectionsAtom, []],
       ]}
     >
-      <ItemSelectModal
-        isOpen={true}
-        onClose={fn()}
-        onSubmit={fn()}
-        userId={null}
-        round={null}
-      />
+      <ItemSelectModal isOpen={true} onClose={fn()} userId="user1" round={0} />
     </HydrateAtoms>
   ),
 };

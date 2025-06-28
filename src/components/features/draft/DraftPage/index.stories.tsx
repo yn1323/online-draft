@@ -49,10 +49,10 @@ const testChats = mockChatMessages.map((msg) => ({
 
 const testSelections = pastDraftResults.flatMap((round) =>
   round.picks.map((pick) => ({
-    item: pick.pick,
-    comment: pick.category,
+    item: pick.item,
+    comment: pick.comment,
     round: round.round,
-    userId: pick.playerId,
+    userId: pick.userId,
     groupId: 'test-group-id',
     randomNumber: Math.random(),
   })),
