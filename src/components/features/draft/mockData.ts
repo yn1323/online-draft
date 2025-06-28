@@ -20,11 +20,11 @@ export type AcquisitionType = {
 
 export type DraftPickType = {
   order: number;
-  playerId: string;
-  playerName: string;
+  userId: string;
+  userName: string;
   avatar: string;
-  pick: string;
-  category: string;
+  item: string;
+  comment: string;
 };
 
 export type DraftRoundType = {
@@ -76,27 +76,27 @@ export const pastDraftResults: DraftRoundType[] = [
     picks: [
       {
         order: 1,
-        playerId: '2',
-        playerName: '山田花子',
+        userId: '2',
+        userName: '山田花子',
         avatar: '3',
-        pick: '候補アイテムG',
-        category: 'タイプA',
+        item: '候補アイテムG',
+        comment: 'タイプA',
       },
       {
         order: 2,
-        playerId: '3',
-        playerName: '佐藤次郎',
+        userId: '3',
+        userName: '佐藤次郎',
         avatar: '5',
-        pick: '候補アイテムH',
-        category: 'タイプB',
+        item: '候補アイテムH',
+        comment: 'タイプB',
       },
       {
         order: 3,
-        playerId: '1',
-        playerName: '田中太郎',
+        userId: '1',
+        userName: '田中太郎',
         avatar: '1',
-        pick: '候補アイテムI',
-        category: 'タイプC',
+        item: '候補アイテムI',
+        comment: 'タイプC',
       },
     ],
   },
@@ -105,27 +105,27 @@ export const pastDraftResults: DraftRoundType[] = [
     picks: [
       {
         order: 1,
-        playerId: '3',
-        playerName: '佐藤次郎',
+        userId: '3',
+        userName: '佐藤次郎',
         avatar: '5',
-        pick: '候補アイテムD',
-        category: 'タイプA',
+        item: '候補アイテムD',
+        comment: 'タイプA',
       },
       {
         order: 2,
-        playerId: '1',
-        playerName: '田中太郎',
+        userId: '1',
+        userName: '田中太郎',
         avatar: '1',
-        pick: '候補アイテムE',
-        category: 'タイプB',
+        item: '候補アイテムE',
+        comment: 'タイプB',
       },
       {
         order: 3,
-        playerId: '2',
-        playerName: '山田花子',
+        userId: '2',
+        userName: '山田花子',
         avatar: '3',
-        pick: '候補アイテムF',
-        category: 'タイプC',
+        item: '候補アイテムF',
+        comment: 'タイプC',
       },
     ],
   },
@@ -134,27 +134,27 @@ export const pastDraftResults: DraftRoundType[] = [
     picks: [
       {
         order: 1,
-        playerId: '1',
-        playerName: '田中太郎',
+        userId: '1',
+        userName: '田中太郎',
         avatar: '1',
-        pick: '候補アイテムA',
-        category: 'タイプA',
+        item: '候補アイテムA',
+        comment: 'タイプA',
       },
       {
         order: 2,
-        playerId: '2',
-        playerName: '山田花子',
+        userId: '2',
+        userName: '山田花子',
         avatar: '3',
-        pick: '候補アイテムB',
-        category: 'タイプB',
+        item: '候補アイテムB',
+        comment: 'タイプB',
       },
       {
         order: 3,
-        playerId: '3',
-        playerName: '佐藤次郎',
+        userId: '3',
+        userName: '佐藤次郎',
         avatar: '5',
-        pick: '候補アイテムC',
-        category: 'タイプC',
+        item: '候補アイテムC',
+        comment: 'タイプC',
       },
     ],
   },

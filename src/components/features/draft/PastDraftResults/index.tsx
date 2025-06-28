@@ -1,5 +1,3 @@
-import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import {
@@ -7,6 +5,8 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
+import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
 import type {
   DraftPickType,
   DraftRoundType,
@@ -17,10 +17,10 @@ type PastDraftResultsProps = {
   variant?: 'pc' | 'sp';
   onEditClick?: (
     round: number,
-    playerId: string,
-    playerName: string,
-    currentPick: string,
-    category: string,
+    userId: string,
+    userName: string,
+    currentItem: string,
+    comment: string,
   ) => void;
 };
 
@@ -57,11 +57,11 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
         const user = users.find((u) => u.id === selection.userId);
         return {
           order: index + 1,
-          playerId: selection.userId,
-          playerName: user?.name || 'Unknown User',
+          userId: selection.userId,
+          userName: user?.name || 'Unknown User',
           avatar: user?.avatar || '1',
-          pick: selection.item,
-          category: 'カテゴリ未設定', // selectionsAtomにはcategoryがないため仮値
+          item: selection.item,
+          comment: selection.comment || '-',
         };
       });
 
@@ -208,7 +208,7 @@ export const PastDraftResults = ({
                       </Box>
                       {participants.map((participant) => {
                         const pick = roundResult.picks.find(
-                          (p: DraftPickType) => p.playerId === participant.id,
+                          (p: DraftPickType) => p.userId === participant.id,
                         );
                         return (
                           <Box
@@ -230,8 +230,8 @@ export const PastDraftResults = ({
                                   roundResult.round,
                                   participant.id,
                                   participant.name,
-                                  pick.pick,
-                                  pick.category,
+                                  pick.item,
+                                  pick.comment,
                                 );
                               }
                             }}
@@ -243,10 +243,10 @@ export const PastDraftResults = ({
                                   color="gray.800"
                                   truncate
                                 >
-                                  {pick.pick}
+                                  {pick.item}
                                 </Text>
                                 <Text color="gray.500" fontSize="2xs">
-                                  ({pick.category})
+                                  ({pick.comment})
                                 </Text>
                               </VStack>
                             ) : (
@@ -326,7 +326,7 @@ export const PastDraftResults = ({
                 <VStack gap={1} w="full" pt={2}>
                   {roundResult.picks.map((pick: DraftPickType) => (
                     <HStack
-                      key={pick.playerId}
+                      key={pick.userId}
                       w="full"
                       p={1.5}
                       bg="gray.50"
@@ -340,28 +340,28 @@ export const PastDraftResults = ({
                         if (onEditClick) {
                           onEditClick(
                             roundResult.round,
-                            pick.playerId,
-                            pick.playerName,
-                            pick.pick,
-                            pick.category,
+                            pick.userId,
+                            pick.userName,
+                            pick.item,
+                            pick.comment,
                           );
                         }
                       }}
                     >
                       <Avatar
                         avatarNumber={pick.avatar}
-                        name={pick.playerName}
+                        name={pick.userName}
                         size="xs"
                       />
                       <VStack align="start" gap={0} flex={1}>
                         <Text fontSize="sm" fontWeight="medium">
-                          {pick.playerName}
+                          {pick.userName}
                         </Text>
                         <Text fontSize="xs" color="gray.600">
-                          {pick.pick}
+                          {pick.item}
                         </Text>
                         <Text fontSize="xs" color="gray.600">
-                          ({pick.category})
+                          ({pick.comment})
                         </Text>
                       </VStack>
                     </HStack>
