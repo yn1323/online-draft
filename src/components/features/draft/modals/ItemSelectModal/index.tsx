@@ -1,11 +1,11 @@
+import { Input } from '@/src/components/atoms/Input';
+import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtomValue } from 'jotai';
 import { useId } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { Input } from '@/src/components/atoms/Input';
-import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { useModal } from '../../hooks/common/useModal';
 import { selectionsAtom, usersAtom } from '../../states';
 
@@ -101,9 +101,8 @@ export const useItemSelectModal = useModal;
 type ItemSelectModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { item: string; comment: string }) => void | Promise<void>;
-  userId?: string | null;
-  round?: number | null;
+  userId: string;
+  round: number;
 };
 
 /**
@@ -113,7 +112,6 @@ type ItemSelectModalProps = {
 export const ItemSelectModal = ({
   isOpen,
   onClose,
-  onSubmit,
   userId,
   round,
 }: ItemSelectModalProps) => {

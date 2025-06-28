@@ -1,6 +1,3 @@
-import { Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
-import { LuCheck } from 'react-icons/lu';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Button } from '@/src/components/atoms/Button';
 import { Card } from '@/src/components/atoms/Card';
@@ -10,6 +7,9 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
+import { Box, Flex, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { atom, useAtomValue } from 'jotai';
+import { LuCheck } from 'react-icons/lu';
 import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
@@ -202,36 +202,9 @@ export const CurrentRoundStatus = ({
           {/* 選択アクションボタン */}
           {(onItemSelect || onOpenResult) && (
             <Box w="full" pt={variant === 'pc' ? 1 : 0}>
-              {variant === 'pc' ? (
-                <HStack gap={2} w="full">
-                  {onItemSelect && (
-                    <Box flex={1}>
-                      <Button
-                        variant="primary"
-                        size="sm"
-                        onClick={onItemSelect}
-                        width="full"
-                      >
-                        アイテムを選択する
-                      </Button>
-                    </Box>
-                  )}
-                  {onOpenResult && (
-                    <Box flex={1}>
-                      <Button
-                        variant="secondary"
-                        size="sm"
-                        onClick={onOpenResult}
-                        width="full"
-                      >
-                        開票する
-                      </Button>
-                    </Box>
-                  )}
-                </HStack>
-              ) : (
-                <VStack gap={2} w="full">
-                  {onItemSelect && (
+              <Flex direction={['column', 'row']} gap={2} w="full">
+                {onItemSelect && (
+                  <Box flex={[undefined, 1]} w="full">
                     <Button
                       variant="primary"
                       size="sm"
@@ -240,8 +213,10 @@ export const CurrentRoundStatus = ({
                     >
                       アイテムを選択する
                     </Button>
-                  )}
-                  {onOpenResult && (
+                  </Box>
+                )}
+                {onOpenResult && (
+                  <Box flex={[undefined, 1]} w="full">
                     <Button
                       variant="secondary"
                       size="sm"
@@ -250,9 +225,9 @@ export const CurrentRoundStatus = ({
                     >
                       開票する
                     </Button>
-                  )}
-                </VStack>
-              )}
+                  </Box>
+                )}
+              </Flex>
             </Box>
           )}
         </VStack>
