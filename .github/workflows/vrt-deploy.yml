@@ -1,0 +1,60 @@
+name: VRT Deploy
+
+on:
+  workflow_call:
+    inputs:
+      branch_name:
+        description: 'Branch name for deployment path'
+        required: true
+        type: string
+      storybook_artifact:
+        description: 'Storybook artifact name'
+        required: true
+        type: string
+      report_artifact:
+        description: 'VRT report artifact name'
+        required: true
+        type: string
+
+jobs:
+  deploy_to_github_pages:
+    runs-on: ubuntu-latest
+    environment: preview
+    permissions:
+      contents: write
+      pull-requests: write
+    timeout-minutes: 30
+    steps:
+      - name: Checkout GitHub Pages branch
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          
+      - name: Download Storybook artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.storybook_artifact }}
+          path: "./storybook/${{ inputs.branch_name }}"
+          
+      - name: Download VRT report artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.report_artifact }}
+          path: "./vrt-report/${{ inputs.branch_name }}"
+          
+      - name: Commit and push to GitHub Pages
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add vrt-report storybook
+          git commit -m "chore: Update VRT content for ${{ inputs.branch_name }}" || exit 0
+          git push
+          
+      - name: Create PR comment with links
+        uses: mshick/add-pr-comment@v2
+        with:
+          message-id: storybook-vrt
+          message: |
+            🦈 Storybook VRT Report 🦈
+            [VRT Report](https://yn1323.github.io/online-draft/vrt-report/${{ inputs.branch_name }})
+            [Storybook](https://yn1323.github.io/online-draft/storybook/${{ inputs.branch_name }})

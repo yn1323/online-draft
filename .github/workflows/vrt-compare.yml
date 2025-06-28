@@ -1,0 +1,77 @@
+name: VRT Compare
+
+on:
+  workflow_call:
+    inputs:
+      expected_prefix:
+        description: 'Expected screenshots artifact prefix'
+        required: true
+        type: string
+      actual_prefix:
+        description: 'Actual screenshots artifact prefix'
+        required: true
+        type: string
+      pr_ref:
+        description: 'PR reference for checkout'
+        required: true
+        type: string
+    outputs:
+      report_ready:
+        description: 'VRT report generation completed'
+        value: ${{ jobs.run_reg_suit.result == 'success' }}
+
+jobs:
+  run_reg_suit:
+    runs-on: ubuntu-latest
+    environment: preview
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.pr_ref }}
+          
+      - name: Setup
+        uses: ./.github/actions/setup
+        
+      - name: Create .reg directory structure
+        run: | 
+          mkdir -p .reg/expected
+          
+      - name: Download expected screenshots (shard 1)
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.expected_prefix }}-screenshots-1
+          path: .reg/expected
+          
+      - name: Download expected screenshots (shard 2)
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.expected_prefix }}-screenshots-2
+          path: .reg/expected
+          
+      - name: Download actual screenshots (shard 1)
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.actual_prefix }}-screenshots-1
+          path: __screenshots__
+          
+      - name: Download actual screenshots (shard 2)
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.actual_prefix }}-screenshots-2
+          path: __screenshots__
+          
+      - name: Run reg-suit comparison
+        run: pnpm vrt
+        
+      - name: Prepare report for deployment
+        run: mv .reg report
+        
+      - name: Upload VRT Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: vrt-report
+          path: report/
+          retention-days: 7
+          compression-level: 6

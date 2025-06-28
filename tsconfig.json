@@ -1,31 +1,39 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@/helpers/*": ["src/helpers/*"],
-      "@/constants/*": ["src/constants/*"],
-      "@/atoms/*": ["components/atoms/*"],
-      "@/molecules/*": ["components/molecules/*"],
-      "@/organisms/*": ["components/organisms/*"],
-      "@/templates/*": ["components/templates/*"],
-      "@/stores/*": ["stores/*"],
-      "@/styles/*": ["styles/*"]
-    },
-    "target": "es5",
+    "target": "ESNext",
+    "module": "ESNext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "types": ["vitest/globals"],
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/app/*": ["./app/*"],
+      "@/src/*": ["./src/*"],
+      "@/e2e/*": ["./e2e/*"]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "component", "types"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "vitest.config.mts",
+    "src/configs/vitest/vitest-setup.ts",
+    "prisma/generated/**/*",
+    ".storybook/**/*"
+  ],
+  "exclude": ["node_modules", ".scaffdog", "legacy"]
 }

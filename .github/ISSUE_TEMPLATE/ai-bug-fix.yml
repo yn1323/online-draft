@@ -38,6 +38,22 @@ body:
       required: true
       
   - type: textarea
+    id: completion_criteria
+    attributes:
+      label: 完了条件（Claude Code Actions向け）
+      description: AIが修正完了を判断する具体的な条件
+      placeholder: |
+        - [ ] バグが再現しなくなる
+        - [ ] 期待される動作になる
+        - [ ] コンソールエラーが発生しない
+        - [ ] 既存テストが通る（手動確認）
+        - [ ] TypeScriptエラーがない（pnpm type-check）
+        - [ ] Lintエラーがない（pnpm lint）
+        - [ ] 関連する機能に影響がない
+    validations:
+      required: true
+      
+  - type: textarea
     id: affected_files
     attributes:
       label: 影響ファイル

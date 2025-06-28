@@ -1,0 +1,476 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Draft Game Platform Custom Commands for automated development workflows",
+    "baseActions": {
+      "git_status_check": {
+        "action": "bash",
+        "command": "git status",
+        "description": "Check current git status"
+      },
+      "git_diff_main": {
+        "action": "bash",
+        "command": "git diff main...HEAD",
+        "description": "Show changes since branching from main"
+      }
+    }
+  },
+  "commands": {
+    "commit": {
+      "description": "Git commit with automatic staging and message generation",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current git status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff",
+          "description": "Show unstaged changes"
+        },
+        {
+          "action": "bash",
+          "command": "git log --oneline -5",
+          "description": "Show recent commit history for message style"
+        },
+        {
+          "action": "stage_changes",
+          "description": "Stage relevant changes for commit"
+        },
+        {
+          "action": "generate_commit_message",
+          "description": "Generate appropriate commit message based on changes"
+        },
+        {
+          "action": "git_commit",
+          "description": "Execute git commit with generated message"
+        }
+      ]
+    },
+    "push": {
+      "description": "Push to remote and create GitHub Pull Request",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current branch status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD",
+          "description": "Show all changes since branching from main"
+        },
+        {
+          "action": "bash",
+          "command": "git log main...HEAD --oneline",
+          "description": "Show commit history for PR"
+        },
+        {
+          "action": "push_branch",
+          "description": "Push current branch to remote"
+        },
+        {
+          "action": "create_pr",
+          "description": "Create GitHub Pull Request with generated summary"
+        }
+      ]
+    },
+    "new-branch": {
+      "description": "Create new branch from latest main with date-based naming",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current git status"
+        },
+        {
+          "action": "bash",
+          "command": "git checkout main",
+          "description": "Switch to main branch"
+        },
+        {
+          "action": "bash",
+          "command": "git pull origin main",
+          "description": "Pull latest changes from main"
+        },
+        {
+          "action": "generate_branch_name",
+          "description": "Generate branch name with current date (feat/YYYY-MM-DD format)"
+        },
+        {
+          "action": "create_and_checkout_branch",
+          "description": "Create new branch and checkout"
+        },
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Confirm new branch creation"
+        }
+      ]
+    },
+    "refactor": {
+      "description": "Refactor code changes made in current branch",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List changed files in current branch"
+        },
+        {
+          "action": "analyze_changes",
+          "description": "Analyze changes for refactoring opportunities"
+        },
+        {
+          "action": "identify_patterns",
+          "description": "Identify code patterns, duplications, and improvements"
+        },
+        {
+          "action": "apply_refactoring",
+          "description": "Apply refactoring improvements to code"
+        },
+        {
+          "action": "verify_functionality",
+          "description": "Verify refactored code maintains functionality"
+        },
+        {
+          "action": "commit_refactoring",
+          "description": "Commit refactoring changes with descriptive message"
+        }
+      ]
+    },
+    "pr-review": {
+      "description": "Review GitHub PR and post detailed review comments with collapsible sections",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "gh pr view --json title,body,headRefName,baseRefName,state,commits,changedFiles",
+          "description": "Get comprehensive PR information"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List all changed files"
+        },
+        {
+          "action": "bash",
+          "command": "git log main..HEAD --oneline",
+          "description": "Get commit history for context"
+        },
+        {
+          "action": "analyze_files_individually",
+          "description": "Analyze each changed file for code quality and issues"
+        },
+        {
+          "action": "identify_line_specific_issues",
+          "description": "Identify specific line numbers with issues for inline comments"
+        },
+        {
+          "action": "generate_summary_review",
+          "description": "Generate concise summary with overall assessment and star rating"
+        },
+        {
+          "action": "generate_detailed_sections",
+          "description": "Generate detailed review sections using collapsible <details> tags"
+        },
+        {
+          "action": "post_main_review_comment",
+          "description": "Post main review comment with summary and collapsible details"
+        },
+        {
+          "action": "post_inline_comments",
+          "description": "Post specific line-level comments using gh pr review for targeted feedback"
+        }
+      ]
+    },
+    "pr-fix": {
+      "description": "Fix issues raised in PR review comments",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "gh pr view --json number",
+          "description": "Get current PR number"
+        },
+        {
+          "action": "fetch_review_comments",
+          "description": "Fetch all review comments and feedback"
+        },
+        {
+          "action": "categorize_issues",
+          "description": "Categorize and prioritize review feedback"
+        },
+        {
+          "action": "implement_fixes",
+          "description": "Implement fixes for each review comment"
+        },
+        {
+          "action": "verify_fixes",
+          "description": "Verify fixes address the original concerns"
+        },
+        {
+          "action": "commit_fixes",
+          "description": "Commit fixes with reference to review comments"
+        },
+        {
+          "action": "update_pr",
+          "description": "Push fixes and update PR"
+        }
+      ]
+    },
+    "doc-update": {
+      "description": "Comprehensive documentation optimization: analyze @CLAUDE.md @docs/ for redundancy, inconsistency, and verbosity, then optimize with design pattern naming and phased execution",
+      "steps": [
+        {
+          "action": "comprehensive_analysis",
+          "description": "Analyze @CLAUDE.md @docs/ for: redundancy/duplication, inconsistency/contradiction, verbosity/unclear expressions, TOKEN optimization opportunities"
+        },
+        {
+          "action": "identify_optimization_targets",
+          "description": "Identify files for: integration/deletion, simplification with design pattern naming, enforcement level standardization (NEVER/YOU MUST/IMPORTANT)"
+        },
+        {
+          "action": "create_optimization_plan",
+          "description": "Create phased optimization plan: Phase 1 (integration/deletion), Phase 2 (simplification), Phase 3 (CLAUDE.md optimization)"
+        },
+        {
+          "action": "execute_phase_1",
+          "description": "Phase 1: Integrate duplicate content and delete redundant files with progress notification"
+        },
+        {
+          "action": "execute_phase_2",
+          "description": "Phase 2: Simplify documentation using design pattern naming (Feature-First Design, Progressive Enhancement, etc.) with progress notification"
+        },
+        {
+          "action": "execute_phase_3",
+          "description": "Phase 3: Optimize CLAUDE.md with proper enforcement levels and minimal cross-references with progress notification"
+        },
+        {
+          "action": "measure_optimization_results",
+          "description": "Measure and report: line reduction count, TOKEN optimization percentage, improved readability metrics"
+        },
+        {
+          "action": "update_conversation_context",
+          "description": "Update documentation with recent conversation insights: design decisions, technical learnings, workflow improvements"
+        }
+      ]
+    },
+    "issue": {
+      "description": "Create single AI-ready ISSUE following docs/AI_ISSUE_WRITING_GUIDE.md template",
+      "steps": [
+        {
+          "action": "read_guide",
+          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md",
+          "description": "Read AI ISSUE writing guide for best practices"
+        },
+        {
+          "action": "read_template",
+          "command": "read .github/ISSUE_TEMPLATE/ai-feature-request.md",
+          "description": "Read ISSUE template structure"
+        },
+        {
+          "action": "analyze_task_scope",
+          "description": "Analyze provided task content for scope minimization (1 feature, 2-3 files max)"
+        },
+        {
+          "action": "generate_issue_content",
+          "description": "Generate ISSUE content following template with specific technical constraints"
+        },
+        {
+          "action": "validate_issue_format",
+          "description": "Validate ISSUE follows AI_ISSUE_WRITING_GUIDE requirements"
+        },
+        {
+          "action": "create_github_issue",
+          "description": "Create GitHub ISSUE using gh cli with generated content"
+        }
+      ]
+    },
+    "issue-schedule": {
+      "description": "Split current TODOs into multiple AI-ready ISSUEs following scope minimization principles",
+      "steps": [
+        {
+          "action": "read_current_todos",
+          "description": "Read current TODO list using TodoRead"
+        },
+        {
+          "action": "read_guide",
+          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md",
+          "description": "Read AI ISSUE writing guide for scope guidelines"
+        },
+        {
+          "action": "read_template",
+          "command": "read .github/ISSUE_TEMPLATE/ai-feature-request.md",
+          "description": "Read ISSUE template structure"
+        },
+        {
+          "action": "analyze_todo_dependencies",
+          "description": "Analyze TODO dependencies and group related tasks"
+        },
+        {
+          "action": "split_by_scope",
+          "description": "Split TODOs into minimal scopes (1 feature, 2-3 files max each)"
+        },
+        {
+          "action": "prioritize_issues",
+          "description": "Set priorities based on dependencies (High/Medium/Low)"
+        },
+        {
+          "action": "generate_multiple_issues",
+          "description": "Generate multiple ISSUE contents following template"
+        },
+        {
+          "action": "create_github_issues",
+          "description": "Create multiple GitHub ISSUEs using gh cli with appropriate labels"
+        }
+      ]
+    },
+    "todo": {
+      "description": "Display current TODO list and next actionable tasks",
+      "steps": [
+        {
+          "action": "read_current_todos",
+          "description": "Execute TodoRead to get current TODO list"
+        },
+        {
+          "action": "analyze_todo_status",
+          "description": "Analyze TODO status and identify next actionable items"
+        },
+        {
+          "action": "prioritize_next_tasks",
+          "description": "Prioritize pending tasks by importance and dependencies"
+        },
+        {
+          "action": "suggest_next_actions",
+          "description": "Suggest specific next actions with brief explanations"
+        }
+      ]
+    },
+    "plan": {
+      "description": "Planning and consultation mode - NO CODE MODIFICATIONS allowed",
+      "steps": [
+        {
+          "action": "analyze_current_state",
+          "description": "Analyze current project state and context"
+        },
+        {
+          "action": "understand_request",
+          "description": "Understand consultation/planning request thoroughly"
+        },
+        {
+          "action": "research_existing_code",
+          "description": "Research existing codebase for context (READ ONLY)"
+        },
+        {
+          "action": "provide_consultation",
+          "description": "Provide detailed consultation with multiple options and recommendations"
+        },
+        {
+          "action": "suggest_implementation_strategy",
+          "description": "Suggest implementation approach and best practices"
+        },
+        {
+          "action": "identify_potential_issues",
+          "description": "Identify potential challenges and mitigation strategies"
+        }
+      ],
+      "constraints": {
+        "no_code_modification": true,
+        "read_only_analysis": true,
+        "consultation_only": true
+      }
+    },
+    "pr-make": {
+      "description": "Create GitHub Pull Request using .github/pull_request_template.md template",
+      "steps": [
+        {
+          "action": "bash",
+          "command": "git status",
+          "description": "Check current branch status"
+        },
+        {
+          "action": "bash",
+          "command": "git diff main...HEAD --name-only",
+          "description": "List all changed files since branching from main"
+        },
+        {
+          "action": "bash",
+          "command": "git log main...HEAD --oneline",
+          "description": "Show commit history for PR context"
+        },
+        {
+          "action": "read_pr_template",
+          "command": "read .github/pull_request_template.md",
+          "description": "Read PR template structure for content generation"
+        },
+        {
+          "action": "analyze_changes_for_pr",
+          "description": "Analyze changes to populate PR template sections appropriately"
+        },
+        {
+          "action": "generate_pr_content",
+          "description": "Generate PR title and body following template structure with Japanese content"
+        },
+        {
+          "action": "create_github_pr",
+          "description": "Create GitHub PR using gh cli with generated content based on template"
+        },
+        {
+          "action": "return_pr_url",
+          "description": "Return created PR URL for user reference"
+        }
+      ]
+    },
+    "sub": {
+      "description": "Execute tasks as parallel sub-agents with autonomous operation",
+      "usage": "/sub <task_description>",
+      "examples": [
+        "/sub バグを修正",
+        "/sub ドキュメントを更新",
+        "/sub XXの提案",
+        "/sub API設計を改善",
+        "/sub テストカバレッジを向上"
+      ],
+      "steps": [
+        {
+          "action": "validate_task_input",
+          "description": "Validate task description input and ensure it's actionable"
+        },
+        {
+          "action": "analyze_task_scope",
+          "description": "Analyze task scope and complexity to determine sub-agent requirements"
+        },
+        {
+          "action": "prepare_context",
+          "description": "Prepare current project context and relevant information for sub-agent"
+        },
+        {
+          "action": "launch_sub_agent",
+          "description": "Launch sub-agent with specific task instructions and autonomous operation mode"
+        },
+        {
+          "action": "monitor_progress",
+          "description": "Monitor sub-agent progress and provide intermediate updates if needed"
+        },
+        {
+          "action": "collect_results",
+          "description": "Collect sub-agent results and integrate with main workflow"
+        },
+        {
+          "action": "provide_summary",
+          "description": "Provide concise summary of sub-agent completion status and outcomes"
+        }
+      ],
+      "features": {
+        "parallel_execution": true,
+        "autonomous_operation": true,
+        "multiple_simultaneous": true,
+        "result_integration": true
+      },
+      "constraints": {
+        "task_specificity": "Each sub-agent should have a clear, specific task scope",
+        "resource_awareness": "Consider system resources when launching multiple sub-agents",
+        "error_handling": "Handle sub-agent failures gracefully without affecting main workflow"
+      }
+    }
+  }
+}
