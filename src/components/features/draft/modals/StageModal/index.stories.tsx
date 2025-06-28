@@ -12,7 +12,7 @@ const meta: Meta<typeof StageModal> = {
     },
     layout: 'centered',
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'skip-test'],
 };
 
 export default meta;

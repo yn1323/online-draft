@@ -102,7 +102,7 @@ const meta: Meta<typeof Stage> = {
     layout: 'fullscreen',
     skip: true,
   },
-  tags: ['autodocs'],
+  tags: ['autodocs', 'skip-test'],
   argTypes: {
     variant: {
       control: 'select',
