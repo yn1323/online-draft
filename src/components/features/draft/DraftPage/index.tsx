@@ -37,7 +37,7 @@ import { PastDraftResults } from '../PastDraftResults';
 export const DraftPageInner = () => {
   const currentUserId = useAtomValue(currentUserIdAtom);
   const groupId = useAtomValue(groupIdAtom);
-  const { round: currentRound } = useAtomValue(groupAtom);
+  const { round: currentRound, groupName } = useAtomValue(groupAtom);
   const prevRound = useRef(currentRound);
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [selectedItem, setSelectedItem] = useState({ round: -1, userId: '' });
@@ -104,14 +104,14 @@ export const DraftPageInner = () => {
           bg="white"
           borderBottom="1px"
           borderColor="gray.200"
-          p={4}
+          p={2}
           w="full"
           position="sticky"
           top={0}
           zIndex={10}
         >
           <Text fontSize="lg" fontWeight="bold" textAlign="center">
-            オンラインドラフト会議
+            {groupName}
           </Text>
         </Box>
 
@@ -147,7 +147,7 @@ export const DraftPageInner = () => {
             >
               <HStack gap={2} justify="center" w="full">
                 <LuList size={18} />
-                <Text fontSize="sm">取得リスト</Text>
+                <Text fontSize="sm">ドラフト</Text>
               </HStack>
             </Tabs.Trigger>
             <Tabs.Trigger
@@ -166,15 +166,15 @@ export const DraftPageInner = () => {
             >
               <HStack gap={2} justify="center" w="full">
                 <LuMessageSquare size={18} />
-                <Text fontSize="sm">チャット</Text>
+                <Text fontSize="sm">チャット/ログ</Text>
               </HStack>
             </Tabs.Trigger>
           </Tabs.List>
 
           <Box flex={1} overflow="hidden" minH={0}>
             {/* ドラフト状況タブ */}
-            <Tabs.Content value="draft" h="full" overflow="auto">
-              <VStack gap={3} p={3}>
+            <Tabs.Content value="draft" h="full" overflow="auto" p={1}>
+              <VStack gap={3} p={1}>
                 {/* 現在ラウンドセクション */}
                 <CurrentRoundStatus
                   variant="sp"
@@ -241,19 +241,19 @@ export const DraftPageInner = () => {
 
   // PC版: 2カラムレイアウト
   return (
-    <Box bg="gray.50" minH="100vh" py={8}>
+    <Box bg="gray.50" minH="100vh" py={2}>
       <Container maxW="container.xl">
         {/* ヘッダー */}
-        <Box mb={6}>
+        <Box mb={2}>
           <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-            オンラインドラフト会議
+            {groupName}
           </Text>
         </Box>
 
-        <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 130px)">
+        <Grid templateColumns="7fr 3fr" gap={2} h="calc(100vh - 130px)">
           {/* 左側: ドラフト状況エリア */}
           <GridItem h="100%">
-            <VStack gap={4} h="100%" w="full" align="stretch">
+            <VStack gap={2} h="100%" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
                 variant="pc"
@@ -270,16 +270,16 @@ export const DraftPageInner = () => {
           <GridItem h="100%">
             <Box
               h="100%"
-              maxH="calc(100vh - 130px)"
+              maxH="calc(100vh - 70px)"
               bg="white"
               boxShadow="lg"
-              p={4}
+              p={3}
               borderRadius="lg"
               display="flex"
               flexDirection="column"
               overflow="hidden"
             >
-              <Text fontSize="lg" fontWeight="bold" mb={4} flexShrink={0}>
+              <Text fontSize="lg" fontWeight="bold" mb={3} flexShrink={0}>
                 チャット
               </Text>
               {/* チャットメッセージエリア */}

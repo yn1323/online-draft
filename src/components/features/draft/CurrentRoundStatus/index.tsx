@@ -137,7 +137,6 @@ export const CurrentRoundStatus = ({
             <HStack w="full" justify="space-between">
               <Text fontSize="sm" fontWeight="bold" color="gray.800">
                 Round {currentRound}
-                {variant === 'pc' && ' - 現在の選択状況'}
               </Text>
               <Text fontSize="xs" color="gray.600">
                 {selectedCount}/{participants.length} 人選択完了
