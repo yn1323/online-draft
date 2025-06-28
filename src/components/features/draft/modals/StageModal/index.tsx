@@ -213,9 +213,11 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
                 </Text>
               </Box>
               <Text fontSize="sm" color="red.600" lineHeight="1.5">
-                赤く表示されたドラフト結果から順番に編集してください。
+                一覧画面で赤く表示されたドラフト結果から順番に編集してください。
                 <br />
-                重複指名が完了するまで次のラウンドに進めません。
+                重複指名をすべて編集するまで次のラウンドに進めません。
+                <br />
+                ※重複指名の編集順はランダムに決まります
               </Text>
             </VStack>
           </MotionBox>
