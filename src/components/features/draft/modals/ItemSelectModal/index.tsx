@@ -50,7 +50,7 @@ const getItemSelectUIState = (
   // userId/roundが未設定の場合はデフォルト状態
   if (!userId || round === null || round === undefined) {
     return {
-      modalTitle: 'アイテムを選択',
+      modalTitle: 'ドラフト指名',
       defaultItem: '',
       defaultComment: '',
       isEditMode: false,
@@ -67,7 +67,7 @@ const getItemSelectUIState = (
   const isEditMode = !!existingSelection;
 
   return {
-    modalTitle: isEditMode ? '選択を編集' : 'アイテムを選択',
+    modalTitle: isEditMode ? 'ドラフト指名を編集' : 'ドラフト指名',
     defaultItem: existingSelection?.item || '',
     defaultComment: existingSelection?.comment || '',
     isEditMode,
@@ -196,7 +196,7 @@ export const ItemSelectModal = ({
       onClose();
       reset();
     } catch (error) {
-      console.error('アイテム選択エラー:', error);
+      console.error('指名エラー:', error);
     }
   };
 
@@ -258,11 +258,11 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            アイテム名
+            ドラフト指名
           </Text>
           <Input
             {...register('item')}
-            placeholder="アイテム名を入力してください"
+            placeholder="指名を入力してください"
             maxLength={MAX_ITEM_LENGTH}
             size="lg"
             error={!!errors.item}
@@ -276,14 +276,14 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            {editContext ? 'カテゴリ' : 'コメント（任意）'}
+            コメント（任意）
           </Text>
           <Input
             {...register('comment')}
             placeholder={
               editContext
-                ? 'カテゴリを入力してください'
-                : 'この選択についてのコメント...'
+                ? 'コメントを入力してください'
+                : 'この指名についてのコメント...'
             }
             maxLength={editContext ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH}
             size="lg"

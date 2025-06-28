@@ -1,9 +1,16 @@
 'use client';
 
-import { Box, Grid, Text, useBreakpointValue, VStack } from '@chakra-ui/react';
+import { Avatar } from '@/src/components/atoms/Avatar';
+import {
+  Box,
+  Grid,
+  HStack,
+  Text,
+  useBreakpointValue,
+  VStack,
+} from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { useCallback, useEffect, useState } from 'react';
-import { Avatar } from '@/src/components/atoms/Avatar';
 import type { getCommonResponsiveValues, ParticipantResult } from '../index';
 
 const MotionBox = motion(Box);
@@ -189,56 +196,58 @@ export const CardRevealStage = ({
                         : 'gold'
                   }
                 >
-                  {/* スマホ: 横並び、PC: 縦並び */}
-                  <Box
-                    display="flex"
-                    flexDirection={['row', 'column']}
-                    alignItems="center"
-                    justifyContent={['flex-start', 'center']}
-                    h="full"
-                    w="full"
-                    gap={[2, 1]}
-                    px={[2, 3]}
-                    py={[1, 2]}
-                  >
+                  <HStack>
                     <Avatar
                       avatarNumber={participant.avatar.toString()}
                       name={participant.name}
                       size={avatarSize}
                     />
-                    <VStack
-                      gap={[0, 1]}
-                      flex={['1', 'none']}
-                      align={['flex-start', 'center']}
+                    {/* スマホ: 横並び、PC: 縦並び */}
+                    <Box
+                      display="flex"
+                      flexDirection={['row', 'column']}
+                      alignItems="center"
+                      justifyContent={['flex-start', 'center']}
+                      h="full"
+                      w="full"
+                      gap={[2, 1]}
+                      px={[2, 3]}
+                      py={[1, 2]}
                     >
-                      <Text
-                        fontSize={fontSize}
-                        fontWeight="bold"
-                        textAlign={['left', 'center']}
-                        color="gray.800"
-                        lineHeight="1.2"
-                        lineClamp={1}
+                      <VStack
+                        gap={[0, 1]}
+                        flex={['1', 'none']}
+                        align={['flex-start', 'center']}
                       >
-                        {participant.name}
-                      </Text>
-                      <Text
-                        fontSize={fontSize}
-                        textAlign={['left', 'center']}
-                        color={
-                          willLose && showEffect
-                            ? 'red.600'
-                            : showEffect
-                              ? 'green.600'
-                              : 'blue.600'
-                        }
-                        fontWeight="medium"
-                        lineHeight="1.2"
-                        lineClamp={[1, 'none']}
-                      >
-                        {participant.choice}
-                      </Text>
-                    </VStack>
-                  </Box>
+                        <Text
+                          fontSize={fontSize}
+                          fontWeight="bold"
+                          textAlign={['left', 'center']}
+                          color="gray.800"
+                          lineHeight="1.2"
+                          lineClamp={1}
+                        >
+                          {participant.name}
+                        </Text>
+                        <Text
+                          fontSize={fontSize}
+                          textAlign={['left', 'center']}
+                          color={
+                            willLose && showEffect
+                              ? 'red.600'
+                              : showEffect
+                                ? 'green.600'
+                                : 'blue.600'
+                          }
+                          fontWeight="medium"
+                          lineHeight="1.2"
+                          lineClamp={[1, 'none']}
+                        >
+                          {participant.choice}
+                        </Text>
+                      </VStack>
+                    </Box>
+                  </HStack>
                 </Box>
               </MotionBox>
             </MotionBox>

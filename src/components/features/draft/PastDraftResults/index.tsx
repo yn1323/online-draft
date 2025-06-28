@@ -312,11 +312,15 @@ export const PastDraftResults = ({
         <Card variant="elevated" size="md">
           <Box h="full" display="flex" flexDirection="column">
             <Text fontSize="md" fontWeight="bold" mb={3}>
-              過去のドラフト結果
+              ドラフト結果
             </Text>
 
             {/* ヘッダー行（参加者名） */}
-            <Grid templateColumns={`60px ${'1fr '.repeat(participants.length)}`} gap={2} mb={2}>
+            <Grid
+              templateColumns={`60px ${'1fr '.repeat(participants.length)}`}
+              gap={2}
+              mb={2}
+            >
               <Box {...tableHeaderCellStyle}>Round</Box>
               {participants.map((participant) => (
                 <Box key={participant.id} {...tableHeaderCellStyle}>
@@ -388,7 +392,11 @@ export const PastDraftResults = ({
                                 >
                                   {pick.item}
                                 </Text>
-                                <Text color="gray.500" fontSize="2xs">
+                                <Text
+                                  color="gray.500"
+                                  fontSize="2xs"
+                                  py={pick.comment !== '' ? 0 : 2}
+                                >
                                   {pick.comment !== ''
                                     ? `(${pick.comment})`
                                     : ' '}

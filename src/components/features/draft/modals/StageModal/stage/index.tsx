@@ -20,7 +20,7 @@ export type StageProps = {
 // 共通のレスポンシブ値
 export const getCommonResponsiveValues = () => ({
   gridColumns: { base: '1fr', md: 'repeat(3, 1fr)' },
-  cardHeight: { base: '50px', md: '160px' },
+  cardHeight: { base: '70px', md: '160px' },
   fontSize: { base: 'xs', md: 'sm' },
   avatarSize: { base: 'xs' as const, md: 'sm' as const },
   gap: { base: 2, md: 4 },
