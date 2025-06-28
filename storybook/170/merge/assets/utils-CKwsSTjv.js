@@ -1,0 +1,1 @@
+import"./index-BXymfbzT.js";import{c as n}from"./react-BSHoCbAh.js";const r=new WeakMap;function p(e,t){const a=n(),s=c(a);for(const[o,d]of e)s.has(o)||(s.add(o),a.set(o,d))}const c=e=>{let t=r.get(e);return t||(t=new WeakSet,r.set(e,t)),t};export{p as u};
