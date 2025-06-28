@@ -3,7 +3,7 @@
   "extends": ["config:recommended"],
   "timezone": "Asia/Tokyo",
   "labels": ["renovate"],
-  "baseBranches": ["refactor/develop"],
+  "baseBranches": ["develop"],
   "automerge": true,
   "schedule": ["every weekend"],
   "packageRules": [
