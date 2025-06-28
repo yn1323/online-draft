@@ -8,6 +8,7 @@ import {
   getDoc,
   serverTimestamp,
   type Timestamp,
+  updateDoc,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
 import { db } from '@/src/lib/firebase';
@@ -87,9 +88,38 @@ export const useGroup = () => {
     [groupCollection],
   );
 
+  /**
+   * ラウンドを+1進める
+   */
+  const incrementRound = useCallback(
+    async (groupId: string): Promise<void> => {
+      try {
+        const groupRef = doc(groupCollection, groupId);
+        const groupSnap = await getDoc(groupRef);
+        
+        if (!groupSnap.exists()) {
+          throw new Error('グループが見つかりません');
+        }
+        
+        const currentData = groupSnap.data();
+        const newRound = currentData.round + 1;
+        
+        await updateDoc(groupRef, {
+          round: newRound,
+          updatedAt: serverTimestamp(),
+        });
+      } catch (error) {
+        console.error('ラウンド更新に失敗しました:', error);
+        throw error;
+      }
+    },
+    [groupCollection],
+  );
+
   return {
     createGroup,
     checkGroupExists,
+    incrementRound,
     groupCollection,
   };
 };

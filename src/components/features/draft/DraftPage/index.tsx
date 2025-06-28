@@ -5,7 +5,9 @@ import { useInitialize } from '@/src/components/features/draft/DraftPage/useInit
 import {
   currentUserIdAtom,
   groupAtom,
+  groupIdAtom,
 } from '@/src/components/features/draft/states';
+import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import {
   Box,
   Container,
@@ -18,7 +20,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { LuList, LuMessageSquare } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
@@ -34,7 +36,9 @@ import { PastDraftResults } from '../PastDraftResults';
  */
 export const DraftPageInner = () => {
   const currentUserId = useAtomValue(currentUserIdAtom);
+  const groupId = useAtomValue(groupIdAtom);
   const { round: currentRound } = useAtomValue(groupAtom);
+  const prevRound = useRef(currentRound);
   const isMobile = useBreakpointValue({ base: true, md: false });
   const [selectedItem, setSelectedItem] = useState({ round: -1, userId: '' });
 
@@ -44,6 +48,15 @@ export const DraftPageInner = () => {
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
   const stageModal = useStageModal();
+
+  const { incrementRound } = useGroup();
+
+  useEffect(() => {
+    if (prevRound.current !== -1 && currentRound > prevRound.current) {
+      stageModal.open();
+    }
+    prevRound.current = currentRound;
+  }, [currentRound, stageModal]);
 
   // アイテム選択モーダルを開く（新規選択用）
   const handleItemSelect = ({
@@ -60,12 +73,22 @@ export const DraftPageInner = () => {
     itemSelectModal.open();
   };
 
-  const handleOpenResult = () => {};
+  const handleOpenResult = async ({
+    allSelected,
+  }: {
+    allSelected: boolean;
+  }) => {
+    if (allSelected) {
+      await handleExecuteOpenResult();
+    } else {
+      openResultModal.open();
+    }
+  };
   const handleEditClick = () => {};
 
-  const handleExecuteOpenResult = () => {
+  const handleExecuteOpenResult = async () => {
+    await incrementRound(groupId);
     openResultModal.close();
-    stageModal.open();
   };
 
   if (isMobile) {

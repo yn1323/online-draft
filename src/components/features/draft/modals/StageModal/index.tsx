@@ -1,11 +1,11 @@
-import { atom, useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
 import {
   groupAtom,
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { atom, useAtomValue } from 'jotai';
+import { useEffect, useState } from 'react';
 import { useModalWithVariant } from '../../hooks/common/useModal';
 import { type ParticipantResult, Stage } from './stage/index';
 
@@ -17,7 +17,8 @@ import { type ParticipantResult, Stage } from './stage/index';
 const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
   const users = get(usersAtom);
   const selections = get(selectionsAtom);
-  const { round: currentRound } = get(groupAtom);
+  const { round } = get(groupAtom);
+  const currentRound = round - 1;
 
   // 現在ラウンドの選択のみを抽出
   const currentRoundSelections = selections.filter(

@@ -1,5 +1,5 @@
-import { Text, VStack } from '@chakra-ui/react';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { Text, VStack } from '@chakra-ui/react';
 import { useModal } from '../../hooks/common/useModal';
 
 /**

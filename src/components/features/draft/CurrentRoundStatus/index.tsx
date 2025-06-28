@@ -14,8 +14,14 @@ import type { ParticipantType } from '../mockData';
 
 type CurrentRoundStatusProps = {
   variant?: 'pc' | 'sp';
-  onItemSelect?: () => void;
-  onOpenResult?: () => void;
+  onOpenResult?: ({ allSelected }: { allSelected: boolean }) => void;
+  onItemSelect?: ({
+    userId,
+    round,
+  }: {
+    userId?: string;
+    round?: number;
+  }) => void;
 };
 
 /**
@@ -119,6 +125,7 @@ export const CurrentRoundStatus = ({
         };
 
   const isSelfSelected = isUserSelected(currentUserId);
+  const isAllSelected = selectedCount === participants.length;
 
   return (
     <Box w="full">
@@ -210,7 +217,7 @@ export const CurrentRoundStatus = ({
                     <Button
                       variant="primary"
                       size="sm"
-                      onClick={onItemSelect}
+                      onClick={() => onItemSelect({})}
                       width="full"
                     >
                       {isSelfSelected ? '指名を変更する' : '指名する'}
@@ -222,7 +229,9 @@ export const CurrentRoundStatus = ({
                     <Button
                       variant="secondary"
                       size="sm"
-                      onClick={onOpenResult}
+                      onClick={() =>
+                        onOpenResult({ allSelected: isAllSelected })
+                      }
                       width="full"
                     >
                       開票する
