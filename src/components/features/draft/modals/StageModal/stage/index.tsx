@@ -1,12 +1,10 @@
 import { Box } from '@chakra-ui/react';
+import type { BaseParticipant } from '../../../shared/types';
 import { CardRevealStage } from './CardRevealStage';
 import { SlotMachineStage } from './SlotMachineStage';
 import { TypingStage } from './TypingStage';
 
-export type ParticipantResult = {
-  id: string;
-  name: string;
-  avatar: number;
+export type ParticipantResult = BaseParticipant & {
   choice: string;
   willLose: boolean;
 };
@@ -22,7 +20,7 @@ export type StageProps = {
 // 共通のレスポンシブ値
 export const getCommonResponsiveValues = () => ({
   gridColumns: { base: '1fr', md: 'repeat(3, 1fr)' },
-  cardHeight: { base: '50px', md: '160px' },
+  cardHeight: { base: '70px', md: '160px' },
   fontSize: { base: 'xs', md: 'sm' },
   avatarSize: { base: 'xs' as const, md: 'sm' as const },
   gap: { base: 2, md: 4 },

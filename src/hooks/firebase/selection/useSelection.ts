@@ -1,14 +1,8 @@
 'use client';
 
-import {
-  addDoc,
-  type CollectionReference,
-  collection,
-  serverTimestamp,
-  type Timestamp,
-} from 'firebase/firestore';
-import { useCallback } from 'react';
 import { db } from '@/src/lib/firebase';
+import { doc, setDoc, type Timestamp } from 'firebase/firestore';
+import { useCallback } from 'react';
 
 /**
  * Firestore Selection データ型
@@ -31,62 +25,84 @@ export type SelectionDataType = {
 
 /**
  * ドラフト選択基本操作カスタムフック
- * 選択データの作成・管理機能を提供（将来実装）
+ * 選択データのupsert・管理機能を提供
  */
 export const useSelection = () => {
-  // コレクション参照
-  const selectionCollection = collection(
-    db,
-    'app/onlinedraft/selection',
-  ) as CollectionReference<SelectionDataType>;
-
   /**
-   * 選択データ作成
-   * @param groupId グループID
-   * @param userId ユーザーID
-   * @param item 選択したアイテム名
-   * @param comment コメント
-   * @param round 現在のラウンド
+   * 選択データをupsert（作成or更新）
+   * @param params 選択データのパラメータ
+   * @param params.groupId グループID（ドキュメントIDとして使用）
+   * @param params.userId ユーザーID
+   * @param params.item 選択したアイテム名
+   * @param params.comment コメント
+   * @param params.round 現在のラウンド
+   * @param params.currentSelections 現在のselection配列（selectionsAtomから）
    */
-  const createSelection = useCallback(
-    async (
-      groupId: string,
-      userId: string,
-      item: string,
-      comment: string,
-      round: number,
-    ) => {
+  const upsertSelection = useCallback(
+    async (params: {
+      groupId: string;
+      userId: string;
+      item: string;
+      comment: string;
+      round: number;
+      currentSelections: SelectionItemType[];
+    }) => {
+      const { groupId, userId, item, comment, round, currentSelections } =
+        params;
       try {
-        // 競合解決用のランダムナンバー生成（0〜999999）
+        // 重複指名解決用のランダムナンバー生成（0〜999999）
         const randomNumber = Math.floor(Math.random() * 1000000);
 
-        const selectionItem: SelectionItemType = {
+        // コレクション参照
+        const docRef = doc(db, 'app/onlinedraft/selection', userId);
+
+        // 該当ユーザーの現在の選択のみをフィルタリング
+        const userCurrentSelections = currentSelections.filter(
+          (s) => s.userId === userId,
+        );
+
+        // 同じroundの選択を除去（ユーザー内で重複排除）
+        const filteredSelections = userCurrentSelections.filter(
+          (s) => s.round !== round,
+        );
+
+        // 新しいselectionを追加（userIdとgroupIdは不要、ドキュメント構造に合わせ）
+        const newSelectionForStorage = {
           item,
           comment,
           round,
-          userId,
-          groupId,
           randomNumber,
         };
 
-        // Firestoreに選択データを保存
-        const docRef = await addDoc(selectionCollection, {
-          selection: [selectionItem],
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp(),
-        });
+        const updatedSelections = [
+          ...filteredSelections.map((s) => ({
+            item: s.item,
+            comment: s.comment,
+            round: s.round,
+            randomNumber: s.randomNumber,
+          })),
+          newSelectionForStorage,
+        ];
 
-        return docRef.id;
+        // シンプルな配列構造でドキュメント更新
+        const selectionDocument = {
+          userId,
+          selection: updatedSelections,
+        };
+
+        // ドキュメント更新
+        await setDoc(docRef, selectionDocument);
+
+        return groupId;
       } catch (error) {
-        console.error('選択データの作成に失敗しました:', error);
+        console.error('選択データのupsertに失敗しました:', error);
         throw error;
       }
     },
-    [selectionCollection],
+    [],
   );
 
   return {
-    createSelection,
-    selectionCollection,
+    upsertSelection,
   };
 };

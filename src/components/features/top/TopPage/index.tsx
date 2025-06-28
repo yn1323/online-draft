@@ -1,5 +1,16 @@
 'use client';
 
+import { Button } from '@/src/components/atoms/Button';
+import { Card } from '@/src/components/atoms/Card';
+import { Input } from '@/src/components/atoms/Input';
+import {
+  CreateRoomModal,
+  useCreateRoomModal,
+} from '@/src/components/features/top/CreateRoomModal';
+import { useToaster } from '@/src/components/ui/toaster';
+import { extractRoomId } from '@/src/helpers/utils/url';
+import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
+import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import {
   Box,
   Container,
@@ -12,17 +23,6 @@ import {
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
-import { Button } from '@/src/components/atoms/Button';
-import { Card } from '@/src/components/atoms/Card';
-import { Input } from '@/src/components/atoms/Input';
-import {
-  CreateRoomModal,
-  useCreateRoomModal,
-} from '@/src/components/features/top/CreateRoomModal';
-import { useToaster } from '@/src/components/ui/toaster';
-import { extractRoomId } from '@/src/helpers/utils/url';
-import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
-import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 
 /**
  * トップページコンポーネント
@@ -222,7 +222,7 @@ export const TopPage = () => {
                     被ったら取れない！
                   </Text>
                   <Text color="gray.600" fontSize={['sm', 'md']}>
-                    好きなものを選ぶけど、他の人と同じだと競合で失敗
+                    好きなものを選ぶけど、他の人と同じだと重複指名で失敗
                   </Text>
                 </VStack>
               </Card>

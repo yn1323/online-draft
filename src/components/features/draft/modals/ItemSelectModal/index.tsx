@@ -1,23 +1,117 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useId, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
+import { useChat } from '@/src/hooks/firebase/chat/useChat';
+import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useAtomValue } from 'jotai';
+import { useId } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useModal } from '../../hooks/common/useModal';
+import {
+  currentUserIdAtom,
+  groupAtom,
+  groupIdAtom,
+  selectionsAtom,
+  usersAtom,
+} from '../../states';
+
+// 型定義をimport
+type UserAtom = {
+  id: string;
+  name: string;
+  avatar: string;
+};
+
+type SelectionAtom = {
+  item: string;
+  comment: string;
+  round: number;
+  userId: string;
+  groupId: string;
+  randomNumber: number;
+};
 
 // 定数定義
 const MAX_ITEM_LENGTH = 50;
 const MAX_CATEGORY_LENGTH = 20;
 const MAX_COMMENT_LENGTH = 100;
 
-// バリデーションスキーマ（編集時用）
-const getValidationSchema = (isEditMode: boolean) =>
+/**
+ * ItemSelectModalのUI状態を計算する関数
+ * userId, roundから現在の選択状況を判定し、必要な情報を生成
+ */
+const getItemSelectUIState = (
+  userId: string | null | undefined,
+  round: number | null | undefined,
+  selections: SelectionAtom[],
+  users: UserAtom[],
+) => {
+  // userId/roundが未設定の場合はデフォルト状態
+  if (!userId || round === null || round === undefined) {
+    return {
+      modalTitle: 'ドラフト指名',
+      defaultItem: '',
+      defaultComment: '',
+      isEditMode: false,
+      editContext: undefined,
+    };
+  }
+
+  // 該当するuserとselectionを検索
+  const user = users.find((u) => u.id === userId);
+  const existingSelection = selections.find(
+    (s) => s.userId === userId && s.round === round,
+  );
+
+  const isEditMode = !!existingSelection;
+
+  return {
+    modalTitle: isEditMode ? 'ドラフト指名を編集' : 'ドラフト指名',
+    defaultItem: existingSelection?.item || '',
+    defaultComment: existingSelection?.comment || '',
+    isEditMode,
+    editContext:
+      isEditMode && user
+        ? {
+            round,
+            playerName: user.name,
+          }
+        : undefined,
+  };
+};
+
+// バリデーションスキーマ（重複チェック付き）
+const getValidationSchema = (
+  isEditMode: boolean,
+  selections: SelectionAtom[],
+  currentRound: number,
+  originalItem?: string,
+) =>
   z.object({
     item: z
       .string()
       .min(1, 'アイテム名を入力してください')
-      .max(MAX_ITEM_LENGTH, `${MAX_ITEM_LENGTH}文字以内で入力してください`),
+      .max(MAX_ITEM_LENGTH, `${MAX_ITEM_LENGTH}文字以内で入力してください`)
+      .refine((item) => {
+        // 編集モードで元のアイテムと同じ場合はOK
+        if (
+          isEditMode &&
+          originalItem &&
+          item.toLowerCase() === originalItem.toLowerCase()
+        ) {
+          return true;
+        }
+
+        // 過去のラウンドで重複チェック
+        const pastSelections = selections.filter((s) => s.round < currentRound);
+        const isDuplicate = pastSelections.some(
+          (s) => s.item.toLowerCase() === item.toLowerCase(),
+        );
+
+        return !isDuplicate;
+      }, 'このアイテムは過去のラウンドで既に選択されています'),
     comment: z
       .string()
       .max(
@@ -31,32 +125,15 @@ const getValidationSchema = (isEditMode: boolean) =>
 
 /**
  * アイテム選択モーダル用hooks
- * 開閉制御のみを管理
+ * 汎用useModalを利用した軽量実装
  */
-export const useItemSelectModal = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
-
-  return {
-    isOpen,
-    open,
-    close,
-  };
-};
+export const useItemSelectModal = useModal;
 
 type ItemSelectModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { item: string; comment: string }) => void | Promise<void>;
-  defaultItem?: string;
-  defaultComment?: string;
-  modalTitle?: string;
-  editContext?: {
-    round: number;
-    playerName: string;
-  };
+  userId: string;
+  round: number;
 };
 
 /**
@@ -66,14 +143,28 @@ type ItemSelectModalProps = {
 export const ItemSelectModal = ({
   isOpen,
   onClose,
-  onSubmit,
-  defaultItem = '',
-  defaultComment = '',
-  modalTitle = 'アイテムを選択',
-  editContext,
+  userId,
+  round,
 }: ItemSelectModalProps) => {
   const formId = useId();
-  const isEditMode = !!editContext;
+
+  // atomからデータを取得
+  const selections = useAtomValue(selectionsAtom);
+  const users = useAtomValue(usersAtom);
+  const currentUserId = useAtomValue(currentUserIdAtom);
+
+  const groupId = useAtomValue(groupIdAtom);
+  const { round: currentRound } = useAtomValue(groupAtom);
+
+  const myInfo = users.find(({ id }) => id === currentUserId);
+
+  const { sendSystemMessage } = useChat();
+
+  // propsとatomデータからUI状態を計算
+  const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
+    getItemSelectUIState(userId, round, selections, users);
+
+  const { upsertSelection } = useSelection();
 
   const {
     register,
@@ -81,7 +172,9 @@ export const ItemSelectModal = ({
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    resolver: zodResolver(getValidationSchema(isEditMode)),
+    resolver: zodResolver(
+      getValidationSchema(isEditMode, selections, currentRound, defaultItem),
+    ),
     mode: 'onChange',
     defaultValues: {
       item: defaultItem,
@@ -91,21 +184,33 @@ export const ItemSelectModal = ({
 
   const onFormSubmit = async (data: { item: string; comment: string }) => {
     try {
-      await onSubmit({
+      await upsertSelection({
+        groupId,
+        userId,
         item: data.item,
         comment: data.comment,
+        round,
+        currentSelections: selections,
       });
-      reset();
+      if (currentRound !== round && defaultItem !== data.item) {
+        const editedUserName = myInfo?.name;
+
+        await sendSystemMessage(
+          groupId,
+          `[${round}R-${editContext?.playerName}] ${defaultItem}→${data.item} by ${editedUserName}`,
+        );
+      }
       onClose();
+      reset();
     } catch (error) {
-      console.error('アイテム選択エラー:', error);
+      console.error('指名エラー:', error);
     }
   };
 
   const handleClose = () => {
     if (!isSubmitting) {
-      reset();
       onClose();
+      reset();
     }
   };
 
@@ -160,11 +265,11 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            アイテム名
+            ドラフト指名
           </Text>
           <Input
             {...register('item')}
-            placeholder="アイテム名を入力してください"
+            placeholder="指名を入力してください"
             maxLength={MAX_ITEM_LENGTH}
             size="lg"
             error={!!errors.item}
@@ -178,14 +283,14 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            {editContext ? 'カテゴリ' : 'コメント（任意）'}
+            コメント（任意）
           </Text>
           <Input
             {...register('comment')}
             placeholder={
               editContext
-                ? 'カテゴリを入力してください'
-                : 'この選択についてのコメント...'
+                ? 'コメントを入力してください'
+                : 'この指名についてのコメント...'
             }
             maxLength={editContext ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH}
             size="lg"

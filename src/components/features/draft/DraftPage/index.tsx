@@ -1,5 +1,14 @@
 'use client';
 
+import { Button } from '@/src/components/atoms/Button';
+import { Loading } from '@/src/components/atoms/Loading';
+import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
+import {
+  currentUserIdAtom,
+  groupAtom,
+  groupIdAtom,
+} from '@/src/components/features/draft/states';
+import { useGroup } from '@/src/hooks/firebase/group/useGroup';
 import {
   Box,
   Container,
@@ -11,143 +20,82 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
-import { LuList, LuMessageSquare } from 'react-icons/lu';
-import { Loading } from '@/src/components/atoms/Loading';
-import {
-  type ChatMessageUIType,
-  useRealtimeChat,
-} from '@/src/hooks/firebase/chat/useRealtimeChat';
-import { useRealtimeSelection } from '@/src/hooks/firebase/selection/useRealtimeSelection';
-import type { SelectionItemType } from '@/src/hooks/firebase/selection/useSelection';
-import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
+import { useAtomValue } from 'jotai';
+import { useEffect, useRef, useState } from 'react';
+import { LuList, LuMessageSquare, LuShare2 } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
-import { useDraftChat } from '../hooks/useDraftChat';
-import { type EditingPickType, useDraftPicks } from '../hooks/useDraftPicks';
-import { useDraftResult } from '../hooks/useDraftResult';
-import {
-  currentRound,
-  type DraftRoundType,
-  type ParticipantType,
-  pastDraftResults,
-} from '../mockData';
 import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
+import { ShareModal, useShareModal } from '../modals/ShareModal';
+import { StageModal, useStageModal } from '../modals/StageModal';
 import { PastDraftResults } from '../PastDraftResults';
-
-type DraftPageInnerProps = {
-  // データ
-  currentRound: number;
-  participants: ParticipantType[];
-  pastResults: DraftRoundType[];
-  realtimeChatMessages: ChatMessageUIType[];
-  selections: SelectionItemType[];
-  // Firestore関連
-  groupId: string;
-  userId: string;
-};
 
 /**
  * ドラフト実行画面Innerコンポーネント（Presenter）
  * UI描画と状態管理を担当、新しいhooks構造を使用
  */
-export const DraftPageInner = ({
-  currentRound,
-  participants,
-  pastResults,
-  realtimeChatMessages,
-  selections,
-  groupId,
-  userId,
-}: DraftPageInnerProps) => {
+export const DraftPageInner = () => {
+  const currentUserId = useAtomValue(currentUserIdAtom);
+  const groupId = useAtomValue(groupIdAtom);
+  const { round: currentRound, groupName } = useAtomValue(groupAtom);
+  const prevRound = useRef(currentRound);
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const [selectedItem, setSelectedItem] = useState({ round: -1, userId: '' });
 
-  // タブ状態（SP版用）- DraftPageInner内で管理
   const [activeTab, setActiveTab] = useState('draft');
 
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
+  const shareModal = useShareModal();
+  const stageModal = useStageModal();
 
-  // 編集用のstate
-  const [editingPick, setEditingPick] = useState<EditingPickType | null>(null);
+  const { incrementRound } = useGroup();
 
-  // 現在ユーザーの選択データを取得
-  const currentUserSelection = selections.find(
-    (selection) =>
-      selection.userId === userId && selection.round === currentRound,
-  );
-
-  // Firestore処理hooks
-  const { selectItem } = useDraftPicks(groupId, userId, currentRound);
-  const { sendMessage } = useDraftChat(groupId, userId);
-  const { executeOpenResult, checkParticipantStatus } = useDraftResult(
-    participants,
-    selections,
-    currentRound,
-  );
-
-  // ハンドラー関数
-  const handleItemSelect = async (data: { item: string; comment: string }) => {
-    try {
-      await selectItem(data.item, data.comment);
-    } catch (error) {
-      console.error('アイテム選択エラー:', error);
+  useEffect(() => {
+    if (prevRound.current !== -1 && currentRound > prevRound.current) {
+      stageModal.open();
     }
-  };
+    prevRound.current = currentRound;
+  }, [currentRound, stageModal]);
 
-  const handleEditSave = async (data: { item: string; comment: string }) => {
-    try {
-      await selectItem(data.item, data.comment); // 編集もコメント含めて保存
-      setEditingPick(null);
-      itemSelectModal.close();
-    } catch (error) {
-      console.error('編集保存エラー:', error);
-    }
-  };
-
-  const handleEditClick = (
-    round: number,
-    playerId: string,
-    playerName: string,
-    currentPick: string,
-    category: string,
-  ) => {
-    setEditingPick({ round, playerId, playerName, currentPick, category });
+  // アイテム選択モーダルを開く（新規選択用）
+  const handleItemSelect = ({
+    userId,
+    round,
+  }: {
+    userId?: string;
+    round?: number;
+  }) => {
+    setSelectedItem({
+      round: round ?? currentRound,
+      userId: userId ?? currentUserId,
+    });
     itemSelectModal.open();
   };
 
-  const handleOpenResult = async () => {
-    try {
-      const status = await checkParticipantStatus();
-      if (status.allCompleted) {
-        await executeOpenResult();
-      } else {
-        openResultModal.open();
-      }
-    } catch (error) {
-      console.error('開票処理エラー:', error);
+  const handleOpenResult = async ({
+    allSelected,
+  }: {
+    allSelected: boolean;
+  }) => {
+    if (allSelected) {
+      await handleExecuteOpenResult();
+    } else {
+      openResultModal.open();
     }
+  };
+  const handleEditClick = async (
+    args: Parameters<typeof handleItemSelect>[0],
+  ) => {
+    await handleItemSelect(args);
   };
 
   const handleExecuteOpenResult = async () => {
-    try {
-      await executeOpenResult();
-      openResultModal.close();
-    } catch (error) {
-      console.error('開票実行エラー:', error);
-    }
-  };
-
-  const handleSendMessage = async (message: string) => {
-    try {
-      await sendMessage(message);
-    } catch (error) {
-      console.error('チャット送信エラー:', error);
-    }
+    await incrementRound(groupId);
+    openResultModal.close();
   };
 
   if (isMobile) {
@@ -159,15 +107,26 @@ export const DraftPageInner = ({
           bg="white"
           borderBottom="1px"
           borderColor="gray.200"
-          p={4}
+          p={2}
           w="full"
           position="sticky"
           top={0}
           zIndex={10}
         >
-          <Text fontSize="lg" fontWeight="bold" textAlign="center">
-            オンラインドラフト会議
-          </Text>
+          <HStack justify="space-between" align="center">
+            <Box flex={1} />
+            <Text fontSize="lg" fontWeight="bold" textAlign="center">
+              {groupName}
+            </Text>
+            <Box flex={1} display="flex" justifyContent="flex-end">
+              <Button variant="ghost" size="sm" onClick={shareModal.open}>
+                <HStack gap={1} align="center">
+                  <LuShare2 size={14} />
+                  <Text>シェア</Text>
+                </HStack>
+              </Button>
+            </Box>
+          </HStack>
         </Box>
 
         {/* タブエリア */}
@@ -202,7 +161,7 @@ export const DraftPageInner = ({
             >
               <HStack gap={2} justify="center" w="full">
                 <LuList size={18} />
-                <Text fontSize="sm">取得リスト</Text>
+                <Text fontSize="sm">ドラフト</Text>
               </HStack>
             </Tabs.Trigger>
             <Tabs.Trigger
@@ -221,33 +180,24 @@ export const DraftPageInner = ({
             >
               <HStack gap={2} justify="center" w="full">
                 <LuMessageSquare size={18} />
-                <Text fontSize="sm">チャット</Text>
+                <Text fontSize="sm">チャット/ログ</Text>
               </HStack>
             </Tabs.Trigger>
           </Tabs.List>
 
           <Box flex={1} overflow="hidden" minH={0}>
             {/* ドラフト状況タブ */}
-            <Tabs.Content value="draft" h="full" overflow="auto">
-              <VStack gap={3} p={3}>
+            <Tabs.Content value="draft" h="full" overflow="auto" p={1}>
+              <VStack gap={3} p={1}>
                 {/* 現在ラウンドセクション */}
                 <CurrentRoundStatus
-                  participants={participants}
-                  currentRound={currentRound}
                   variant="sp"
-                  currentUserId={userId}
-                  selections={selections}
-                  onItemSelect={itemSelectModal.open}
+                  onItemSelect={handleItemSelect}
                   onOpenResult={handleOpenResult}
                 />
 
                 {/* 過去ラウンド結果 */}
-                <PastDraftResults
-                  pastResults={pastResults}
-                  participants={participants}
-                  variant="sp"
-                  onEditClick={handleEditClick}
-                />
+                <PastDraftResults variant="sp" onEditClick={handleEditClick} />
               </VStack>
             </Tabs.Content>
 
@@ -260,7 +210,7 @@ export const DraftPageInner = ({
               flexDirection="column"
             >
               <Box flex={1} overflow="auto" p={3}>
-                <ChatMessageList messages={realtimeChatMessages} />
+                <ChatMessageList />
               </Box>
             </Tabs.Content>
           </Box>
@@ -277,42 +227,33 @@ export const DraftPageInner = ({
             position="sticky"
             bottom={0}
           >
-            <ChatInputForm onSendMessage={handleSendMessage} />
+            <ChatInputForm />
           </Box>
         )}
 
         {/* モーダル群 */}
         <ItemSelectModal
+          key={Math.random()}
           isOpen={itemSelectModal.isOpen}
-          onClose={() => {
-            itemSelectModal.close();
-            setEditingPick(null);
-          }}
-          onSubmit={editingPick ? handleEditSave : handleItemSelect}
-          modalTitle={
-            editingPick
-              ? 'ピックを編集'
-              : currentUserSelection
-                ? '選択を編集'
-                : 'アイテムを選択'
-          }
-          defaultItem={editingPick?.currentPick || currentUserSelection?.item}
-          defaultComment={
-            editingPick?.category || currentUserSelection?.comment
-          }
-          editContext={
-            editingPick
-              ? {
-                  round: editingPick.round,
-                  playerName: editingPick.playerName,
-                }
-              : undefined
-          }
+          onClose={itemSelectModal.close}
+          round={selectedItem.round}
+          userId={selectedItem.userId}
         />
         <OpenResultModal
           isOpen={openResultModal.isOpen}
           onClose={openResultModal.close}
           onExecuteOpenResult={handleExecuteOpenResult}
+        />
+        <ShareModal
+          isOpen={shareModal.isOpen}
+          onClose={shareModal.close}
+          groupId={groupId}
+          groupName={groupName}
+        />
+        <StageModal
+          isOpen={stageModal.isOpen}
+          onClose={stageModal.close}
+          variant={stageModal.variant}
         />
       </VStack>
     );
@@ -320,37 +261,36 @@ export const DraftPageInner = ({
 
   // PC版: 2カラムレイアウト
   return (
-    <Box bg="gray.50" minH="100vh" py={8}>
-      <Container maxW="container.xl">
+    <Box minH="100vh" py={2}>
+      <Container maxW="full">
         {/* ヘッダー */}
-        <Box mb={6}>
-          <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-            オンラインドラフト会議
-          </Text>
+        <Box mb={2}>
+          <HStack justify="space-between" align="center">
+            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+              {groupName}
+            </Text>
+            <Button variant="outline" size="md" onClick={shareModal.open}>
+              <HStack gap={1} align="center">
+                <LuShare2 size={16} />
+                <Text>シェア</Text>
+              </HStack>
+            </Button>
+          </HStack>
         </Box>
 
-        <Grid templateColumns="7fr 3fr" gap={6} h="calc(100vh - 130px)">
+        <Grid templateColumns="7fr 3fr" gap={2} h="calc(100vh - 80px)">
           {/* 左側: ドラフト状況エリア */}
           <GridItem h="100%">
-            <VStack gap={4} h="100%" w="full" align="stretch">
+            <VStack gap={2} h="100%" w="full" align="stretch">
               {/* 上部: 現在ラウンドの選択状況 */}
               <CurrentRoundStatus
-                participants={participants}
-                currentRound={currentRound}
                 variant="pc"
-                currentUserId={userId}
-                selections={selections}
-                onItemSelect={itemSelectModal.open}
+                onItemSelect={handleItemSelect}
                 onOpenResult={handleOpenResult}
               />
 
               {/* 下部: 過去のドラフト結果 */}
-              <PastDraftResults
-                pastResults={pastResults}
-                participants={participants}
-                variant="pc"
-                onEditClick={handleEditClick}
-              />
+              <PastDraftResults variant="pc" onEditClick={handleEditClick} />
             </VStack>
           </GridItem>
 
@@ -358,26 +298,26 @@ export const DraftPageInner = ({
           <GridItem h="100%">
             <Box
               h="100%"
-              maxH="calc(100vh - 130px)"
+              maxH="calc(100vh - 70px)"
               bg="white"
               boxShadow="lg"
-              p={4}
+              p={3}
               borderRadius="lg"
               display="flex"
               flexDirection="column"
               overflow="hidden"
             >
-              <Text fontSize="lg" fontWeight="bold" mb={4} flexShrink={0}>
+              <Text fontSize="lg" fontWeight="bold" mb={3} flexShrink={0}>
                 チャット
               </Text>
               {/* チャットメッセージエリア */}
               <Box flex="1" overflow="auto" mb={3} minH={0}>
-                <ChatMessageList messages={realtimeChatMessages} />
+                <ChatMessageList />
               </Box>
 
               {/* チャット入力エリア */}
               <Box flexShrink={0}>
-                <ChatInputForm onSendMessage={handleSendMessage} />
+                <ChatInputForm />
               </Box>
             </Box>
           </GridItem>
@@ -386,34 +326,27 @@ export const DraftPageInner = ({
 
       {/* モーダル群 */}
       <ItemSelectModal
+        key={Math.random()}
         isOpen={itemSelectModal.isOpen}
-        onClose={() => {
-          itemSelectModal.close();
-          setEditingPick(null);
-        }}
-        onSubmit={editingPick ? handleEditSave : handleItemSelect}
-        modalTitle={
-          editingPick
-            ? 'ピックを編集'
-            : currentUserSelection
-              ? '選択を編集'
-              : 'アイテムを選択'
-        }
-        defaultItem={editingPick?.currentPick || currentUserSelection?.item}
-        defaultComment={editingPick?.category || currentUserSelection?.comment}
-        editContext={
-          editingPick
-            ? {
-                round: editingPick.round,
-                playerName: editingPick.playerName,
-              }
-            : undefined
-        }
+        onClose={itemSelectModal.close}
+        round={selectedItem.round}
+        userId={selectedItem.userId}
       />
       <OpenResultModal
         isOpen={openResultModal.isOpen}
         onClose={openResultModal.close}
         onExecuteOpenResult={handleExecuteOpenResult}
+      />
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={shareModal.close}
+        groupId={groupId}
+        groupName={groupName}
+      />
+      <StageModal
+        isOpen={stageModal.isOpen}
+        onClose={stageModal.close}
+        variant={stageModal.variant}
       />
     </Box>
   );
@@ -424,52 +357,9 @@ export const DraftPageInner = ({
  * モックデータの提供のみを担当
  */
 export const DraftPage = ({ groupId }: { groupId: string }) => {
-  const router = useRouter();
+  const { isLoading } = useInitialize(groupId);
 
-  // sessionStorageからuserIdを取得
-  const [userId, setUserId] = useState<string>('');
-
-  useEffect(() => {
-    // クライアントサイドでのみ実行
-    const storedUserId = sessionStorage.getItem('onlinedraft_user_id');
-    if (storedUserId) {
-      setUserId(storedUserId);
-    } else {
-      // userIdがない場合はロビーへリダイレクト（認証チェック）
-      router.push(`/lobby/${groupId}`);
-    }
-  }, [groupId, router]);
-
-  // Firestoreから参加者情報をリアルタイム取得
-  const { users: realtimeUsers, loading: usersLoading } =
-    useRealtimeUsers(groupId);
-
-  // ユーザー情報のlookupオブジェクト生成
-  const userLookup = useMemo(() => {
-    return realtimeUsers.reduce(
-      (acc, user) => {
-        acc[user.userId] = {
-          name: user.userName,
-          avatar: user.avatar,
-        };
-        return acc;
-      },
-      {} as Record<string, { name: string; avatar: string }>,
-    );
-  }, [realtimeUsers]);
-
-  // リアルタイムチャット監視
-  const { messages: realtimeChatMessages } = useRealtimeChat(
-    groupId,
-    userLookup,
-    userId,
-  );
-
-  // リアルタイム選択監視
-  const { selections } = useRealtimeSelection(groupId);
-
-  // userIdが設定されるまで、またはユーザー情報取得中はローディング表示
-  if (!userId || usersLoading) {
+  if (isLoading) {
     return (
       <Box bg="gray.50" minH="100vh" py={[4, 8]}>
         <Container maxW="container.lg">
@@ -479,33 +369,5 @@ export const DraftPage = ({ groupId }: { groupId: string }) => {
     );
   }
 
-  // Firestore形式からアプリ形式に変換
-  const participants: ParticipantType[] = realtimeUsers.map((user) => {
-    // 現在ラウンドでのユーザーの選択を取得
-    const currentSelection = selections.find(
-      (selection) =>
-        selection.userId === user.userId && selection.round === currentRound,
-    );
-
-    return {
-      id: user.userId,
-      name: user.userName,
-      avatar: user.avatar,
-      // TODO: 実際の取得アイテム情報と連携
-      acquisitions: [],
-      currentPick: currentSelection?.item || '選択中...',
-    };
-  });
-
-  return (
-    <DraftPageInner
-      currentRound={currentRound}
-      participants={participants}
-      pastResults={pastDraftResults}
-      realtimeChatMessages={realtimeChatMessages}
-      selections={selections}
-      groupId={groupId}
-      userId={userId}
-    />
-  );
+  return <DraftPageInner />;
 };

@@ -1,7 +1,7 @@
+import { Provider } from '@/src/components/ui/provider';
+import { GoogleTagManager } from '@next/third-parties/google';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { ThemeToggle } from '@/src/components/layout/ThemeToggle';
-import { Provider } from '@/src/components/ui/provider';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,11 +25,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja" suppressHydrationWarning>
+      <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <Provider>
-          <ThemeToggle />
-          {children}
-        </Provider>
+        <Provider>{children}</Provider>
       </body>
     </html>
   );

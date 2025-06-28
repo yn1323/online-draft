@@ -1,9 +1,9 @@
 'use client';
 
-import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type { UserDataType } from '@/src/hooks/firebase/user/useUser';
+import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 
 type ParticipantsListProps = {
   users: UserDataType[];
@@ -36,6 +36,7 @@ export const ParticipantsList = ({
                 key={participant.userId}
                 p={3}
                 bg="white"
+                h="110px"
                 border="2px solid"
                 borderColor="gray.200"
                 borderRadius="lg"
@@ -63,7 +64,7 @@ export const ParticipantsList = ({
                       {participant.userName}
                     </Text>
                     <Text fontSize="xs" color="green.500">
-                      {participant.isActive ? '参加中' : 'オフライン'}
+                      参加中
                     </Text>
                   </VStack>
                 </HStack>

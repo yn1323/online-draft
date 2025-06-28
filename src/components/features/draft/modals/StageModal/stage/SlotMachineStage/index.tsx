@@ -40,7 +40,19 @@ export const SlotMachineStage = ({
   const slotGap = useBreakpointValue({ base: 2, md: 2 }); // PCでも小さめのgap
 
   // スロットマシンの選択肢（回転中に表示される候補）
-  const slotOptions = participants.map(({ choice }) => choice);
+  // 参加者の選択肢から重複除去 + 演出用選択肢補完
+  const slotOptions = (() => {
+    // 参加者の実際の選択肢から重複除去
+    const uniqueChoices = Array.from(
+      new Set(
+        participants
+          .map(({ choice }) => choice)
+          .filter((choice) => choice.trim() !== ''),
+      ),
+    );
+
+    return uniqueChoices;
+  })();
 
   const handleSpin = useCallback(() => {
     setSpinningSlots([]);

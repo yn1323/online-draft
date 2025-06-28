@@ -1,9 +1,5 @@
 'use client';
 
-import { Box, Container, Text, VStack } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useToaster } from '@/src/components/ui/toaster';
@@ -14,6 +10,10 @@ import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { type UserDataType, useUser } from '@/src/hooks/firebase/user/useUser';
+import { Box, Container, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { AvatarSelectionModal } from '../AvatarSelectionModal';
 import { ParticipantsList } from '../ParticipantsList';
 import { RoomInfo } from '../RoomInfo';
@@ -121,16 +121,8 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
   } = useFirebaseAuth();
 
   // Firebase hooks
-  const {
-    group,
-    loading: groupLoading,
-    error: groupError,
-  } = useRealtimeGroup(groupId);
-  const {
-    users,
-    loading: usersLoading,
-    error: usersError,
-  } = useRealtimeUsers(groupId);
+  const { group, loading: groupLoading } = useRealtimeGroup(groupId);
+  const { users, loading: usersLoading } = useRealtimeUsers(groupId);
   const { createUser } = useUser();
 
   // Next.js router
@@ -152,6 +144,8 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
       if (!isAuthenticated && !authLoading) {
         try {
           await signInAnonymous();
+          // 認証成功 → 現在のページをリロード
+          window.location.reload();
         } catch (error) {
           console.error('認証エラー:', error);
           errorToast('認証に失敗しました');
@@ -170,12 +164,6 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
   // ローディング状態（認証も含める、ただしStorybook環境は除く）
   const isLoading =
     groupLoading || usersLoading || (!isStorybookEnvironment() && authLoading);
-
-  // エラーハンドリング
-  if (groupError || usersError) {
-    console.error('Firebase Error:', { groupError, usersError });
-    errorToast('データの取得に失敗しました');
-  }
 
   // 使用中のアバター番号を取得
   const usedAvatars = users?.map((user) => user.avatar) || [];
@@ -219,7 +207,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
   };
 
   // ローディング中の表示
-  if (isLoading) {
+  if (isLoading || !isAuthenticated || authLoading || !group) {
     return (
       <Box bg="gray.50" minH="100vh" py={[4, 8]}>
         <Container maxW="container.lg">

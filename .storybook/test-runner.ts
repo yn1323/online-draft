@@ -6,7 +6,7 @@ const config: TestRunnerConfig = {
     // コンテキスト初期化の安定性向上のため、短時間でのリトライ戦略を採用
     let retryCount = 0;
     const maxRetries = 5;
-    
+
     while (retryCount < maxRetries) {
       try {
         // コンテキスト初期化を短時間で確認（タイムアウトを短縮）
@@ -18,11 +18,13 @@ const config: TestRunnerConfig = {
           },
         );
         break; // 成功したらループ脱出
-      } catch (error) {
+      } catch (_error) {
         retryCount++;
         if (retryCount >= maxRetries) {
           // 最大リトライ回数に達した場合はログ出力のみ
-          console.warn(`Context initialization failed after ${maxRetries} retries for story: ${context.title}`);
+          console.warn(
+            `Context initialization failed after ${maxRetries} retries for story: ${context.title}`,
+          );
           break;
         }
         // 段階的な待機時間（100ms → 200ms → 300ms...）

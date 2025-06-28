@@ -9,7 +9,7 @@
         "description": "Check current git status"
       },
       "git_diff_main": {
-        "action": "bash", 
+        "action": "bash",
         "command": "git diff main...HEAD",
         "description": "Show changes since branching from main"
       }
@@ -237,7 +237,7 @@
           "description": "Phase 1: Integrate duplicate content and delete redundant files with progress notification"
         },
         {
-          "action": "execute_phase_2", 
+          "action": "execute_phase_2",
           "description": "Phase 2: Simplify documentation using design pattern naming (Feature-First Design, Progressive Enhancement, etc.) with progress notification"
         },
         {
@@ -294,7 +294,7 @@
         },
         {
           "action": "read_guide",
-          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md", 
+          "command": "read docs/AI_ISSUE_WRITING_GUIDE.md",
           "description": "Read AI ISSUE writing guide for scope guidelines"
         },
         {

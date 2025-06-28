@@ -1,15 +1,80 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { mockChatMessages } from '../mockData';
+import { Timestamp } from 'firebase/firestore';
+import { useHydrateAtoms } from 'jotai/utils';
+import { chatsAtom, currentUserIdAtom, usersAtom } from '../states';
 import { ChatMessageList } from './index';
+
+// Storybook用の型定義（statesファイルの型と同じ）
+type UserAtom = {
+  id: string;
+  name: string;
+  avatar: string;
+};
+
+type ChatAtom = {
+  date: Timestamp;
+  message: string;
+  userId: string;
+};
+
+// タイムスタンプ生成ヘルパー
+const createTimestamp = (minutesAgo: number): Timestamp => {
+  const date = new Date();
+  date.setMinutes(date.getMinutes() - minutesAgo);
+  return Timestamp.fromDate(date);
+};
+
+// テストユーザー
+const testUsers: UserAtom[] = [
+  { id: 'user1', name: 'タナカ', avatar: '1' },
+  { id: 'user2', name: 'サトウ', avatar: '2' },
+  { id: 'user3', name: 'ヤマダ', avatar: '3' },
+];
+
+// デフォルトのチャットメッセージ
+const defaultChats: ChatAtom[] = [
+  {
+    userId: 'user1',
+    message: 'こんにちは〜！今日のドラフト楽しみだね！',
+    date: createTimestamp(5),
+  },
+  {
+    userId: 'user2',
+    message: 'そうだね！誰を1番に指名する？',
+    date: createTimestamp(4),
+  },
+  {
+    userId: 'user1',
+    message: '悩むな〜。みんなはどう？',
+    date: createTimestamp(3),
+  },
+  {
+    userId: 'user3',
+    message: '私はもう決めてるよ〜',
+    date: createTimestamp(2),
+  },
+];
+
+// Jotai公式推奨パターン: Provider + useHydrateAtoms
+// biome-ignore lint/suspicious/noExplicitAny: storybook
+type AtomTuple = [any, any];
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: AtomTuple[];
+  children: React.ReactNode;
+}) => {
+  useHydrateAtoms(initialValues);
+  return children;
+};
 
 const meta: Meta<typeof ChatMessageList> = {
   title: 'Features/draft/ChatMessageList',
   component: ChatMessageList,
   parameters: {
-    layout: 'centered',
-  },
-  args: {
-    messages: mockChatMessages,
+    layout: 'padded',
   },
 };
 
@@ -18,6 +83,36 @@ type Story = StoryObj<typeof meta>;
 
 /**
  * デフォルト表示
- * 統一されたボックススタイル
+ * 複数ユーザーの会話を表示
  */
-export const Default: Story = {};
+export const Default: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, defaultChats],
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
+};
+
+/**
+ * メッセージなし
+ * チャットメッセージが空の状態
+ */
+export const NoMessage: Story = {
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [currentUserIdAtom, 'user1'],
+        [chatsAtom, []], // 空のチャット
+      ]}
+    >
+      <ChatMessageList />
+    </HydrateAtoms>
+  ),
+};

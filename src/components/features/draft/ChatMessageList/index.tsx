@@ -1,19 +1,54 @@
-import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { Avatar } from '@/src/components/atoms/Avatar';
+import {
+  chatsAtom,
+  currentUserIdAtom,
+  usersAtom,
+} from '@/src/components/features/draft/states';
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
+import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import dayjs from 'dayjs';
+import { atom, useAtomValue } from 'jotai';
 
-type ChatMessageListProps = {
-  messages: ChatMessageUIType[];
-};
+/**
+ * チャットメッセージをUI表示用に変換するAtom
+ */
+const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
+  const chats = get(chatsAtom);
+  const users = get(usersAtom);
+  const currentUserId = get(currentUserIdAtom);
+
+  return chats.map((chat) => {
+    const user = users.find((u) => u.id === chat.userId);
+    const isCurrentUser = chat.userId === currentUserId;
+    const isSystem = chat.userId === 'system';
+
+    // biome-ignore lint/suspicious/noExplicitAny: tmp
+    const date = new Date(chat.date as any);
+    const formatted = dayjs(date).format('MM/DD HH:mm');
+
+    return {
+      id: `${chat.userId}-${Math.random()}`,
+      userName: isSystem ? '自動ログ' : (user?.name ?? ''),
+      avatar: isSystem ? '99' : (user?.avatar ?? '1'),
+      content: chat.message,
+      timestamp: formatted,
+      isCurrentUser,
+      isSystem: false,
+    };
+  });
+});
 
 /**
  * チャットメッセージ一覧を表示する共通コンポーネント
  * 見やすいボックススタイルで統一
  */
-export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
+export const ChatMessageList = () => {
+  // Atomから派生したUIメッセージを取得（propsのmessagesよりも優先）
+  const chatMessages = useAtomValue(chatMessageUIAtom);
+
   return (
     <VStack gap={3} align="stretch">
-      {messages.map((message) => {
+      {chatMessages.map((message) => {
         const content = message.content;
         const isCurrentUser = message.isCurrentUser || false;
         const isSystem = message.isSystem || false;
@@ -63,7 +98,7 @@ export const ChatMessageList = ({ messages }: ChatMessageListProps) => {
                 >
                   {message.userName}
                 </Text>
-                <Text fontSize="xs" color="gray.500">
+                <Text fontSize="2xs" color="gray.700">
                   {message.timestamp}
                 </Text>
               </HStack>

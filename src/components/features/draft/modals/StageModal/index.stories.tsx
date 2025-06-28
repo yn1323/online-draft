@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { useHydrateAtoms } from 'jotai/utils';
+import { groupAtom, selectionsAtom, usersAtom } from '../../states';
 import { StageModal } from './index';
-import type { ParticipantResult } from './stage';
 
 const meta: Meta<typeof StageModal> = {
   title: 'Features/draft/modals/StageModal',
@@ -17,49 +18,96 @@ const meta: Meta<typeof StageModal> = {
 export default meta;
 type Story = StoryObj<typeof StageModal>;
 
-// モック参加者データ
-const mockParticipants: ParticipantResult[] = [
+// Storybook用の型定義（statesファイルの型と同じ）
+type UserAtom = {
+  id: string;
+  name: string;
+  avatar: string;
+};
+
+type SelectionAtom = {
+  item: string;
+  comment: string;
+  round: number;
+  userId: string;
+  groupId: string;
+  randomNumber: number;
+};
+
+// Jotai公式推奨パターン: Provider + useHydrateAtoms
+// biome-ignore lint/suspicious/noExplicitAny: storybook
+type AtomTuple = [any, any];
+
+const HydrateAtoms = ({
+  initialValues,
+  children,
+}: {
+  initialValues: AtomTuple[];
+  children: React.ReactNode;
+}) => {
+  useHydrateAtoms(initialValues);
+  return children;
+};
+
+// テストユーザー
+const testUsers: UserAtom[] = [
+  { id: 'user1', name: '田中太郎', avatar: '1' },
+  { id: 'user2', name: '佐藤花子', avatar: '2' },
+  { id: 'user3', name: '鈴木一郎', avatar: '3' },
+  { id: 'user4', name: '高橋次郎', avatar: '4' },
+  { id: 'user5', name: '山田美咲', avatar: '5' },
+  { id: 'user6', name: '中村翔太', avatar: '6' },
+];
+
+// テスト用現在ラウンドの選択データ
+const currentRoundSelections: SelectionAtom[] = [
   {
-    id: '1',
-    name: '田中太郎',
-    avatar: 1,
-    choice: '大谷翔平',
-    willLose: false,
+    item: '大谷翔平',
+    comment: '絶対的エース！',
+    round: 4,
+    userId: 'user1',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
   {
-    id: '2',
-    name: '佐藤花子',
-    avatar: 2,
-    choice: '大谷翔平',
-    willLose: true,
+    item: '大谷翔平',
+    comment: '私も大谷！',
+    round: 4,
+    userId: 'user2',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
   {
-    id: '3',
-    name: '鈴木一郎',
-    avatar: 3,
-    choice: '山田太郎',
-    willLose: false,
+    item: '山田太郎',
+    comment: '堅実な選択',
+    round: 4,
+    userId: 'user3',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
   {
-    id: '4',
-    name: '高橋次郎',
-    avatar: 4,
-    choice: '佐々木朗希',
-    willLose: false,
+    item: '佐々木朗希',
+    comment: '完全試合の男',
+    round: 4,
+    userId: 'user4',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
   {
-    id: '5',
-    name: '山田美咲',
-    avatar: 5,
-    choice: '村上宗隆',
-    willLose: false,
+    item: '村上宗隆',
+    comment: 'ホームラン王',
+    round: 4,
+    userId: 'user5',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
   {
-    id: '6',
-    name: '中村翔太',
-    avatar: 6,
-    choice: 'ダルビッシュ有',
-    willLose: false,
+    item: 'ダルビッシュ有',
+    comment: '変化球の魔術師',
+    round: 4,
+    userId: 'user6',
+    groupId: 'group1',
+    randomNumber: Math.random(),
   },
 ];
 
@@ -67,12 +115,21 @@ const mockParticipants: ParticipantResult[] = [
  * カードめくり演出パターン
  */
 export const Card: Story = {
-  args: {
-    isOpen: true,
-    variant: 'card',
-    participants: mockParticipants,
-    onClose: () => console.log('Modal closed'),
-  },
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [groupAtom, { round: 4, groupName: 'テストグループ' }],
+        [selectionsAtom, currentRoundSelections],
+      ]}
+    >
+      <StageModal
+        isOpen={true}
+        variant="card"
+        onClose={() => console.log('Modal closed')}
+      />
+    </HydrateAtoms>
+  ),
   parameters: {
     // テスト用の長いタイムアウト
     test: {
@@ -89,12 +146,21 @@ export const Card: Story = {
  * タイピング演出パターン
  */
 export const Typing: Story = {
-  args: {
-    isOpen: true,
-    variant: 'typing',
-    participants: mockParticipants,
-    onClose: () => console.log('Modal closed'),
-  },
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [groupAtom, { round: 4, groupName: 'テストグループ' }],
+        [selectionsAtom, currentRoundSelections],
+      ]}
+    >
+      <StageModal
+        isOpen={true}
+        variant="typing"
+        onClose={() => console.log('Modal closed')}
+      />
+    </HydrateAtoms>
+  ),
   parameters: {
     // テスト用の長いタイムアウト
     test: {
@@ -111,12 +177,21 @@ export const Typing: Story = {
  * スロットマシン演出パターン
  */
 export const SlotMachine: Story = {
-  args: {
-    isOpen: true,
-    variant: 'slot',
-    participants: mockParticipants,
-    onClose: () => console.log('Modal closed'),
-  },
+  render: () => (
+    <HydrateAtoms
+      initialValues={[
+        [usersAtom, testUsers],
+        [groupAtom, { round: 4, groupName: 'テストグループ' }],
+        [selectionsAtom, currentRoundSelections],
+      ]}
+    >
+      <StageModal
+        isOpen={true}
+        variant="slot"
+        onClose={() => console.log('Modal closed')}
+      />
+    </HydrateAtoms>
+  ),
   parameters: {
     // テスト用の長いタイムアウト
     test: {
@@ -125,6 +200,59 @@ export const SlotMachine: Story = {
     // アニメーション完了を待つ
     chromatic: {
       delay: 10000, // 10秒待機（スロットマシンアニメーション用）
+    },
+  },
+};
+
+/**
+ * 3人重複指名テストケース
+ * 3人が同じアイテムを選択した場合の演出確認
+ * randomNumber最大の人が勝者（緑）、他の2人が敗者（赤）
+ */
+export const ThreeWayConflict: Story = {
+  render: () => {
+    const conflictSelections: SelectionAtom[] = [
+      {
+        item: '重複指名アイテム',
+        comment: 'コメントA',
+        round: 2, // 現在のラウンド
+        userId: 'user1',
+        groupId: 'group1',
+        randomNumber: 100, // 最大値（勝者）
+      },
+      {
+        item: '重複指名アイテム',
+        comment: 'コメントB',
+        round: 2, // 現在のラウンド
+        userId: 'user2',
+        groupId: 'group1',
+        randomNumber: 50, // 中間値（敗者）
+      },
+      {
+        item: '重複指名アイテム',
+        comment: 'コメントC',
+        round: 2, // 現在のラウンド
+        userId: 'user3',
+        groupId: 'group1',
+        randomNumber: 30, // 最小値（敗者）
+      },
+    ];
+
+    return (
+      <HydrateAtoms
+        initialValues={[
+          [usersAtom, testUsers],
+          [groupAtom, { round: 3, groupName: 'テストグループ' }], // 現在Round3、表示はRound2の結果
+          [selectionsAtom, conflictSelections],
+        ]}
+      >
+        <StageModal isOpen={true} onClose={() => {}} variant="card" />
+      </HydrateAtoms>
+    );
+  },
+  parameters: {
+    chromatic: {
+      delay: 3000, // 3秒待機（カード演出用）
     },
   },
 };

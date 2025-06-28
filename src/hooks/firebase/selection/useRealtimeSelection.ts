@@ -1,71 +1,105 @@
 'use client';
 
-import {
-  type CollectionReference,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { usersAtom } from '@/src/components/features/draft/states';
 import { db } from '@/src/lib/firebase';
-import type { SelectionDataType, SelectionItemType } from './useSelection';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useAtomValue } from 'jotai';
+import { useEffect, useMemo, useState } from 'react';
+import type { SelectionItemType } from './useSelection';
 
 /**
  * リアルタイム選択監視フック
- * ドラフト選択のリアルタイム監視
+ * 複数ユーザーの個別監視によるドラフト選択のリアルタイム監視
  */
 export const useRealtimeSelection = (groupId: string | null) => {
   const [selections, setSelections] = useState<SelectionItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // usersAtomから参加者一覧を取得
+  const users = useAtomValue(usersAtom);
+  const userIds = useMemo(
+    () =>
+      users
+        .filter((user) => user?.id) // 有効なidのみ抽出
+        .map((user) => user.id),
+    [users],
+  );
+
   useEffect(() => {
-    if (!groupId) {
+    if (!groupId || userIds.length === 0) {
       setSelections([]);
       setLoading(false);
       return;
     }
 
-    // Firestoreのコレクション参照
-    const selectionQuery = query(
-      collection(
-        db,
-        'app/onlinedraft/selection',
-      ) as CollectionReference<SelectionDataType>,
-      orderBy('createdAt', 'desc'),
-    );
+    // 各ユーザーの選択データをMapで管理
+    const userSelectionsMap = new Map<string, SelectionItemType[]>();
+    const unsubscribes: (() => void)[] = [];
+    let loadedCount = 0;
 
-    // リアルタイム監視の開始
-    const unsubscribe = onSnapshot(
-      selectionQuery,
-      (snapshot) => {
-        // 全ての選択データを取得し、フラット化
-        const allSelections: SelectionItemType[] = [];
+    // 全選択データを再構築してstateに設定
+    const updateAllSelections = () => {
+      const allSelections: SelectionItemType[] = [];
+      userSelectionsMap.forEach((userSelections) => {
+        allSelections.push(...userSelections);
+      });
+      setSelections(allSelections);
+    };
 
-        snapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          // 各ドキュメントのselection配列から、該当するgroupIdのものだけをフィルタ
-          const groupSelections = data.selection.filter(
-            (item) => item.groupId === groupId,
-          );
-          allSelections.push(...groupSelections);
-        });
+    // 各ユーザーの個別監視
+    userIds.forEach((userId) => {
+      const userDocRef = doc(db, 'app/onlinedraft/selection', userId);
 
-        setSelections(allSelections);
-        setLoading(false);
-        setError(null);
-      },
-      (err) => {
-        console.error('選択データの取得エラー:', err);
-        setError(err as Error);
-        setLoading(false);
-      },
-    );
+      const unsubscribe = onSnapshot(
+        userDocRef,
+        (docSnapshot) => {
+          const userSelections: SelectionItemType[] = [];
 
-    // クリーンアップ
-    return unsubscribe;
-  }, [groupId]);
+          if (docSnapshot.exists()) {
+            const userDocument = docSnapshot.data();
+
+            // selection配列を直接処理
+            if (
+              userDocument?.selection &&
+              Array.isArray(userDocument.selection)
+            ) {
+              userDocument.selection.forEach((selection) => {
+                if (!selection.groupId || selection.groupId === groupId) {
+                  userSelections.push({
+                    ...selection,
+                    userId,
+                    groupId: selection.groupId || groupId,
+                  });
+                }
+              });
+            }
+          }
+
+          // ユーザーの選択データを更新
+          userSelectionsMap.set(userId, userSelections);
+          updateAllSelections();
+
+          loadedCount++;
+          if (loadedCount >= userIds.length) {
+            setLoading(false);
+          }
+        },
+        (err) => {
+          console.error(`User ${userId} selection error:`, err);
+          setError(err as Error);
+          setLoading(false);
+        },
+      );
+
+      unsubscribes.push(unsubscribe);
+    });
+
+    // クリーンアップ：全てのunsubscribeを実行
+    return () => {
+      unsubscribes.forEach((unsubscribe) => unsubscribe());
+    };
+  }, [groupId, userIds]);
 
   return { selections, loading, error };
 };

@@ -137,8 +137,12 @@ export const FirebaseTest = () => {
               <Text fontSize="md" fontWeight="bold">
                 テスト結果:
               </Text>
-              {testResults.map((result, index) => (
-                <Text key={index} fontSize="sm" fontFamily="mono">
+              {testResults.map((result) => (
+                <Text
+                  key={`test-result-${result}`}
+                  fontSize="sm"
+                  fontFamily="mono"
+                >
                   {result}
                 </Text>
               ))}

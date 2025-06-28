@@ -1,15 +1,14 @@
 'use client';
 
+import { db } from '@/src/lib/firebase';
 import {
-  type CollectionReference,
   collection,
   doc,
-  serverTimestamp,
   setDoc,
+  type CollectionReference,
   type Timestamp,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
-import { db } from '@/src/lib/firebase';
 
 /**
  * Firestore Chat データ型
@@ -71,9 +70,12 @@ export const useChat = () => {
         const messageRef = doc(logCollection);
         await setDoc(messageRef, {
           ...messageData,
-          createdAt: serverTimestamp(),
-          date: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          createdAt: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          date: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          updatedAt: new Date() as any,
         });
       } catch (error) {
         if (error instanceof Error) {
@@ -113,9 +115,12 @@ export const useChat = () => {
         const messageRef = doc(logCollection);
         await setDoc(messageRef, {
           ...systemMessageData,
-          createdAt: serverTimestamp(),
-          date: serverTimestamp(),
-          updatedAt: serverTimestamp(),
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          createdAt: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          date: new Date() as any,
+          // biome-ignore lint/suspicious/noExplicitAny: 日付は無視
+          updatedAt: new Date() as any,
         });
       } catch (error) {
         if (error instanceof Error) {
