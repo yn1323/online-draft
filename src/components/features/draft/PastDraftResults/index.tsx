@@ -1,12 +1,19 @@
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
+import { useToaster } from '@/src/components/ui/toaster';
 import {
+  conflictAnalysisAtom,
+  conflictResolutionAtom,
+  currentEditTargetAtom,
+  endConflictResolutionAtom,
   groupAtom,
   selectionsAtom,
+  startConflictResolutionAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
 import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
-import { atom, useAtomValue } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { useEffect } from 'react';
 import type {
   DraftPickType,
   DraftRoundType,
@@ -18,14 +25,22 @@ type PastDraftResultsProps = {
   onEditClick: ({ userId, round }: { userId?: string; round?: number }) => void;
 };
 
+type ConflictStatus = 'none' | 'winner' | 'loser' | 'nextEditTarget';
+
+type EnhancedDraftPickType = DraftPickType & {
+  conflictStatus: ConflictStatus;
+};
+
 /**
  * 過去のドラフト結果をUI表示用に変換するAtom
- * selectionsとusersを組み合わせてDraftRoundType[]を生成
+ * selectionsとusersを組み合わせて、競合状態を含むDraftRoundType[]を生成
  */
 const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
   const selections = get(selectionsAtom);
   const users = get(usersAtom);
   const { round: currentRound } = get(groupAtom);
+  const conflicts = get(conflictAnalysisAtom);
+  const currentEditTarget = get(currentEditTargetAtom);
 
   // 現在のラウンドより前のラウンドの結果のみを取得
   const pastSelections = selections.filter(
@@ -44,11 +59,37 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
     {} as Record<number, typeof pastSelections>,
   );
 
+  // 競合状態を判定するヘルパー関数
+  const getConflictStatus = (userId: string, round: number): ConflictStatus => {
+    // 次の編集対象かチェック
+    if (
+      currentEditTarget?.userId === userId &&
+      currentEditTarget?.round === round
+    ) {
+      return 'nextEditTarget';
+    }
+
+    // 該当する競合を検索
+    const conflict = conflicts.find((c) => c.round === round);
+    if (conflict) {
+      const conflictUser = conflict.conflictUsers.find(
+        (u) => u.userId === userId,
+      );
+      if (conflictUser) {
+        return conflictUser.isWinner ? 'winner' : 'loser';
+      }
+    }
+
+    return 'none';
+  };
+
   // DraftRoundType[]に変換
   return Object.entries(roundGroups)
     .map(([round, selections]) => {
+      const roundNumber = Number(round);
+
       // 全参加者ベースでpicksを生成（途中参加ユーザーの空欄対応）
-      const picks: DraftPickType[] = users.map((user, index) => {
+      const picks: EnhancedDraftPickType[] = users.map((user, index) => {
         const selection = selections.find((s) => s.userId === user.id);
 
         return {
@@ -58,12 +99,13 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
           avatar: user.avatar,
           item: selection?.item || '', // 空の場合は空文字
           comment: selection?.comment || '', // 空の場合は空文字
+          conflictStatus: getConflictStatus(user.id, roundNumber),
         };
       });
 
       return {
-        round: Number(round),
-        picks,
+        round: roundNumber,
+        picks: picks as DraftPickType[], // 型キャストでDraftPickType[]として扱う
       };
     })
     .sort((a, b) => a.round - b.round);
@@ -84,6 +126,53 @@ const participantsUIAtom = atom<ParticipantType[]>((get) => {
 });
 
 /**
+ * 競合状態に応じたスタイルを取得するヘルパー関数
+ */
+const getConflictStyle = (conflictStatus: ConflictStatus, hasItem: boolean) => {
+  switch (conflictStatus) {
+    case 'nextEditTarget':
+      // 次の編集対象：強い強調（赤背景＋太いボーダー）
+      return {
+        bg: 'red.100',
+        borderColor: 'red.400',
+        borderWidth: '2px',
+        borderStyle: 'solid' as const,
+        _hover: {
+          bg: 'red.150',
+          borderColor: 'red.500',
+          transition: 'all 0.15s ease',
+        },
+      };
+    case 'loser':
+      // 修正待ちの敗者：弱い強調（薄いオレンジ背景＋点線ボーダー）
+      return {
+        bg: 'orange.50',
+        borderColor: 'orange.300',
+        borderWidth: '1px',
+        borderStyle: 'dashed' as const,
+        cursor: 'not-allowed',
+        opacity: 0.7,
+        _hover: {
+          bg: 'orange.50', // hoverしても変化なし
+        },
+      };
+    case 'winner':
+    case 'none':
+      // 通常（競合勝者・非競合者）：既存スタイル
+      return {
+        borderColor: hasItem ? 'gray.200' : 'gray.300',
+        borderWidth: '1px',
+        borderStyle: hasItem ? ('solid' as const) : ('dashed' as const),
+        _hover: {
+          bg: 'gray.50',
+          borderColor: 'gray.300',
+          transition: 'all 0.15s ease',
+        },
+      };
+  }
+};
+
+/**
  * 過去のドラフト結果表示の共通コンポーネント
  * PC版: テーブル形式表示
  * SP版: アコーディオン形式表示
@@ -101,6 +190,53 @@ export const PastDraftResults = ({
   const pastResults = useAtomValue(pastDraftResultsUIAtom);
   const participants = useAtomValue(participantsUIAtom);
   const { round: currentRound } = useAtomValue(groupAtom);
+  const conflicts = useAtomValue(conflictAnalysisAtom);
+  const conflictResolution = useAtomValue(conflictResolutionAtom);
+  const currentEditTarget = useAtomValue(currentEditTargetAtom);
+  const startConflictResolution = useSetAtom(startConflictResolutionAtom);
+  const endConflictResolution = useSetAtom(endConflictResolutionAtom);
+  const { errorToast } = useToaster();
+
+  // 競合解決モードの自動管理
+  useEffect(() => {
+    if (conflicts.length > 0 && !conflictResolution.isActive) {
+      // 競合が検出されたら自動的に解決モードを開始
+      startConflictResolution();
+    } else if (conflicts.length === 0 && conflictResolution.isActive) {
+      // すべての競合が解決されたら自動的に解決モードを終了
+      endConflictResolution();
+    }
+  }, [
+    conflicts.length,
+    conflictResolution.isActive,
+    startConflictResolution,
+    endConflictResolution,
+  ]);
+
+  // 競合解決モード中のクリック処理
+  const handleEditClick = (userId: string, round: number) => {
+    // 競合解決モードがアクティブな場合
+    if (conflictResolution.isActive && currentEditTarget) {
+      // 次の編集対象の場合のみモーダルを開く
+      if (
+        currentEditTarget.userId === userId &&
+        currentEditTarget.round === round
+      ) {
+        onEditClick({ userId, round });
+      } else {
+        // 他のカードをクリックした場合はtoasterで促す
+        const targetUser = participants.find(
+          (p) => p.id === currentEditTarget.userId,
+        );
+        errorToast(
+          `競合解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
+        );
+      }
+    } else {
+      // 通常モードの場合は普通にモーダルを開く
+      onEditClick({ userId, round });
+    }
+  };
   if (variant === 'pc') {
     // PC版: テーブル形式
     const tableHeaderCellStyle = {
@@ -205,25 +341,29 @@ export const PastDraftResults = ({
                       {participants.map((participant) => {
                         const pick = roundResult.picks.find(
                           (p: DraftPickType) => p.userId === participant.id,
+                        ) as EnhancedDraftPickType | undefined;
+
+                        const hasItem = !!pick?.item;
+                        const conflictStatus = pick?.conflictStatus || 'none';
+                        const conflictStyle = getConflictStyle(
+                          conflictStatus,
+                          hasItem,
                         );
+                        const isClickable = conflictStatus !== 'loser';
+
                         return (
                           <Box
                             key={participant.id}
                             {...tableDataCellStyle}
-                            cursor="pointer"
-                            border="1px solid"
-                            borderColor={pick?.item ? 'gray.200' : 'gray.300'}
-                            borderStyle={pick?.item ? 'solid' : 'dashed'}
-                            _hover={{
-                              bg: 'gray.50',
-                              borderColor: 'gray.300',
-                              transition: 'all 0.15s ease',
-                            }}
+                            {...conflictStyle}
+                            cursor={isClickable ? 'pointer' : 'not-allowed'}
                             onClick={() => {
-                              onEditClick({
-                                round: roundResult.round,
-                                userId: participant.id,
-                              });
+                              if (isClickable) {
+                                handleEditClick(
+                                  participant.id,
+                                  roundResult.round,
+                                );
+                              }
                             }}
                           >
                             {pick?.item ? (
@@ -319,27 +459,28 @@ export const PastDraftResults = ({
                   {participants.map((participant) => {
                     const pick = roundResult.picks.find(
                       (p: DraftPickType) => p.userId === participant.id,
+                    ) as EnhancedDraftPickType | undefined;
+
+                    const hasItem = !!pick?.item;
+                    const conflictStatus = pick?.conflictStatus || 'none';
+                    const conflictStyle = getConflictStyle(
+                      conflictStatus,
+                      hasItem,
                     );
+                    const isClickable = conflictStatus !== 'loser';
+
                     return (
                       <HStack
                         key={participant.id}
                         w="full"
                         p={1.5}
-                        bg={pick?.item ? 'gray.50' : 'transparent'}
-                        border="1px solid"
-                        borderColor={pick?.item ? 'gray.200' : 'gray.300'}
-                        borderStyle={pick?.item ? 'solid' : 'dashed'}
+                        {...conflictStyle}
                         borderRadius="md"
-                        cursor="pointer"
-                        _hover={{
-                          bg: 'gray.100',
-                          transition: 'all 0.15s ease',
-                        }}
+                        cursor={isClickable ? 'pointer' : 'not-allowed'}
                         onClick={() => {
-                          onEditClick({
-                            round: roundResult.round,
-                            userId: participant.id,
-                          });
+                          if (isClickable) {
+                            handleEditClick(participant.id, roundResult.round);
+                          }
                         }}
                       >
                         <Avatar

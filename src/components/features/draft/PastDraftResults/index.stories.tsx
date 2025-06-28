@@ -201,8 +201,8 @@ export const NoResults: Story = {
       ]}
     >
       <div style={{ width: '400px', height: '300px' }}>
-        <PastDraftResults 
-          variant="sp" 
+        <PastDraftResults
+          variant="sp"
           onEditClick={({ userId, round }) =>
             console.log('編集クリック:', {
               userId,
