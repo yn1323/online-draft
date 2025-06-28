@@ -1,0 +1,7 @@
+import{a as i}from"./mockData-DISdYL5i.js";import{C as a}from"./index-j8x00CI5.js";import"./stack-BPGBxmP7.js";import"./index-BXymfbzT.js";import"./jsx-runtime-Bw5QeaCk.js";import"./index-C8TKjGAI.js";import"./index-DryDucYP.js";import"./_interop_require_wildcard-BpaVepTj.js";import"./index-DGKHe-6Q.js";import"./image-context-B4PdNff0.js";import"./box-BF69sWHg.js";import"./create-slot-recipe-context-BnxH4US7.js";import"./attr-C3Jtgmrz.js";import"./index-Brkr_dpc.js";import"./factory-GA1w9YC2.js";import"./index-Bkt13QoG.js";import"./index-BEZemFFB.js";import"./index-CrjboX4Z.js";import"./index-CmCyOxug.js";import"./index-BRNWFSEf.js";import"./index-DAbNv4Ic.js";import"./button-DJPprnzD.js";import"./spinner-BfFBc7wa.js";import"./index-Cta6h1Mu.js";import"./card-DlhQdIZJ.js";import"./v-stack-Dfms-mlT.js";import"./h-stack-CXTYcpFY.js";import"./text-CvVCgmJx.js";import"./grid-mntVVhnA.js";const B={title:"Features/draft/CurrentRoundStatus",component:a,parameters:{layout:"centered"},args:{participants:i,currentRound:4}},t={args:{variant:"sp",onItemSelect:()=>console.log("アイテム選択")}};var r,o,p,m,e;t.parameters={...t.parameters,docs:{...(r=t.parameters)==null?void 0:r.docs,source:{originalSource:`{
+  args: {
+    variant: 'sp',
+    onItemSelect: () => console.log('アイテム選択')
+  }
+}`,...(p=(o=t.parameters)==null?void 0:o.docs)==null?void 0:p.source},description:{story:`デフォルト表示
+アイテム選択ボタン付きの標準的な表示`,...(e=(m=t.parameters)==null?void 0:m.docs)==null?void 0:e.description}}};const G=["Default"];export{t as Default,G as __namedExportsOrder,B as default};
