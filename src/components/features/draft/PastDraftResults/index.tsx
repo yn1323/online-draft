@@ -308,7 +308,7 @@ export const PastDraftResults = ({
     }
 
     return (
-      <Box flex={1} w="full">
+      <Box flex={1} w="full" pb={2}>
         <Card variant="elevated" size="md">
           <Box h="full" display="flex" flexDirection="column">
             <Text fontSize="md" fontWeight="bold" mb={3}>

@@ -8,7 +8,7 @@ import {
   selectionsAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
-import { Box, Flex, Grid, HStack, Text, VStack } from '@chakra-ui/react';
+import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/react';
 import { atom, useAtomValue } from 'jotai';
 import { LuCheck } from 'react-icons/lu';
 import type { ParticipantType } from '../mockData';
@@ -161,59 +161,70 @@ export const CurrentRoundStatus = ({
           </VStack>
 
           {variant === 'pc' ? (
-            <Grid templateColumns="1fr 1fr 1fr" gap={2} w="full">
-              {participants
-                .filter((participant) => participant?.id) // 追加の安全チェック
-                .map((participant, index) => {
-                  // 実際の選択状態から判定
-                  const hasSelected = isUserSelected(participant.id);
-                  const isActive = !hasSelected; // 未選択なら選択中
-                  const isCurrentUser = participant.id === currentUserId;
-                  return (
-                    <VStack
-                      key={`${participant.id}-${index}`} // indexをフォールバックとして追加
-                      {...getParticipantCellStyle(isActive, isCurrentUser)}
-                    >
-                      <Avatar
-                        avatarNumber={participant.avatar}
-                        name={participant.name}
-                        size="xs"
-                      />
-                      <Text
-                        fontSize="2xs"
-                        fontWeight="medium"
-                        truncate
-                        w="full"
+            // PC版: 横スクロール対応
+            <Box overflowX="auto" w="full">
+              <HStack gap={2} minW="max-content" py={1}>
+                {participants
+                  .filter((participant) => participant?.id) // 追加の安全チェック
+                  .map((participant, index) => {
+                    // 実際の選択状態から判定
+                    const hasSelected = isUserSelected(participant.id);
+                    const isActive = !hasSelected; // 未選択なら選択中
+                    const isCurrentUser = participant.id === currentUserId;
+                    return (
+                      <VStack
+                        key={`${participant.id}-${index}`} // indexをフォールバックとして追加
+                        {...getParticipantCellStyle(isActive, isCurrentUser)}
+                        flex="0 0 auto"
+                        minW="120px"
+                        maxW="120px"
                       >
-                        {participant.name}
-                      </Text>
-                      {isActive ? (
-                        <Box {...getStatusBadgeStyle(true)}>選択中</Box>
-                      ) : (
-                        <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
-                          <HStack gap={1}>
-                            <LuCheck size={10} />
-                            <Text>入力完了</Text>
-                          </HStack>
-                          {/* 自分の選択のみ表示、他人は秘匿 */}
-                          {isCurrentUser && (
-                            <Text
-                              fontSize="2xs"
-                              color="green.700"
-                              fontWeight="medium"
-                              truncate
-                              w="full"
-                              textAlign="center"
-                            >
-                              {participant.currentPick}
-                            </Text>
-                          )}
-                        </VStack>
-                      )}
-                    </VStack>
-                  );
-                })}
-            </Grid>
+                        <Avatar
+                          avatarNumber={participant.avatar}
+                          name={participant.name}
+                          size="sm"
+                        />
+                        <Text
+                          fontSize="xs"
+                          fontWeight="medium"
+                          overflow="hidden"
+                          textOverflow="ellipsis"
+                          whiteSpace="nowrap"
+                          w="full"
+                          textAlign="center"
+                        >
+                          {participant.name}
+                        </Text>
+                        {isActive ? (
+                          <Box {...getStatusBadgeStyle(true)}>選択中</Box>
+                        ) : (
+                          <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
+                            <HStack gap={1}>
+                              <LuCheck size={10} />
+                              <Text>入力完了</Text>
+                            </HStack>
+                            {/* 自分の選択のみ表示、他人は秘匿 */}
+                            {isCurrentUser && (
+                              <Text
+                                fontSize="2xs"
+                                color="green.700"
+                                fontWeight="medium"
+                                overflow="hidden"
+                                textOverflow="ellipsis"
+                                whiteSpace="nowrap"
+                                w="full"
+                                textAlign="center"
+                              >
+                                {participant.currentPick}
+                              </Text>
+                            )}
+                          </VStack>
+                        )}
+                      </VStack>
+                    );
+                  })}
+              </HStack>
+            </Box>
           ) : (
             // SP版: 横スクロール対応
             <Box overflowX="auto" w="full">
