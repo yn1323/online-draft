@@ -261,7 +261,7 @@ export const DraftPageInner = () => {
 
   // PC版: 2カラムレイアウト
   return (
-    <Box bg="gray.50" minH="100vh" py={2}>
+    <Box minH="100vh" py={2}>
       <Container maxW="full">
         {/* ヘッダー */}
         <Box mb={2}>
