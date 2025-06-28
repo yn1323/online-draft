@@ -25,6 +25,14 @@ export const TEST_DATA = {
     { name: 'Diana', avatar: '4' },
   ],
 
+  DRAFT_ITEMS: [
+    { name: 'テストアイテム1', comment: 'テストコメント1' },
+    { name: 'テストアイテム2', comment: 'テストコメント2' },
+    { name: '編集前アイテム', comment: '編集前コメント' },
+    { name: '編集後アイテム', comment: '編集後コメント' },
+    { name: '競合アイテム', comment: '競合テスト用' },
+  ],
+
   SAMPLE_CODES: ['ABC123', 'XYZ789', 'TEST01'],
 
   SAMPLE_URLS: [

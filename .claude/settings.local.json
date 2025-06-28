@@ -89,7 +89,8 @@
       "mcp__playwright__playwright_press_key",
       "mcp__typescript-mcp__get_module_symbols",
       "mcp__github__search_issues",
-      "mcp__github__search_code"
+      "mcp__github__search_code",
+      "mcp__playwright__start_codegen_session"
     ],
     "deny": [
       "Bash(sudo:*)",

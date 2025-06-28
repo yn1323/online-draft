@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import { expect, type Page } from '@playwright/test';
 import { SELECTORS, TEST_DATA, TIMEOUTS } from '../constants';
 
 /**
@@ -111,4 +111,141 @@ export async function setupNetworkDelay(
     await new Promise((resolve) => setTimeout(resolve, delayMs));
     await route.continue();
   });
+}
+
+/**
+ * アイテム選択操作
+ * 指名ボタン → ItemSelectModal → アイテム入力 → 保存
+ */
+export async function selectItem(
+  page: Page,
+  itemName: string,
+  comment = '',
+): Promise<void> {
+  // 指名ボタンをクリック
+  const selectButton = page.getByRole('button', { name: '指名する' });
+  await selectButton.click();
+
+  // ItemSelectModalが表示されるまで待機
+  await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
+  const modal = page.locator(SELECTORS.MODAL.CONTAINER);
+  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
+
+  // アイテム名を入力
+  const itemInput = page.getByRole('textbox', { name: 'アイテム名' });
+  await itemInput.fill(itemName);
+
+  // コメント入力（任意）
+  if (comment) {
+    const commentInput = page.getByRole('textbox', { name: 'コメント' });
+    await commentInput.fill(comment);
+  }
+
+  // 指名を確定ボタンをクリック（submit typeを使用）
+  const confirmButton = page.locator('button[type="submit"]:has-text("指名を確定")');
+  await confirmButton.click();
+
+  // モーダルが閉じるまで待機
+  await modal.waitFor({ state: 'hidden', timeout: TIMEOUTS.MEDIUM });
+}
+
+/**
+ * 指名発表操作
+ * 指名発表ボタン → 確認モーダル → 実行
+ */
+export async function openResult(page: Page): Promise<void> {
+  // 指名発表ボタンをクリック
+  const openButton = page.getByRole('button', { name: '指名発表' });
+  await openButton.click();
+
+  // 確認モーダルが表示される場合の処理
+  await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
+  
+  // 「開票する」ボタンがあれば実行
+  const executeButton = page.getByRole('button', { name: '開票する' });
+  if (await executeButton.isVisible()) {
+    await executeButton.click();
+  }
+
+  // StageModalのアニメーション完了まで待機
+  await page.waitForTimeout(TIMEOUTS.LONG);
+}
+
+/**
+ * 過去の結果編集操作
+ * 過去結果クリック → ItemSelectModal → 編集 → 保存
+ */
+export async function editPastResult(
+  page: Page,
+  targetText: string,
+  newItemName: string,
+): Promise<void> {
+  // SP版の場合、アコーディオンを開く必要がある場合を考慮
+  const isMobile = await page.evaluate(() => window.innerWidth < 768);
+  
+  if (isMobile) {
+    // Round数のボタンを探してクリック（アコーディオンを開く）
+    const roundButton = page.getByRole('button', { name: /Round \d+/ }).first();
+    if (await roundButton.isVisible()) {
+      await roundButton.click();
+      await page.waitForTimeout(TIMEOUTS.SHORT);
+    }
+  }
+
+  // 対象の結果をクリック
+  const targetResult = page.getByText(targetText);
+  await targetResult.click();
+
+  // ItemSelectModalが表示されるまで待機
+  await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
+  const modal = page.locator(SELECTORS.MODAL.CONTAINER);
+  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
+
+  // アイテム名を変更
+  const itemInput = page.getByRole('textbox', { name: 'アイテム名' });
+  await itemInput.clear();
+  await itemInput.fill(newItemName);
+
+  // 変更を保存ボタンをクリック
+  const saveButton = page.getByRole('button', { name: '変更を保存' });
+  await saveButton.click();
+
+  // モーダルが閉じるまで待機
+  await modal.waitFor({ state: 'hidden', timeout: TIMEOUTS.MEDIUM });
+}
+
+/**
+ * ドラフトルーム共有操作
+ * シェアボタン → ShareModal → URLコピー
+ */
+export async function shareRoom(page: Page): Promise<void> {
+  // シェアボタンをクリック
+  const shareButton = page.getByRole('button', { name: 'シェア' });
+  await shareButton.click();
+
+  // ShareModalが表示されるまで待機
+  await page.waitForTimeout(TIMEOUTS.MODAL_ANIMATION);
+  const modal = page.locator(SELECTORS.MODAL.CONTAINER);
+  await modal.waitFor({ state: 'visible', timeout: TIMEOUTS.MEDIUM });
+
+  // URLコピーボタンをクリック
+  const copyButton = page.getByRole('button', { name: 'URLをコピー' });
+  await copyButton.click();
+
+  // コピー完了トーストの確認
+  await expect(page.getByText('URLをコピーしました')).toBeVisible();
+
+  // モーダルを閉じる
+  const closeButton = page.getByRole('button', { name: '閉じる' });
+  await closeButton.click();
+  await modal.waitFor({ state: 'hidden', timeout: TIMEOUTS.MEDIUM });
+}
+
+/**
+ * SP版タブ切り替え操作
+ */
+export async function switchToTab(page: Page, tabName: 'ドラフト' | 'チャット'): Promise<void> {
+  const tabButton = page.getByRole('tab', { name: tabName === 'チャット' ? 'チャット/ログ' : tabName });
+  await tabButton.click();
+  await page.waitForTimeout(TIMEOUTS.SHORT);
 }
