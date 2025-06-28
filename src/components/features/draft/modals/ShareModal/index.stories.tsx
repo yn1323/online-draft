@@ -23,6 +23,16 @@ export const Default: Story = {
     groupId: 'example-group-id',
     groupName: 'テストドラフトグループ',
   },
+  parameters: {
+    // ナビゲーションエラー回避のためクリップボードアクセスを無効化
+    mockData: {
+      navigator: {
+        clipboard: {
+          writeText: () => Promise.resolve(),
+        },
+      },
+    },
+  },
 };
 
 /**
@@ -35,5 +45,15 @@ export const LongGroupName: Story = {
     groupId: 'example-group-id',
     groupName:
       'とても長いグループ名のドラフト会議室です。この名前は非常に長いので表示がどうなるかテストしています。',
+  },
+  parameters: {
+    // ナビゲーションエラー回避のためクリップボードアクセスを無効化
+    mockData: {
+      navigator: {
+        clipboard: {
+          writeText: () => Promise.resolve(),
+        },
+      },
+    },
   },
 };

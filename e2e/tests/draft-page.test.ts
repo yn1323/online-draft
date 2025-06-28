@@ -76,8 +76,8 @@ test.describe('ドラフトページ機能', () => {
     const selectButton = page.getByRole('button', { name: '指名する' });
     await expect(selectButton).toBeVisible();
 
-    // ボタンが現在無効であることを確認（1人だけのため）
-    await expect(selectButton).toBeDisabled();
+    // ボタンが有効であることを確認（指名可能状態）
+    await expect(selectButton).toBeEnabled();
 
     // 代わりに、現在の状態説明をテスト
     await expect(page.getByText('0/1 人選択完了')).toBeVisible();
