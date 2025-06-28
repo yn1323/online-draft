@@ -18,7 +18,7 @@ const MotionBox = motion(Box);
  * ステージ演出用の参加者情報をUI表示用に変換するAtom
  * users、selections、currentRoundを組み合わせてParticipantResult[]を生成
  * 同じアイテムを選んだ人の中でrandomNumberが最大の人が勝者（willLose=false）
- * それ以外の競合者は全員敗者（willLose=true）になる
+ * それ以外の重複指名者は全員敗者（willLose=true）になる
  */
 const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
   const users = get(usersAtom);
@@ -114,18 +114,20 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
     }
   }, [isOpen]);
 
-  // アニメーション完了後の競合メッセージ表示
+  // アニメーション完了後の重複指名メッセージ表示
   useEffect(() => {
     if (isOpen && isRevealing) {
-      // 表示中のラウンド（round - 1）で競合があるかチェック
+      // 表示中のラウンド（round - 1）で重複指名があるかチェック
       const currentDisplayRound = round - 1;
-      const hasConflict = conflicts.some((c) => c.round === currentDisplayRound);
-      
+      const hasConflict = conflicts.some(
+        (c) => c.round === currentDisplayRound,
+      );
+
       if (hasConflict) {
         // variantに応じた正確なアニメーション時間を計算
         let animationDuration = 0;
         const participantCount = participants.length;
-        
+
         switch (variant) {
           case 'card':
             // CardRevealStage: (参加者数) * 800 + 600 + 500 + 1000
@@ -138,13 +140,15 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
             const maxChoiceLength = Math.max(
               ...participants.map((p) => p.choice.length),
             );
-            animationDuration = participantCount * 1000 + maxChoiceLength * 80 + 300 + 1000;
+            animationDuration =
+              participantCount * 1000 + maxChoiceLength * 80 + 300 + 1000;
             break;
           }
           case 'slot':
             // SlotMachineStage: (参加者数 - 1) * 500 + 3000 + 500 + 1000
             // 順次開始(500ms間隔) + スロット回転(3000ms) + エフェクト待機(500ms) + 余裕(1000ms)
-            animationDuration = (participantCount - 1) * 500 + 3000 + 500 + 1000;
+            animationDuration =
+              (participantCount - 1) * 500 + 3000 + 500 + 1000;
             break;
         }
 
@@ -187,8 +191,8 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
           onStartReveal={handleStartReveal}
           onReset={handleReset}
         />
-        
-        {/* 競合メッセージエリア */}
+
+        {/* 重複指名メッセージエリア */}
         {showConflictMessage && (
           <MotionBox
             initial={{ opacity: 0, y: 10 }}
@@ -205,11 +209,13 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
               <Box display="flex" alignItems="center" gap={2}>
                 <Text fontSize="lg">⚠️</Text>
                 <Text fontSize="md" fontWeight="bold" color="red.700">
-                  競合が発生しました！
+                  重複指名が発生しました！
                 </Text>
               </Box>
               <Text fontSize="sm" color="red.600" lineHeight="1.5">
-                赤枠のカードから順番に編集してください。競合解決が完了するまで次のラウンドに進めません。
+                赤く表示されたドラフト結果から順番に編集してください。
+                <br />
+                重複指名が完了するまで次のラウンドに進めません。
               </Text>
             </VStack>
           </MotionBox>

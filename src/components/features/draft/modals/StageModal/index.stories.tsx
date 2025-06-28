@@ -205,7 +205,7 @@ export const SlotMachine: Story = {
 };
 
 /**
- * 3人競合テストケース
+ * 3人重複指名テストケース
  * 3人が同じアイテムを選択した場合の演出確認
  * randomNumber最大の人が勝者（緑）、他の2人が敗者（赤）
  */
@@ -213,7 +213,7 @@ export const ThreeWayConflict: Story = {
   render: () => {
     const conflictSelections: SelectionAtom[] = [
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントA',
         round: 2, // 現在のラウンド
         userId: 'user1',
@@ -221,7 +221,7 @@ export const ThreeWayConflict: Story = {
         randomNumber: 100, // 最大値（勝者）
       },
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントB',
         round: 2, // 現在のラウンド
         userId: 'user2',
@@ -229,7 +229,7 @@ export const ThreeWayConflict: Story = {
         randomNumber: 50, // 中間値（敗者）
       },
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントC',
         round: 2, // 現在のラウンド
         userId: 'user3',

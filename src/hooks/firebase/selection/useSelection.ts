@@ -50,7 +50,7 @@ export const useSelection = () => {
       const { groupId, userId, item, comment, round, currentSelections } =
         params;
       try {
-        // 競合解決用のランダムナンバー生成（0〜999999）
+        // 重複指名解決用のランダムナンバー生成（0〜999999）
         const randomNumber = Math.floor(Math.random() * 1000000);
 
         // コレクション参照

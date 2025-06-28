@@ -1,6 +1,5 @@
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
-import { useToaster } from '@/src/components/ui/toaster';
 import {
   conflictAnalysisAtom,
   conflictResolutionAtom,
@@ -11,6 +10,7 @@ import {
   startConflictResolutionAtom,
   usersAtom,
 } from '@/src/components/features/draft/states';
+import { useToaster } from '@/src/components/ui/toaster';
 import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -33,7 +33,7 @@ type EnhancedDraftPickType = DraftPickType & {
 
 /**
  * 過去のドラフト結果をUI表示用に変換するAtom
- * selectionsとusersを組み合わせて、競合状態を含むDraftRoundType[]を生成
+ * selectionsとusersを組み合わせて、重複指名状態を含むDraftRoundType[]を生成
  */
 const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
   const selections = get(selectionsAtom);
@@ -59,7 +59,7 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
     {} as Record<number, typeof pastSelections>,
   );
 
-  // 競合状態を判定するヘルパー関数
+  // 重複指名状態を判定するヘルパー関数
   const getConflictStatus = (userId: string, round: number): ConflictStatus => {
     // 次の編集対象かチェック
     if (
@@ -69,7 +69,7 @@ const pastDraftResultsUIAtom = atom<DraftRoundType[]>((get) => {
       return 'nextEditTarget';
     }
 
-    // 該当する競合を検索
+    // 該当する重複指名を検索
     const conflict = conflicts.find((c) => c.round === round);
     if (conflict) {
       const conflictUser = conflict.conflictUsers.find(
@@ -126,7 +126,7 @@ const participantsUIAtom = atom<ParticipantType[]>((get) => {
 });
 
 /**
- * 競合状態に応じたスタイルを取得するヘルパー関数
+ * 重複指名状態に応じたスタイルを取得するヘルパー関数
  */
 const getConflictStyle = (conflictStatus: ConflictStatus, hasItem: boolean) => {
   switch (conflictStatus) {
@@ -158,7 +158,7 @@ const getConflictStyle = (conflictStatus: ConflictStatus, hasItem: boolean) => {
       };
     case 'winner':
     case 'none':
-      // 通常（競合勝者・非競合者）：既存スタイル
+      // 通常（重複指名勝者・非重複指名者）：既存スタイル
       return {
         borderColor: hasItem ? 'gray.200' : 'gray.300',
         borderWidth: '1px',
@@ -197,13 +197,13 @@ export const PastDraftResults = ({
   const endConflictResolution = useSetAtom(endConflictResolutionAtom);
   const { errorToast } = useToaster();
 
-  // 競合解決モードの自動管理
+  // 重複指名解決モードの自動管理
   useEffect(() => {
     if (conflicts.length > 0 && !conflictResolution.isActive) {
-      // 競合が検出されたら自動的に解決モードを開始
+      // 重複指名が検出されたら自動的に解決モードを開始
       startConflictResolution();
     } else if (conflicts.length === 0 && conflictResolution.isActive) {
-      // すべての競合が解決されたら自動的に解決モードを終了
+      // すべての重複指名が解決されたら自動的に解決モードを終了
       endConflictResolution();
     }
   }, [
@@ -213,9 +213,9 @@ export const PastDraftResults = ({
     endConflictResolution,
   ]);
 
-  // 競合解決モード中のクリック処理
+  // 重複指名解決モード中のクリック処理
   const handleEditClick = (userId: string, round: number) => {
-    // 競合解決モードがアクティブな場合
+    // 重複指名解決モードがアクティブな場合
     if (conflictResolution.isActive && currentEditTarget) {
       // 次の編集対象の場合のみモーダルを開く
       if (
@@ -224,7 +224,7 @@ export const PastDraftResults = ({
       ) {
         onEditClick({ userId, round });
       } else {
-        // クリックされたカードが競合の敗者かどうかを確認
+        // クリックされたカードが重複指名の敗者かどうかを確認
         const clickedConflict = conflicts.find(
           (c) =>
             c.round === round &&
@@ -236,14 +236,14 @@ export const PastDraftResults = ({
         );
 
         if (clickedConflict) {
-          // 競合の敗者をクリックした場合
+          // 重複指名の敗者をクリックした場合
           errorToast(
-            `このカードは競合で負けたため編集が必要です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}から順番に編集してください。`,
+            `このカードは重複指名で負けたため編集が必要です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}から順番に編集してください。`,
           );
         } else {
           // その他のカードをクリックした場合
           errorToast(
-            `競合解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
+            `重複指名解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
           );
         }
       }
@@ -455,9 +455,11 @@ export const PastDraftResults = ({
         {pastResults
           .sort((a, b) => a.round - b.round)
           .map((roundResult) => {
-            // 該当ラウンドで競合があるかチェック
-            const hasConflict = conflicts.some((c) => c.round === roundResult.round);
-            
+            // 該当ラウンドで重複指名があるかチェック
+            const hasConflict = conflicts.some(
+              (c) => c.round === roundResult.round,
+            );
+
             return (
               <Accordion.Item
                 key={roundResult.round}
@@ -471,80 +473,82 @@ export const PastDraftResults = ({
                   }}
                 >
                   <HStack justify="space-between" w="full" cursor="pointer">
-                    <Text 
-                      fontSize="sm" 
-                      fontWeight="bold" 
+                    <Text
+                      fontSize="sm"
+                      fontWeight="bold"
                       color={hasConflict ? 'red.700' : 'gray.700'}
                     >
                       Round {roundResult.round}
                       {hasConflict && ' 🔥'}
                     </Text>
-                    <Accordion.ItemIndicator 
+                    <Accordion.ItemIndicator
                       color={hasConflict ? 'red.500' : undefined}
                     />
                   </HStack>
                 </Accordion.ItemTrigger>
-              <Accordion.ItemContent>
-                <VStack gap={1} w="full" py={2}>
-                  {participants.map((participant) => {
-                    const pick = roundResult.picks.find(
-                      (p: DraftPickType) => p.userId === participant.id,
-                    ) as EnhancedDraftPickType | undefined;
+                <Accordion.ItemContent>
+                  <VStack gap={1} w="full" py={2}>
+                    {participants.map((participant) => {
+                      const pick = roundResult.picks.find(
+                        (p: DraftPickType) => p.userId === participant.id,
+                      ) as EnhancedDraftPickType | undefined;
 
-                    const hasItem = !!pick?.item;
-                    const conflictStatus = pick?.conflictStatus || 'none';
-                    const conflictStyle = getConflictStyle(
-                      conflictStatus,
-                      hasItem,
-                    );
-                    const isClickable = conflictStatus !== 'loser';
+                      const hasItem = !!pick?.item;
+                      const conflictStatus = pick?.conflictStatus || 'none';
+                      const conflictStyle = getConflictStyle(
+                        conflictStatus,
+                        hasItem,
+                      );
+                      const isClickable = conflictStatus !== 'loser';
 
-                    return (
-                      <HStack
-                        key={participant.id}
-                        w="full"
-                        p={1.5}
-                        {...conflictStyle}
-                        borderRadius="md"
-                        cursor={isClickable ? 'pointer' : 'not-allowed'}
-                        onClick={() => {
-                          handleEditClick(participant.id, roundResult.round);
-                        }}
-                      >
-                        <Avatar
-                          avatarNumber={participant.avatar}
-                          name={participant.name}
-                          size="xs"
-                        />
-                        <VStack align="start" gap={0} flex={1}>
-                          <Text fontSize="sm" fontWeight="medium">
-                            {participant.name}
-                          </Text>
-                          {pick?.item ? (
-                            <>
-                              <Text fontSize="sm" color="gray.600">
-                                {pick.item}
-                              </Text>
-                              <Text
-                                fontSize="xs"
-                                color="gray.600"
-                                py={pick.comment !== '' ? 0 : 2}
-                              >
-                                {pick.comment !== '' ? `(${pick.comment})` : ''}
-                              </Text>
-                            </>
-                          ) : (
-                            <Text fontSize="xs" color="gray.400" py={2}>
-                              + 追加
+                      return (
+                        <HStack
+                          key={participant.id}
+                          w="full"
+                          p={1.5}
+                          {...conflictStyle}
+                          borderRadius="md"
+                          cursor={isClickable ? 'pointer' : 'not-allowed'}
+                          onClick={() => {
+                            handleEditClick(participant.id, roundResult.round);
+                          }}
+                        >
+                          <Avatar
+                            avatarNumber={participant.avatar}
+                            name={participant.name}
+                            size="xs"
+                          />
+                          <VStack align="start" gap={0} flex={1}>
+                            <Text fontSize="sm" fontWeight="medium">
+                              {participant.name}
                             </Text>
-                          )}
-                        </VStack>
-                      </HStack>
-                    );
-                  })}
-                </VStack>
-              </Accordion.ItemContent>
-            </Accordion.Item>
+                            {pick?.item ? (
+                              <>
+                                <Text fontSize="sm" color="gray.600">
+                                  {pick.item}
+                                </Text>
+                                <Text
+                                  fontSize="xs"
+                                  color="gray.600"
+                                  py={pick.comment !== '' ? 0 : 2}
+                                >
+                                  {pick.comment !== ''
+                                    ? `(${pick.comment})`
+                                    : ''}
+                                </Text>
+                              </>
+                            ) : (
+                              <Text fontSize="xs" color="gray.400" py={2}>
+                                + 追加
+                              </Text>
+                            )}
+                          </VStack>
+                        </HStack>
+                      );
+                    })}
+                  </VStack>
+                </Accordion.ItemContent>
+              </Accordion.Item>
             );
           })}
       </Accordion.Root>

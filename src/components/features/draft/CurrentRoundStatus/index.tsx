@@ -243,7 +243,7 @@ export const CurrentRoundStatus = ({
                           selectedCount < 1 || conflictResolution.isActive
                         }
                       >
-                        開票する
+                        指名発表
                       </Button>
                     </VStack>
                   </Box>

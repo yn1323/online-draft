@@ -59,20 +59,20 @@ export const conflictResolutionAtom = atom<ConflictResolutionState>({
 });
 
 /**
- * 競合解決の現在の編集対象を自動計算するderived atom
+ * 重複指名解決の現在の編集対象を自動計算するderived atom
  */
 export const currentEditTargetAtom = atom((get) => {
   const conflicts = get(conflictAnalysisAtom);
   const conflictResolution = get(conflictResolutionAtom);
 
-  // 競合解決モードがアクティブでない場合はnull
+  // 重複指名解決モードがアクティブでない場合はnull
   if (!conflictResolution.isActive) {
     return null;
   }
 
-  // 未解決の競合から次の編集対象を決定
+  // 未解決の重複指名から次の編集対象を決定
   for (const conflict of conflicts) {
-    // まだ敗者が残っている競合があるかチェック
+    // まだ敗者が残っている重複指名があるかチェック
     const unresolvedLosers = conflict.conflictUsers.filter((u) => !u.isWinner);
     if (unresolvedLosers.length > 0) {
       // 最もrandomNumberが大きい敗者を返す
@@ -86,12 +86,12 @@ export const currentEditTargetAtom = atom((get) => {
     }
   }
 
-  // すべての競合が解決済みの場合はnull
+  // すべての重複指名が解決済みの場合はnull
   return null;
 });
 
 /**
- * 競合解決モードを開始するアクション
+ * 重複指名解決モードを開始するアクション
  */
 export const startConflictResolutionAtom = atom(null, (get, set) => {
   const conflicts = get(conflictAnalysisAtom);
@@ -105,7 +105,7 @@ export const startConflictResolutionAtom = atom(null, (get, set) => {
 });
 
 /**
- * 競合解決モードを終了するアクション
+ * 重複指名解決モードを終了するアクション
  */
 export const endConflictResolutionAtom = atom(null, (_get, set) => {
   set(conflictResolutionAtom, {
@@ -116,8 +116,8 @@ export const endConflictResolutionAtom = atom(null, (_get, set) => {
 });
 
 /**
- * 競合を検出・解析するderived atom
- * selectionsとusersから競合状況を自動計算
+ * 重複指名を検出・解析するderived atom
+ * selectionsとusersから重複指名状況を自動計算
  */
 export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
   const selections = get(selectionsAtom);
@@ -128,7 +128,7 @@ export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
     (selection) => selection.round < currentRound,
   );
 
-  // ラウンド別に競合を検出
+  // ラウンド別に重複指名を検出
   const conflictsByRound: Record<number, ConflictInfo[]> = {};
 
   // ラウンド別にグループ化
@@ -143,7 +143,7 @@ export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
     {} as Record<number, typeof pastSelections>,
   );
 
-  // 各ラウンドで競合を検出
+  // 各ラウンドで重複指名を検出
   Object.entries(roundGroups).forEach(([roundStr, roundSelections]) => {
     const round = Number(roundStr);
 
@@ -159,10 +159,10 @@ export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
       {} as Record<string, typeof roundSelections>,
     );
 
-    // 競合があるアイテムを抽出（複数人が同じアイテムを選択）
+    // 重複指名があるアイテムを抽出（複数人が同じアイテムを選択）
     Object.entries(itemGroups).forEach(([item, itemSelections]) => {
       if (itemSelections.length > 1) {
-        // 競合発生！勝敗を決定
+        // 重複指名発生！勝敗を決定
         const maxRandomNumber = Math.max(
           ...itemSelections.map((s) => s.randomNumber),
         );
@@ -197,6 +197,6 @@ export const conflictAnalysisAtom = atom<ConflictInfo[]>((get) => {
     });
   });
 
-  // 全競合を配列で返す
+  // 全重複指名を配列で返す
   return Object.values(conflictsByRound).flat();
 });

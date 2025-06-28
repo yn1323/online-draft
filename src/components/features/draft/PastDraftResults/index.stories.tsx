@@ -216,15 +216,15 @@ export const NoResults: Story = {
 };
 
 /**
- * 3人競合テストケース（競合解決機能の動作確認用）
+ * 3人重複指名テストケース（重複指名解決機能の動作確認用）
  * Round 1で3人全員が同じアイテムを選択した状態
  */
 export const ThreeWayConflict: Story = {
   render: () => {
-    // 3人競合のテストデータ（全員が同じアイテムを選択）
+    // 3人重複指名のテストデータ（全員が同じアイテムを選択）
     const conflictSelections: SelectionAtom[] = [
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントA',
         round: 1,
         userId: 'user1',
@@ -232,7 +232,7 @@ export const ThreeWayConflict: Story = {
         randomNumber: 100, // 最大値（勝者）
       },
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントB',
         round: 1,
         userId: 'user2',
@@ -240,7 +240,7 @@ export const ThreeWayConflict: Story = {
         randomNumber: 50, // 中間値（敗者）
       },
       {
-        item: '競合アイテム',
+        item: '重複指名アイテム',
         comment: 'コメントC',
         round: 1,
         userId: 'user3',
