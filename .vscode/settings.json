@@ -1,37 +1,31 @@
 {
-  "eslint.validate": ["html", "javascriptreact", "typescriptreact"],
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "[prisma]": {
+    "editor.defaultFormatter": "Prisma.prisma"
+  },
+  "cSpell.words": [
+    "chromaui",
+    "docgen",
+    "nextjs",
+    "onlinedraft",
+    "signout",
+    "Signup",
+    "storycap",
+    "testrun",
+    "textbox",
+    "viewports",
+    "vitest"
+  ],
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+    "quickfix.biome": "explicit",
+    "source.addMissingImports": "explicit",
+    "source.organizeImports": "explicit"
   },
-  "[typescriptreact]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  "[typescript]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  "[javascript]": {
-    "editor.tabSize": 2,
-    "editor.insertSpaces": true
-  },
-  "[markdown]": {
-    "editor.formatOnSave": false
-  },
-  // Monokai Extended for "console" color
-  "editor.semanticTokenColorCustomizations": {
-    "enabled": true,
-    "rules": {
-      "variable.defaultLibrary": "#66d9ef"
-    }
-  },
-  "stylelint.enable": true,
-  "css.validate": false,
-  "less.validate": false,
-  "scss.validate": false,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.defaultFormatter": "biomejs.biome",
   "editor.formatOnSave": true,
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-  "typescript.preferences.importModuleSpecifier": "non-relative"
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "favorites.resources": [],
+  "claude-code.context.autoGenerate": true,
+  "claude-code.context.updateTrigger": "onSave"
 }

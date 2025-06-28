@@ -1,0 +1,39 @@
+name: quick-checks
+
+on:
+  - push
+
+jobs:
+  quick-checks:
+    runs-on: ubuntu-latest
+    environment: preview
+    strategy:
+      matrix:
+        check: [lint, type-check]
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup
+        uses: ./.github/actions/setup
+        
+      - name: Record check start
+        run: echo "CHECK_START=$(date +%s)" >> $GITHUB_ENV
+        
+      - name: Run ${{ matrix.check }}
+        run: pnpm ${{ matrix.check }}
+        
+      - name: Measure check time
+        run: |
+          CHECK_END=$(date +%s)
+          CHECK_TIME=$((CHECK_END - CHECK_START))
+          echo "⏱️ ${{ matrix.check }} Time: ${CHECK_TIME}s" >> $GITHUB_STEP_SUMMARY
+          
+          if [[ "${{ matrix.check }}" == "type-check" ]] && [ "$CHECK_TIME" -lt 10 ]; then
+            echo "🎯 TypeScriptキャッシュ効果: 高速型チェック!" >> $GITHUB_STEP_SUMMARY
+          elif [[ "${{ matrix.check }}" == "lint" ]] && [ "$CHECK_TIME" -lt 5 ]; then
+            echo "🎯 Biomeキャッシュ効果: 高速lint!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "🔄 キャッシュ: 初回実行 or 大きな変更" >> $GITHUB_STEP_SUMMARY
+          fi

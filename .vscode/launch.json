@@ -1,0 +1,23 @@
+{
+  "version": "0.3.0",
+  "configurations": [
+    {
+      "command": "pnpm dev",
+      "name": "Next.js開発環境",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "pnpm storybook",
+      "name": "Storybook開発環境",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    {
+      "command": "pnpm test:ui",
+      "name": "VitestHMR環境",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+name: VRT Prepare
+
+on:
+  workflow_call:
+    inputs:
+      branch_type:
+        description: 'Branch type: expected or actual'
+        required: true
+        type: string
+      ref:
+        description: 'Git reference to checkout'
+        required: true
+        type: string
+      artifact_prefix:
+        description: 'Artifact name prefix'
+        required: true
+        type: string
+    outputs:
+      screenshots_ready:
+        description: 'Screenshots generation completed'
+        value: ${{ jobs.take_screenshots.result == 'success' }}
+
+env:
+  NEXT_PUBLIC_FIREBASE_PROJECT_ID: ${{ secrets.NEXT_PUBLIC_FIREBASE_PROJECT_ID }}
+  NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN: ${{ secrets.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN }}
+  NEXT_PUBLIC_FIREBASE_API_KEY: ${{ secrets.NEXT_PUBLIC_FIREBASE_API_KEY }}
+  NEXT_PUBLIC_GTM_ID: ${{ secrets.NEXT_PUBLIC_GTM_ID }}
+
+jobs:
+  build_storybook:
+    runs-on: ubuntu-latest
+    environment: preview
+    timeout-minutes: 30
+    outputs:
+      build_artifact: ${{ steps.upload.outputs.artifact-id }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          
+      - name: Setup
+        uses: ./.github/actions/setup
+        
+      - name: Cache Storybook build
+        uses: actions/cache@v4
+        with:
+          path: |
+            storybook-static
+            .storybook/cache
+            node_modules/.cache/storybook
+          key: ${{ runner.os }}-storybook-${{ hashFiles('.storybook/**/*', 'src/**/*.stories.*', 'src/components/**/*.{ts,tsx}') }}
+          restore-keys: |
+            ${{ runner.os }}-storybook-
+        
+      - name: Build Storybook
+        run: pnpm build-storybook -- --quiet --test
+        env:
+          NEXT_IS_TEST: ${{ inputs.branch_type == 'actual' && 'true' || '' }}
+          
+      - name: Upload Storybook build
+        id: upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-storybook-static
+          path: storybook-static/
+          retention-days: 1
+          compression-level: 6
+
+  take_screenshots:
+    needs: build_storybook
+    runs-on: ubuntu-latest
+    environment: preview
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2]
+        shardTotal: [2]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+          
+      - name: Setup
+        uses: ./.github/actions/setup
+        
+      - name: Setup Playwright
+        uses: ./.github/actions/playwright
+        
+      - name: Install native dependencies
+        run: sudo apt-get install fonts-ipafont-gothic
+        
+      - name: Download Storybook build
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-storybook-static
+          path: storybook-static/
+          
+      - name: Take screenshots
+        run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test --testTimeout 60000 -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
+        
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.artifact_prefix }}-screenshots-${{ matrix.shardIndex }}
+          path: __screenshots__
+          retention-days: 3
+          compression-level: 9

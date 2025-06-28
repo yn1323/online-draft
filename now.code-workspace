@@ -1,0 +1,18 @@
+{
+  "folders": [
+    {
+      "path": "."
+    },
+    {
+      "path": "../yps-polar"
+    }
+  ],
+  "settings": {
+    "favorites.resources": [
+      {
+        "filePath": "src\\helpers\\auth\\middleware.ts",
+        "group": "Default"
+      }
+    ]
+  }
+}
