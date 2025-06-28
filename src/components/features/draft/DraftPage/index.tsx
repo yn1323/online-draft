@@ -1,5 +1,6 @@
 'use client';
 
+import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
@@ -22,7 +23,6 @@ import {
 import { useAtomValue } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
 import { LuList, LuMessageSquare, LuShare2 } from 'react-icons/lu';
-import { Button } from '@/src/components/atoms/Button';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
@@ -119,11 +119,7 @@ export const DraftPageInner = () => {
               {groupName}
             </Text>
             <Box flex={1} display="flex" justifyContent="flex-end">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={shareModal.open}
-              >
+              <Button variant="ghost" size="sm" onClick={shareModal.open}>
                 <HStack gap={1} align="center">
                   <LuShare2 size={14} />
                   <Text>シェア</Text>
@@ -266,18 +262,14 @@ export const DraftPageInner = () => {
   // PC版: 2カラムレイアウト
   return (
     <Box bg="gray.50" minH="100vh" py={2}>
-      <Container maxW="container.xl">
+      <Container maxW="full">
         {/* ヘッダー */}
         <Box mb={2}>
           <HStack justify="space-between" align="center">
             <Text fontSize="2xl" fontWeight="bold" color="gray.800">
               {groupName}
             </Text>
-            <Button
-              variant="outline"
-              size="md"
-              onClick={shareModal.open}
-            >
+            <Button variant="outline" size="md" onClick={shareModal.open}>
               <HStack gap={1} align="center">
                 <LuShare2 size={16} />
                 <Text>シェア</Text>

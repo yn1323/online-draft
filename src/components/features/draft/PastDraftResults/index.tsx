@@ -316,7 +316,7 @@ export const PastDraftResults = ({
             </Text>
 
             {/* ヘッダー行（参加者名） */}
-            <Grid templateColumns="60px 1fr 1fr 1fr" gap={2} mb={2}>
+            <Grid templateColumns={`60px ${'1fr '.repeat(participants.length)}`} gap={2} mb={2}>
               <Box {...tableHeaderCellStyle}>Round</Box>
               {participants.map((participant) => (
                 <Box key={participant.id} {...tableHeaderCellStyle}>
@@ -340,7 +340,7 @@ export const PastDraftResults = ({
                   .map((roundResult) => (
                     <Grid
                       key={roundResult.round}
-                      templateColumns="60px 1fr 1fr 1fr"
+                      templateColumns={`60px ${'1fr '.repeat(participants.length)}`}
                       gap={2}
                     >
                       <Box
