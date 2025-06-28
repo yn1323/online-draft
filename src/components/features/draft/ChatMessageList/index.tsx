@@ -6,6 +6,7 @@ import {
 } from '@/src/components/features/draft/states';
 import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeChat';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
+import dayjs from 'dayjs';
 import { atom, useAtomValue } from 'jotai';
 
 /**
@@ -21,12 +22,16 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
     const isCurrentUser = chat.userId === currentUserId;
     const isSystem = chat.userId === 'system';
 
+    // biome-ignore lint/suspicious/noExplicitAny: tmp
+    const date = new Date(chat.date as any);
+    const formatted = dayjs(date).format('MM/DD HH:mm');
+
     return {
       id: `${chat.userId}-${Math.random()}`,
       userName: isSystem ? '自動ログ' : (user?.name ?? ''),
       avatar: isSystem ? '99' : (user?.avatar ?? '1'),
       content: chat.message,
-      timestamp: chat.date,
+      timestamp: formatted,
       isCurrentUser,
       isSystem: false,
     };
@@ -92,6 +97,9 @@ export const ChatMessageList = () => {
                   fontWeight="bold"
                 >
                   {message.userName}
+                </Text>
+                <Text fontSize="2xs" color="gray.700">
+                  {message.timestamp}
                 </Text>
               </HStack>
               <Text

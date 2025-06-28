@@ -67,7 +67,7 @@ export const useRealtimeChat = (
           const data = doc.data();
 
           // Firestore Timestamp → JavaScript Date → 時刻文字列
-          const timeString = new Date();
+          const timeString = data.createdAt.toDate();
 
           // システムメッセージ判定
           const isSystem = data.userId === 'system' || !data.userId;

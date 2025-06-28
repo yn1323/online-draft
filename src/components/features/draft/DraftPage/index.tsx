@@ -21,12 +21,14 @@ import {
 } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
 import { useEffect, useRef, useState } from 'react';
-import { LuList, LuMessageSquare } from 'react-icons/lu';
+import { LuList, LuMessageSquare, LuShare2 } from 'react-icons/lu';
+import { Button } from '@/src/components/atoms/Button';
 import { ChatInputForm } from '../ChatInputForm';
 import { ChatMessageList } from '../ChatMessageList';
 import { CurrentRoundStatus } from '../CurrentRoundStatus';
 import { ItemSelectModal, useItemSelectModal } from '../modals/ItemSelectModal';
 import { OpenResultModal, useOpenResultModal } from '../modals/OpenResultModal';
+import { ShareModal, useShareModal } from '../modals/ShareModal';
 import { StageModal, useStageModal } from '../modals/StageModal';
 import { PastDraftResults } from '../PastDraftResults';
 
@@ -47,6 +49,7 @@ export const DraftPageInner = () => {
   // モーダル状態管理
   const itemSelectModal = useItemSelectModal();
   const openResultModal = useOpenResultModal();
+  const shareModal = useShareModal();
   const stageModal = useStageModal();
 
   const { incrementRound } = useGroup();
@@ -110,9 +113,24 @@ export const DraftPageInner = () => {
           top={0}
           zIndex={10}
         >
-          <Text fontSize="lg" fontWeight="bold" textAlign="center">
-            {groupName}
-          </Text>
+          <HStack justify="space-between" align="center">
+            <Box flex={1} />
+            <Text fontSize="lg" fontWeight="bold" textAlign="center">
+              {groupName}
+            </Text>
+            <Box flex={1} display="flex" justifyContent="flex-end">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={shareModal.open}
+              >
+                <HStack gap={1} align="center">
+                  <LuShare2 size={14} />
+                  <Text>シェア</Text>
+                </HStack>
+              </Button>
+            </Box>
+          </HStack>
         </Box>
 
         {/* タブエリア */}
@@ -230,6 +248,12 @@ export const DraftPageInner = () => {
           onClose={openResultModal.close}
           onExecuteOpenResult={handleExecuteOpenResult}
         />
+        <ShareModal
+          isOpen={shareModal.isOpen}
+          onClose={shareModal.close}
+          groupId={groupId}
+          groupName={groupName}
+        />
         <StageModal
           isOpen={stageModal.isOpen}
           onClose={stageModal.close}
@@ -245,9 +269,21 @@ export const DraftPageInner = () => {
       <Container maxW="container.xl">
         {/* ヘッダー */}
         <Box mb={2}>
-          <Text fontSize="2xl" fontWeight="bold" color="gray.800">
-            {groupName}
-          </Text>
+          <HStack justify="space-between" align="center">
+            <Text fontSize="2xl" fontWeight="bold" color="gray.800">
+              {groupName}
+            </Text>
+            <Button
+              variant="outline"
+              size="md"
+              onClick={shareModal.open}
+            >
+              <HStack gap={1} align="center">
+                <LuShare2 size={16} />
+                <Text>シェア</Text>
+              </HStack>
+            </Button>
+          </HStack>
         </Box>
 
         <Grid templateColumns="7fr 3fr" gap={2} h="calc(100vh - 130px)">
@@ -307,6 +343,12 @@ export const DraftPageInner = () => {
         isOpen={openResultModal.isOpen}
         onClose={openResultModal.close}
         onExecuteOpenResult={handleExecuteOpenResult}
+      />
+      <ShareModal
+        isOpen={shareModal.isOpen}
+        onClose={shareModal.close}
+        groupId={groupId}
+        groupName={groupName}
       />
       <StageModal
         isOpen={stageModal.isOpen}
