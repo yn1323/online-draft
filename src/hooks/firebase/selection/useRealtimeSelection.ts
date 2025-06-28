@@ -1,72 +1,104 @@
 'use client';
 
+import { usersAtom } from '@/src/components/features/draft/states';
 import { db } from '@/src/lib/firebase';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { useEffect, useState } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useAtomValue } from 'jotai';
+import { useEffect, useMemo, useState } from 'react';
 import type { SelectionItemType } from './useSelection';
 
 /**
  * リアルタイム選択監視フック
- * ドラフト選択のリアルタイム監視
+ * 複数ユーザーの個別監視によるドラフト選択のリアルタイム監視
  */
 export const useRealtimeSelection = (groupId: string | null) => {
   const [selections, setSelections] = useState<SelectionItemType[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
+  // usersAtomから参加者一覧を取得
+  const users = useAtomValue(usersAtom);
+  const userIds = useMemo(
+    () =>
+      users
+        .filter((user) => user?.id) // 有効なidのみ抽出
+        .map((user) => user.id),
+    [users],
+  );
+
   useEffect(() => {
-    if (!groupId) {
+    if (!groupId || userIds.length === 0) {
       setSelections([]);
       setLoading(false);
       return;
     }
 
-    // コレクション参照
-    const selectionsRef = collection(db, 'app/onlinedraft/selection');
+    // 各ユーザーの選択データをMapで管理
+    const userSelectionsMap = new Map<string, SelectionItemType[]>();
+    const unsubscribes: (() => void)[] = [];
+    let loadedCount = 0;
 
-    // リアルタイム監視の開始
-    const unsubscribe = onSnapshot(
-      selectionsRef,
-      (snapshot) => {
-        // 全ユーザーの選択データを取得し、userId付きで平坦化
-        const allSelections: SelectionItemType[] = [];
+    // 全選択データを再構築してstateに設定
+    const updateAllSelections = () => {
+      const allSelections: SelectionItemType[] = [];
+      userSelectionsMap.forEach((userSelections) => {
+        allSelections.push(...userSelections);
+      });
+      setSelections(allSelections);
+    };
 
-        snapshot.docs.forEach((doc) => {
-          const userId = doc.id; // ドキュメントIDがuserIdの場合
-          const userDocument = doc.data(); // ドキュメントデータ
+    // 各ユーザーの個別監視
+    userIds.forEach((userId) => {
+      const userDocRef = doc(db, 'app/onlinedraft/selection', userId);
 
-          // 実際のDB構造：インデックス番号がフィールド名のオブジェクト
-          // { "0": {...}, "1": {...}, "userId": "..." } の形式
-          Object.keys(userDocument).forEach((key) => {
-            // 数字のキー（インデックス）のみを処理、userIdフィールドは除外
-            if (/^\d+$/.test(key)) {
-              const selection = userDocument[key];
-              // groupIdでフィルタ（groupIdが存在しない場合は暫定で全て含める）
-              if (!selection.groupId || selection.groupId === groupId) {
-                allSelections.push({
-                  ...selection,
-                  userId, // ドキュメントIDからuserIdを追加
-                  groupId: selection.groupId || groupId, // groupIdが無い場合は補完
-                });
+      const unsubscribe = onSnapshot(
+        userDocRef,
+        (docSnapshot) => {
+          const userSelections: SelectionItemType[] = [];
+
+          if (docSnapshot.exists()) {
+            const userDocument = docSnapshot.data();
+            console.log(userDocument);
+
+            // 既存のロジック：インデックス番号フィールドを処理
+            Object.keys(userDocument).forEach((key) => {
+              if (/^\d+$/.test(key)) {
+                const selection = userDocument[key];
+                if (!selection.groupId || selection.groupId === groupId) {
+                  userSelections.push({
+                    ...selection,
+                    userId,
+                    groupId: selection.groupId || groupId,
+                  });
+                }
               }
-            }
-          });
-        });
+            });
+          }
 
-        setSelections(allSelections);
-        setLoading(false);
-        setError(null);
-      },
-      (err) => {
-        console.error('選択データの取得エラー:', err);
-        setError(err as Error);
-        setLoading(false);
-      },
-    );
+          // ユーザーの選択データを更新
+          userSelectionsMap.set(userId, userSelections);
+          updateAllSelections();
 
-    // クリーンアップ
-    return unsubscribe;
-  }, [groupId]);
+          loadedCount++;
+          if (loadedCount >= userIds.length) {
+            setLoading(false);
+          }
+        },
+        (err) => {
+          console.error(`User ${userId} selection error:`, err);
+          setError(err as Error);
+          setLoading(false);
+        },
+      );
+
+      unsubscribes.push(unsubscribe);
+    });
+
+    // クリーンアップ：全てのunsubscribeを実行
+    return () => {
+      unsubscribes.forEach((unsubscribe) => unsubscribe());
+    };
+  }, [groupId, userIds]);
 
   return { selections, loading, error };
 };

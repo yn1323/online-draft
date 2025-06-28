@@ -1,15 +1,15 @@
 'use client';
 
+import { db } from '@/src/lib/firebase';
 import {
-  type CollectionReference,
   collection,
   doc,
   serverTimestamp,
   setDoc,
+  type CollectionReference,
   type Timestamp,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
-import { db } from '@/src/lib/firebase';
 
 /**
  * Firestore User データ型
@@ -21,7 +21,6 @@ export type UserDataType = {
   avatar: string;
   joinedAt: Timestamp;
   updatedAt: Timestamp;
-  isActive: boolean;
 };
 
 /**
@@ -68,7 +67,6 @@ export const useUser = () => {
         userName: userName.trim(),
         groupId: groupId.trim(),
         avatar: avatar.trim(),
-        isActive: true,
       };
 
       try {

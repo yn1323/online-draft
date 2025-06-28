@@ -34,21 +34,30 @@ const participantsUIAtom = atom<ParticipantType[]>((get) => {
   const selections = get(selectionsAtom);
   const { round: currentRound } = get(groupAtom);
 
-  return users.map((user) => {
-    // 現在のラウンドでのユーザーの選択を取得
-    const userSelection = selections.find(
-      (selection) =>
-        selection.userId === user.id && selection.round === currentRound,
-    );
+  console.log(users);
 
-    return {
-      id: user.id,
-      name: user.name,
-      avatar: user.avatar,
-      currentPick: userSelection?.item || undefined,
-      acquisitions: [], // 今回は使用しないため空配列
-    };
-  });
+  return users
+    .filter((user) => user?.id) // undefinedやnullのidを除外
+    .map((user) => {
+      // 現在のラウンドでのユーザーの選択を取得
+      const userSelection = selections.find(
+        (selection) =>
+          selection.userId === user.id && selection.round === currentRound,
+      );
+
+      return {
+        id: user.id,
+        name: user.name,
+        avatar: user.avatar,
+        currentPick: userSelection?.item || undefined,
+        acquisitions: [], // 今回は使用しないため空配列
+      };
+    })
+    .filter(
+      (participant, index, array) =>
+        // 重複したidを除去（最初に見つかったもののみ残す）
+        array.findIndex((p) => p.id === participant.id) === index,
+    );
 });
 
 /**
@@ -158,55 +167,57 @@ export const CurrentRoundStatus = ({
             gap={variant === 'pc' ? 2 : 1}
             w="full"
           >
-            {participants.map((participant) => {
-              // 実際の選択状態から判定
-              const hasSelected = isUserSelected(participant.id);
-              const isActive = !hasSelected; // 未選択なら選択中
-              const isCurrentUser = participant.id === currentUserId;
-              return (
-                <VStack
-                  key={participant.id}
-                  {...getParticipantCellStyle(isActive, isCurrentUser)}
-                >
-                  <Avatar
-                    avatarNumber={participant.avatar}
-                    name={participant.name}
-                    size="xs"
-                  />
-                  <Text
-                    fontSize={variant === 'pc' ? '2xs' : 'xs'}
-                    fontWeight="medium"
-                    truncate
-                    w="full"
+            {participants
+              .filter((participant) => participant?.id) // 追加の安全チェック
+              .map((participant, index) => {
+                // 実際の選択状態から判定
+                const hasSelected = isUserSelected(participant.id);
+                const isActive = !hasSelected; // 未選択なら選択中
+                const isCurrentUser = participant.id === currentUserId;
+                return (
+                  <VStack
+                    key={`${participant.id}-${index}`} // indexをフォールバックとして追加
+                    {...getParticipantCellStyle(isActive, isCurrentUser)}
                   >
-                    {participant.name}
-                  </Text>
-                  {isActive ? (
-                    <Box {...getStatusBadgeStyle(true)}>選択中</Box>
-                  ) : (
-                    <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
-                      <HStack gap={1}>
-                        <LuCheck size={10} />
-                        <Text>入力完了</Text>
-                      </HStack>
-                      {/* 自分の選択のみ表示、他人は秘匿 */}
-                      {isCurrentUser && (
-                        <Text
-                          fontSize="2xs"
-                          color="green.700"
-                          fontWeight="medium"
-                          truncate
-                          w="full"
-                          textAlign="center"
-                        >
-                          {participant.currentPick}
-                        </Text>
-                      )}
-                    </VStack>
-                  )}
-                </VStack>
-              );
-            })}
+                    <Avatar
+                      avatarNumber={participant.avatar}
+                      name={participant.name}
+                      size="xs"
+                    />
+                    <Text
+                      fontSize={variant === 'pc' ? '2xs' : 'xs'}
+                      fontWeight="medium"
+                      truncate
+                      w="full"
+                    >
+                      {participant.name}
+                    </Text>
+                    {isActive ? (
+                      <Box {...getStatusBadgeStyle(true)}>選択中</Box>
+                    ) : (
+                      <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
+                        <HStack gap={1}>
+                          <LuCheck size={10} />
+                          <Text>入力完了</Text>
+                        </HStack>
+                        {/* 自分の選択のみ表示、他人は秘匿 */}
+                        {isCurrentUser && (
+                          <Text
+                            fontSize="2xs"
+                            color="green.700"
+                            fontWeight="medium"
+                            truncate
+                            w="full"
+                            textAlign="center"
+                          >
+                            {participant.currentPick}
+                          </Text>
+                        )}
+                      </VStack>
+                    )}
+                  </VStack>
+                );
+              })}
           </Grid>
 
           {/* 選択アクションボタン */}

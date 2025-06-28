@@ -278,7 +278,7 @@ export const DraftPageInner = () => {
           </HStack>
         </Box>
 
-        <Grid templateColumns="7fr 3fr" gap={2} h="calc(100vh - 130px)">
+        <Grid templateColumns="7fr 3fr" gap={2} h="calc(100vh - 80px)">
           {/* 左側: ドラフト状況エリア */}
           <GridItem h="100%">
             <VStack gap={2} h="100%" w="full" align="stretch">

@@ -38,7 +38,10 @@ export const useRealtimeUsers = (groupId: string | null) => {
     const unsubscribe = onSnapshot(
       userQuery,
       (snapshot) => {
-        const userList = snapshot.docs.map((doc) => doc.data());
+        const userList = snapshot.docs.map((doc) => {
+          // 旧オンラインドラフトはidをdoc内に含まないため
+          return { ...doc.data(), userId: doc.id };
+        });
         setUsers(userList);
         setLoading(false);
         setError(null);
