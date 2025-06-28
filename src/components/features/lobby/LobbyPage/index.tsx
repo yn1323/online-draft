@@ -1,9 +1,5 @@
 'use client';
 
-import { Box, Container, Text, VStack } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
 import { useToaster } from '@/src/components/ui/toaster';
@@ -14,6 +10,10 @@ import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { type UserDataType, useUser } from '@/src/hooks/firebase/user/useUser';
+import { Box, Container, Text, VStack } from '@chakra-ui/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { AvatarSelectionModal } from '../AvatarSelectionModal';
 import { ParticipantsList } from '../ParticipantsList';
 import { RoomInfo } from '../RoomInfo';

@@ -171,6 +171,102 @@ test('SP版でタブ切り替えが正常に動作する', async ({ page }) => {
 });
 ```
 
+## 🧪 単体テストの詳細観点
+
+### 📋 テスト対象Atomの分析
+
+#### 1. **conflictAnalysisAtom** （最重要・高複雑度）
+**役割**: 重複指名の検出と勝敗判定の核心ロジック
+**複雑度**: ★★★★★
+**テスト観点**:
+- ✅ **複数人同一アイテム選択時の重複検出**
+- ✅ **randomNumber最大値による勝者決定アルゴリズム**
+- ✅ **敗者の編集順序決定（randomNumber降順）**
+- ✅ **複数ラウンドでの重複指名処理**
+- ✅ **過去ラウンドのみ対象（currentRound未満）**
+- ✅ **重複なしの場合は空配列返却**
+- ⚠️ **エッジケース**: 同一randomNumberの処理
+
+#### 2. **pastDraftResultsUIAtom** （UI変換・中複雑度）
+**役割**: selections → UI表示用データ変換
+**複雑度**: ★★★☆☆
+**テスト観点**:
+- ✅ **selections → DraftRoundType[]への正確な変換**
+- ✅ **ラウンド別グループ化処理**
+- ✅ **競合状態（winner/loser/nextEditTarget）の付与**
+- ✅ **currentRound未満のフィルタリング**
+- ✅ **ユーザー情報との結合処理**
+- ✅ **空データ・部分データ時の正常動作**
+
+#### 3. **participantsUIAtom** （UI変換・低複雑度）
+**役割**: 参加者情報をUI表示用に変換
+**複雑度**: ★★☆☆☆
+**テスト観点**:
+- ✅ **users → ParticipantType[]への変換**
+- ✅ **現在ラウンドの選択状況付与**
+- ✅ **未選択時のundefined処理**
+- ✅ **複数ユーザーの正常処理**
+- ✅ **acquisitions配列の空配列設定**
+
+#### 4. **selectionsAtom** （基本状態管理・低複雑度）
+**役割**: 選択情報の基本的なCRUD操作
+**複雑度**: ★☆☆☆☆
+**テスト観点**:
+- ✅ **初期状態は空配列**
+- ✅ **新規選択の追加**
+- ✅ **既存選択の更新**
+- ✅ **複数選択の管理**
+- ✅ **型安全性の確認**
+
+### 🎯 Jotaiテストの技術的特徴
+
+#### **derived atomのテスト手法**:
+```typescript
+// 依存atomをモック化してderived atomをテスト
+const mockGet = vi.fn();
+mockGet.mockImplementation((atom) => {
+  if (atom === selectionsAtom) return mockSelections;
+  if (atom === usersAtom) return mockUsers;
+  if (atom === groupAtom) return { round: 2 };
+});
+
+const result = conflictAnalysisAtom.read(mockGet);
+```
+
+#### **状態管理atomのテスト手法**:
+```typescript
+// renderHookでatomの読み書きをテスト
+const { result } = renderHook(() => useAtom(selectionsAtom));
+expect(result.current[0]).toEqual([]); // 読み取り
+act(() => result.current[1](newValue)); // 書き込み
+```
+
+### 📊 期待される品質向上効果
+
+#### **ビジネスロジックの信頼性**:
+- 重複指名解決アルゴリズムの数学的正確性保証
+- randomNumber比較ロジックの境界値テスト
+- 複雑な条件分岐の全パターンカバー
+
+#### **データ変換の安全性**:
+- UI表示用データの型安全性確保
+- null/undefined処理の堅牢性
+- 空データ・異常データでの安定動作
+
+#### **リファクタリング安全性**:
+- 状態管理ロジック変更時の回帰防止
+- パフォーマンス改善時の動作保証
+- 将来の機能拡張時の基盤保護
+
+### 🚨 重要なテストケース優先度
+
+1. **最優先**: conflictAnalysisAtomの3人以上重複検出
+2. **高優先**: pastDraftResultsUIAtomの競合状態付与
+3. **中優先**: participantsUIAtomの選択状況反映
+4. **基本**: selectionsAtomのCRUD操作
+
+---
+
 ### 🧪 単体テスト実装計画（優先度: 高）
 
 #### 1. conflictAnalysisAtomが3人以上の競合を正しく検出する

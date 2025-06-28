@@ -1,9 +1,10 @@
 'use client';
 
+import { db } from '@/src/lib/firebase';
 import {
   addDoc,
-  type CollectionReference,
   collection,
+  type CollectionReference,
   doc,
   getDoc,
   serverTimestamp,
@@ -11,7 +12,6 @@ import {
   updateDoc,
 } from 'firebase/firestore';
 import { useCallback } from 'react';
-import { db } from '@/src/lib/firebase';
 
 /**
  * Firestore Group (ルーム) データ型
