@@ -1,15 +1,9 @@
 'use client';
 
-import {
-  type CollectionReference,
-  collection,
-  onSnapshot,
-  orderBy,
-  query,
-} from 'firebase/firestore';
-import { useEffect, useState } from 'react';
 import { db } from '@/src/lib/firebase';
-import type { SelectionDataType, SelectionItemType } from './useSelection';
+import { collection, onSnapshot } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import type { SelectionItemType } from './useSelection';
 
 /**
  * リアルタイム選択監視フック
@@ -27,29 +21,36 @@ export const useRealtimeSelection = (groupId: string | null) => {
       return;
     }
 
-    // Firestoreのコレクション参照
-    const selectionQuery = query(
-      collection(
-        db,
-        'app/onlinedraft/selection',
-      ) as CollectionReference<SelectionDataType>,
-      orderBy('createdAt', 'desc'),
-    );
+    // コレクション参照
+    const selectionsRef = collection(db, 'app/onlinedraft/selection');
 
     // リアルタイム監視の開始
     const unsubscribe = onSnapshot(
-      selectionQuery,
+      selectionsRef,
       (snapshot) => {
-        // 全ての選択データを取得し、フラット化
+        // 全ユーザーの選択データを取得し、userId付きで平坦化
         const allSelections: SelectionItemType[] = [];
 
         snapshot.docs.forEach((doc) => {
-          const data = doc.data();
-          // 各ドキュメントのselection配列から、該当するgroupIdのものだけをフィルタ
-          const groupSelections = data.selection.filter(
-            (item) => item.groupId === groupId,
-          );
-          allSelections.push(...groupSelections);
+          const userId = doc.id; // ドキュメントIDがuserIdの場合
+          const userDocument = doc.data(); // ドキュメントデータ
+
+          // 実際のDB構造：インデックス番号がフィールド名のオブジェクト
+          // { "0": {...}, "1": {...}, "userId": "..." } の形式
+          Object.keys(userDocument).forEach((key) => {
+            // 数字のキー（インデックス）のみを処理、userIdフィールドは除外
+            if (/^\d+$/.test(key)) {
+              const selection = userDocument[key];
+              // groupIdでフィルタ（groupIdが存在しない場合は暫定で全て含める）
+              if (!selection.groupId || selection.groupId === groupId) {
+                allSelections.push({
+                  ...selection,
+                  userId, // ドキュメントIDからuserIdを追加
+                  groupId: selection.groupId || groupId, // groupIdが無い場合は補完
+                });
+              }
+            }
+          });
         });
 
         setSelections(allSelections);

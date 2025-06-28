@@ -1,13 +1,7 @@
 'use client';
 
 import { db } from '@/src/lib/firebase';
-import {
-  doc,
-  type DocumentReference,
-  serverTimestamp,
-  setDoc,
-  type Timestamp,
-} from 'firebase/firestore';
+import { doc, setDoc, type Timestamp } from 'firebase/firestore';
 import { useCallback } from 'react';
 
 /**
@@ -59,54 +53,48 @@ export const useSelection = () => {
         // 競合解決用のランダムナンバー生成（0〜999999）
         const randomNumber = Math.floor(Math.random() * 1000000);
 
-        const newSelectionItem: SelectionItemType = {
+        // コレクション参照
+        const docRef = doc(db, 'app/onlinedraft/selection', userId);
+
+        // 該当ユーザーの現在の選択のみをフィルタリング
+        const userCurrentSelections = currentSelections.filter(
+          (s) => s.userId === userId,
+        );
+
+        // 同じroundの選択を除去（ユーザー内で重複排除）
+        const filteredSelections = userCurrentSelections.filter(
+          (s) => s.round !== round,
+        );
+
+        // 新しいselectionを追加（userIdとgroupIdは不要、ドキュメント構造に合わせ）
+        const newSelectionForStorage = {
           item,
           comment,
           round,
-          userId,
-          groupId,
           randomNumber,
         };
 
-        // groupIdをドキュメントIDとして使用
-        const docRef = doc(
-          db,
-          'app/onlinedraft/selection',
-          groupId,
-        ) as DocumentReference<SelectionDataType>;
+        const updatedSelections = [
+          ...filteredSelections.map((s) => ({
+            item: s.item,
+            comment: s.comment,
+            round: s.round,
+            randomNumber: s.randomNumber,
+          })),
+          newSelectionForStorage,
+        ];
 
-        // 同じgroupIdのselectionのみをフィルタリング
-        const groupSelections = currentSelections.filter(
-          (s) => s.groupId === groupId,
-        );
+        // 実際のDB構造に合わせて、配列をインデックス番号フィールドのオブジェクトに変換
+        const selectionObject: Record<string, unknown> = {
+          userId, // userIdフィールドも保存
+        };
 
-        // 同じuserIdとroundの組み合わせを除去
-        const filteredSelections = groupSelections.filter(
-          (s) => !(s.userId === userId && s.round === round),
-        );
-
-        // 新しいselectionを追加
-        const updatedSelections = [...filteredSelections, newSelectionItem];
+        updatedSelections.forEach((selection, index) => {
+          selectionObject[index.toString()] = selection;
+        });
 
         // ドキュメント更新
-        if (groupSelections.length === 0) {
-          // 新規作成の場合
-          await setDoc(docRef, {
-            selection: updatedSelections,
-            createdAt: serverTimestamp(),
-            updatedAt: serverTimestamp(),
-          });
-        } else {
-          // 更新の場合
-          await setDoc(
-            docRef,
-            {
-              selection: updatedSelections,
-              updatedAt: serverTimestamp(),
-            },
-            { merge: true },
-          );
-        }
+        await setDoc(docRef, selectionObject);
 
         return groupId;
       } catch (error) {
