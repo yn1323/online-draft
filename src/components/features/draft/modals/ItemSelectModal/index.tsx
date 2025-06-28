@@ -93,23 +93,24 @@ const getValidationSchema = (
       .string()
       .min(1, 'アイテム名を入力してください')
       .max(MAX_ITEM_LENGTH, `${MAX_ITEM_LENGTH}文字以内で入力してください`)
-      .refine(
-        (item) => {
-          // 編集モードで元のアイテムと同じ場合はOK
-          if (isEditMode && originalItem && item.toLowerCase() === originalItem.toLowerCase()) {
-            return true;
-          }
-          
-          // 過去のラウンドで重複チェック
-          const pastSelections = selections.filter(s => s.round < currentRound);
-          const isDuplicate = pastSelections.some(
-            s => s.item.toLowerCase() === item.toLowerCase()
-          );
-          
-          return !isDuplicate;
-        },
-        'このアイテムは過去のラウンドで既に選択されています'
-      ),
+      .refine((item) => {
+        // 編集モードで元のアイテムと同じ場合はOK
+        if (
+          isEditMode &&
+          originalItem &&
+          item.toLowerCase() === originalItem.toLowerCase()
+        ) {
+          return true;
+        }
+
+        // 過去のラウンドで重複チェック
+        const pastSelections = selections.filter((s) => s.round < currentRound);
+        const isDuplicate = pastSelections.some(
+          (s) => s.item.toLowerCase() === item.toLowerCase(),
+        );
+
+        return !isDuplicate;
+      }, 'このアイテムは過去のラウンドで既に選択されています'),
     comment: z
       .string()
       .max(
@@ -166,12 +167,9 @@ export const ItemSelectModal = ({
     formState: { errors, isSubmitting },
     reset,
   } = useForm({
-    resolver: zodResolver(getValidationSchema(
-      isEditMode,
-      selections,
-      currentRound,
-      defaultItem
-    )),
+    resolver: zodResolver(
+      getValidationSchema(isEditMode, selections, currentRound, defaultItem),
+    ),
     mode: 'onChange',
     defaultValues: {
       item: defaultItem,
@@ -195,8 +193,8 @@ export const ItemSelectModal = ({
           `[${round}R-${editContext?.playerName}] ${defaultItem}→${data.item}`,
         );
       }
-      reset();
       onClose();
+      reset();
     } catch (error) {
       console.error('アイテム選択エラー:', error);
     }
@@ -204,8 +202,8 @@ export const ItemSelectModal = ({
 
   const handleClose = () => {
     if (!isSubmitting) {
-      reset();
       onClose();
+      reset();
     }
   };
 
