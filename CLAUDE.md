@@ -28,6 +28,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - YOU MUST: 実装完了後のテスト確認は各々の確認をそれぞれのsub agentで行ってください
 - YOU MUST: 調査タスクを行う際は積極的にcontext7 mcp、sequential-thinking mcpを利用すること
 - YOU MUST: Playwright MCPでスクリーンショットを撮るときは`.env`の`CLAUDE_PLAYWRIGHT_MCP_SCREENSHOT_STORE`にファイルを配置してください
+- YOU MUST: 質問をする場合は、１つずつ質問してください。チャットなので。。。
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠
