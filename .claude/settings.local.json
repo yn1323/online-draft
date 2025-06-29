@@ -91,7 +91,9 @@
       "mcp__github__search_issues",
       "mcp__github__search_code",
       "mcp__playwright__start_codegen_session",
-      "Bash(pnpm biome check:*)"
+      "Bash(pnpm biome check:*)",
+      "mcp__github__get_issue",
+      "mcp__github__update_issue"
     ],
     "deny": [
       "Bash(sudo:*)",
@@ -107,5 +109,8 @@
     ]
   },
   "enableAllProjectMcpServers": true,
-  "enabledMcpjsonServers": ["typescript", "playwright"]
+  "enabledMcpjsonServers": [
+    "typescript",
+    "playwright"
+  ]
 }

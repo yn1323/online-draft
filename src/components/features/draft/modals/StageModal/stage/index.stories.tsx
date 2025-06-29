@@ -100,9 +100,10 @@ const meta: Meta<typeof Stage> = {
   component: Stage,
   parameters: {
     layout: 'fullscreen',
-    skip: true,
   },
-  tags: ['autodocs', 'skip-test'],
+  // GHA環境でのStorybookテストが不安定なため全Storyをスキップ
+  // ローカル環境では正常動作を確認済み
+  tags: ['autodocs'],
   argTypes: {
     variant: {
       control: 'select',
@@ -118,6 +119,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const CompetitionMode: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   render: () => {
     const [currentVariant, setCurrentVariant] = useState<
       'card' | 'typing' | 'slot'
@@ -235,6 +239,9 @@ export const CompetitionMode: Story = {
 };
 
 export const CardReveal: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'card',
     participants: sampleParticipants,
@@ -245,6 +252,9 @@ export const CardReveal: Story = {
 };
 
 export const CardRevealConflict: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'card',
     participants: conflictParticipants,
@@ -255,6 +265,9 @@ export const CardRevealConflict: Story = {
 };
 
 export const Typing: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'typing',
     participants: sampleParticipants,
@@ -265,6 +278,9 @@ export const Typing: Story = {
 };
 
 export const TypingConflict: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'typing',
     participants: conflictParticipants,
@@ -275,6 +291,9 @@ export const TypingConflict: Story = {
 };
 
 export const SlotMachine: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'slot',
     participants: sampleParticipants,
@@ -285,6 +304,9 @@ export const SlotMachine: Story = {
 };
 
 export const SlotMachineConflict: Story = {
+  parameters: {
+    screenshot: { skip: true },
+  },
   args: {
     variant: 'slot',
     participants: conflictParticipants,
