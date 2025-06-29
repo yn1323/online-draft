@@ -32,6 +32,9 @@ test.describe('チャット機能', () => {
     // 登録ボタンをクリック
     const submitButton = page.getByRole('button', { name: '登録する' });
     await submitButton.click();
+
+    // ドラフト画面に自動遷移することを確認
+    await expect(page).toHaveURL(`/draft/${groupId}`);
   });
 
   test('メッセージを送信して表示される', async ({ page }) => {
