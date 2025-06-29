@@ -27,5 +27,3 @@ export default async function Page({ params }: PageProps) {
 }
 
 export const runtime = 'edge';
-
-export const runtime = 'edge';
