@@ -102,6 +102,8 @@ const meta: Meta<typeof Stage> = {
     layout: 'fullscreen',
     skip: true,
   },
+  // GHA環境でのStorybookテストが不安定なため全体スキップ
+  // ローカル環境では正常動作を確認済み
   tags: ['autodocs', 'skip-test'],
   argTypes: {
     variant: {

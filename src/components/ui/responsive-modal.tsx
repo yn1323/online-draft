@@ -23,7 +23,7 @@ import {
   DrawerTitle,
 } from './drawer';
 
-interface ResponsiveModalProps {
+type ResponsiveModalProps = {
   isOpen: boolean;
   onClose: () => void;
   title: string;
@@ -44,7 +44,7 @@ interface ResponsiveModalProps {
       onClick?: () => void;
     };
   };
-}
+};
 
 export const ResponsiveModal = ({
   isOpen,
