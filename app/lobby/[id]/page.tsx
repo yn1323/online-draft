@@ -24,3 +24,5 @@ export default async function Page({ params }: PageProps) {
 
   return <PageInner id={id} />;
 }
+
+export const runtime = 'edge';
