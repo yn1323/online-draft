@@ -15,4 +15,3 @@ export default async function DraftPageRoute({ params }: DraftPageRouteProps) {
     </Animation>
   );
 }
-export const runtime = 'edge';
