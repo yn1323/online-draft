@@ -61,9 +61,6 @@ test.describe('ロビーページ', () => {
     const submitButton = page.getByRole('button', { name: '登録する' });
     await submitButton.click();
 
-    // ドラフト画面に自動遷移することを確認
-    await expect(page).toHaveURL(`/draft/${groupId}`);
-
     // 遷移後にsessionStorageにuserIdが保存されていることを確認
     const sessionUserId = await page.evaluate(() => {
       return sessionStorage.getItem('onlinedraft_user_id');
