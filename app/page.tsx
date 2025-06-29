@@ -5,6 +5,7 @@ export const metadata = {
   title: 'オンラインドラフト - みんなでドラフト会議',
 };
 
+
 export default function Page() {
   return (
     <Animation>
@@ -12,3 +13,5 @@ export default function Page() {
     </Animation>
   );
 }
+
+export const runtime = 'edge';
