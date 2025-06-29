@@ -12,3 +12,4 @@ export default function Page() {
     </Animation>
   );
 }
+export const runtime = 'edge';
