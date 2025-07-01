@@ -120,7 +120,6 @@ export const TopPage = () => {
       pb={3}
       position="relative"
     >
-      {/* GitHubリンク */}
       <Link
         href="https://github.com/yn1323/online-draft"
         target="_blank"
@@ -135,6 +134,7 @@ export const TopPage = () => {
           variant="ghost"
           color="whiteAlpha.800"
           _hover={{
+            bg: 'whiteAlpha.200',
             color: 'white',
             transform: 'scale(1.1)',
           }}
