@@ -6,7 +6,7 @@
 /**
  * 必須項目バリデーション
  */
-export const validateRequired = (value: string, fieldName: string): void => {
+export const validateRequired = (value: string, fieldName: string) => {
   if (!value.trim()) {
     throw new Error(`${fieldName}を入力してください`);
   }
@@ -19,7 +19,7 @@ export const validateLength = (
   value: string,
   max: number,
   fieldName: string,
-): void => {
+) => {
   if (value.length > max) {
     throw new Error(`${fieldName}は${max}文字以内で入力してください`);
   }
@@ -32,7 +32,7 @@ export const validateRequiredWithLength = (
   value: string,
   max: number,
   fieldName: string,
-): void => {
+) => {
   validateRequired(value, fieldName);
   validateLength(value, max, fieldName);
 };
