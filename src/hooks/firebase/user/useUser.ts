@@ -2,6 +2,10 @@
 
 import { db } from '@/src/lib/firebase';
 import {
+  validateRequired,
+  validateLength,
+} from '@/src/helpers/validation/common';
+import {
   collection,
   doc,
   serverTimestamp,
@@ -45,22 +49,12 @@ export const useUser = () => {
       avatar: string,
       userId: string,
     ): Promise<void> => {
-      // Early Return: バリデーション
-      if (!groupId.trim()) {
-        throw new Error('グループIDが必要です');
-      }
-      if (!userName.trim()) {
-        throw new Error('ユーザー名を入力してください');
-      }
-      if (userName.length > 20) {
-        throw new Error('ユーザー名は20文字以内で入力してください');
-      }
-      if (!avatar.trim()) {
-        throw new Error('アバターを選択してください');
-      }
-      if (!userId.trim()) {
-        throw new Error('ユーザーIDが必要です');
-      }
+      // Early Return: バリデーション（共通関数使用）
+      validateRequired(groupId, 'グループID');
+      validateRequired(userName, 'ユーザー名');
+      validateLength(userName, 20, 'ユーザー名');
+      validateRequired(avatar, 'アバター');
+      validateRequired(userId, 'ユーザーID');
 
       const userData: Omit<UserDataType, 'joinedAt' | 'updatedAt'> = {
         userId,

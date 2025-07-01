@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+/**
+ * 文字数範囲バリデーション（Zod用）
+ */
 export const betweenLength =
   (min: number, max: number) => (val: string, ctx: z.RefinementCtx) => {
     if (val.length < min || val.length > max) {
@@ -10,6 +13,9 @@ export const betweenLength =
     }
   };
 
+/**
+ * 時刻バリデーション（Zod用）
+ */
 export const time = (step?: number) => (val: string, ctx: z.RefinementCtx) => {
   if (!val || val.length !== 5 || !val.includes(':')) {
     ctx.addIssue({
@@ -39,6 +45,9 @@ export const time = (step?: number) => (val: string, ctx: z.RefinementCtx) => {
   }
 };
 
+/**
+ * セレクトボックスバリデーション（Zod用）
+ */
 export const select =
   ({
     options,
@@ -58,12 +67,12 @@ export const select =
     if (!val) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: '必須項目です',
+        message: '選択してください',
       });
     } else if (options.every(({ value }) => value !== val)) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: '必須選択です',
+        message: '有効な選択肢を選んでください',
       });
     }
   };

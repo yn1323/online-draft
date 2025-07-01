@@ -49,10 +49,10 @@ describe('Validations', () => {
     expect(zodSchema.safeParse('2').success).toBeTruthy();
     expect(zodSchema.safeParse('3').success).toBeTruthy();
     expect(zodSchema.safeParse('').error?.errors[0].message).toStrictEqual(
-      '必須項目です',
+      '選択してください',
     );
     expect(zodSchema.safeParse('4').error?.errors[0].message).toStrictEqual(
-      '必須選択です',
+      '有効な選択肢を選んでください',
     );
   });
 });

@@ -167,8 +167,6 @@ export const notifyClaudeProgress = async (task: string, progress: string) => {
 export const notifyClaudeComplete = async (
   task: string,
   details: string,
-  duration: string,
-  filesModified: string[] = [],
 ) => {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) {
@@ -182,8 +180,6 @@ export const notifyClaudeComplete = async (
       type: 'complete',
       task,
       details,
-      duration,
-      filesModified,
       timestamp: new Date().toLocaleString('ja-JP'),
     },
   );
@@ -222,12 +218,11 @@ if (require.main === module) {
           await notifyClaudeProgress(task, details);
           break;
         case 'complete': {
-          if (!task || !details || !duration) {
-            console.error('❌ タスク名、詳細、実行時間が必要です');
+          if (!task || !details) {
+            console.error('❌ タスク名、詳細が必要です');
             process.exit(1);
           }
-          const filesModified = args.slice(4);
-          await notifyClaudeComplete(task, details, duration, filesModified);
+          await notifyClaudeComplete(task, details);
           break;
         }
         default:
@@ -242,7 +237,7 @@ if (require.main === module) {
             '  tsx scripts/notify-slack.ts progress "タスク名" "進行状況"',
           );
           console.log(
-            '  tsx scripts/notify-slack.ts complete "タスク名" "詳細" "実行時間" "ファイル1" "ファイル2"',
+            '  tsx scripts/notify-slack.ts complete "タスク名" "詳細"',
           );
           console.log('');
           console.log('環境変数:');
