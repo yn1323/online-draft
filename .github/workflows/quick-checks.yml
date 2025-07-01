@@ -6,7 +6,7 @@ on:
 jobs:
   quick-checks:
     runs-on: ubuntu-latest
-    environment: preview
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
     strategy:
       matrix:
         check: [lint, type-check]

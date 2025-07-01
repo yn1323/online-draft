@@ -29,7 +29,7 @@ env:
 jobs:
   build_storybook:
     runs-on: ubuntu-latest
-    environment: preview
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
     timeout-minutes: 30
     outputs:
       build_artifact: ${{ steps.upload.outputs.artifact-id }}
@@ -70,7 +70,7 @@ jobs:
   take_screenshots:
     needs: build_storybook
     runs-on: ubuntu-latest
-    environment: preview
+    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
     timeout-minutes: 30
     strategy:
       fail-fast: false
