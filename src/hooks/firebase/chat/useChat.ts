@@ -2,6 +2,10 @@
 
 import { db } from '@/src/lib/firebase';
 import {
+  validateRequired,
+  validateLength,
+} from '@/src/helpers/validation/common';
+import {
   collection,
   doc,
   setDoc,
@@ -41,19 +45,11 @@ export const useChat = () => {
    */
   const sendMessage = useCallback(
     async (groupId: string, userId: string, message: string) => {
-      // Early Return: バリデーション
-      if (!groupId.trim()) {
-        throw new Error('グループIDが必要です');
-      }
-      if (!userId.trim()) {
-        throw new Error('ユーザーIDが必要です');
-      }
-      if (!message.trim()) {
-        throw new Error('メッセージを入力してください');
-      }
-      if (message.length > 200) {
-        throw new Error('メッセージは200文字以内で入力してください');
-      }
+      // Early Return: バリデーション（共通関数使用）
+      validateRequired(groupId, 'グループID');
+      validateRequired(userId, 'ユーザーID');
+      validateRequired(message, 'メッセージ');
+      validateLength(message, 200, 'メッセージ');
 
       const messageData: Omit<
         ChatLogDataType,

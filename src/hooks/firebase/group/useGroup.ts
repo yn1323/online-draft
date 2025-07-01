@@ -1,6 +1,7 @@
 'use client';
 
 import { db } from '@/src/lib/firebase';
+import { validateRequiredWithLength } from '@/src/helpers/validation/common';
 import {
   addDoc,
   collection,
@@ -42,13 +43,8 @@ export const useGroup = () => {
    */
   const createGroup = useCallback(
     async (groupName: string): Promise<string> => {
-      // Early Return: バリデーション
-      if (!groupName.trim()) {
-        throw new Error('グループ名を入力してください');
-      }
-      if (groupName.length > 50) {
-        throw new Error('グループ名は50文字以内で入力してください');
-      }
+      // Early Return: バリデーション（共通関数使用）
+      validateRequiredWithLength(groupName, 50, 'グループ名');
 
       // メイン処理 - Firebase自動ID生成使用
       const groupData: Omit<GroupDataType, 'createdAt' | 'updatedAt'> = {

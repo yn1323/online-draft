@@ -93,7 +93,9 @@
       "mcp__playwright__start_codegen_session",
       "Bash(pnpm biome check:*)",
       "mcp__github__get_issue",
-      "mcp__github__update_issue"
+      "mcp__github__update_issue",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:azukiazusa.dev)"
     ],
     "deny": [
       "Bash(sudo:*)",
