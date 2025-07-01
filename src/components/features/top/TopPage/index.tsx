@@ -17,12 +17,14 @@ import {
   Grid,
   Heading,
   HStack,
+  IconButton,
+  Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
+import { LuGithub, LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 
 /**
  * トップページコンポーネント
@@ -116,7 +118,32 @@ export const TopPage = () => {
       minH="100vh"
       pt={16}
       pb={3}
+      position="relative"
     >
+      {/* GitHubリンク */}
+      <Link
+        href="https://github.com/yn1323/online-draft"
+        target="_blank"
+        rel="noopener noreferrer"
+        position="absolute"
+        top={4}
+        right={4}
+        zIndex={10}
+      >
+        <IconButton
+          aria-label="GitHub Repository"
+          variant="ghost"
+          color="whiteAlpha.800"
+          _hover={{
+            color: 'white',
+            transform: 'scale(1.1)',
+          }}
+          transition="all 0.15s ease"
+        >
+          <LuGithub size={24} />
+        </IconButton>
+      </Link>
+
       <Container maxW="container.md">
         <VStack gap={8} align="center">
           {/* ヘッダーエリア */}
