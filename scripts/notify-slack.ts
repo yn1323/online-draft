@@ -164,10 +164,7 @@ export const notifyClaudeProgress = async (task: string, progress: string) => {
 /**
  * 大型作業完了通知
  */
-export const notifyClaudeComplete = async (
-  task: string,
-  details: string,
-) => {
+export const notifyClaudeComplete = async (task: string, details: string) => {
   const webhookUrl = process.env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) {
     console.error('❌ SLACK_WEBHOOK_URL環境変数が設定されていません');

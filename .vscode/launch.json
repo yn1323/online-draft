@@ -18,6 +18,12 @@
       "name": "VitestHMR環境",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "npx reviewit --port 3030",
+      "name": "ReviewIt",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }

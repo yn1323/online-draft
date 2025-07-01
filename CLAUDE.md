@@ -23,8 +23,6 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
   - 型チェック: `pnpm type-check`
   - linter: `pnpm lint`
   また、これらのテストを実施するときはSub Agentでタスクを並列化して確認すること。
-- YOU MUST: 作業完了時、通知を行うこと
-  - `pnpm notify:slack ...`
 - YOU MUST: 実装完了後のテスト確認は各々の確認をそれぞれのsub agentで行ってください
 - YOU MUST: 調査タスクを行う際は積極的にcontext7 mcp、sequential-thinking mcpを利用すること
 - YOU MUST: Playwright MCPでスクリーンショットを撮るときは`.env`の`CLAUDE_PLAYWRIGHT_MCP_SCREENSHOT_STORE`にファイルを配置してください
