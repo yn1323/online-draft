@@ -1,5 +1,6 @@
 {
   "permissions": {
+    "defaultMode": "plan",
     "allow": [
       "mcp__typescript__move_file",
       "mcp__typescript__move_directory",

@@ -62,3 +62,6 @@ log
 
 .mcp.json
 .open-next
+
+.claude/logs/next-todo
+.claude/tmp

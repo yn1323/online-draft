@@ -83,5 +83,6 @@ pnpm dev
 ```bash
 
 brew install jq
+chmod +x .claude/scripts/notify-devlog.sh
 
 ```

@@ -1,14 +1,18 @@
 #!/bin/bash
 
 INPUT_JSON=$(cat)
-SESSION_ID=$(jq -r '.session_id' <<< \"$INPUT_JSON\")
-HOOK_ACTIVE=$(jq -r '.stop_hook_active // false' <<< $INPUT_JSON)
+SESSION_ID=$(jq -r '.session_id' <<< "$INPUT_JSON")
+HOOK_ACTIVE=$(jq -r '.stop_hook_active // false' <<< "$INPUT_JSON")
 
-if [ \"$HOOK_ACTIVE\" = \"true\" ]; then
+if [ "$HOOK_ACTIVE" = "true" ]; then
   # 無限ループ防止
-  echo '{\"continue\": true}'
+  echo '{"continue": true}'
   exit 0
 fi
+
+# 現在時刻とファイル名を設定
+NOW=$(date +"%Y-%m-%d %H:%M")
+FILENAME=".claude/logs/dev/$(date +%Y-%m-%d).md"
 
 # 開発日記作成を促すメッセージを生成
 jq -n \
@@ -18,8 +22,8 @@ jq -n \
   '{
      decision: "block",
      reason: (
-       "write / update today's develop diary.\n" +
-       "filename:" + $file + "\n" +
+       "write develop diary.\n" +
+       "filename:\n" +
        "template:#{topic}\n" +
        "## [" + $now + "]\n" +
        "- **作業**: [何をしたか - 1行で]\n" +

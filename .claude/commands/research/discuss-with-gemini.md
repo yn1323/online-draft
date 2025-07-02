@@ -31,10 +31,10 @@ Before using this command, ensure:
    I'll create a comprehensive prompt and start the discussion:
    ```bash
    # Create temporary file with context and questions
-   !echo "[Discussion prompt will be here]" > /tmp/gemini_discussion.md
+   !echo "[Discussion prompt will be here]" > .claude/tmp/gemini_discussion.md
    
    # Start interactive discussion with Gemini
-   !gemini -p < /tmp/gemini_discussion.md
+   !gemini -p < .claude/tmp/gemini_discussion.md
    ```
 
 4. **Iterative Refinement**
