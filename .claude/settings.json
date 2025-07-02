@@ -13,7 +13,12 @@
       "mcp__typescript__get_type_at_symbol",
       "mcp__typescript__get_symbols_in_scope"
     ],
-    "deny": []
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(rm -rf /*)"
+    ]
   },
   "hooks": {
     "PostToolUse": [
@@ -45,6 +50,15 @@
           {
             "type": "command",
             "command": "input=$(cat); transcript_path=$(node -e \"const data = JSON.parse(process.argv[1] || '{}'); console.log(data.transcript_path || '');\" \"$input\"); if [[ -f \"$transcript_path\" ]] && command -v tsx >/dev/null 2>&1; then task=$(node -e \"const fs = require('fs'); try { const data = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log((data[data.length-2]?.content || '不明なタスク').substring(0,50)); } catch(e) { console.log('不明なタスク'); }\" \"$transcript_path\"); result=$(node -e \"const fs = require('fs'); try { const data = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log((data[data.length-1]?.content || '完了').substring(0,100)); } catch(e) { console.log('完了'); }\" \"$transcript_path\"); tsx scripts/notify-slack.ts complete \"$task\" \"$result\"; else echo 'hooks: transcript not found or tsx unavailable'; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/scripts/notify-devlog.sh"
           }
         ]
       }
