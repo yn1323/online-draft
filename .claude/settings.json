@@ -2,6 +2,103 @@
   "permissions": {
     "defaultMode": "plan",
     "allow": [
+      "Bash(mkdir:*)",
+      "Bash(firebase:*)",
+      "Bash(gh:*)",
+      "Bash(rm:*)",
+      "Bash(npm outdated)",
+      "Bash(mv:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(git add:*)",
+      "Bash(npx create-next-app:*)",
+      "Bash(npm run lint)",
+      "Bash(npm run type-check:*)",
+      "Bash(pnpm install:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm *)",
+      "Bash(cat:*)",
+      "Bash(pnpm ls:*)",
+      "WebFetch(domain:docs.chakra-ui.com)",
+      "WebFetch(domain:www.chakra-ui.com)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(find:*)",
+      "Bash(grep:*)",
+      "Bash(npx @chakra-ui/cli snippet add:*)",
+      "Bash(pnpm build:*)",
+      "Bash(rg:*)",
+      "git",
+      "Bash(tail:*)",
+      "Bash(done)",
+      "Bash(node:*)",
+      "Bash(afplay:*)",
+      "mcp__puppeteer__puppeteer_connect_active_tab",
+      "mcp__puppeteer__puppeteer_navigate",
+      "mcp__puppeteer__puppeteer_screenshot",
+      "mcp__puppeteer__puppeteer_click",
+      "mcp__puppeteer__*",
+      "Bash(cp:*)",
+      "Bash(curl:*)",
+      "mcp__playwright__playwright_navigate",
+      "mcp__playwright__playwright_screenshot",
+      "Bash(kill:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm test:*)",
+      "Bash(git add:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)",
+      "Bash(rm:*)",
+      "mcp__playwright__playwright_navigate",
+      "mcp__playwright__playwright_screenshot",
+      "mcp__playwright__playwright_click",
+      "Bash(pnpm add:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(touch:*)",
+      "Bash(git checkout:*)",
+      "Bash(pnpm notify:*)",
+      "Bash(osascript:*)",
+      "Bash(brew install:*)",
+      "Bash(terminal-notifier:*)",
+      "Bash(pnpm e2e:*)",
+      "Bash(pnpm storybook:test-ci:*)",
+      "Bash(echo \"SLACK_WEBHOOK_URL: $SLACK_WEBHOOK_URL\")",
+      "WebFetch(domain:www.anthropic.com)",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm exec:*)",
+      "mcp__playwright__playwright_evaluate",
+      "Bash(pnpm storybook:*)",
+      "WebFetch(domain:vitest.dev)",
+      "WebFetch(domain:storybook.js.org)",
+      "Bash(timeout 30s pnpm test:storybook-vitest --run 2 >& 1)",
+      "mcp__sequential-thinking__sequentialthinking",
+      "Bash(git rm:*)",
+      "mcp__context7__resolve-library-id",
+      "mcp__context7__get-library-docs",
+      "mcp__ide__executeCode",
+      "Bash(python3:*)",
+      "mcp__playwright__playwright_get_visible_text",
+      "mcp__playwright__playwright_console_logs",
+      "mcp__playwright__playwright_fill",
+      "mcp__playwright__playwright_get_visible_html",
+      "Bash(similarity-ts .)",
+      "mcp__playwright__playwright_press_key",
+      "mcp__typescript-mcp__get_module_symbols",
+      "mcp__github__search_issues",
+      "mcp__github__search_code",
+      "mcp__playwright__start_codegen_session",
+      "Bash(pnpm biome check:*)",
+      "mcp__github__get_issue",
+      "mcp__github__update_issue",
+      "WebFetch(domain:*)",
+      "Bash(chmod:*)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "Bash(.claude/scripts/notify-slack.sh:*)",
       "mcp__typescript__move_file",
       "mcp__typescript__move_directory",
       "mcp__typescript__rename_symbol",
@@ -19,7 +116,9 @@
       "Bash(rm -rf ~)",
       "Bash(rm -rf ~/*)",
       "Bash(rm -rf /*)"
-    ]
+    ],
+    "enableAllProjectMcpServers": true,
+    "enabledMcpjsonServers": ["typescript", "playwright"]
   },
   "hooks": {
     "PostToolUse": [
@@ -39,7 +138,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); message=$(node -e \"const data = JSON.parse(process.argv[1] || '{}'); console.log(data.message || 'Claude Code 作業中');\" \"$input\"); if command -v tsx >/dev/null 2>&1; then tsx scripts/notify-slack.ts progress \"Claude Code 入力待ち\" \"$message\"; else echo 'tsx not found, skipping Slack notification'; fi"
+            "command": ".claude/scripts/notify-slack.sh '📋 Claude Code 指示待ち中'"
           }
         ]
       }
@@ -50,16 +149,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "input=$(cat); transcript_path=$(node -e \"const data = JSON.parse(process.argv[1] || '{}'); console.log(data.transcript_path || '');\" \"$input\"); if [[ -f \"$transcript_path\" ]] && command -v tsx >/dev/null 2>&1; then task=$(node -e \"const fs = require('fs'); try { const data = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log((data[data.length-2]?.content || '不明なタスク').substring(0,50)); } catch(e) { console.log('不明なタスク'); }\" \"$transcript_path\"); result=$(node -e \"const fs = require('fs'); try { const data = JSON.parse(fs.readFileSync(process.argv[1], 'utf8')); console.log((data[data.length-1]?.content || '完了').substring(0,100)); } catch(e) { console.log('完了'); }\" \"$transcript_path\"); tsx scripts/notify-slack.ts complete \"$task\" \"$result\"; else echo 'hooks: transcript not found or tsx unavailable'; fi"
-          }
-        ]
-      },
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/scripts/notify-devlog.sh"
+            "command": ".claude/scripts/notify-slack.sh '✅ Claude Code 作業完了'"
           }
         ]
       }
