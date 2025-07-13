@@ -26,8 +26,7 @@
     "e2e:report": "playwright show-report",
     "e2e:codegen": "playwright codegen",
     "upload-secrets": "tsx scripts/upload-secrets.ts",
-    "notify:desktop": "tsx scripts/notify-desktop.ts",
-    "notify:slack": "tsx scripts/notify-slack.ts"
+    "notify:desktop": "tsx scripts/notify-desktop.ts"
   },
   "dependencies": {
     "@chakra-ui/react": "^3.19.2",
