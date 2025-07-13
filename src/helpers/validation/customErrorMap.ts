@@ -1,8 +1,8 @@
-import zod from 'zod';
+import { z } from 'zod';
 
-export const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
+export const customErrorMap: z.ZodErrorMap = (issue, ctx) => {
   switch (issue.code) {
-    case zod.ZodIssueCode.too_small:
+    case z.ZodIssueCode.too_small:
       if (issue.type === 'array') {
         return { message: `${issue.minimum}つ以上選択してください。` };
       }
@@ -11,7 +11,7 @@ export const customErrorMap: zod.ZodErrorMap = (issue, ctx) => {
       }
       return { message: `${issue.minimum}文字以上で入力してください` };
 
-    case zod.ZodIssueCode.too_big:
+    case z.ZodIssueCode.too_big:
       return { message: `${issue.maximum}文字以内で入力してください` };
   }
 
