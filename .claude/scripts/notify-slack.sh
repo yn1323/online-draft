@@ -5,6 +5,17 @@
 
 set -e
 
+# .env読み込み
+ENV_FILE=".env"
+if [ -f "$ENV_FILE" ]; then
+    echo "📁 .env を読み込み中..."
+    set -a
+    source "$ENV_FILE"
+    set +a
+else
+    echo "⚠️  .env が見つかりません - 環境変数が直接設定されていることを期待します"
+fi
+
 # 引数チェック
 if [ $# -eq 0 ]; then
     echo "📋 引数なしで実行 - デフォルトメッセージを使用"
@@ -13,6 +24,8 @@ fi
 # 環境変数チェック
 if [ -z "$SLACK_WEBHOOK_URL" ]; then
     echo "❌ SLACK_WEBHOOK_URL環境変数が設定されていません"
+    echo "💡 Slack Webhook URLを.envに設定してください:"
+    echo "   SLACK_WEBHOOK_URL=\"https://hooks.slack.com/services/...\""
     exit 1
 fi
 
