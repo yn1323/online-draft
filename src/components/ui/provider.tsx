@@ -1,9 +1,9 @@
 'use client';
 
-import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
-import z from 'zod';
 import { Toaster } from '@/src/components/ui/toaster';
 import { customErrorMap } from '@/src/configs/zod/zop-setup';
+import { ChakraProvider, defaultSystem } from '@chakra-ui/react';
+import { z } from 'zod';
 import { ColorModeProvider, type ColorModeProviderProps } from './color-mode';
 
 export const Provider = (props: ColorModeProviderProps) => {

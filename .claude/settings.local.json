@@ -1,14 +1,15 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(echo:*)",
+      "Bash(pnpm tsc:*)"
+    ]
+  },
   "enabledMcpjsonServers": [
     "typescript-mcp",
     "context7",
     "sequential-thinking",
     "playwright",
     "github"
-  ],
-  "permissions": {
-    "allow": [
-      "Bash(echo:*)"
-    ]
-  }
+  ]
 }
