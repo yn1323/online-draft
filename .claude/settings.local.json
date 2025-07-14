@@ -3,7 +3,11 @@
     "allow": [
       "Bash(echo:*)",
       "Bash(pnpm tsc:*)",
-      "Bash(./.claude/scripts/notify-slack.sh:*)"
+      "Bash(./.claude/scripts/notify-slack.sh:*)",
+      "Bash(claude update)",
+      "Bash(dos2unix:*)",
+      "Bash(sed:*)",
+      "Bash(./.claude/scripts/notify-slack-fixed.sh:*)"
     ]
   },
   "enabledMcpjsonServers": [

@@ -131,28 +131,28 @@
           }
         ]
       }
-    ],
-    "Notification": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/scripts/notify-slack.sh '📋 Claude Code 指示待ち中'"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": ".claude/scripts/notify-slack.sh '✅ Claude Code 作業完了'"
-          }
-        ]
-      }
     ]
+    // "Notification": [
+    //   {
+    //     "matcher": "",
+    //     "hooks": [
+    //       {
+    //         "type": "command",
+    //         "command": ".claude/scripts/notify-slack.sh '📋 Claude Code 指示待ち中'"
+    //       }
+    //     ]
+    //   }
+    // ],
+    // "Stop": [
+    //   {
+    //     "matcher": "",
+    //     "hooks": [
+    //       {
+    //         "type": "command",
+    //         "command": ".claude/scripts/notify-slack.sh '✅ Claude Code 作業完了'"
+    //       }
+    //     ]
+    //   }
+    // ]
   }
 }
