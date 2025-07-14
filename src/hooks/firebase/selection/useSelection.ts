@@ -1,7 +1,12 @@
 'use client';
 
 import { db } from '@/src/lib/firebase';
-import { doc, setDoc, type Timestamp } from 'firebase/firestore';
+import {
+  doc,
+  serverTimestamp,
+  setDoc,
+  type Timestamp,
+} from 'firebase/firestore';
 import { useCallback } from 'react';
 
 /**
@@ -88,6 +93,7 @@ export const useSelection = () => {
         const selectionDocument = {
           userId,
           selection: updatedSelections,
+          updatedAt: serverTimestamp(),
         };
 
         // ドキュメント更新
