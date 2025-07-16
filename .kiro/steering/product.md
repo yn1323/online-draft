@@ -2,40 +2,47 @@
 inclusion: always
 ---
 
-# Product Overview
+# プロダクト概要
 
-OnlineDraft is a real-time multiplayer draft game where players strategically select items across multiple rounds. When players choose the same item, they compete through animated mini-games to determine the winner.
+OnlineDraft は、プレイヤーが複数ラウンドにわたって戦略的にアイテムを選択する
+リアルタイムマルチプレイヤードラフトゲームです。
+プレイヤーが同じアイテムを選択した場合、アニメーション付きミニゲームで勝者を決定します。
 
-## Core Gameplay Mechanics
-- **Draft Rounds**: Players simultaneously select from available items
-- **Conflict Resolution**: Overlapping selections trigger competitive mini-games (slot machine, card reveal, typing challenges)
-- **Strategic Elements**: Past round data informs future selection decisions
-- **Real-time Synchronization**: All player actions sync instantly via Firebase
+## コアゲームプレイメカニクス
 
-## Key Features
-- **Room Management**: Create/join rooms via URL or QR code sharing
-- **Avatar System**: 18 unique avatars for player identification
-- **Live Chat**: Real-time messaging during gameplay
-- **Result Tracking**: Historical data of past draft outcomes
-- **Responsive UI**: Mobile-first design with desktop optimization
-- **Theme Support**: Light/dark mode switching
+- **ドラフトラウンド**: プレイヤーが同時に利用可能なアイテムから選択
+- **競合解決**: 重複選択時にミニゲーム（スロットマシン、カード公開、タイピングチャレンジ）で競争
+- **戦略要素**: 過去ラウンドデータが将来の選択判断に影響
+- **リアルタイム同期**: 全プレイヤーアクションが Firebase 経由で即座に同期
 
-## User Experience Principles
-- **Immediate Feedback**: All actions provide instant visual/audio responses
-- **Social Interaction**: Chat and avatar systems encourage group engagement
-- **Progressive Disclosure**: Complex game states revealed gradually
-- **Accessibility**: Keyboard navigation and screen reader support
-- **Performance**: Sub-100ms response times for critical interactions
+## 主要機能
 
-## Business Rules
-- **Room Capacity**: Maximum 8 players per room
-- **Session Duration**: No time limits, rooms persist until manually closed
-- **Anonymous Play**: No account creation required, uses Firebase anonymous auth
-- **Data Persistence**: Game state and chat history maintained during sessions
-- **Conflict Priority**: First-come-first-served for simultaneous selections
+- **ルーム管理**: URL・QR コード共有でルーム作成・参加
+- **アバターシステム**: プレイヤー識別用の 18 種類のユニークアバター
+- **ライブチャット**: ゲームプレイ中のリアルタイムメッセージング
+- **結果追跡**: 過去のドラフト結果の履歴データ
+- **レスポンシブ UI**: モバイルファーストデザイン・デスクトップ最適化
+- **テーマサポート**: ライト・ダークモード切り替え
 
-## Technical Constraints
-- **Real-time Requirements**: All state changes must propagate within 200ms
-- **Mobile Performance**: 60fps animations on devices with 2GB+ RAM
-- **Offline Handling**: Graceful degradation when connection is lost
-- **Browser Support**: Modern browsers with WebSocket support required
+## ユーザーエクスペリエンス原則
+
+- **即座のフィードバック**: 全アクションに瞬時の視覚・音声レスポンス
+- **ソーシャルインタラクション**: チャット・アバターシステムでグループエンゲージメント促進
+- **段階的開示**: 複雑なゲーム状態を段階的に表示
+- **アクセシビリティ**: キーボードナビゲーション・スクリーンリーダーサポート
+- **パフォーマンス**: 重要なインタラクションで 100ms 未満のレスポンス時間
+
+## ビジネスルール
+
+- **ルーム容量**: 1 ルーム最大 8 プレイヤー
+- **セッション期間**: 時間制限なし、手動クローズまでルーム持続
+- **匿名プレイ**: アカウント作成不要、Firebase 匿名認証使用
+- **データ永続化**: セッション中のゲーム状態・チャット履歴維持
+- **競合優先度**: 同時選択時は先着順
+
+## 技術制約
+
+- **リアルタイム要件**: 全状態変更は 200ms 以内に伝播
+- **モバイルパフォーマンス**: 2GB 以上 RAM デバイスで 60fps アニメーション
+- **オフライン処理**: 接続切断時の適切な劣化対応
+- **ブラウザサポート**: WebSocket サポートを持つモダンブラウザ必須

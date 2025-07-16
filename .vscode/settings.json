@@ -28,5 +28,8 @@
   "favorites.resources": [],
   "claude-code.context.autoGenerate": true,
   "claude-code.context.updateTrigger": "onSave",
-  "kiroAgent.trustedCommands": ["pnpm *"]
+  "kiroAgent.trustedCommands": ["pnpm *", "find *", "wc *"],
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }

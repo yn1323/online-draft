@@ -1,69 +1,100 @@
-# Technology Stack
+---
+inclusion: always
+---
 
-## Frontend Framework
-- **Next.js 15** with App Router
+# 技術スタック
+
+## フロントエンドフレームワーク
+
+- **Next.js 15** (App Router 使用)
 - **React 19** with TypeScript 5
-- **Chakra UI v3** for component library
-- **Framer Motion** for animations
-- **Next Themes** for dark mode support
+- **Chakra UI v3** コンポーネントライブラリ
+- **Framer Motion** アニメーション
+- **Next Themes** ダークモード対応
 
-## State Management
-- **Jotai** for atomic state management
-- **React Hook Form** with Zod validation for forms
+## 状態管理
 
-## Backend & Database
-- **Firebase Authentication** (anonymous auth)
-- **Firebase Firestore** for real-time database
-- **Firebase** for real-time synchronization
+- **Jotai** アトミック状態管理
+- **React Hook Form** with Zod バリデーション
 
-## Development Tools
-- **Biome** for linting and formatting (replaces ESLint/Prettier)
-- **TypeScript** with strict mode enabled
-- **pnpm** as package manager
+### Jotai 詳細ガイド
 
-## Testing
-- **Vitest** for unit testing with jsdom environment
-- **Storybook** for component development and testing
-- **Playwright** for E2E testing
-- **Testing Library** for React component testing
+Jotai を使った状態管理パターンとベストプラクティスについては、以下のドキュメントを参照してください：
 
-## Build & Deployment
-- **Cloudflare Pages** deployment ready
-- **GitHub Actions** for CI/CD
+#[[file:docs/jotai.md]]
 
-## Common Commands
+## その他の機能
 
-### Development
+- **React Joyride** ガイドツアー機能
+- **日時処理**: dayjs ライブラリ
+- **MCP サポート**: typescript-mcp による Model Context Protocol 対応
+
+## バックエンド・データベース
+
+- **Firebase Authentication** (匿名認証)
+- **Firebase Firestore** リアルタイムデータベース
+- **Firebase** リアルタイム同期
+
+## 開発ツール
+
+- **Biome 2.1.1** リンティング・フォーマット (ESLint/Prettier 代替)
+- **TypeScript 5.8.3** strict mode 有効
+- **pnpm** パッケージマネージャー
+
+## テスト
+
+- **Vitest** 単体テスト (jsdom 環境)
+- **Storybook** コンポーネント開発・テスト
+- **Playwright** E2E テスト
+- **Testing Library** React コンポーネントテスト
+
+## ビルド・デプロイ
+
+- **Cloudflare Pages** デプロイ対応
+- **GitHub Actions** CI/CD
+
+## 開発コマンド
+
+### 開発
+
 ```bash
-pnpm dev              # Start development server
-pnpm build            # Production build
-pnpm start            # Start production server
+pnpm dev              # 開発サーバー起動
+pnpm build            # 本番ビルド
+pnpm start            # 本番サーバー起動
 ```
 
-### Code Quality
+### コード品質
+
 ```bash
-pnpm lint             # Run Biome linter
-pnpm lint:fix         # Auto-fix linting issues
-pnpm type-check       # TypeScript type checking
+pnpm lint             # Biome リンター実行
+pnpm lint:fix         # リンティング問題自動修正
+pnpm type-check       # TypeScript型チェック
 ```
 
-### Testing
+### テスト
+
 ```bash
-pnpm test             # Run unit tests
-pnpm test:watch       # Run tests in watch mode
-pnpm test:ui          # Run tests with UI
-pnpm storybook        # Start Storybook dev server
-pnpm e2e              # Run E2E tests
-pnpm e2e:ui           # Run E2E tests with UI
+pnpm test             # 単体テスト実行
+pnpm test:watch       # テストをwatch mode実行
+pnpm test:ui          # テストをUI付きで実行
+pnpm storybook        # Storybook開発サーバー起動
+pnpm storybook:test-ci # Storybookテスト（CI用）
+pnpm e2e              # E2Eテスト実行
+pnpm e2e:no-report    # E2Eテスト（レポートなし）
+pnpm e2e:ui           # E2EテストをUI付きで実行
 ```
 
-### Utilities
+### ユーティリティ
+
 ```bash
-pnpm notify:desktop   # Send desktop notification
+pnpm notify:desktop   # デスクトップ通知送信
+pnpm vrt              # ビジュアルリグレッションテスト
 ```
 
-## Environment Variables
-Required Firebase configuration:
+## 環境変数
+
+Firebase 設定に必要な環境変数:
+
 - `NEXT_PUBLIC_FIREBASE_API_KEY`
 - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
 - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`

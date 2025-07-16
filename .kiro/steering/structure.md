@@ -1,129 +1,152 @@
-# Project Structure
+---
+inclusion: always
+---
 
-## Architecture Pattern
-This project follows a **Feature-Based Architecture** with clear separation of concerns and atomic design principles.
+# プロジェクト構造
 
-## Directory Structure
+## アーキテクチャパターン
 
-### Core Application
+このプロジェクトは**Feature-Based Architecture**を採用し、
+関心の分離とアトミックデザイン原則に基づいた明確な構造を持っています。
+
+## ディレクトリ構造
+
+### コアアプリケーション
+
 ```
-app/                    # Next.js App Router pages
-├── draft/[id]/        # Draft game page
-├── lobby/[id]/        # Lobby waiting room
-├── entry/[id]/        # Entry point page
-└── page.tsx           # Top/landing page
+app/                    # Next.js App Router ページ
+├── draft/[id]/        # ドラフトゲームページ
+├── lobby/[id]/        # ロビー待機室
+├── entry/[id]/        # エントリーポイントページ
+└── page.tsx           # トップ/ランディングページ
 ```
 
-### Source Code Organization
+### ソースコード構成
+
 ```
 src/
-├── components/        # UI Components (Atomic Design)
-│   ├── atoms/        # Basic UI elements (Button, Input, Card, etc.)
-│   ├── features/     # Feature-specific components
-│   │   ├── draft/    # Draft game components
-│   │   ├── lobby/    # Lobby components
-│   │   └── top/      # Top page components
-│   ├── layout/       # Layout components
-│   ├── templates/    # Page templates
-│   └── ui/           # Chakra UI customizations
-├── hooks/            # Custom React hooks
-│   ├── auth/         # Authentication hooks
-│   └── firebase/     # Firebase-specific hooks
-├── lib/              # Library configurations
-├── types/            # TypeScript type definitions
-└── helpers/          # Utility functions
-    ├── utils/        # General utilities
-    └── validation/   # Form validation schemas
+├── components/        # UIコンポーネント (アトミックデザイン)
+│   ├── atoms/        # 基本UI要素 (Button, Input, Card等)
+│   ├── features/     # 機能固有コンポーネント
+│   │   ├── draft/    # ドラフトゲームコンポーネント
+│   │   ├── lobby/    # ロビーコンポーネント
+│   │   └── top/      # トップページコンポーネント
+│   ├── layout/       # レイアウトコンポーネント
+│   ├── templates/    # ページテンプレート
+│   └── ui/           # Chakra UIカスタマイゼーション
+├── hooks/            # カスタムReactフック
+│   ├── auth/         # 認証フック
+│   └── firebase/     # Firebase固有フック
+├── lib/              # ライブラリ設定
+├── types/            # TypeScript型定義
+└── helpers/          # ユーティリティ関数
+    ├── utils/        # 汎用ユーティリティ
+    └── validation/   # フォームバリデーションスキーマ
 ```
 
-### Testing & Documentation
+### テスト・ドキュメント
+
 ```
-e2e/                  # End-to-end tests
-├── operations/       # Test operations
-├── tests/           # Test files
-└── utils/           # Test utilities
+e2e/                  # エンドツーエンドテスト
+├── operations/       # テスト操作
+├── tests/           # テストファイル
+└── utils/           # テストユーティリティ
 
-docs/                # Project documentation
-├── function/        # Feature documentation
-├── implementation/  # Implementation guides
-└── guides/         # Development guides
+docs/                # プロジェクトドキュメント
+├── function/        # 機能ドキュメント
+├── implementation/  # 実装ガイド
+└── guides/         # 開発ガイド
 
-__screenshots__/     # Visual regression test screenshots
+__screenshots__/     # ビジュアルリグレッションテストスクリーンショット
 ```
 
-## Component Architecture
+## コンポーネントアーキテクチャ
 
-### Feature Components Structure
-Each feature follows this pattern:
+### 機能コンポーネント構造
+
+各機能は以下のパターンに従います:
+
 ```
 src/components/features/[feature]/
-├── [FeaturePage]/           # Main page component
-├── [SubComponent]/          # Feature sub-components
-├── modals/                  # Feature-specific modals
-├── hooks/                   # Feature-specific hooks
+├── [FeaturePage]/           # メインページコンポーネント
+├── [SubComponent]/          # 機能サブコンポーネント
+├── modals/                  # 機能固有モーダル
+├── hooks/                   # 機能固有フック
 ├── states.ts               # Jotai atoms for state
-├── mockData.ts             # Mock data for development
-└── shared/                 # Shared types and utilities
+├── mockData.ts             # 開発用モックデータ
+└── shared/                 # 共有型とユーティリティ
 ```
 
-### Component File Structure
-Each component directory contains:
-- `index.tsx` - Main component implementation
-- `index.stories.tsx` - Storybook stories
-- `index.test.tsx` - Unit tests (when applicable)
+### コンポーネントファイル構造
 
-## State Management Pattern
+各コンポーネントディレクトリには以下が含まれます:
+
+- `index.tsx` - メインコンポーネント実装
+- `index.stories.tsx` - Storybook ストーリー
+- `index.test.tsx` - 単体テスト (該当する場合)
+
+## 状態管理パターン
 
 ### Jotai Atoms
-- Feature-specific atoms in `states.ts` files
-- Global atoms for cross-feature state
-- Derived atoms for computed values
 
-### Firebase Integration
-- Custom hooks in `src/hooks/firebase/`
-- Real-time listeners for live data
-- Separate hooks for CRUD operations
+- 機能固有 atoms は`states.ts`ファイルに配置
+- 機能横断状態用のグローバル atoms
+- 計算値用の派生 atoms
 
-## Import Path Conventions
+### Firebase 統合
 
-### Path Aliases
-- `@/app/*` - App Router pages
-- `@/src/*` - Source code
-- `@/e2e/*` - E2E tests
+- `src/hooks/firebase/`にカスタムフック
+- ライブデータ用リアルタイムリスナー
+- CRUD 操作用の分離されたフック
 
-### Import Order
-1. External libraries
-2. Internal components (atoms → features → layout)
-3. Hooks and utilities
-4. Types and constants
+## インポートパス規約
 
-## File Naming Conventions
+### パスエイリアス
 
-### Components
-- PascalCase for component names
-- `index.tsx` for main component file
-- `index.stories.tsx` for Storybook
-- `index.test.tsx` for tests
+- `@/app/*` - App Router ページ
+- `@/src/*` - ソースコード
+- `@/e2e/*` - E2E テスト
 
-### Hooks
-- camelCase starting with `use`
-- Grouped by functionality in subdirectories
+### インポート順序
 
-### Utilities
-- camelCase for functions
-- Grouped by domain in subdirectories
+1. 外部ライブラリ
+2. 内部コンポーネント (atoms → features → layout)
+3. フックとユーティリティ
+4. 型と定数
 
-## Testing Strategy
+## ファイル命名規約
 
-### Unit Tests
-- Component testing with Testing Library
-- Hook testing with custom test utilities
-- Utility function testing
+### コンポーネント
 
-### Integration Tests
-- Storybook for component development
-- Visual regression with screenshots
+- コンポーネント名は PascalCase
+- メインコンポーネントファイルは`index.tsx`
+- Storybook 用は`index.stories.tsx`
+- テスト用は`index.test.tsx`
 
-### E2E Tests
-- Playwright for full user journeys
-- Page object pattern in `e2e/operations/`
+### フック
+
+- `use`で始まる camelCase
+- 機能別にサブディレクトリでグループ化
+
+### ユーティリティ
+
+- 関数は camelCase
+- ドメイン別にサブディレクトリでグループ化
+
+## テスト戦略
+
+### 単体テスト
+
+- Testing Library を使用したコンポーネントテスト
+- カスタムテストユーティリティを使用したフックテスト
+- ユーティリティ関数テスト
+
+### 統合テスト
+
+- コンポーネント開発用 Storybook
+- スクリーンショットを使用したビジュアルリグレッション
+
+### E2E テスト
+
+- 完全なユーザージャーニー用 Playwright
+- `e2e/operations/`のページオブジェクトパターン
