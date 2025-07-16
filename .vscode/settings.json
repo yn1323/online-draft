@@ -27,5 +27,6 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "favorites.resources": [],
   "claude-code.context.autoGenerate": true,
-  "claude-code.context.updateTrigger": "onSave"
+  "claude-code.context.updateTrigger": "onSave",
+  "kiroAgent.trustedCommands": ["pnpm *"]
 }
