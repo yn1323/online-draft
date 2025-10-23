@@ -28,9 +28,7 @@
     ],
     "rules": {
       "suspicious": {
-        "noArrayIndexKey": "off",
-        "noTsIgnore": "off",
-        "useIterableCallbackReturn": "off"
+        "noArrayIndexKey": "off"
       },
       "complexity": {
         "noForEach": "off"
