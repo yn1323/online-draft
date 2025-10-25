@@ -31,13 +31,13 @@ jobs:
           ref: gh-pages
           
       - name: Download Storybook artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: ${{ inputs.storybook_artifact }}
           path: "./storybook/${{ inputs.branch_name }}"
           
       - name: Download VRT report artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: ${{ inputs.report_artifact }}
           path: "./vrt-report/${{ inputs.branch_name }}"
