@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
     steps: 
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v6
       with:
         fetch-depth: 0
     - name: Record setup start
@@ -54,7 +54,7 @@ jobs:
           echo "🐌 E2E実行時間: 通常範囲" >> $GITHUB_STEP_SUMMARY
         fi
         
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v5
       if: ${{ !cancelled() }}
       with:
         name: playwright-report
@@ -71,11 +71,11 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: gh-pages
       - name: Download Playwright Report Artifact
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: playwright-report
           path: "./playwright/${{ github.ref_name }}"
