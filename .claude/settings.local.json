@@ -8,7 +8,15 @@
       "Bash(dos2unix:*)",
       "Bash(sed:*)",
       "Bash(./.claude/scripts/notify-slack-fixed.sh:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pnpm lint:*)",
+      "Bash(tree:*)",
+      "Bash(pnpm type-check:*)",
+      "Bash(pnpm lint:fix:*)",
+      "Bash(pnpm exec biome:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm storybook:test-ci:*)",
+      "Bash(pnpm exec playwright:*)",
+      "Bash(pnpm e2e:no-report:*)"
     ]
   },
   "enabledMcpjsonServers": [
