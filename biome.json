@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.0.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.1.1/schema.json",
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "formatter": {
     "enabled": true,
@@ -28,9 +28,7 @@
     ],
     "rules": {
       "suspicious": {
-        "noArrayIndexKey": "off",
-        "noTsIgnore": "off",
-        "useIterableCallbackReturn": "off"
+        "noArrayIndexKey": "off"
       },
       "complexity": {
         "noForEach": "off"
@@ -54,6 +52,10 @@
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
         "noUselessElse": "error"
+      },
+      "nursery": {
+        "noTsIgnore": "off",
+        "useIterableCallbackReturn": "off"
       }
     }
   }
