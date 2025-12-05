@@ -8,7 +8,9 @@
       "Bash(dos2unix:*)",
       "Bash(sed:*)",
       "Bash(./.claude/scripts/notify-slack-fixed.sh:*)",
-      "Bash(pnpm lint:*)"
+      "Bash(pnpm lint:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ]
   },
   "enabledMcpjsonServers": [
