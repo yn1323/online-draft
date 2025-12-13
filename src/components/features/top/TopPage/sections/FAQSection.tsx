@@ -34,11 +34,30 @@ const FAQ_ITEMS = [
   },
 ] as const;
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+
 export const FAQSection = () => {
   const isMobile = useBreakpointValue({ base: true, md: false });
 
   return (
     <Box as="section" bg="white" py={[12, 16]}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(faqJsonLd),
+        }}
+      />
       <Container maxW="3xl">
         <VStack gap={[8, 10]}>
           <Heading

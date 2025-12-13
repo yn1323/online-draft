@@ -83,13 +83,13 @@ export const HeroSection = ({
               color="white"
               textShadow="2px 2px 4px rgba(0,0,0,0.3)"
             >
-              オンラインドラフト会議
+              なんでもドラフト
             </Heading>
             <Text fontSize={['lg', 'xl']} fontWeight="bold" color="white">
               推しを選んで、かぶったら勝負！
             </Text>
             <Text fontSize={['md', 'lg']} color="whiteAlpha.900">
-              野球・アニメ・音楽...なんでもドラフト
+              野球・アニメ・音楽...何でもドラフト会議！
             </Text>
           </VStack>
 
