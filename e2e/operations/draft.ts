@@ -15,9 +15,11 @@ export async function createNewDraft(
 ): Promise<string> {
   await page.goto('/');
 
-  const createDraftButton = page.getByRole('button', {
-    name: 'ルームを作成する',
-  });
+  const createDraftButton = page
+    .getByRole('button', {
+      name: 'ルームを作成する',
+    })
+    .first();
   await createDraftButton.click();
 
   // モーダルが表示されるまで待機（アニメーション完了を待つ）
