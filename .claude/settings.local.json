@@ -17,8 +17,9 @@
       "Bash(pnpm storybook:test-ci:*)",
       "Bash(pnpm exec playwright:*)",
       "Bash(pnpm e2e:no-report:*)",
-      "Bash(grep:*)"
-
+      "Bash(grep:*)",
+      "Bash(pnpm build-storybook:*)",
+      "Bash(pnpm biome:*)"
     ]
   },
   "enabledMcpjsonServers": [
