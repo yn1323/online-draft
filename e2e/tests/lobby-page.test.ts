@@ -156,7 +156,7 @@ test.describe('ロビーページ', () => {
 
     // TOPページの主要要素が表示されていることを確認
     await expect(
-      page.getByRole('heading', { name: 'オンラインドラフト会議' }),
+      page.getByRole('heading', { name: 'なんでもドラフト' }),
     ).toBeVisible();
 
     // 戻った後もsessionStorageは保持されている（別ルームに再参加可能）

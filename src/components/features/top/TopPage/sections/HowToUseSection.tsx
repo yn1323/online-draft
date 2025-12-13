@@ -34,6 +34,17 @@ const STEPS = [
   },
 ] as const;
 
+const howToJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'なんでもドラフトの使い方',
+  step: STEPS.map((step) => ({
+    '@type': 'HowToStep',
+    name: step.title,
+    text: step.description,
+  })),
+};
+
 type HowToUseSectionProps = {
   onCreateRoom: () => void;
 };
@@ -41,6 +52,12 @@ type HowToUseSectionProps = {
 export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
   return (
     <Box as="section" bg="white" py={[12, 16]}>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(howToJsonLd),
+        }}
+      />
       <Container maxW="4xl">
         <VStack gap={[8, 10]}>
           <Heading

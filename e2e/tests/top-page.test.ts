@@ -6,7 +6,7 @@ test.describe('TOPページ', () => {
 
     // ページタイトルの確認（H1のみ）
     await expect(
-      page.getByRole('heading', { name: 'オンラインドラフト会議', level: 1 }),
+      page.getByRole('heading', { name: 'なんでもドラフト', level: 1 }),
     ).toBeVisible();
   });
 
@@ -14,7 +14,10 @@ test.describe('TOPページ', () => {
     await page.goto('/');
 
     // ルーム作成ボタンクリック（最初のボタンを選択）
-    await page.getByRole('button', { name: 'ルームを作成する' }).first().click();
+    await page
+      .getByRole('button', { name: 'ルームを作成する' })
+      .first()
+      .click();
 
     // モーダルが表示されることを確認
     await expect(page.getByText('新しいルームを作成')).toBeVisible();
@@ -43,7 +46,10 @@ test.describe('TOPページ', () => {
     const creatorPage = await context.newPage();
 
     await creatorPage.goto('/');
-    await creatorPage.getByRole('button', { name: 'ルームを作成する' }).first().click();
+    await creatorPage
+      .getByRole('button', { name: 'ルームを作成する' })
+      .first()
+      .click();
     await creatorPage
       .getByPlaceholder('例: 2024年プロ野球ドラフト')
       .fill('参加用テストルーム');

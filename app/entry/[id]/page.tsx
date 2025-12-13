@@ -1,5 +1,10 @@
 import { LobbyPage } from '@/src/components/features/lobby/LobbyPage';
 import { Animation } from '@/src/components/templates/Animation';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 interface PageProps {
   params: Promise<{
