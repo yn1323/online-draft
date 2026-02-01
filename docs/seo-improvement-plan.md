@@ -52,7 +52,7 @@ Storybookで使用している`useHydrateAtoms`パターンを流用し、ガイ
 ### Phase 2: ガイドページ作成
 
 #### 2-1. ページ作成
-**新規作成**: `app/guide/page.tsx`
+**新規作成**: `app/(marketing)/guide/page.tsx`
 
 **メタデータ**:
 ```typescript
@@ -120,7 +120,7 @@ export const metadata: Metadata = {
 ### Phase 3: FAQページ作成
 
 #### 3-1. ページ作成
-**新規作成**: `app/faq/page.tsx`
+**新規作成**: `app/(marketing)/faq/page.tsx`
 
 **メタデータ**:
 ```typescript
@@ -165,9 +165,22 @@ export const metadata: Metadata = {
 
 ---
 
-### Phase 4: ナビゲーション追加
+### Phase 4: ナビゲーション追加（Route Groups構成）
 
-#### 4-1. ヘッダーナビゲーション作成
+#### 4-1. Route Groups でレイアウト分割
+Next.js の Route Groups を使って、Header/Footer の表示を制御する。
+
+**表示ルール**:
+| ページ | Header/Footer |
+|--------|--------------|
+| `/` (トップ) | ✅ あり |
+| `/guide` | ✅ あり |
+| `/faq` | ✅ あり |
+| `/lobby/[id]` | ❌ なし |
+| `/draft/[id]` | ❌ なし |
+| `/entry/[id]` | ❌ なし |
+
+#### 4-2. ヘッダーナビゲーション作成
 **新規作成**: `src/components/features/common/Header/index.tsx`
 
 **構成**:
@@ -180,7 +193,7 @@ export const metadata: Metadata = {
 - FAQ → `/faq`
 - ルームを作成 → トップページのCTAへ or モーダル
 
-#### 4-2. フッターナビゲーション作成
+#### 4-3. フッターナビゲーション作成
 **新規作成**: `src/components/features/common/Footer/index.tsx`
 
 **構成**:
@@ -191,8 +204,30 @@ export const metadata: Metadata = {
 └─ © 2024 なんでもドラフト
 ```
 
-#### 4-3. レイアウトへの組み込み
-**対象ファイル**: `app/layout.tsx` または各ページ
+#### 4-4. マーケティング用レイアウト作成
+**新規作成**: `app/(marketing)/layout.tsx`
+
+```tsx
+import { Header } from '@/src/components/features/common/Header';
+import { Footer } from '@/src/components/features/common/Footer';
+
+export default function MarketingLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <>
+      <Header />
+      <main>{children}</main>
+      <Footer />
+    </>
+  );
+}
+```
+
+#### 4-5. 既存ページの移動
+- `app/page.tsx` → `app/(marketing)/page.tsx` に移動
 
 ---
 
@@ -249,7 +284,7 @@ const siteNavigationJsonLd = {
 ```
 
 #### 5-3. FAQPage構造化データ
-**対象ファイル**: `app/faq/page.tsx`
+**対象ファイル**: `app/(marketing)/faq/page.tsx`
 
 ```typescript
 const faqJsonLd = {
@@ -271,16 +306,32 @@ const faqJsonLd = {
 
 ---
 
-## 📁 ファイル構成（新規作成）
+## 📁 ファイル構成
+
+### ディレクトリ構造（Route Groups使用）
 
 ```
 app/
-├── guide/
-│   └── page.tsx                    # ガイドページ
-├── faq/
-│   └── page.tsx                    # FAQページ
-├── layout.tsx                      # 更新（canonical, 構造化データ）
-└── sitemap.ts                      # 更新（ページ追加）
+├── (marketing)/                    # Header/Footer付きレイアウト
+│   ├── layout.tsx                  # 新規：マーケティング用レイアウト
+│   ├── page.tsx                    # 移動：トップページ（/）
+│   ├── guide/
+│   │   └── page.tsx                # 新規：ガイドページ（/guide）
+│   └── faq/
+│       └── page.tsx                # 新規：FAQページ（/faq）
+│
+├── lobby/                          # Header/Footerなし（既存のまま）
+│   └── [id]/
+│       └── page.tsx
+├── draft/                          # Header/Footerなし（既存のまま）
+│   └── [id]/
+│       └── page.tsx
+├── entry/                          # Header/Footerなし（既存のまま）
+│   └── [id]/
+│       └── page.tsx
+│
+├── layout.tsx                      # 更新：ルートレイアウト（GTM, Provider, 構造化データ）
+└── sitemap.ts                      # 更新：ページ追加
 
 src/components/features/
 ├── guide/
@@ -297,6 +348,22 @@ src/components/features/
     └── Footer/
         └── index.tsx               # フッターナビゲーション
 ```
+
+### 変更サマリー
+
+| 種別 | ファイル | 内容 |
+|-----|---------|------|
+| **移動** | `app/page.tsx` → `app/(marketing)/page.tsx` | トップページ |
+| **新規** | `app/(marketing)/layout.tsx` | Header/Footer付きレイアウト |
+| **新規** | `app/(marketing)/guide/page.tsx` | ガイドページ |
+| **新規** | `app/(marketing)/faq/page.tsx` | FAQページ |
+| **新規** | `src/components/features/guide/GuidePage/index.tsx` | ガイドコンテンツ |
+| **新規** | `src/components/features/guide/DemoWrapper/index.tsx` | デモ用ラッパー |
+| **新規** | `src/components/features/faq/FAQPage/index.tsx` | FAQコンテンツ |
+| **新規** | `src/components/features/common/Header/index.tsx` | ヘッダー |
+| **新規** | `src/components/features/common/Footer/index.tsx` | フッター |
+| **更新** | `app/layout.tsx` | 構造化データ追加 |
+| **更新** | `app/sitemap.ts` | ページ追加 |
 
 ---
 
