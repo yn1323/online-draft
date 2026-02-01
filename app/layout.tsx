@@ -37,10 +37,32 @@ const webApplicationJsonLd = {
   ],
 };
 
+const siteNavigationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: [
+    {
+      '@type': 'SiteNavigationElement',
+      position: 1,
+      name: '使い方ガイド',
+      url: `${BASE_URL}/guide`,
+    },
+    {
+      '@type': 'SiteNavigationElement',
+      position: 2,
+      name: 'よくある質問',
+      url: `${BASE_URL}/faq`,
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   title: 'なんでもドラフト | 登録不要・無料のオンラインドラフト会議',
   description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
   metadataBase: new URL(BASE_URL),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'なんでもドラフト',
     description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
@@ -71,6 +93,12 @@ export default function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(webApplicationJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteNavigationJsonLd),
           }}
         />
         <Provider>{children}</Provider>
