@@ -7,7 +7,6 @@ import {
   Heading,
   HStack,
   Text,
-  useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 
@@ -129,11 +128,6 @@ export const faqJsonLd = {
 };
 
 export const FAQPage = () => {
-  const isMobile = useBreakpointValue(
-    { base: true, md: false },
-    { ssr: false },
-  );
-
   return (
     <Box py={[8, 12]}>
       <Container maxW="container.md">
@@ -164,7 +158,8 @@ export const FAQPage = () => {
                   {category.category}
                 </Heading>
 
-                {isMobile ? (
+                {/* モバイル用: Accordion */}
+                <Box display={['block', 'none']}>
                   <Accordion.Root
                     multiple
                     variant="enclosed"
@@ -206,38 +201,31 @@ export const FAQPage = () => {
                       </Accordion.Item>
                     ))}
                   </Accordion.Root>
-                ) : (
-                  <VStack gap={3} w="full">
-                    {category.items.map((item) => (
-                      <Box
-                        key={item.question}
-                        w="full"
-                        p={5}
-                        bg="gray.50"
-                        borderRadius="lg"
-                        border="1px solid"
-                        borderColor="gray.200"
-                      >
-                        <VStack align="start" gap={2}>
-                          <Text
-                            fontSize="md"
-                            fontWeight="bold"
-                            color="gray.800"
-                          >
-                            Q. {item.question}
-                          </Text>
-                          <Text
-                            fontSize="md"
-                            color="gray.600"
-                            lineHeight="tall"
-                          >
-                            A. {item.answer}
-                          </Text>
-                        </VStack>
-                      </Box>
-                    ))}
-                  </VStack>
-                )}
+                </Box>
+
+                {/* デスクトップ用: カード表示 */}
+                <VStack gap={3} w="full" display={['none', 'flex']}>
+                  {category.items.map((item) => (
+                    <Box
+                      key={item.question}
+                      w="full"
+                      p={5}
+                      bg="gray.50"
+                      borderRadius="lg"
+                      border="1px solid"
+                      borderColor="gray.200"
+                    >
+                      <VStack align="start" gap={2}>
+                        <Text fontSize="md" fontWeight="bold" color="gray.800">
+                          Q. {item.question}
+                        </Text>
+                        <Text fontSize="md" color="gray.600" lineHeight="tall">
+                          A. {item.answer}
+                        </Text>
+                      </VStack>
+                    </Box>
+                  ))}
+                </VStack>
               </Box>
             ))}
           </VStack>
