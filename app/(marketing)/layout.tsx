@@ -1,6 +1,7 @@
 'use client';
 
 import { Box } from '@chakra-ui/react';
+import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
 
 import { Footer } from '@/src/components/features/common/Footer';
@@ -11,13 +12,16 @@ type MarketingLayoutProps = {
 };
 
 export default function MarketingLayout({ children }: MarketingLayoutProps) {
+  const pathname = usePathname();
+  const isTopPage = pathname === '/';
+
   return (
     <Box minH="100vh" display="flex" flexDirection="column">
       <Header />
       <Box as="main" flex={1}>
         {children}
       </Box>
-      <Footer />
+      {!isTopPage && <Footer />}
     </Box>
   );
 }

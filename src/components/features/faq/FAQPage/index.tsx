@@ -129,7 +129,10 @@ export const faqJsonLd = {
 };
 
 export const FAQPage = () => {
-  const isMobile = useBreakpointValue({ base: true, md: false });
+  const isMobile = useBreakpointValue(
+    { base: true, md: false },
+    { ssr: false },
+  );
 
   return (
     <Box py={[8, 12]}>
