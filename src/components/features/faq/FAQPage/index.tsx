@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Accordion,
-  Box,
-  Container,
-  Heading,
-  HStack,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
 
 type FAQCategory = {
   category: string;
@@ -158,68 +150,30 @@ export const FAQPage = () => {
                   {category.category}
                 </Heading>
 
-                {/* モバイル用: Accordion */}
-                <Box display={['block', 'none']}>
-                  <Accordion.Root
-                    multiple
-                    variant="enclosed"
-                    w="full"
-                    defaultValue={[]}
-                  >
-                    {category.items.map((item, index) => (
-                      <Accordion.Item
-                        key={item.question}
-                        value={`${category.category}-${index}`}
-                      >
-                        <Accordion.ItemTrigger
-                          bg="gray.50"
-                          _hover={{ bg: 'gray.100' }}
-                        >
-                          <HStack
-                            justify="space-between"
-                            w="full"
-                            cursor="pointer"
-                          >
-                            <Text
-                              fontSize="sm"
-                              fontWeight="bold"
-                              color="gray.700"
-                              textAlign="left"
-                            >
-                              Q. {item.question}
-                            </Text>
-                            <Accordion.ItemIndicator />
-                          </HStack>
-                        </Accordion.ItemTrigger>
-                        <Accordion.ItemContent>
-                          <Box py={3} px={1}>
-                            <Text fontSize="sm" color="gray.600">
-                              A. {item.answer}
-                            </Text>
-                          </Box>
-                        </Accordion.ItemContent>
-                      </Accordion.Item>
-                    ))}
-                  </Accordion.Root>
-                </Box>
-
-                {/* デスクトップ用: カード表示 */}
-                <VStack gap={3} w="full" display={['none', 'flex']}>
+                <VStack gap={3} w="full">
                   {category.items.map((item) => (
                     <Box
                       key={item.question}
                       w="full"
-                      p={5}
+                      p={[4, 5]}
                       bg="gray.50"
                       borderRadius="lg"
                       border="1px solid"
                       borderColor="gray.200"
                     >
                       <VStack align="start" gap={2}>
-                        <Text fontSize="md" fontWeight="bold" color="gray.800">
+                        <Text
+                          fontSize={['sm', 'md']}
+                          fontWeight="bold"
+                          color="gray.800"
+                        >
                           Q. {item.question}
                         </Text>
-                        <Text fontSize="md" color="gray.600" lineHeight="tall">
+                        <Text
+                          fontSize={['sm', 'md']}
+                          color="gray.600"
+                          lineHeight="tall"
+                        >
                           A. {item.answer}
                         </Text>
                       </VStack>
