@@ -103,22 +103,6 @@ const FAQ_CATEGORIES: FAQCategory[] = [
   },
 ];
 
-// 構造化データ用のFAQ全項目
-const ALL_FAQ_ITEMS = FAQ_CATEGORIES.flatMap((cat) => cat.items);
-
-export const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: ALL_FAQ_ITEMS.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: item.answer,
-    },
-  })),
-};
-
 export const FAQPage = () => {
   return (
     <Box py={[8, 12]}>
