@@ -2,12 +2,12 @@
 
 import { Provider } from '@/src/components/ui/provider';
 import type { Timestamp } from 'firebase/firestore';
-import type { Atom } from 'jotai';
+import type { WritableAtom } from 'jotai';
 import { useHydrateAtoms } from 'jotai/utils';
 import type { ReactNode } from 'react';
 
 // biome-ignore lint/suspicious/noExplicitAny: Jotai Atom tuple
-type AtomTuple = [Atom<any>, any];
+type AtomTuple = readonly [WritableAtom<any, any[], any>, any];
 
 type HydrateAtomsProps = {
   initialValues: AtomTuple[];

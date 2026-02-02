@@ -216,10 +216,18 @@ export const FAQPage = () => {
                         borderColor="gray.200"
                       >
                         <VStack align="start" gap={2}>
-                          <Text fontSize="md" fontWeight="bold" color="gray.800">
+                          <Text
+                            fontSize="md"
+                            fontWeight="bold"
+                            color="gray.800"
+                          >
                             Q. {item.question}
                           </Text>
-                          <Text fontSize="md" color="gray.600" lineHeight="tall">
+                          <Text
+                            fontSize="md"
+                            color="gray.600"
+                            lineHeight="tall"
+                          >
                             A. {item.answer}
                           </Text>
                         </VStack>

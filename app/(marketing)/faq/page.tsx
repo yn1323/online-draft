@@ -1,7 +1,4 @@
-import {
-  FAQPage,
-  faqJsonLd,
-} from '@/src/components/features/faq/FAQPage';
+import { FAQPage, faqJsonLd } from '@/src/components/features/faq/FAQPage';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {

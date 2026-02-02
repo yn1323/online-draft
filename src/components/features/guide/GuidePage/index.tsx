@@ -10,7 +10,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import {
-  LuCheckCircle,
+  LuCircleCheckBig,
   LuMessageCircle,
   LuSparkles,
   LuUsers,
@@ -38,7 +38,7 @@ const STEPS = [
     title: 'ドラフト開始！',
     description:
       '参加者全員が揃ったらドラフト開始！各ラウンドで指名したいアイテムを選んで、全員の選択が揃ったら一斉に発表。かぶったらランダム抽選で勝負！',
-    icon: LuCheckCircle,
+    icon: LuCircleCheckBig,
     color: 'purple',
   },
 ] as const;
@@ -264,7 +264,7 @@ export const GuidePage = () => {
                     alignItems="center"
                     gap={2}
                   >
-                    <Box as={LuCheckCircle} color="green.500" boxSize={4} />
+                    <Box as={LuCircleCheckBig} color="green.500" boxSize={4} />
                     {tip}
                   </List.Item>
                 ))}
