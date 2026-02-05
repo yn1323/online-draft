@@ -60,7 +60,7 @@ jobs:
           
       - name: Upload Storybook build
         id: upload
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ inputs.artifact_prefix }}-storybook-static
           path: storybook-static/
@@ -93,7 +93,7 @@ jobs:
         run: sudo apt-get install fonts-ipafont-gothic
         
       - name: Download Storybook build
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.artifact_prefix }}-storybook-static
           path: storybook-static/
@@ -102,7 +102,7 @@ jobs:
         run: pnpm dlx concurrently -k -s first -n "SB,TEST" -c "magenta,blue" "pnpm dlx http-server storybook-static --port 6006 --silent" "pnpm dlx wait-on tcp:127.0.0.1:6006 && pnpm storybook:test --testTimeout 60000 -- --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}"
         
       - name: Upload screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ inputs.artifact_prefix }}-screenshots-${{ matrix.shardIndex }}
           path: __screenshots__
