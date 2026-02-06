@@ -19,7 +19,15 @@
       "Bash(pnpm e2e:no-report:*)",
       "Bash(grep:*)",
       "Bash(pnpm build-storybook:*)",
-      "Bash(pnpm biome:*)"
+      "Bash(pnpm biome:*)",
+      "Bash(pnpm ls:*)",
+      "Bash(pnpm why:*)",
+      "Bash(cat:*)",
+      "Bash(GIT_DIR=/Users/natani/work/OnlineDraft/.git /usr/bin/git log:*)",
+      "WebSearch",
+      "WebFetch(domain:zenn.dev)",
+      "Bash(npx storybook@9 upgrade:*)",
+      "Bash(GIT_DIR=/Users/natani/work/OnlineDraft/.git git remote:*)"
     ]
   },
   "enabledMcpjsonServers": [
