@@ -1,4 +1,4 @@
-import type { StorybookConfig } from '@storybook/experimental-nextjs-vite';
+import type { StorybookConfig } from '@storybook/nextjs-vite';
 import { config as dotenvConfig } from 'dotenv';
 import path from 'node:path';
 
@@ -13,18 +13,12 @@ const config: StorybookConfig = {
   },
   stories: ['../src/**/*.stories.@(ts|tsx)'],
   addons: [
-    {
-      name: '@storybook/addon-essentials',
-      options: {
-        docs: false,
-      },
-    },
     '@storybook/addon-onboarding',
     '@chromatic-com/storybook',
-    '@storybook/experimental-addon-test',
+    '@storybook/addon-vitest'
   ],
   framework: {
-    name: '@storybook/experimental-nextjs-vite',
+    name: '@storybook/nextjs-vite',
     options: {},
   },
   typescript: {

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import { useHydrateAtoms } from 'jotai/utils';
 import { selectionsAtom, usersAtom } from '../../states';
 import { ItemSelectModal } from './index';

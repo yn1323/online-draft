@@ -1,6 +1,6 @@
 import { Button, VStack } from '@chakra-ui/react';
 import type { Meta, StoryObj } from '@storybook/react';
-import { expect, screen, userEvent, within } from '@storybook/test';
+import { expect, screen, userEvent, within } from 'storybook/test';
 import { CreateRoomModal, useCreateRoomModal } from './index';
 
 const meta: Meta<typeof CreateRoomModal> = {
