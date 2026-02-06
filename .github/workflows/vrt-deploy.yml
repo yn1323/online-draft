@@ -3,8 +3,8 @@ name: VRT Deploy
 on:
   workflow_call:
     inputs:
-      branch_name:
-        description: 'Branch name for deployment path'
+      pr_number:
+        description: 'PR number for deployment path'
         required: true
         type: string
       storybook_artifact:
@@ -19,42 +19,57 @@ on:
 jobs:
   deploy_to_github_pages:
     runs-on: ubuntu-latest
-    environment: ${{ github.ref == 'refs/heads/main' && 'production' || 'preview' }} 
     permissions:
-      contents: write
       pull-requests: write
     timeout-minutes: 30
     steps:
-      - name: Checkout GitHub Pages branch
+      - name: Checkout hosting-pages
         uses: actions/checkout@v6
         with:
-          ref: gh-pages
-          
+          repository: yn1323/hosting-pages
+          token: ${{ secrets.HOSTING_PAGES_TOKEN }}
+          ref: main
+
       - name: Download Storybook artifact
         uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.storybook_artifact }}
-          path: "./storybook/${{ inputs.branch_name }}"
-          
+          path: "./online-draft/storybook/${{ inputs.pr_number }}"
+
       - name: Download VRT report artifact
         uses: actions/download-artifact@v7
         with:
           name: ${{ inputs.report_artifact }}
-          path: "./vrt-report/${{ inputs.branch_name }}"
-          
-      - name: Commit and push to GitHub Pages
+          path: "./online-draft/vrt/${{ inputs.pr_number }}"
+
+      - name: Commit and push with retry
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add vrt-report storybook
-          git commit -m "chore: Update VRT content for ${{ inputs.branch_name }}" || exit 0
-          git push
-          
+          git add online-draft
+          git commit -m "chore: Update VRT content for online-draft PR #${{ inputs.pr_number }}" || exit 0
+
+          # リトライロジック - 最大5回まで試行
+          for i in {1..5}; do
+            if git push; then
+              echo "Successfully pushed on attempt $i"
+              break
+            else
+              if [ $i -eq 5 ]; then
+                echo "Failed to push after 5 attempts"
+                exit 1
+              fi
+              echo "Push failed on attempt $i, retrying..."
+              sleep 5
+              git pull --rebase origin main
+            fi
+          done
+
       - name: Create PR comment with links
         uses: mshick/add-pr-comment@v2
         with:
           message-id: storybook-vrt
           message: |
             🦈 Storybook VRT Report 🦈
-            [VRT Report](https://yn1323.github.io/online-draft/vrt-report/${{ inputs.branch_name }})
-            [Storybook](https://yn1323.github.io/online-draft/storybook/${{ inputs.branch_name }})
+            [VRT Report](https://yn1323.github.io/hosting-pages/online-draft/vrt/${{ inputs.pr_number }})
+            [Storybook](https://yn1323.github.io/hosting-pages/online-draft/storybook/${{ inputs.pr_number }})

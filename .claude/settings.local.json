@@ -26,7 +26,8 @@
       "Bash(GIT_DIR=/Users/natani/work/OnlineDraft/.git /usr/bin/git log:*)",
       "WebSearch",
       "WebFetch(domain:zenn.dev)",
-      "Bash(npx storybook@9 upgrade:*)"
+      "Bash(npx storybook@9 upgrade:*)",
+      "Bash(GIT_DIR=/Users/natani/work/OnlineDraft/.git git remote:*)"
     ]
   },
   "enabledMcpjsonServers": [
