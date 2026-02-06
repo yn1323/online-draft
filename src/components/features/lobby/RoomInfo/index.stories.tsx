@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import { Timestamp } from 'firebase/firestore';
 import { RoomInfo } from './index';
 
 const meta: Meta<typeof RoomInfo> = {
@@ -14,10 +15,11 @@ type Story = StoryObj<typeof meta>;
 
 const mockGroup = {
   groupName: '2024年プロ野球ドラフト',
-  createdAt: new Date('2024-06-17T10:00:00Z'),
-  updatedAt: new Date('2024-06-17T10:00:00Z'),
-  status: 'waiting' as const,
-  maxParticipants: 8,
+  deleteFlg: false,
+  finishedRound: [] as number[],
+  round: 1,
+  createdAt: Timestamp.fromDate(new Date('2024-06-17T10:00:00Z')),
+  updatedAt: Timestamp.fromDate(new Date('2024-06-17T10:00:00Z')),
 };
 
 /**
