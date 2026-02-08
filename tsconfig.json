@@ -41,11 +41,12 @@
     "**/*.ts",
     "**/*.tsx",
     ".storybook/**/*",
+    "build/types/**/*.ts",
     "next-env.d.ts",
     "prisma/generated/**/*",
     "src/configs/vitest/vitest-setup.ts",
     "vitest.config.mts",
-    "build/types/**/*.ts"
+    ".next/types/**/*.ts"
   ],
   "exclude": [
     "node_modules",

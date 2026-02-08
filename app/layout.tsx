@@ -1,17 +1,8 @@
 import { Provider } from '@/src/components/ui/provider';
 import { GoogleTagManager } from '@next/third-parties/google';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 const BASE_URL = 'https://online-draft.vercel.app';
 
@@ -88,7 +79,7 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
