@@ -1,17 +1,8 @@
 import { Provider } from '@/src/components/ui/provider';
 import { GoogleTagManager } from '@next/third-parties/google';
+import { GeistMono } from 'geist/font/mono';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
 
 const BASE_URL = 'https://online-draft.vercel.app';
 
@@ -37,10 +28,32 @@ const webApplicationJsonLd = {
   ],
 };
 
+const siteNavigationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: [
+    {
+      '@type': 'SiteNavigationElement',
+      position: 1,
+      name: '使い方ガイド',
+      url: `${BASE_URL}/guide`,
+    },
+    {
+      '@type': 'SiteNavigationElement',
+      position: 2,
+      name: 'よくある質問',
+      url: `${BASE_URL}/faq`,
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   title: 'なんでもドラフト | 登録不要・無料のオンラインドラフト会議',
   description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
   metadataBase: new URL(BASE_URL),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     title: 'なんでもドラフト',
     description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
@@ -66,11 +79,17 @@ export default function RootLayout({
   return (
     <html lang="ja" suppressHydrationWarning>
       <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GTM_ID ?? ''} />
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${GeistSans.variable} ${GeistMono.variable}`}>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: JSON.stringify(webApplicationJsonLd),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(siteNavigationJsonLd),
           }}
         />
         <Provider>{children}</Provider>

@@ -6,18 +6,27 @@
   "baseBranches": ["develop"],
   "automerge": true,
   "schedule": ["every weekend"],
+  "prConcurrentLimit": 5,
   "packageRules": [
     {
+      "groupName": "react",
       "addLabels": ["react"],
       "matchPackageNames": ["/react/"]
     },
     {
+      "groupName": "storybook",
       "addLabels": ["Storybook"],
       "matchPackageNames": ["/@storybook/", "@chromatic-com/storybook"]
     },
     {
+      "groupName": "playwright",
       "addLabels": ["playwright"],
       "matchPackageNames": ["/playwright/"]
+    },
+    {
+      "groupName": "minor-patch",
+      "matchUpdateTypes": ["minor", "patch"],
+      "excludePackageNames": ["/react/", "/@storybook/", "@chromatic-com/storybook", "/playwright/"]
     }
   ]
 }

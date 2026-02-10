@@ -27,6 +27,7 @@ OnlineDraftは**Claude Code協働開発**に最適化されたプロジェクト
 - YOU MUST: 調査タスクを行う際は積極的にcontext7 mcp、sequential-thinking mcpを利用すること
 - YOU MUST: Playwright MCPでスクリーンショットを撮るときは`.env`の`CLAUDE_PLAYWRIGHT_MCP_SCREENSHOT_STORE`にファイルを配置してください
 - YOU MUST: 質問をする場合は、１つずつ質問してください。チャットなので。。。
+- 作業終了時に、pnpm build, pnpm lint, pnpm type-checkを実行して問題ないか確認してください
 
 ### IMPORTANT（重要事項）
 - IMPORTANT: Chakra UI v3 Modern API準拠

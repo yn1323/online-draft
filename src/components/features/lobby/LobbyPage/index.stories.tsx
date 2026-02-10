@@ -16,10 +16,11 @@ type Story = StoryObj<typeof metaInner>;
 
 const mockGroup = {
   groupName: '2024年プロ野球ドラフト',
-  createdAt: new Date('2024-06-17T10:00:00Z'),
-  updatedAt: new Date('2024-06-17T10:00:00Z'),
-  status: 'waiting' as const,
-  maxParticipants: 8,
+  deleteFlg: false,
+  finishedRound: [] as number[],
+  round: 1,
+  createdAt: Timestamp.fromDate(new Date('2024-06-17T10:00:00Z')),
+  updatedAt: Timestamp.fromDate(new Date('2024-06-17T10:00:00Z')),
 };
 
 const mockUsers = [
@@ -61,11 +62,10 @@ export const Basic: Story = {
     group: mockGroup,
     users: mockUsers,
     roomUrl: 'https://onlinedraft.com/lobby/abc123',
-    loading: false,
     isAvatarModalOpen: false,
     usedAvatars: ['1', '2', '3'],
     onJoinClick: () => console.log('Join clicked'),
-    onLeaveRoom: () => console.log('Leave room clicked'),
+
     onAvatarModalClose: () => console.log('Avatar modal closed'),
     onJoinConfirm: (userData: { name: string; avatar: string }) =>
       console.log('Join confirmed:', userData),
@@ -80,11 +80,10 @@ export const RoomNotFound: Story = {
     group: null,
     users: null,
     roomUrl: '',
-    loading: false,
     isAvatarModalOpen: false,
     usedAvatars: [],
     onJoinClick: () => {},
-    onLeaveRoom: () => {},
+
     onAvatarModalClose: () => {},
     onJoinConfirm: () => {},
   },
@@ -101,11 +100,10 @@ export const EmptyRoom: Story = {
     },
     users: [],
     roomUrl: 'https://onlinedraft.com/lobby/newroom123',
-    loading: false,
     isAvatarModalOpen: false,
     usedAvatars: [],
     onJoinClick: () => console.log('Join clicked'),
-    onLeaveRoom: () => console.log('Leave room clicked'),
+
     onAvatarModalClose: () => console.log('Avatar modal closed'),
     onJoinConfirm: (userData: { name: string; avatar: string }) =>
       console.log('Join confirmed:', userData),

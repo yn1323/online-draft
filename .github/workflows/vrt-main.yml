@@ -38,7 +38,7 @@ jobs:
     needs: [prepare_actual, compare_screenshots]
     uses: ./.github/workflows/vrt-deploy.yml
     with:
-      branch_name: ${{ github.ref_name }}
+      pr_number: ${{ github.event.pull_request.number }}
       storybook_artifact: actual-storybook-static
       report_artifact: vrt-report
     secrets: inherit
