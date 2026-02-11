@@ -71,7 +71,7 @@ export const LobbyPageInner = ({
   return (
     <Box bg="gray.50" minH="100vh" py={[4, 8]}>
       <Container maxW="container.lg">
-        <VStack gap={6}>
+        <VStack gap={6} w="full">
           {/* ヘッダー */}
           <Text fontSize={['xl', '2xl']} fontWeight="bold" color="gray.800">
             ドラフトルーム

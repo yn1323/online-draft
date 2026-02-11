@@ -2,7 +2,7 @@
 
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { useToaster } from '@/src/components/ui/toaster';
-import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { LuCopy } from 'react-icons/lu';
 import { useModal } from '../../hooks/common/useModal';
 
@@ -52,7 +52,7 @@ export const ShareModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="ドラフトルームを共有"
+      title="友達をドラフトに招待"
       dialogMaxWidth="2xl" // PC版の幅を拡張
       actions={{
         cancel: {
@@ -67,7 +67,7 @@ export const ShareModal = ({
             {groupName}
           </Text>
           <Text fontSize="sm" color="gray.600" mb={4}>
-            このURLを友達にシェアして、一緒にドラフトを楽しもう！
+            下のボタンからURLをコピーして友達に送ろう！
           </Text>
         </Box>
 
@@ -76,32 +76,21 @@ export const ShareModal = ({
           <Text fontSize="sm" color="gray.600" mb={2}>
             招待URL
           </Text>
-          <HStack gap={2}>
-            <Text
-              fontSize="sm"
-              bg="gray.100"
-              p={3}
-              borderRadius="md"
-              flex={1}
-              fontFamily="mono"
-              whiteSpace="nowrap"
-              overflow="hidden"
-              textOverflow="ellipsis"
-              minW={0}
-            >
-              {shareUrl}
-            </Text>
-            <IconButton
-              aria-label="URLをコピー"
-              variant="solid"
-              colorPalette="blue"
-              size="md"
-              flexShrink={0}
-              onClick={handleCopyUrl}
-            >
-              <LuCopy />
-            </IconButton>
-          </HStack>
+          <Text
+            fontSize="sm"
+            bg="gray.100"
+            p={3}
+            borderRadius="md"
+            fontFamily="mono"
+            truncate
+            mb={2}
+          >
+            {shareUrl}
+          </Text>
+          <Button w="full" colorPalette="blue" onClick={handleCopyUrl}>
+            <LuCopy />
+            招待URLをコピー
+          </Button>
         </Box>
 
         <Box
