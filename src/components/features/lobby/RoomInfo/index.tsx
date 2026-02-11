@@ -49,7 +49,7 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
                 p={2}
                 borderRadius="md"
                 flex={1}
-                truncate
+                wordBreak="break-all"
               >
                 {roomUrl}
               </Text>
