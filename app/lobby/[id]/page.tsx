@@ -1,20 +1,33 @@
 import { LobbyPage } from '@/src/components/features/lobby/LobbyPage';
+import { getGroupNameFromRest } from '@/src/lib/firestore-rest';
 import { Animation } from '@/src/components/templates/Animation';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  robots: { index: false, follow: false },
-};
-
-interface PageProps {
+type PageProps = {
   params: Promise<{
     id: string;
   }>;
-}
+};
 
-interface PageInnerProps {
+export const generateMetadata = async ({
+  params,
+}: PageProps): Promise<Metadata> => {
+  const { id } = await params;
+  const groupName = await getGroupNameFromRest(id);
+
+  return {
+    robots: { index: false, follow: false },
+    title: groupName ? `${groupName} | なんでもドラフト` : 'なんでもドラフト',
+    openGraph: {
+      title: groupName || 'なんでもドラフト',
+      description: '推しを選んで、かぶったら勝負！',
+    },
+  };
+};
+
+type PageInnerProps = {
   id: string;
-}
+};
 
 function PageInner({ id }: PageInnerProps) {
   return (
