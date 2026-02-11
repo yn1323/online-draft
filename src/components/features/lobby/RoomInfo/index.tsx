@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, HStack, IconButton, Text, VStack } from '@chakra-ui/react';
+import { Box, Button, Text, VStack } from '@chakra-ui/react';
 import { LuCopy } from 'react-icons/lu';
 import { Card } from '@/src/components/atoms/Card';
 import { useToaster } from '@/src/components/ui/toaster';
@@ -30,46 +30,39 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
   };
 
   return (
-    <Card variant="elevated" size="md">
-      <Box w="full">
+    <Box w="full" overflow="hidden">
+      <Card variant="elevated" size="md">
         <VStack gap={4} align="stretch">
           <Text fontSize="lg" fontWeight="bold">
             {group.groupName}
           </Text>
 
-          {/* URL共有エリア */}
+          {/* 招待エリア */}
           <Box>
             <Text fontSize="sm" color="gray.600" mb={2}>
-              このURLを友達にシェアしよう！
+              友達をこのルームに招待しよう！
             </Text>
-            <HStack>
-              <Text
-                fontSize="sm"
-                bg="gray.100"
-                p={2}
-                borderRadius="md"
-                flex={1}
-                truncate
-              >
-                {roomUrl}
-              </Text>
-              <IconButton
-                aria-label="URLをコピー"
-                variant="solid"
-                colorPalette="blue"
-                size="sm"
-                onClick={handleCopyUrl}
-              >
-                <LuCopy />
-              </IconButton>
-            </HStack>
+            <Text
+              fontSize="sm"
+              bg="gray.100"
+              p={2}
+              borderRadius="md"
+              truncate
+              mb={2}
+            >
+              {roomUrl}
+            </Text>
+            <Button w="full" colorPalette="blue" onClick={handleCopyUrl}>
+              <LuCopy />
+              招待URLをコピー
+            </Button>
           </Box>
 
           <Text fontSize={['xs', 'sm']} color="gray.500">
             音声通話アプリ（LINE、Discord等）を併用してお楽しみください
           </Text>
         </VStack>
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
 };
