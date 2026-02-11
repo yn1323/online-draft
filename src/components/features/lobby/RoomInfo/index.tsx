@@ -30,8 +30,8 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
   };
 
   return (
-    <Card variant="elevated" size="md">
-      <Box w="full">
+    <Box w="full" overflow="hidden">
+      <Card variant="elevated" size="md">
         <VStack gap={4} align="stretch">
           <Text fontSize="lg" fontWeight="bold">
             {group.groupName}
@@ -62,7 +62,7 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
             音声通話アプリ（LINE、Discord等）を併用してお楽しみください
           </Text>
         </VStack>
-      </Box>
-    </Card>
+      </Card>
+    </Box>
   );
 };
