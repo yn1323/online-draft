@@ -57,8 +57,8 @@ Storybookで使用している`useHydrateAtoms`パターンを流用し、ガイ
 **メタデータ**:
 ```typescript
 export const metadata: Metadata = {
-  title: '使い方ガイド | なんでもドラフト',
-  description: 'なんでもドラフトの使い方を解説。ルーム作成から友達招待、ドラフト実行まで3ステップで簡単！',
+  title: '使い方ガイド | みんなでドラフト',
+  description: 'みんなでドラフトの使い方を解説。ルーム作成から友達招待、ドラフト実行まで3ステップで簡単！',
   alternates: {
     canonical: '/guide',
   },
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
 
 **構成**:
 ```
-1. なんでもドラフトとは？
+1. みんなでドラフトとは？
    └─ 30秒で分かる概要説明
 
 2. 基本の流れ（3ステップ）
@@ -125,8 +125,8 @@ export const metadata: Metadata = {
 **メタデータ**:
 ```typescript
 export const metadata: Metadata = {
-  title: 'よくある質問（FAQ） | なんでもドラフト',
-  description: 'なんでもドラフトのよくある質問。登録不要・完全無料で2〜8人で遊べます。',
+  title: 'よくある質問（FAQ） | みんなでドラフト',
+  description: 'みんなでドラフトのよくある質問。登録不要・完全無料で2〜8人で遊べます。',
   alternates: {
     canonical: '/faq',
   },
@@ -198,10 +198,10 @@ Next.js の Route Groups を使って、Header/Footer の表示を制御する�
 
 **構成**:
 ```
-なんでもドラフト
+みんなでドラフト
 ├─ 使い方ガイド → /guide
 ├─ よくある質問 → /faq
-└─ © 2024 なんでもドラフト
+└─ © 2024 みんなでドラフト
 ```
 
 #### 4-4. マーケティング用レイアウト作成

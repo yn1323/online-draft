@@ -10,7 +10,7 @@ const howToJsonLd = {
   '@type': 'HowTo',
   name: 'オンラインドラフト会議の始め方',
   description:
-    'なんでもドラフトを使ったオンラインドラフト会議の始め方を3ステップで解説',
+    'みんなでドラフトを使ったオンラインドラフト会議の始め方を3ステップで解説',
   step: GUIDE_STEPS.map((step) => ({
     '@type': 'HowToStep',
     name: step.title,

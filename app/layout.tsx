@@ -9,7 +9,7 @@ const BASE_URL = 'https://online-draft.vercel.app';
 const webApplicationJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
-  name: 'なんでもドラフト',
+  name: 'みんなでドラフト',
   description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
   url: BASE_URL,
   applicationCategory: 'GameApplication',
@@ -48,24 +48,24 @@ const siteNavigationJsonLd = {
 };
 
 export const metadata: Metadata = {
-  title: 'なんでもドラフト | 登録不要・無料のオンラインドラフト会議',
+  title: 'みんなでドラフト | 登録不要・無料のオンラインドラフト会議',
   description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
   metadataBase: new URL(BASE_URL),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'なんでもドラフト',
+    title: 'みんなでドラフト',
     description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
     url: BASE_URL,
-    siteName: 'なんでもドラフト',
+    siteName: 'みんなでドラフト',
     images: [{ url: '/img/logo/og.png', width: 600, height: 600 }],
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'なんでもドラフト',
+    title: 'みんなでドラフト',
     description: '野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料',
     images: ['/img/logo/og.png'],
   },

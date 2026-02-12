@@ -6,13 +6,11 @@ import {
   Container,
   Heading,
   HStack,
-  IconButton,
-  Link,
   Text,
   VStack,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { LuGithub, LuLock, LuSmartphone, LuWallet } from 'react-icons/lu';
+import { LuLock, LuSmartphone, LuWallet } from 'react-icons/lu';
 
 import { Button } from '@/src/components/atoms/Button';
 import { Input } from '@/src/components/atoms/Input';
@@ -46,32 +44,7 @@ export const HeroSection = ({
       background="linear-gradient(135deg, #3182ce, #805ad5, #d53f8c)"
       pt={[12, 16]}
       pb={[8, 12]}
-      position="relative"
     >
-      <Link
-        href="https://github.com/yn1323/online-draft"
-        target="_blank"
-        rel="noopener noreferrer"
-        position="absolute"
-        top={4}
-        right={4}
-        zIndex={10}
-      >
-        <IconButton
-          aria-label="GitHub Repository"
-          variant="ghost"
-          color="whiteAlpha.800"
-          _hover={{
-            bg: 'whiteAlpha.200',
-            color: 'white',
-            transform: 'scale(1.1)',
-          }}
-          transition="all 0.15s ease"
-        >
-          <LuGithub size={24} />
-        </IconButton>
-      </Link>
-
       <Container maxW="container.md">
         <VStack gap={[6, 8]} align="center">
           {/* タイトルエリア */}
@@ -83,7 +56,7 @@ export const HeroSection = ({
               color="white"
               textShadow="2px 2px 4px rgba(0,0,0,0.3)"
             >
-              なんでもドラフト
+              みんなでドラフト
             </Heading>
             <Text fontSize={['lg', 'xl']} fontWeight="bold" color="white">
               推しを選んで、かぶったら勝負！

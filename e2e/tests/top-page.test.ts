@@ -6,7 +6,7 @@ test.describe('TOPページ', () => {
 
     // ページタイトルの確認（H1のみ）
     await expect(
-      page.getByRole('heading', { name: 'なんでもドラフト', level: 1 }),
+      page.getByRole('heading', { name: 'みんなでドラフト', level: 1 }),
     ).toBeVisible();
   });
 

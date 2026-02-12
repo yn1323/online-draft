@@ -2,7 +2,7 @@ import { getGroupNameFromRest } from '@/src/lib/firestore-rest';
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'なんでもドラフト';
+export const alt = 'みんなでドラフト';
 export const size = {
   width: 1200,
   height: 630,
@@ -69,7 +69,7 @@ const Image = async ({ params }: Props) => {
     fontPromise,
   ]);
 
-  const displayName = truncateText(groupName || 'なんでもドラフト');
+  const displayName = truncateText(groupName || 'みんなでドラフト');
   const fontSize = getFontSize(displayName);
 
   return new ImageResponse(
@@ -124,7 +124,7 @@ const Image = async ({ params }: Props) => {
           letterSpacing: '0.05em',
         }}
       >
-        🎲 なんでもドラフト
+        🎲 みんなでドラフト
       </div>
 
       {/* ドラフト名カード */}

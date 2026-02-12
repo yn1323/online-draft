@@ -1,15 +1,6 @@
 'use client';
 
-import {
-  Box,
-  Container,
-  Heading,
-  HStack,
-  Link,
-  Text,
-  VStack,
-} from '@chakra-ui/react';
-import { LuGithub } from 'react-icons/lu';
+import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
 
 import { Button } from '@/src/components/atoms/Button';
 
@@ -54,21 +45,9 @@ export const FooterCTASection = ({ onCreateRoom }: FooterCTASectionProps) => {
             pt={8}
             mt={4}
           >
-            <VStack gap={4}>
-              <Text fontSize="sm" color="whiteAlpha.800">
-                © 2025 オンラインドラフト会議
-              </Text>
-              <HStack gap={4}>
-                <Link
-                  href="https://github.com/at946/and-and"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  _hover={{ opacity: 0.8 }}
-                >
-                  <Box as={LuGithub} boxSize={6} color="whiteAlpha.800" />
-                </Link>
-              </HStack>
-            </VStack>
+            <Text fontSize="sm" color="whiteAlpha.800">
+              © 2025 オンラインドラフト会議
+            </Text>
           </Box>
         </VStack>
       </Container>
