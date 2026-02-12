@@ -17,9 +17,9 @@ export const generateMetadata = async ({
 
   return {
     robots: { index: false, follow: false },
-    title: groupName ? `${groupName} | なんでもドラフト` : 'なんでもドラフト',
+    title: groupName ? `${groupName} | みんなでドラフト` : 'みんなでドラフト',
     openGraph: {
-      title: groupName || 'なんでもドラフト',
+      title: groupName || 'みんなでドラフト',
       description: '推しを選んで、かぶったら勝負！',
     },
   };

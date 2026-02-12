@@ -24,7 +24,7 @@ export const Footer = () => {
                 gradientTo="purple.500"
                 bgClip="text"
               >
-                なんでもドラフト
+                みんなでドラフト
               </Text>
             </NextLink>
           </Link>
@@ -47,7 +47,7 @@ export const Footer = () => {
 
           {/* コピーライト */}
           <Text fontSize="xs" color="gray.500">
-            © 2024 なんでもドラフト
+            © 2024 みんなでドラフト
           </Text>
         </VStack>
       </Container>

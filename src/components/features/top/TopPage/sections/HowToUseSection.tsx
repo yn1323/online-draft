@@ -37,7 +37,7 @@ const STEPS = [
 const howToJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
-  name: 'なんでもドラフトの使い方',
+  name: 'みんなでドラフトの使い方',
   step: STEPS.map((step) => ({
     '@type': 'HowToStep',
     name: step.title,

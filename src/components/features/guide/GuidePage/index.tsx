@@ -94,11 +94,11 @@ export const GuidePage = () => {
               オンラインドラフト会議の使い方ガイド
             </Heading>
             <Text fontSize={['md', 'lg']} color="gray.600">
-              登録不要・完全無料！なんでもドラフトの遊び方を30秒でマスター！
+              登録不要・完全無料！みんなでドラフトの遊び方を30秒でマスター！
             </Text>
           </VStack>
 
-          {/* なんでもドラフトとは？ */}
+          {/* みんなでドラフトとは？ */}
           <Box
             bg="blue.50"
             p={[6, 8]}
@@ -108,12 +108,12 @@ export const GuidePage = () => {
           >
             <VStack gap={4} align="start">
               <Heading as="h2" size={['lg', 'xl']} color="blue.700">
-                なんでもドラフトとは？
+                みんなでドラフトとは？
               </Heading>
               <Text fontSize={['sm', 'md']} color="gray.700" lineHeight="tall">
                 野球選手、サッカー選手、アニメキャラ、好きな曲、行きたい旅行先...どんなお題でもOK！
                 <br />
-                なんでもドラフトは、友達とリアルタイムでオンラインドラフト会議が楽しめる無料Webアプリです。
+                みんなでドラフトは、友達とリアルタイムでオンラインドラフト会議が楽しめる無料Webアプリです。
                 <br />
                 <br />
                 <strong>登録もアプリも不要</strong>
@@ -206,10 +206,10 @@ export const GuidePage = () => {
             </VStack>
           </VStack>
 
-          {/* なんでもドラフトの便利な機能 */}
+          {/* みんなでドラフトの便利な機能 */}
           <VStack gap={6} align="stretch">
             <Heading as="h2" size={['lg', 'xl']} color="gray.800">
-              なんでもドラフトの便利な機能
+              みんなでドラフトの便利な機能
             </Heading>
 
             <HStack gap={4} flexWrap="wrap">

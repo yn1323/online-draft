@@ -2,7 +2,7 @@
 
 ## 概要
 
-このドキュメントは「なんでもドラフト」のAIO（AI Overview最適化）対策の実装内容をまとめたものです。
+このドキュメントは「みんなでドラフト」のAIO（AI Overview最適化）対策の実装内容をまとめたものです。
 
 GoogleのAI Search OptimizationでサービスがAI検索結果に引っかかりやすくなることを目的としています。
 
@@ -14,7 +14,7 @@ GoogleのAI Search OptimizationでサービスがAI検索結果に引っかか�
 
 | 項目 | 内容 | ファイル |
 |------|------|----------|
-| サービス名変更 | 「オンラインドラフト」→「なんでもドラフト」 | `app/layout.tsx`, `app/page.tsx` |
+| サービス名変更 | 「オンラインドラフト」→「みんなでドラフト」 | `app/layout.tsx`, `app/page.tsx` |
 | OGP設定 | Open Graph / Twitter Card | `app/layout.tsx` |
 | robots.txt | クローラー制御 | `public/robots.txt` |
 | sitemap.xml | サイトマップ生成 | `app/sitemap.ts` |
@@ -53,7 +53,7 @@ GoogleのAI Search OptimizationでサービスがAI検索結果に引っかか�
 {
   "@context": "https://schema.org",
   "@type": "WebApplication",
-  "name": "なんでもドラフト",
+  "name": "みんなでドラフト",
   "description": "野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料",
   "url": "https://online-draft.vercel.app",
   "applicationCategory": "GameApplication",
@@ -88,7 +88,7 @@ GoogleのAI Search OptimizationでサービスがAI検索結果に引っかか�
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "なんでもドラフトとは？",
+      "name": "みんなでドラフトとは？",
       "acceptedAnswer": {
         "@type": "Answer",
         "text": "野球・アニメ・音楽など、何でもドラフト会議ができる無料オンラインツールです。"
@@ -110,7 +110,7 @@ GoogleのAI Search OptimizationでサービスがAI検索結果に引っかか�
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "なんでもドラフトの使い方",
+  "name": "みんなでドラフトの使い方",
   "step": [
     {
       "@type": "HowToStep",
@@ -133,7 +133,7 @@ SNSでシェアされた際に表示される情報。
 
 | プロパティ | 値 |
 |-----------|-----|
-| og:title | なんでもドラフト |
+| og:title | みんなでドラフト |
 | og:description | 野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料 |
 | og:image | /img/logo/og.png |
 | og:type | website |
@@ -144,7 +144,7 @@ SNSでシェアされた際に表示される情報。
 | プロパティ | 値 |
 |-----------|-----|
 | twitter:card | summary_large_image |
-| twitter:title | なんでもドラフト |
+| twitter:title | みんなでドラフト |
 | twitter:description | 野球・アニメ・音楽...何でもドラフト会議！登録不要・完全無料 |
 | twitter:image | /img/logo/og.png |
 

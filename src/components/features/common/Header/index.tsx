@@ -42,7 +42,7 @@ export const Header = ({ onCreateRoom }: HeaderProps) => {
                 gradientTo="purple.500"
                 bgClip="text"
               >
-                なんでもドラフト
+                みんなでドラフト
               </Text>
             </NextLink>
           </Link>
