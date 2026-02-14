@@ -1,0 +1,98 @@
+{
+  "pageTitle": "Frequently Asked Questions",
+  "pageSubtitle": "Everything you need to know about Draft Together",
+  "categories": [
+    {
+      "name": "Basics",
+      "items": [
+        {
+          "question": "Do I need to sign up to use Draft Together?",
+          "answer": "No sign-up needed! No account creation, no email required. Just open the URL and start drafting right away."
+        },
+        {
+          "question": "Is Draft Together completely free?",
+          "answer": "Yes, completely free! All features are available at no cost. There are no paid plans or hidden charges — play as many times as you like."
+        },
+        {
+          "question": "How many people can play?",
+          "answer": "2-8 players. Even 2 players can have a blast, but 4-6 players is the sweet spot where clashes happen more often and things get really exciting! Since it's online, you can play with friends anywhere."
+        },
+        {
+          "question": "What topics can I draft?",
+          "answer": "Anything! Baseball players, soccer players, anime characters, songs, movies, travel destinations — you name it! You choose your own topic, so any genre works. Get creative with your own original themes!"
+        },
+        {
+          "question": "What occasions is Draft Together good for?",
+          "answer": "Party games, online hangouts, friend groups picking their favorites, club events, and more! Since it's free and requires no sign-up, you can start on the spot whenever someone says \"let's try it!\" Perfect for remote friends too — plan trips, rank favorites, or just have fun."
+        },
+        {
+          "question": "Can I use it for fantasy sports drafts?",
+          "answer": "Absolutely! You can freely type in any player name to make your pick, making it perfect for fantasy leagues and draft parties. When picks clash, a random tiebreaker decides — just like a real draft! Supports 2-8 players, free, no sign-up needed."
+        }
+      ]
+    },
+    {
+      "name": "Rooms",
+      "items": [
+        {
+          "question": "I can't join a room. What should I do?",
+          "answer": "First, check that the shared URL or Room ID is correct. Rooms are automatically deleted 24 hours after creation, so expired URLs won't work. If the issue persists, try clearing your browser cache or using a different browser."
+        },
+        {
+          "question": "Can I join a draft that's already started?",
+          "answer": "Yes! You can join mid-game. Open the shared URL, enter the lobby, and tap \"Join.\" You'll be able to participate from the next round, though you can't go back to previous rounds."
+        },
+        {
+          "question": "How long does a room last?",
+          "answer": "Rooms are valid for 24 hours after creation. After that, they're automatically deleted. You can create new rooms anytime, as many as you want, for free."
+        }
+      ]
+    },
+    {
+      "name": "Drafting",
+      "items": [
+        {
+          "question": "What is a 'clash'?",
+          "answer": "A clash happens when two or more players pick the same item in the same round. When this occurs, a random tiebreaker determines the winner, and the others must pick something else. The \"will we clash?\" tension is what makes drafting so thrilling!"
+        },
+        {
+          "question": "How is the tiebreaker decided?",
+          "answer": "Tiebreakers are completely random — determined by the system. Speed of input or order of joining doesn't matter at all. It's pure luck, which is what makes the mind games and predictions so much fun!"
+        },
+        {
+          "question": "How many rounds can we play?",
+          "answer": "There's no limit! Play as many rounds as you want. We recommend deciding on a number (like 5 or 10 rounds) with your group beforehand. Adjust freely based on your topic!"
+        },
+        {
+          "question": "Can I change my pick after submitting?",
+          "answer": "Yes! You can change your pick as many times as you want before the reveal. Just tap \"Change Pick\" to modify it. Watching others and strategically changing your pick is part of the game!"
+        },
+        {
+          "question": "Are draft results saved?",
+          "answer": "Results are available as long as the room exists (within 24 hours of creation). You can review all rounds, picks, and clash outcomes on the results screen. After 24 hours, the room is deleted — take a screenshot if you want to keep the results!"
+        },
+        {
+          "question": "Is the tiebreaker fair?",
+          "answer": "Absolutely! Tiebreakers are completely random. Speed, join order, or room creator status have zero influence. Every player has an equal chance of winning."
+        }
+      ]
+    },
+    {
+      "name": "Technical",
+      "items": [
+        {
+          "question": "Is there voice chat?",
+          "answer": "Draft Together doesn't have built-in voice chat. We recommend using Discord, Zoom, or your favorite voice chat app alongside it! There is a text chat feature built in for those who prefer typing."
+        },
+        {
+          "question": "Does it work on mobile? Do I need an app?",
+          "answer": "Works on all devices — mobile, tablet, and PC! No app needed. Just open Safari, Chrome, Edge, or any modern browser and you're good to go. Join from anywhere!"
+        },
+        {
+          "question": "What if I lose connection during a draft?",
+          "answer": "Just reopen the same URL to reconnect! Even if you close the browser, you can rejoin as long as the room is active (within 24 hours). All data is saved on the server, so don't worry about unstable connections."
+        }
+      ]
+    }
+  ]
+}

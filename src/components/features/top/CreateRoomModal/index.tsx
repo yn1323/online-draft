@@ -2,13 +2,14 @@
 
 import { Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useId, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
-// Zodスキーマ定義（30文字制限）
+// テスト用にデフォルトメッセージ付きスキーマもエクスポート
 export const createRoomSchema = z.object({
   roomName: z
     .string()
@@ -17,7 +18,9 @@ export const createRoomSchema = z.object({
     .max(30, 'ルーム名は30文字以内で入力してください'),
 });
 
-type CreateRoomFormType = z.infer<typeof createRoomSchema>;
+type CreateRoomFormType = {
+  roomName: string;
+};
 
 type CreateRoomModalProps = {
   isOpen: boolean;
@@ -34,7 +37,21 @@ export const CreateRoomModal = ({
   onClose,
   onCreateRoom,
 }: CreateRoomModalProps) => {
+  const t = useTranslations('top');
   const formId = useId();
+
+  // 翻訳対応のzodスキーマ
+  const createRoomSchema = useMemo(
+    () =>
+      z.object({
+        roomName: z
+          .string()
+          .trim()
+          .min(1, t('createRoomModal.validation.required'))
+          .max(30, t('createRoomModal.validation.maxLength')),
+      }),
+    [t],
+  );
 
   // react-hook-form設定
   const {
@@ -71,14 +88,14 @@ export const CreateRoomModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="新しいルームを作成"
+      title={t('createRoomModal.title')}
       actions={{
         cancel: {
-          text: 'キャンセル',
+          text: t('createRoomModal.cancel'),
           onClick: handleClose,
         },
         submit: {
-          text: 'ルームを作成',
+          text: t('createRoomModal.submit'),
           colorPalette: 'blue',
           type: 'submit',
           form: formId,
@@ -98,11 +115,11 @@ export const CreateRoomModal = ({
         {/* ルーム名入力 */}
         <VStack gap={2} align="stretch">
           <Text fontSize="sm" fontWeight="medium" color="gray.700">
-            ルーム名
+            {t('createRoomModal.roomNameLabel')}
           </Text>
           <Input
             {...register('roomName')}
-            placeholder="例: 2024年プロ野球ドラフト"
+            placeholder={t('createRoomModal.roomNamePlaceholder')}
             size="lg"
             maxLength={30}
             error={!!errors.roomName}
@@ -116,7 +133,7 @@ export const CreateRoomModal = ({
 
         {/* 説明テキスト */}
         <Text fontSize="sm" color="gray.600" textAlign="center">
-          URLを共有して友達を招待しよう！
+          {t('createRoomModal.description')}
         </Text>
       </VStack>
     </ResponsiveModal>

@@ -13,6 +13,7 @@ import {
 import { useToaster } from '@/src/components/ui/toaster';
 import { Accordion, Box, Grid, HStack, Text, VStack } from '@chakra-ui/react';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { useTranslations } from 'next-intl';
 import { useEffect } from 'react';
 import type {
   DraftPickType,
@@ -186,6 +187,7 @@ export const PastDraftResults = ({
   variant = 'sp',
   onEditClick,
 }: PastDraftResultsProps) => {
+  const t = useTranslations('draft');
   // Atomからデータを取得
   const pastResults = useAtomValue(pastDraftResultsUIAtom);
   const participants = useAtomValue(participantsUIAtom);
@@ -238,12 +240,20 @@ export const PastDraftResults = ({
         if (clickedConflict) {
           // 重複指名の敗者をクリックした場合
           errorToast(
-            `このカードは重複指名で負けたため編集が必要です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}から順番に編集してください。`,
+            t('pastResults.editRequired', {
+              targetUser:
+                targetUser?.name || t('pastResults.targetUserDefault'),
+              round: currentEditTarget.round,
+            }),
           );
         } else {
           // その他のカードをクリックした場合
           errorToast(
-            `重複指名解決中です。まず${targetUser?.name || '対象ユーザー'}のRound ${currentEditTarget.round}を編集してください。`,
+            t('pastResults.resolving', {
+              targetUser:
+                targetUser?.name || t('pastResults.targetUserDefault'),
+              round: currentEditTarget.round,
+            }),
           );
         }
       }
@@ -286,7 +296,7 @@ export const PastDraftResults = ({
           <Card variant="elevated" size="md">
             <Box h="full" display="flex" flexDirection="column">
               <Text fontSize="md" fontWeight="bold" mb={3}>
-                過去のドラフト結果
+                {t('pastResults.heading')}
               </Text>
               <Box
                 flex={1}
@@ -296,9 +306,9 @@ export const PastDraftResults = ({
                 py={8}
               >
                 <Text fontSize="sm" color="gray.500" textAlign="center">
-                  まだ開票が始まっていません
+                  {t('pastResults.noResults')}
                   <br />
-                  最初のRoundの抽選をお待ちください
+                  {t('pastResults.waitForFirst')}
                 </Text>
               </Box>
             </Box>
@@ -312,7 +322,7 @@ export const PastDraftResults = ({
         <Card variant="elevated" size="md">
           <Box h="full" display="flex" flexDirection="column">
             <Text fontSize="md" fontWeight="bold" mb={3}>
-              ドラフト結果
+              {t('pastResults.resultHeading')}
             </Text>
 
             {/* ヘッダー行（参加者名） */}
@@ -411,7 +421,7 @@ export const PastDraftResults = ({
                               </VStack>
                             ) : (
                               <Text color="gray.400" fontSize="2xs">
-                                + 追加
+                                {t('pastResults.addItem')}
                               </Text>
                             )}
                           </Box>
@@ -437,7 +447,7 @@ export const PastDraftResults = ({
           color="gray.800"
           alignSelf="start"
         >
-          ドラフト結果
+          {t('pastResults.resultHeading')}
         </Text>
         <Box
           w="full"
@@ -451,9 +461,9 @@ export const PastDraftResults = ({
           borderColor="gray.200"
         >
           <Text fontSize="sm" color="gray.500" textAlign="center">
-            まだ開票が始まっていません
+            {t('pastResults.noResultsYet')}
             <br />
-            最初のRoundの抽選を開始してください
+            {t('pastResults.startFirst')}
           </Text>
         </Box>
       </VStack>
@@ -463,7 +473,7 @@ export const PastDraftResults = ({
   return (
     <VStack gap={2} w="full">
       <Text fontSize="md" fontWeight="bold" color="gray.800" alignSelf="start">
-        ドラフト結果
+        {t('pastResults.resultHeading')}
       </Text>
 
       <Accordion.Root defaultValue={[]} multiple w="full" variant="enclosed">
@@ -554,7 +564,7 @@ export const PastDraftResults = ({
                               </>
                             ) : (
                               <Text fontSize="xs" color="gray.400" py={2}>
-                                + 追加
+                                {t('pastResults.addItem')}
                               </Text>
                             )}
                           </VStack>

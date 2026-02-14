@@ -1,0 +1,55 @@
+{
+  "pageTitle": "How to Use Draft Together",
+  "pageSubtitle": "No sign-up, completely free! Master the rules in 30 seconds!",
+  "aboutHeading": "What is Draft Together?",
+  "aboutContent": "Baseball players, soccer players, anime characters, favorite songs, dream travel spots... any topic goes!<br />Draft Together is a free web app where you can enjoy real-time online drafts with friends.<br /><br /><strong>No sign-up or app needed</strong> — play instantly from your browser on mobile or PC.<br />2-8 players can join, and when someone picks the same item, a \"clash\" triggers a random tiebreaker!<br />Read your opponents, outsmart your friends, and enjoy the thrill of drafting online!",
+  "stepsHeading": "Getting Started (3 Steps)",
+  "stepLabel": "STEP {step}",
+  "steps": [
+    {
+      "title": "Create a Free Draft Room",
+      "description": "Tap the \"Create a Room\" button on the top page and enter a room name — that's it! No sign-up needed, your room is ready in seconds. A unique URL is generated so you can share it with friends!"
+    },
+    {
+      "title": "Invite Friends to Your Draft",
+      "description": "Just share the room URL via Discord, text message, social media, or any messaging app! Friends can join by simply opening the link — no app install required. Once 2-8 people are in, you're ready to go!"
+    },
+    {
+      "title": "Start Drafting!",
+      "description": "Once everyone's in, the draft begins! Each round, pick the item you want. When all picks are in, they're revealed at once. If someone picked the same item, a \"clash\" occurs and a random tiebreaker decides the winner! Enjoy the mind games and excitement!"
+    }
+  ],
+  "rulesHeading": "Draft Rules",
+  "rules": [
+    {
+      "title": "How to Make a Pick",
+      "description": "Each round, tap the \"Make a Pick\" button and type the name of the item you want! You can also add a comment to explain your choice or share your thoughts!"
+    },
+    {
+      "title": "What Happens When Picks Clash",
+      "description": "When multiple players pick the same item, a \"clash\" occurs! A completely random tiebreaker decides the winner, and the others must pick something else. The \"will we clash?\" mind games are what make drafting so exciting!"
+    },
+    {
+      "title": "Round Progression",
+      "description": "Once everyone's picks are locked in, hit \"Reveal Picks\" to show them all at once! After resolving any clashes, move on to the next round. There's no limit on rounds — decide with your group how many to play. Draft as long as you want!"
+    }
+  ],
+  "featuresHeading": "Features",
+  "features": [
+    {
+      "title": "Real-time Chat",
+      "description": "Chat in real-time during your draft! Share reactions, trash-talk, and strategize via text. Pair it with a voice call on Discord, Zoom, or your favorite app for maximum fun!"
+    },
+    {
+      "title": "Exciting Reveal Animations",
+      "description": "Picks are revealed with dramatic animations! Watch as each player's choice is unveiled one by one — the tension builds with every reveal, especially when clashes happen. Share the excitement with friends, even online!"
+    }
+  ],
+  "tipsHeading": "Tips for a Great Draft",
+  "tips": [
+    "Decide on a topic (theme) before starting for a smooth experience!",
+    "More players = more clashes = more fun! 4-6 players is the sweet spot!",
+    "Use voice chat (Discord, etc.) alongside the draft for 100x more fun!",
+    "Late joiners welcome! Friends can jump in from the lobby at any time."
+  ]
+}

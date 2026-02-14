@@ -1,0 +1,33 @@
+{
+  "brandName": "Draft Together",
+  "nav": {
+    "guide": "Guide",
+    "faq": "FAQ"
+  },
+  "footer": {
+    "guideLink": "How-to Guide",
+    "faqLink": "FAQ",
+    "copyright": "© 2025 Draft Together"
+  },
+  "actions": {
+    "createRoom": "Create Room",
+    "cancel": "Cancel",
+    "close": "Close",
+    "send": "Send",
+    "join": "Join",
+    "share": "Share",
+    "confirm": "Confirm",
+    "register": "Join"
+  },
+  "loading": "Loading...",
+  "or": "or",
+  "avatarAlt": "Avatar",
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Must be at least {minimum} characters",
+    "maxLength": "Must be {maximum} characters or less",
+    "email": "Please enter a valid email address",
+    "invalid": "Invalid input",
+    "minSelect": "Please select at least {minimum}."
+  }
+}

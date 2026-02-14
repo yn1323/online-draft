@@ -10,10 +10,11 @@ import type { GroupDataType } from '@/src/hooks/firebase/group/useGroup';
 import { useRealtimeGroup } from '@/src/hooks/firebase/group/useRealtimeGroup';
 import { useRealtimeUsers } from '@/src/hooks/firebase/user/useRealtimeUsers';
 import { type UserDataType, useUser } from '@/src/hooks/firebase/user/useUser';
-import { Box, Container, Text, VStack } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { Box, Container, HStack, Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import { Link, useRouter } from '@/src/i18n/navigation';
+import { LanguageSwitcher } from '@/src/components/features/common/LanguageSwitcher';
 import { AvatarSelectionModal } from '../AvatarSelectionModal';
 import { ParticipantsList } from '../ParticipantsList';
 import { RoomInfo } from '../RoomInfo';
@@ -50,6 +51,8 @@ export const LobbyPageInner = ({
   onAvatarModalClose,
   onJoinConfirm,
 }: LobbyPageInnerProps) => {
+  const t = useTranslations('lobby');
+
   // グループが存在しない場合
   if (!group) {
     return (
@@ -57,11 +60,9 @@ export const LobbyPageInner = ({
         <Container maxW="container.lg">
           <VStack gap={6}>
             <Text fontSize={['xl', '2xl']} fontWeight="bold" color="red.600">
-              ルームが見つかりません
+              {t('page.notFound')}
             </Text>
-            <Text color="gray.600">
-              指定されたルームが存在しないか、削除されている可能性があります。
-            </Text>
+            <Text color="gray.600">{t('page.notFoundDescription')}</Text>
           </VStack>
         </Container>
       </Box>
@@ -73,9 +74,12 @@ export const LobbyPageInner = ({
       <Container maxW="container.lg">
         <VStack gap={6} w="full">
           {/* ヘッダー */}
-          <Text fontSize={['xl', '2xl']} fontWeight="bold" color="gray.800">
-            ドラフトルーム
-          </Text>
+          <HStack w="full" justify="space-between" align="center">
+            <Text fontSize={['xl', '2xl']} fontWeight="bold" color="gray.800">
+              {t('page.title')}
+            </Text>
+            <LanguageSwitcher />
+          </HStack>
 
           {/* ルーム情報カード */}
           <RoomInfo group={group} roomUrl={roomUrl} />
@@ -90,7 +94,7 @@ export const LobbyPageInner = ({
           {/* 退室ボタン */}
           <Link href="/">
             <Button variant="outline" size="sm">
-              ルームを退出
+              {t('page.leaveRoom')}
             </Button>
           </Link>
         </VStack>
@@ -113,6 +117,8 @@ export const LobbyPageInner = ({
  * LobbyPageInnerにpropsを渡すのみ
  */
 export const LobbyPage = ({ groupId }: LobbyPageProps) => {
+  const t = useTranslations('lobby');
+
   // 認証状態管理
   const {
     isAuthenticated,
@@ -147,13 +153,13 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
           // 認証成功 → 現在のページをリロード
           window.location.reload();
         } catch (error) {
-          console.error('認証エラー:', error);
-          errorToast('認証に失敗しました');
+          console.error(t('toast.authError'), error);
+          errorToast(t('toast.authFailed'));
         }
       }
     };
     checkAuth();
-  }, [isAuthenticated, authLoading, signInAnonymous, errorToast]);
+  }, [isAuthenticated, authLoading, signInAnonymous, errorToast, t]);
 
   // 現在のページURL（実際のURLを取得）
   const roomUrl =
@@ -187,10 +193,12 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
       router.push(`/draft/${groupId}`);
 
       // 成功メッセージ
-      successToast('ドラフトに参加しました！');
+      successToast(t('toast.joined'));
     } catch (error) {
-      console.error('参加エラー:', error);
-      errorToast(error instanceof Error ? error.message : '参加に失敗しました');
+      console.error(t('toast.joinError'), error);
+      errorToast(
+        error instanceof Error ? error.message : t('toast.joinFailed'),
+      );
     }
   };
 
@@ -203,7 +211,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     router.push(`/draft/${groupId}`);
 
     // 成功メッセージ
-    successToast('ドラフトに参加しました！');
+    successToast(t('toast.joined'));
   };
 
   // ローディング中の表示
@@ -211,7 +219,7 @@ export const LobbyPage = ({ groupId }: LobbyPageProps) => {
     return (
       <Box bg="gray.50" minH="100vh" py={[4, 8]}>
         <Container maxW="container.lg">
-          <Loading message="ローディング中..." />
+          <Loading message={t('loading')} />
         </Container>
       </Box>
     );

@@ -1,34 +1,38 @@
 import { LobbyPage } from '@/src/components/features/lobby/LobbyPage';
 import { Animation } from '@/src/components/templates/Animation';
+import { setRequestLocale } from 'next-intl/server';
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-interface PageProps {
+type PageProps = {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
-}
+};
 
-interface PageInnerProps {
+type PageInnerProps = {
   id: string;
-}
+};
 
-// 旧オンラインドラフトのロビーページ
-function PageInner({ id }: PageInnerProps) {
+const PageInner = ({ id }: PageInnerProps) => {
   return (
     <Animation>
       <LobbyPage groupId={id} />
     </Animation>
   );
-}
+};
 
-export default async function Page({ params }: PageProps) {
-  const { id } = await params;
+const Page = async ({ params }: PageProps) => {
+  const { id, locale } = await params;
+  setRequestLocale(locale);
 
   return <PageInner id={id} />;
-}
+};
+
+export default Page;
 
 export const runtime = 'edge';

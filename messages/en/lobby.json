@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "Draft Room",
+    "notFound": "Room not found",
+    "notFoundDescription": "This room doesn't exist or may have been deleted.",
+    "leaveRoom": "Leave Room"
+  },
+  "roomInfo": {
+    "inviteMessage": "Invite friends to this room!",
+    "copySuccess": "URL copied!",
+    "copyFailed": "Failed to copy URL",
+    "copyButton": "Copy Invite URL",
+    "voiceChatNote": "Try using a voice chat app (Discord, etc.) for more fun!"
+  },
+  "participants": {
+    "heading": "Players ({count})",
+    "inRoom": "Joined",
+    "register": "Join",
+    "tapToStart": "Tap a player to start the draft",
+    "joinGuide": "Tap \"+Join\" to enter — minimum 2 players to start"
+  },
+  "avatarModal": {
+    "title": "Join the Draft",
+    "nameLabel": "Your Name",
+    "namePlaceholder": "Enter your name",
+    "avatarLabel": "Choose an Avatar",
+    "avatarNote": "× marks are already taken by other players",
+    "submit": "Join",
+    "validation": {
+      "nameRequired": "Please enter your name",
+      "nameMaxLength": "Name must be 20 characters or less"
+    }
+  },
+  "toast": {
+    "authError": "Auth error:",
+    "authFailed": "Authentication failed",
+    "joined": "You've joined the draft!",
+    "joinError": "Join error:",
+    "joinFailed": "Failed to join"
+  },
+  "loading": "Loading..."
+}

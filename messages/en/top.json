@@ -1,0 +1,155 @@
+{
+  "hero": {
+    "title": "Draft Together",
+    "subtitle": "Pick your favorites, clash when you match!",
+    "description": "Baseball, anime, music... Draft anything with friends!",
+    "createRoom": "Create a Room",
+    "joinExisting": "Join an existing room",
+    "roomPlaceholder": "Room URL or ID",
+    "joinButton": "Join",
+    "or": "or",
+    "badges": {
+      "free": "Free",
+      "noSignup": "No Sign-up",
+      "mobile": "Mobile OK"
+    }
+  },
+  "service": {
+    "heading": "What is an Online Draft?",
+    "description": "A real-time draft game where you pick\nyour favorites together with friends.",
+    "features": [
+      {
+        "title": "Simultaneous Picks",
+        "description": "No waiting! Everyone picks at once, then reveal"
+      },
+      {
+        "title": "2-8 Players",
+        "description": "Share a URL to join instantly, real-time sync"
+      },
+      {
+        "title": "10-15 min",
+        "description": "Quick fun sessions, play with voice chat"
+      }
+    ]
+  },
+  "differentiation": {
+    "heading": "Why Choose Draft Together?",
+    "points": [
+      {
+        "title": "Draft anything",
+        "description": "Baseball, anime, music, food... any topic you like"
+      },
+      {
+        "title": "No waiting! Simultaneous picks",
+        "description": "Everyone picks at once, zero downtime"
+      },
+      {
+        "title": "Exciting reveal animations",
+        "description": "Slot machine-style reveals build the suspense!"
+      },
+      {
+        "title": "No sign-up, just share a URL",
+        "description": "No account needed, instant access"
+      }
+    ]
+  },
+  "howToUse": {
+    "heading": "Easy 3 Steps",
+    "steps": [
+      {
+        "title": "Create a Room",
+        "description": "Just enter a room name"
+      },
+      {
+        "title": "Share the URL",
+        "description": "Send to friends via Discord, text, etc."
+      },
+      {
+        "title": "Start Drafting",
+        "description": "Go when everyone's ready!"
+      }
+    ],
+    "cta": "Start Now"
+  },
+  "useCases": {
+    "heading": "Popular Use Cases",
+    "cases": [
+      {
+        "emoji": "\u26be",
+        "category": "Baseball",
+        "title": "Pro Baseball Player Draft",
+        "description": "Pre-season predictions with friends"
+      },
+      {
+        "emoji": "\ud83c\udfac",
+        "category": "Anime",
+        "title": "Seasonal Anime Character Draft",
+        "description": "Pick your favorite characters each new season"
+      },
+      {
+        "emoji": "\ud83c\udfb5",
+        "category": "Music",
+        "title": "Best Songs of the Year",
+        "description": "An annual tradition with friends"
+      },
+      {
+        "emoji": "\ud83c\udfc7",
+        "category": "Fantasy",
+        "title": "Fantasy Sports Draft",
+        "description": "Draft players and compete for the season"
+      }
+    ]
+  },
+  "faq": {
+    "heading": "FAQ",
+    "items": [
+      {
+        "question": "How many people can play?",
+        "answer": "2 to 8 players."
+      },
+      {
+        "question": "Is it free?",
+        "answer": "Completely free. No account needed."
+      },
+      {
+        "question": "Does it work on mobile?",
+        "answer": "Yes, works on both mobile and PC. Just need a browser."
+      },
+      {
+        "question": "How long does a game take?",
+        "answer": "About 10-15 minutes."
+      },
+      {
+        "question": "What topics can I draft?",
+        "answer": "Anything! Baseball, anime, music, movies — you name it."
+      }
+    ]
+  },
+  "footerCta": {
+    "heading": "Ready to Draft?",
+    "cta": "Create a Room",
+    "copyright": "© 2025 Draft Together"
+  },
+  "createRoomModal": {
+    "title": "Create a New Room",
+    "cancel": "Cancel",
+    "submit": "Create Room",
+    "description": "Share the URL to invite your friends!",
+    "roomNameLabel": "Room Name",
+    "roomNamePlaceholder": "e.g. 2024 Baseball Draft",
+    "validation": {
+      "required": "Please enter a room name",
+      "maxLength": "Room name must be 30 characters or less"
+    }
+  },
+  "toast": {
+    "roomCreated": "Room created!",
+    "roomCreationFailed": "Failed to create room",
+    "enterRoomUrlOrId": "Please enter a room URL or ID",
+    "invalidRoomUrlOrId": "Please enter a valid room URL or ID",
+    "roomNotFound": "Room not found",
+    "joiningRoom": "Joining room...",
+    "roomJoinFailed": "Failed to join room"
+  },
+  "spCta": "Create a Room"
+}

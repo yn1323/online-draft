@@ -10,54 +10,18 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-
-const FAQ_ITEMS = [
-  {
-    question: '何人まで参加できますか？',
-    answer: '2人から最大8人まで参加できます。',
-  },
-  {
-    question: '料金はかかりますか？',
-    answer: '完全無料です。アカウント登録も不要です。',
-  },
-  {
-    question: 'スマホでも使えますか？',
-    answer: 'はい、スマホ・PC両対応です。ブラウザだけで利用できます。',
-  },
-  {
-    question: '1回のゲームにどのくらい時間がかかりますか？',
-    answer: '10-15分程度でサクッと楽しめます。',
-  },
-  {
-    question: 'どんなジャンルでドラフトできますか？',
-    answer: '野球、アニメ、音楽など何でもOKです。自由に入力できます。',
-  },
-] as const;
-
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: FAQ_ITEMS.map((item) => ({
-    '@type': 'Question',
-    name: item.question,
-    acceptedAnswer: {
-      '@type': 'Answer',
-      text: item.answer,
-    },
-  })),
-};
+import { useTranslations } from 'next-intl';
 
 export const FAQSection = () => {
+  const t = useTranslations('top');
   const isMobile = useBreakpointValue({ base: true, md: false });
+  const faqItems = t.raw('faq.items') as {
+    question: string;
+    answer: string;
+  }[];
 
   return (
     <Box as="section" bg="white" py={[12, 16]}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(faqJsonLd),
-        }}
-      />
       <Container maxW="3xl">
         <VStack gap={[8, 10]}>
           <Heading
@@ -66,7 +30,7 @@ export const FAQSection = () => {
             color="gray.800"
             textAlign="center"
           >
-            よくある質問
+            {t('faq.heading')}
           </Heading>
 
           {isMobile ? (
@@ -76,7 +40,7 @@ export const FAQSection = () => {
               w="full"
               defaultValue={[]}
             >
-              {FAQ_ITEMS.map((item, index) => (
+              {faqItems.map((item, index) => (
                 <Accordion.Item key={item.question} value={`faq-${index}`}>
                   <Accordion.ItemTrigger
                     bg="gray.50"
@@ -106,7 +70,7 @@ export const FAQSection = () => {
             </Accordion.Root>
           ) : (
             <VStack gap={4} w="full">
-              {FAQ_ITEMS.map((item) => (
+              {faqItems.map((item) => (
                 <Box
                   key={item.question}
                   w="full"

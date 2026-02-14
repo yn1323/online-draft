@@ -1,0 +1,155 @@
+{
+  "hero": {
+    "title": "みんなでドラフト",
+    "subtitle": "推しを選んで、かぶったら勝負！",
+    "description": "野球・アニメ・音楽...何でもドラフト会議！",
+    "createRoom": "ルームを作成する",
+    "joinExisting": "既存のルームに参加",
+    "roomPlaceholder": "ルームURLまたはID",
+    "joinButton": "参加",
+    "or": "または",
+    "badges": {
+      "free": "完全無料",
+      "noSignup": "登録不要",
+      "mobile": "スマホOK"
+    }
+  },
+  "service": {
+    "heading": "オンラインドラフト会議とは？",
+    "description": "友達と一緒に「推し」を選び合う\nリアルタイムドラフトゲームです。",
+    "features": [
+      {
+        "title": "一斉選択",
+        "description": "順番待ちなし！全員同時に選んで開票"
+      },
+      {
+        "title": "2-8人対応",
+        "description": "URLシェアで簡単参加、リアルタイム同期"
+      },
+      {
+        "title": "10-15分",
+        "description": "サクッと楽しめる、音声通話しながらプレイ"
+      }
+    ]
+  },
+  "differentiation": {
+    "heading": "オンラインドラフト会議が選ばれる理由",
+    "points": [
+      {
+        "title": "何でもドラフトできる",
+        "description": "野球、アニメ、音楽、食べ物...ジャンル自由"
+      },
+      {
+        "title": "順番待ちなし！全員同時選択",
+        "description": "一斉入力だから待ち時間ゼロ"
+      },
+      {
+        "title": "スロット演出で盛り上がる",
+        "description": "開票時のドキドキ感がたまらない！"
+      },
+      {
+        "title": "登録不要、URLだけで即参加",
+        "description": "アカウント作成の手間なし"
+      }
+    ]
+  },
+  "howToUse": {
+    "heading": "かんたん3ステップ",
+    "steps": [
+      {
+        "title": "ルームを作成",
+        "description": "ルーム名を入力するだけ"
+      },
+      {
+        "title": "URLをシェア",
+        "description": "LINEやDiscordで友達に共有"
+      },
+      {
+        "title": "ドラフト開始",
+        "description": "全員揃ったらスタート！"
+      }
+    ],
+    "cta": "今すぐ始める"
+  },
+  "useCases": {
+    "heading": "こんな場面で使われています",
+    "cases": [
+      {
+        "emoji": "\u26be",
+        "category": "野球",
+        "title": "プロ野球選手ドラフト",
+        "description": "シーズン前に仲間と予想"
+      },
+      {
+        "emoji": "\ud83c\udfac",
+        "category": "アニメ",
+        "title": "今期アニメキャラドラフト",
+        "description": "新クール開始時に推しキャラを選抜"
+      },
+      {
+        "emoji": "\ud83c\udfb5",
+        "category": "音楽",
+        "title": "年間ベストソング",
+        "description": "年末の恒例行事に"
+      },
+      {
+        "emoji": "\ud83c\udfc7",
+        "category": "競馬",
+        "title": "POG（ペーパーオーナーゲーム）",
+        "description": "新馬をドラフトして年間成績を競う"
+      }
+    ]
+  },
+  "faq": {
+    "heading": "よくある質問",
+    "items": [
+      {
+        "question": "何人まで参加できますか？",
+        "answer": "2人から最大8人まで参加できます。"
+      },
+      {
+        "question": "料金はかかりますか？",
+        "answer": "完全無料です。アカウント登録も不要です。"
+      },
+      {
+        "question": "スマホでも使えますか？",
+        "answer": "はい、スマホ・PC両対応です。ブラウザだけで利用できます。"
+      },
+      {
+        "question": "1回のゲームにどのくらい時間がかかりますか？",
+        "answer": "10-15分程度でサクッと楽しめます。"
+      },
+      {
+        "question": "どんなジャンルでドラフトできますか？",
+        "answer": "野球、アニメ、音楽など何でもOKです。自由に入力できます。"
+      }
+    ]
+  },
+  "footerCta": {
+    "heading": "さあ、ドラフトを始めよう！",
+    "cta": "ルームを作成する",
+    "copyright": "© 2025 オンラインドラフト会議"
+  },
+  "createRoomModal": {
+    "title": "新しいルームを作成",
+    "cancel": "キャンセル",
+    "submit": "ルームを作成",
+    "description": "URLを共有して友達を招待しよう！",
+    "roomNameLabel": "ルーム名",
+    "roomNamePlaceholder": "例: 2024年プロ野球ドラフト",
+    "validation": {
+      "required": "ルーム名を入力してください",
+      "maxLength": "ルーム名は30文字以内で入力してください"
+    }
+  },
+  "toast": {
+    "roomCreated": "ルームを作成しました",
+    "roomCreationFailed": "ルーム作成に失敗しました",
+    "enterRoomUrlOrId": "ルームURLまたはIDを入力してください",
+    "invalidRoomUrlOrId": "正しいルームURLまたはIDを入力してください",
+    "roomNotFound": "指定されたルームが見つかりません",
+    "joiningRoom": "ルームに参加します",
+    "roomJoinFailed": "ルーム参加に失敗しました"
+  },
+  "spCta": "ルームを作成する"
+}

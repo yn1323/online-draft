@@ -1,0 +1,83 @@
+{
+  "page": {
+    "draft": "Draft",
+    "chat": "Chat",
+    "share": "Share",
+    "chatLog": "Chat / Log",
+    "loading": "Loading..."
+  },
+  "currentRound": {
+    "round": "Round {round}",
+    "selectionCount": "{selected}/{total} picks done",
+    "selecting": "Picking...",
+    "ready": "Ready",
+    "changePick": "Change Pick",
+    "makePick": "Make a Pick",
+    "reveal": "Reveal Picks"
+  },
+  "pastResults": {
+    "heading": "Past Draft Results",
+    "noResults": "No results yet",
+    "waitForFirst": "Waiting for the first round reveal",
+    "resultHeading": "Draft Results",
+    "roundLabel": "Round",
+    "noResultsYet": "No results yet",
+    "startFirst": "Start the first round reveal",
+    "addItem": "+ Add",
+    "targetUserDefault": "target user",
+    "editRequired": "This pick lost the clash and needs to be changed. Please edit {targetUser}'s Round {round} first.",
+    "resolving": "Resolving clashes. Please edit {targetUser}'s Round {round} first."
+  },
+  "chat": {
+    "systemLog": "System Log"
+  },
+  "chatInput": {
+    "placeholder": "Type a message...",
+    "send": "Send"
+  },
+  "itemSelectModal": {
+    "title": "Make a Pick",
+    "editTitle": "Edit Pick",
+    "roundLabel": "Round:",
+    "playerLabel": "Player:",
+    "itemLabel": "Your Pick",
+    "itemPlaceholder": "Enter your pick",
+    "commentLabel": "Comment (optional)",
+    "commentPlaceholder": "Why did you pick this?",
+    "categoryPlaceholder": "Enter a comment",
+    "validation": {
+      "itemRequired": "Please enter an item name",
+      "itemMaxLength": "Must be {max} characters or less",
+      "categoryMaxLength": "Must be {max} characters or less",
+      "commentMaxLength": "Must be {max} characters or less",
+      "alreadySelected": "This item was already picked in a previous round"
+    },
+    "toast": {
+      "error": "Pick error:"
+    }
+  },
+  "openResultModal": {
+    "title": "Confirm Reveal",
+    "incomplete": "Some players haven't made their picks yet.",
+    "confirmMessage": "Are you sure you want to reveal?",
+    "skipMessage": "Players who haven't picked will skip this round.",
+    "confirm": "Reveal"
+  },
+  "shareModal": {
+    "title": "Invite Friends to Draft",
+    "description": "Copy the URL below and send it to your friends!",
+    "inviteUrl": "Invite URL",
+    "copyButton": "Copy Invite URL",
+    "voiceChatTip": "💡 Try using voice chat alongside for more fun!",
+    "copySuccess": "URL copied!",
+    "copyFailed": "Failed to copy URL"
+  },
+  "stageModal": {
+    "selecting": "Picking...",
+    "title": "Reveal",
+    "clashWarning": "Clash detected!",
+    "clashInstruction": "Please edit the picks highlighted in red in order.",
+    "clashBlock": "You can't proceed to the next round until all clashes are resolved.",
+    "clashNote": "* Edit order is randomly determined"
+  }
+}
