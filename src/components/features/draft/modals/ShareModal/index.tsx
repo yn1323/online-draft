@@ -2,7 +2,9 @@
 
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { useToaster } from '@/src/components/ui/toaster';
+import { defaultLocale } from '@/src/i18n/config';
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { useLocale, useTranslations } from 'next-intl';
 import { LuCopy } from 'react-icons/lu';
 import { useModal } from '../../hooks/common/useModal';
 
@@ -29,22 +31,26 @@ export const ShareModal = ({
   groupId,
   groupName,
 }: ShareModalProps) => {
+  const t = useTranslations('draft');
+  const commonT = useTranslations('common');
+  const locale = useLocale();
   const { successToast, errorToast } = useToaster();
+  const localePrefix = locale === defaultLocale ? '' : `/${locale}`;
 
   // 招待URL生成（SSR対応）
   const shareUrl =
     typeof window !== 'undefined'
-      ? `${window.location.origin}/lobby/${groupId}`
-      : `/lobby/${groupId}`;
+      ? `${window.location.origin}${localePrefix}/lobby/${groupId}`
+      : `${localePrefix}/lobby/${groupId}`;
 
   // URL共有機能
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
-      successToast('URLをコピーしました');
+      successToast(t('shareModal.copySuccess'));
     } catch (error) {
       console.error('URL copy failed:', error);
-      errorToast('URLのコピーに失敗しました');
+      errorToast(t('shareModal.copyFailed'));
     }
   };
 
@@ -52,11 +58,11 @@ export const ShareModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="友達をドラフトに招待"
+      title={t('shareModal.title')}
       dialogMaxWidth="2xl" // PC版の幅を拡張
       actions={{
         cancel: {
-          text: '閉じる',
+          text: commonT('actions.close'),
           onClick: onClose,
         },
       }}
@@ -67,14 +73,14 @@ export const ShareModal = ({
             {groupName}
           </Text>
           <Text fontSize="sm" color="gray.600" mb={4}>
-            下のボタンからURLをコピーして友達に送ろう！
+            {t('shareModal.description')}
           </Text>
         </Box>
 
         {/* URL共有エリア */}
         <Box>
           <Text fontSize="sm" color="gray.600" mb={2}>
-            招待URL
+            {t('shareModal.inviteUrl')}
           </Text>
           <Text
             fontSize="sm"
@@ -89,7 +95,7 @@ export const ShareModal = ({
           </Text>
           <Button w="full" colorPalette="blue" onClick={handleCopyUrl}>
             <LuCopy />
-            招待URLをコピー
+            {t('shareModal.copyButton')}
           </Button>
         </Box>
 
@@ -101,7 +107,7 @@ export const ShareModal = ({
           borderColor="blue.200"
         >
           <Text fontSize="xs" color="blue.700" lineHeight="1.5">
-            💡 音声通話アプリも併用してみてね！
+            {t('shareModal.voiceChatTip')}
           </Text>
         </Box>
       </VStack>

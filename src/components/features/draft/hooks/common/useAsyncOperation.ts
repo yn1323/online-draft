@@ -19,7 +19,7 @@ export const useAsyncOperation = <T extends unknown[], R>(
       return result;
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : '操作に失敗しました';
+        err instanceof Error ? err.message : 'Operation failed';
       setError(errorMessage);
       throw err; // 呼び出し元でcatch可能にする
     } finally {

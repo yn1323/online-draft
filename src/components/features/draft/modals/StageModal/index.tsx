@@ -8,7 +8,8 @@ import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Box, Text, VStack } from '@chakra-ui/react';
 import { motion } from 'framer-motion';
 import { atom, useAtomValue } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useModalWithVariant } from '../../hooks/common/useModal';
 import { type ParticipantResult, Stage } from './stage/index';
 
@@ -66,7 +67,7 @@ const stageParticipantsUIAtom = atom<ParticipantResult[]>((get) => {
       id: user.id,
       name: user.name,
       avatar: user.avatar,
-      choice: selection?.item || '選択中...',
+      choice: selection?.item || '',
       willLose: losingUserIds.has(user.id), // randomNumberが最大でない人がwillLose
     };
   });
@@ -96,8 +97,18 @@ type StageModalProps = {
  * ResponsiveModalを使用して、SP/PCで最適な表示を実現
  */
 export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
+  const t = useTranslations('draft');
+  const commonT = useTranslations('common');
   // Atomからデータを取得
   const participants = useAtomValue(stageParticipantsUIAtom);
+  const displayParticipants = useMemo(
+    () =>
+      participants.map((participant) => ({
+        ...participant,
+        choice: participant.choice || t('stageModal.selecting'),
+      })),
+    [participants, t],
+  );
   const conflicts = useAtomValue(conflictAnalysisAtom);
   const { round } = useAtomValue(groupAtom);
   const [isRevealing, setIsRevealing] = useState(false);
@@ -138,7 +149,7 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
             // TypingStage: 参加者数 * 1000 + 最長文字数 * 80 + 300 + 1000
             // 順次開始(1000ms間隔) + タイピング(80ms/文字) + エフェクト待機(300ms) + 余裕(1000ms)
             const maxChoiceLength = Math.max(
-              ...participants.map((p) => p.choice.length),
+              ...displayParticipants.map((p) => p.choice.length),
             );
             animationDuration =
               participantCount * 1000 + maxChoiceLength * 80 + 300 + 1000;
@@ -160,7 +171,15 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
         return () => clearTimeout(timer);
       }
     }
-  }, [isOpen, isRevealing, variant, conflicts, round, participants]);
+  }, [
+    isOpen,
+    isRevealing,
+    variant,
+    conflicts,
+    round,
+    displayParticipants,
+    participants,
+  ]);
 
   const handleStartReveal = () => {
     setIsRevealing(true);
@@ -174,11 +193,11 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="開票演出"
+      title={t('stageModal.title')}
       dialogMaxWidth="4xl" // PC版の幅を拡張
       actions={{
         cancel: {
-          text: '閉じる',
+          text: commonT('actions.close'),
           onClick: onClose,
         },
       }}
@@ -186,7 +205,7 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
       <VStack gap={4} w="full">
         <Stage
           variant={variant}
-          participants={participants}
+          participants={displayParticipants}
           isRevealing={isRevealing}
           onStartReveal={handleStartReveal}
           onReset={handleReset}
@@ -209,15 +228,15 @@ export const StageModal = ({ isOpen, onClose, variant }: StageModalProps) => {
               <Box display="flex" alignItems="center" gap={2}>
                 <Text fontSize="lg">⚠️</Text>
                 <Text fontSize="md" fontWeight="bold" color="red.700">
-                  重複指名が発生しました！
+                  {t('stageModal.clashWarning')}
                 </Text>
               </Box>
               <Text fontSize="sm" color="red.600" lineHeight="1.5">
-                一覧画面で赤く表示されたドラフト結果から順番に編集してください。
+                {t('stageModal.clashInstruction')}
                 <br />
-                重複指名をすべて編集するまで次のラウンドに進めません。
+                {t('stageModal.clashBlock')}
                 <br />
-                ※重複指名の編集順はランダムに決まります
+                {t('stageModal.clashNote')}
               </Text>
             </VStack>
           </MotionBox>

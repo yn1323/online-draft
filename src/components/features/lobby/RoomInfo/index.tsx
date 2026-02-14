@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Button, Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { LuCopy } from 'react-icons/lu';
 import { Card } from '@/src/components/atoms/Card';
 import { useToaster } from '@/src/components/ui/toaster';
@@ -16,16 +17,17 @@ type RoomInfoProps = {
  * ルーム名・URL共有・音声通話案内を表示
  */
 export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
+  const t = useTranslations('lobby');
   const { successToast, errorToast } = useToaster();
 
   // URL共有機能
   const handleCopyUrl = async () => {
     try {
       await navigator.clipboard.writeText(roomUrl);
-      successToast('URLをコピーしました');
+      successToast(t('roomInfo.copySuccess'));
     } catch (error) {
       console.error('URL copy failed:', error);
-      errorToast('URLのコピーに失敗しました');
+      errorToast(t('roomInfo.copyFailed'));
     }
   };
 
@@ -40,7 +42,7 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
           {/* 招待エリア */}
           <Box>
             <Text fontSize="sm" color="gray.600" mb={2}>
-              友達をこのルームに招待しよう！
+              {t('roomInfo.inviteMessage')}
             </Text>
             <Text
               fontSize="sm"
@@ -54,12 +56,12 @@ export const RoomInfo = ({ group, roomUrl }: RoomInfoProps) => {
             </Text>
             <Button w="full" colorPalette="blue" onClick={handleCopyUrl}>
               <LuCopy />
-              招待URLをコピー
+              {t('roomInfo.copyButton')}
             </Button>
           </Box>
 
           <Text fontSize={['xs', 'sm']} color="gray.500">
-            音声通話アプリ（LINE、Discord等）を併用してお楽しみください
+            {t('roomInfo.voiceChatNote')}
           </Text>
         </VStack>
       </Card>

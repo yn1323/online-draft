@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { LuLock, LuSmartphone, LuWallet } from 'react-icons/lu';
 
@@ -21,17 +22,18 @@ type HeroSectionProps = {
   isJoining: boolean;
 };
 
-const BADGES = [
-  { icon: LuWallet, text: '完全無料', color: 'green' },
-  { icon: LuLock, text: '登録不要', color: 'blue' },
-  { icon: LuSmartphone, text: 'スマホOK', color: 'purple' },
-] as const;
+const BADGE_ICONS = [
+  { icon: LuWallet, key: 'free' as const, color: 'green' },
+  { icon: LuLock, key: 'noSignup' as const, color: 'blue' },
+  { icon: LuSmartphone, key: 'mobile' as const, color: 'purple' },
+];
 
 export const HeroSection = ({
   onCreateRoom,
   onJoinRoom,
   isJoining,
 }: HeroSectionProps) => {
+  const t = useTranslations('top');
   const [roomInput, setRoomInput] = useState('');
 
   const handleJoinSubmit = async () => {
@@ -56,13 +58,13 @@ export const HeroSection = ({
               color="white"
               textShadow="2px 2px 4px rgba(0,0,0,0.3)"
             >
-              みんなでドラフト
+              {t('hero.title')}
             </Heading>
             <Text fontSize={['lg', 'xl']} fontWeight="bold" color="white">
-              推しを選んで、かぶったら勝負！
+              {t('hero.subtitle')}
             </Text>
             <Text fontSize={['md', 'lg']} color="whiteAlpha.900">
-              野球・アニメ・音楽...何でもドラフト会議！
+              {t('hero.description')}
             </Text>
           </VStack>
 
@@ -74,7 +76,7 @@ export const HeroSection = ({
               width="full"
               onClick={onCreateRoom}
             >
-              ルームを作成する
+              {t('hero.createRoom')}
             </Button>
 
             {/* 区切り線 */}
@@ -86,7 +88,7 @@ export const HeroSection = ({
                 px={4}
                 fontWeight="medium"
               >
-                または
+                {t('hero.or')}
               </Text>
               <Box flex={1} h="1px" bg="whiteAlpha.300" />
             </HStack>
@@ -98,11 +100,11 @@ export const HeroSection = ({
                 fontSize={['sm', 'md']}
                 fontWeight="medium"
               >
-                既存のルームに参加
+                {t('hero.joinExisting')}
               </Text>
               <HStack w="full">
                 <Input
-                  placeholder="ルームURLまたはID"
+                  placeholder={t('hero.roomPlaceholder')}
                   size="lg"
                   value={roomInput}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
@@ -116,7 +118,7 @@ export const HeroSection = ({
                   loading={isJoining}
                   disabled={isJoining}
                 >
-                  参加
+                  {t('hero.joinButton')}
                 </Button>
               </HStack>
             </VStack>
@@ -124,9 +126,9 @@ export const HeroSection = ({
 
           {/* バッジエリア */}
           <HStack gap={[2, 4]} flexWrap="wrap" justify="center">
-            {BADGES.map((badge) => (
+            {BADGE_ICONS.map((badge) => (
               <Badge
-                key={badge.text}
+                key={badge.key}
                 colorPalette={badge.color}
                 size="lg"
                 variant="solid"
@@ -136,7 +138,7 @@ export const HeroSection = ({
               >
                 <HStack gap={1.5}>
                   <Box as={badge.icon} boxSize={4} />
-                  <Text fontWeight="bold">{badge.text}</Text>
+                  <Text fontWeight="bold">{t(`hero.badges.${badge.key}`)}</Text>
                 </HStack>
               </Badge>
             ))}

@@ -4,6 +4,7 @@ import { Avatar } from '@/src/components/atoms/Avatar';
 import { Card } from '@/src/components/atoms/Card';
 import type { UserDataType } from '@/src/hooks/firebase/user/useUser';
 import { Box, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 type ParticipantsListProps = {
   users: UserDataType[];
@@ -20,12 +21,14 @@ export const ParticipantsList = ({
   onJoinClick,
   onUserSelect,
 }: ParticipantsListProps) => {
+  const t = useTranslations('lobby');
+
   return (
     <Card variant="elevated" size="md">
       <Box w="full">
         <HStack mb={4}>
           <Text fontWeight="bold" fontSize={['md', 'lg']}>
-            参加者 ({users.length}人)
+            {t('participants.heading', { count: users.length })}
           </Text>
         </HStack>
 
@@ -64,7 +67,7 @@ export const ParticipantsList = ({
                       {participant.userName}
                     </Text>
                     <Text fontSize="xs" color="green.500">
-                      参加中
+                      {t('participants.inRoom')}
                     </Text>
                   </VStack>
                 </HStack>
@@ -110,7 +113,7 @@ export const ParticipantsList = ({
                   fontWeight="medium"
                   textAlign="center"
                 >
-                  登録する
+                  {t('participants.register')}
                 </Text>
               </VStack>
             </Box>
@@ -118,10 +121,10 @@ export const ParticipantsList = ({
 
           <Box textAlign="center" pt={2}>
             <Text fontSize={['xs', 'sm']} color="blue.500" fontWeight="medium">
-              参加者をタップしてドラフトを開始
+              {t('participants.tapToStart')}
             </Text>
             <Text fontSize="xs" color="gray.500" mt={1}>
-              新規参加は「＋参加する」から・最小2人で開始可能
+              {t('participants.joinGuide')}
             </Text>
           </Box>
         </VStack>

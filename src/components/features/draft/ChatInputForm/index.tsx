@@ -7,6 +7,7 @@ import {
 import { useChat } from '@/src/hooks/firebase/chat/useChat';
 import { HStack } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
+import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
 type ChatInputFormProps = {
@@ -17,9 +18,8 @@ type ChatInputFormProps = {
  * チャットメッセージ入力フォームの共通コンポーネント
  * シンプルな統一スタイル
  */
-export const ChatInputForm = ({
-  placeholder = 'メッセージを入力...',
-}: ChatInputFormProps) => {
+export const ChatInputForm = ({ placeholder }: ChatInputFormProps) => {
+  const t = useTranslations('draft');
   const [message, setMessage] = useState('');
   const [isComposing, setIsComposing] = useState(false);
   const userId = useAtomValue(currentUserIdAtom);
@@ -49,11 +49,13 @@ export const ChatInputForm = ({
     setIsComposing(false);
   };
 
+  const resolvedPlaceholder = placeholder ?? t('chatInput.placeholder');
+
   // 統一スタイル: ボーダーなし、サイズmd
   return (
     <HStack w="full">
       <Input
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         value={message}
         onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
           setMessage(e.target.value)
@@ -69,7 +71,7 @@ export const ChatInputForm = ({
         onClick={handleSend}
         disabled={!message.trim()}
       >
-        送信
+        {t('chatInput.send')}
       </Button>
     </HStack>
   );

@@ -1,7 +1,7 @@
 'use client';
 
 import { Box } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 
 import { Button } from '@/src/components/atoms/Button';
@@ -13,6 +13,7 @@ import { useToaster } from '@/src/components/ui/toaster';
 import { extractRoomId } from '@/src/helpers/utils/url';
 import { useFirebaseAuth } from '@/src/hooks/auth/useFirebaseAuth';
 import { useGroup } from '@/src/hooks/firebase/group/useGroup';
+import { useRouter } from '@/src/i18n/navigation';
 
 import { DifferentiationSection } from './sections/DifferentiationSection';
 import { FAQSection } from './sections/FAQSection';
@@ -27,6 +28,8 @@ import { UseCaseSection } from './sections/UseCaseSection';
  * 7セクション構成のランディングページ
  */
 export const TopPage = () => {
+  const t = useTranslations('top');
+
   // ルーム作成モーダル管理
   const { openModal, modalProps } = useCreateRoomModal();
 
@@ -55,17 +58,17 @@ export const TopPage = () => {
 
       const groupId = await createGroup(roomName);
       router.push(`/lobby/${groupId}`);
-      successToast('ルームを作成しました');
+      successToast(t('toast.roomCreated'));
     } catch (error) {
       console.error('ルーム作成エラー:', error);
-      errorToast('ルーム作成に失敗しました');
+      errorToast(t('toast.roomCreationFailed'));
     }
   };
 
   // ルーム参加処理（HeroSectionから呼ばれる）
   const handleJoinRoom = async (roomInput: string) => {
     if (!roomInput.trim()) {
-      errorToast('ルームURLまたはIDを入力してください');
+      errorToast(t('toast.enterRoomUrlOrId'));
       return;
     }
     setIsJoining(true);
@@ -79,23 +82,23 @@ export const TopPage = () => {
       // 入力値からルームIDを抽出
       const roomId = extractRoomId(roomInput);
       if (!roomId) {
-        errorToast('正しいルームURLまたはIDを入力してください');
+        errorToast(t('toast.invalidRoomUrlOrId'));
         return;
       }
 
       // ルーム存在確認
       const exists = await checkGroupExists(roomId);
       if (!exists) {
-        errorToast('指定されたルームが見つかりません');
+        errorToast(t('toast.roomNotFound'));
         return;
       }
 
       // ロビーに遷移
       router.push(`/lobby/${roomId}`);
-      successToast('ルームに参加します');
+      successToast(t('toast.joiningRoom'));
     } catch (error) {
       console.error('ルーム参加エラー:', error);
-      errorToast('ルーム参加に失敗しました');
+      errorToast(t('toast.roomJoinFailed'));
     } finally {
       setIsJoining(false);
     }
@@ -141,7 +144,7 @@ export const TopPage = () => {
         zIndex={100}
       >
         <Button variant="primary" size="lg" width="full" onClick={openModal}>
-          ルームを作成する
+          {t('spCta')}
         </Button>
       </Box>
 

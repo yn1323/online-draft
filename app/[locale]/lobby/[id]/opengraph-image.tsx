@@ -2,18 +2,15 @@ import { getGroupNameFromRest } from '@/src/lib/firestore-rest';
 import { ImageResponse } from 'next/og';
 
 export const runtime = 'edge';
-export const alt = 'みんなでドラフト';
+export const alt = 'Draft Together';
 export const size = {
   width: 1200,
   height: 630,
 };
 export const contentType = 'image/png';
 
-// Google Fonts から Noto Sans JP Bold を取得（TTF形式）
-// モジュールレベルでfetchしてリクエスト間でキャッシュ
 const fontPromise = (async (): Promise<ArrayBuffer | null> => {
   try {
-    // 古いUser-AgentでTTF形式を取得（WOFF2サブセット分割を回避）
     const css = await fetch(
       'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@700',
       {
@@ -58,18 +55,24 @@ const truncateText = (text: string, maxLength = 30) => {
 };
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 };
 
 const Image = async ({ params }: Props) => {
-  const { id } = await params;
+  const { id, locale } = await params;
 
   const [groupName, fontData] = await Promise.all([
     getGroupNameFromRest(id),
     fontPromise,
   ]);
 
-  const displayName = truncateText(groupName || 'みんなでドラフト');
+  const brandName = locale === 'en' ? 'Draft Together' : 'みんなでドラフト';
+  const tagline =
+    locale === 'en'
+      ? 'Pick your favorites, clash when you match!'
+      : '推しを選んで、かぶったら勝負！';
+
+  const displayName = truncateText(groupName || brandName);
   const fontSize = getFontSize(displayName);
 
   return new ImageResponse(
@@ -87,7 +90,6 @@ const Image = async ({ params }: Props) => {
         overflow: 'hidden',
       }}
     >
-      {/* 装飾: 背景の円 */}
       <div
         style={{
           position: 'absolute',
@@ -113,7 +115,6 @@ const Image = async ({ params }: Props) => {
         }}
       />
 
-      {/* サービス名 */}
       <div
         style={{
           display: 'flex',
@@ -124,10 +125,9 @@ const Image = async ({ params }: Props) => {
           letterSpacing: '0.05em',
         }}
       >
-        🎲 みんなでドラフト
+        🎲 {brandName}
       </div>
 
-      {/* ドラフト名カード */}
       <div
         style={{
           display: 'flex',
@@ -153,7 +153,6 @@ const Image = async ({ params }: Props) => {
         </div>
       </div>
 
-      {/* キャッチコピー */}
       <div
         style={{
           display: 'flex',
@@ -163,7 +162,7 @@ const Image = async ({ params }: Props) => {
           letterSpacing: '0.05em',
         }}
       >
-        推しを選んで、かぶったら勝負！
+        {tagline}
       </div>
     </div>,
     {

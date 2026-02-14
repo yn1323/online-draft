@@ -1,0 +1,33 @@
+{
+  "brandName": "みんなでドラフト",
+  "nav": {
+    "guide": "使い方",
+    "faq": "FAQ"
+  },
+  "footer": {
+    "guideLink": "使い方ガイド",
+    "faqLink": "よくある質問",
+    "copyright": "© 2025 みんなでドラフト"
+  },
+  "actions": {
+    "createRoom": "ルームを作成",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "send": "送信",
+    "join": "参加",
+    "share": "シェア",
+    "confirm": "決定",
+    "register": "登録する"
+  },
+  "loading": "読み込み中...",
+  "or": "または",
+  "avatarAlt": "アバター画像",
+  "validation": {
+    "required": "必須項目です",
+    "minLength": "{minimum}文字以上で入力してください",
+    "maxLength": "{maximum}文字以内で入力してください",
+    "email": "メールアドレスの形式で入力してください",
+    "invalid": "入力値が無効です",
+    "minSelect": "{minimum}つ以上選択してください。"
+  }
+}
