@@ -1,5 +1,6 @@
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 import { Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { useModal } from '../../hooks/common/useModal';
 
 /**
@@ -23,18 +24,21 @@ export const OpenResultModal = ({
   onClose,
   onExecuteOpenResult,
 }: OpenResultModalProps) => {
+  const t = useTranslations('draft');
+  const commonT = useTranslations('common');
+
   return (
     <ResponsiveModal
       isOpen={isOpen}
       onClose={onClose}
-      title="開票確認"
+      title={t('openResultModal.title')}
       actions={{
         cancel: {
-          text: 'キャンセル',
+          text: commonT('actions.cancel'),
           onClick: onClose,
         },
         submit: {
-          text: '開票する',
+          text: t('openResultModal.confirm'),
           colorPalette: 'orange',
           onClick: onExecuteOpenResult,
         },
@@ -42,13 +46,13 @@ export const OpenResultModal = ({
     >
       <VStack gap={4} w="full" textAlign="center">
         <Text fontSize="md" color="gray.700">
-          まだ入力していない参加者がいます。
+          {t('openResultModal.incomplete')}
         </Text>
         <Text fontSize="md" fontWeight="bold" color="orange.600">
-          本当に開票しますか？
+          {t('openResultModal.confirmMessage')}
         </Text>
         <Text fontSize="sm" color="gray.500">
-          開票すると、未入力の参加者は今回のラウンドをスキップします。
+          {t('openResultModal.skipMessage')}
         </Text>
       </VStack>
     </ResponsiveModal>

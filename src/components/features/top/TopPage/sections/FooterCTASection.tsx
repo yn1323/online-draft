@@ -1,6 +1,7 @@
 'use client';
 
 import { Box, Container, Heading, Text, VStack } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 
 import { Button } from '@/src/components/atoms/Button';
 
@@ -9,6 +10,8 @@ type FooterCTASectionProps = {
 };
 
 export const FooterCTASection = ({ onCreateRoom }: FooterCTASectionProps) => {
+  const t = useTranslations('top');
+
   return (
     <Box
       as="section"
@@ -24,7 +27,7 @@ export const FooterCTASection = ({ onCreateRoom }: FooterCTASectionProps) => {
             color="white"
             textAlign="center"
           >
-            さあ、ドラフトを始めよう！
+            {t('footerCta.heading')}
           </Heading>
 
           <Box w={['full', 'auto']} maxW="sm">
@@ -34,7 +37,7 @@ export const FooterCTASection = ({ onCreateRoom }: FooterCTASectionProps) => {
               onClick={onCreateRoom}
               width="full"
             >
-              ルームを作成する
+              {t('footerCta.cta')}
             </Button>
           </Box>
 
@@ -46,7 +49,7 @@ export const FooterCTASection = ({ onCreateRoom }: FooterCTASectionProps) => {
             mt={4}
           >
             <Text fontSize="sm" color="whiteAlpha.800">
-              © 2025 オンラインドラフト会議
+              {t('footerCta.copyright')}
             </Text>
           </Box>
         </VStack>

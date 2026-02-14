@@ -1,0 +1,35 @@
+{
+  "home": {
+    "title": "Draft Together | Free Online Draft Game - No Sign-up Required",
+    "description": "Baseball, anime, music... Draft anything with friends! Free and no registration needed.",
+    "ogTitle": "Draft Together",
+    "ogDescription": "Baseball, anime, music... Draft anything with friends! Free and no registration needed."
+  },
+  "guide": {
+    "title": "How-to Guide | Draft Together - Free Online Draft Game",
+    "description": "Learn how to use Draft Together. Create a room, invite friends, and start drafting in 3 easy steps. Free, no sign-up. Works with any topic — baseball, anime, music, and more."
+  },
+  "faq": {
+    "title": "FAQ | Draft Together - Free Online Draft Game",
+    "description": "Frequently asked questions about Draft Together. Free, no sign-up, 2-8 players, works on any browser. Learn about rooms, drafting rules, and more."
+  },
+  "lobby": {
+    "titleTemplate": "{groupName} | Draft Together",
+    "defaultTitle": "Draft Together",
+    "ogDescription": "Pick your favorites, clash when you match!"
+  },
+  "jsonLd": {
+    "appName": "Draft Together",
+    "appDescription": "Draft anything with friends online! Free, no sign-up required.",
+    "featureList": ["2-8 players", "No sign-up required", "Completely free", "Real-time sync", "Mobile-friendly"],
+    "navGuide": "How-to Guide",
+    "navFaq": "FAQ",
+    "howToName": "How to use Draft Together",
+    "howToDescription": "Learn how to start an online draft with Draft Together in 3 easy steps"
+  },
+  "ogImage": {
+    "serviceName": "🎲 Draft Together",
+    "tagline": "Pick your favorites, clash when you match!",
+    "alt": "Draft Together"
+  }
+}

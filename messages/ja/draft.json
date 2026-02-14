@@ -1,0 +1,83 @@
+{
+  "page": {
+    "draft": "ドラフト",
+    "chat": "チャット",
+    "share": "シェア",
+    "chatLog": "チャット/ログ",
+    "loading": "ローディング中..."
+  },
+  "currentRound": {
+    "round": "Round {round}",
+    "selectionCount": "{selected}/{total} 人選択完了",
+    "selecting": "選択中",
+    "ready": "入力完了",
+    "changePick": "指名を変更する",
+    "makePick": "指名する",
+    "reveal": "指名発表"
+  },
+  "pastResults": {
+    "heading": "過去のドラフト結果",
+    "noResults": "まだ開票が始まっていません",
+    "waitForFirst": "最初のRoundの抽選をお待ちください",
+    "resultHeading": "ドラフト結果",
+    "roundLabel": "Round",
+    "noResultsYet": "まだ開票が始まっていません",
+    "startFirst": "最初のRoundの抽選を開始してください",
+    "addItem": "+ 追加",
+    "targetUserDefault": "対象ユーザー",
+    "editRequired": "このカードは重複指名で負けたため編集が必要です。まず{targetUser}のRound {round}から順番に編集してください。",
+    "resolving": "重複指名解決中です。まず{targetUser}のRound {round}を編集してください。"
+  },
+  "chat": {
+    "systemLog": "自動ログ"
+  },
+  "chatInput": {
+    "placeholder": "メッセージを入力...",
+    "send": "送信"
+  },
+  "itemSelectModal": {
+    "title": "ドラフト指名",
+    "editTitle": "ドラフト指名を編集",
+    "roundLabel": "ラウンド:",
+    "playerLabel": "プレイヤー:",
+    "itemLabel": "ドラフト指名",
+    "itemPlaceholder": "指名を入力してください",
+    "commentLabel": "コメント（任意）",
+    "commentPlaceholder": "この指名についてのコメント...",
+    "categoryPlaceholder": "コメントを入力してください",
+    "validation": {
+      "itemRequired": "アイテム名を入力してください",
+      "itemMaxLength": "{max}文字以内で入力してください",
+      "categoryMaxLength": "{max}文字以内で入力してください",
+      "commentMaxLength": "{max}文字以内で入力してください",
+      "alreadySelected": "このアイテムは過去のラウンドで既に選択されています"
+    },
+    "toast": {
+      "error": "指名エラー:"
+    }
+  },
+  "openResultModal": {
+    "title": "開票確認",
+    "incomplete": "まだ入力していない参加者がいます。",
+    "confirmMessage": "本当に開票しますか？",
+    "skipMessage": "開票すると、未入力の参加者は今回のラウンドをスキップします。",
+    "confirm": "開票する"
+  },
+  "shareModal": {
+    "title": "友達をドラフトに招待",
+    "description": "下のボタンからURLをコピーして友達に送ろう！",
+    "inviteUrl": "招待URL",
+    "copyButton": "招待URLをコピー",
+    "voiceChatTip": "💡 音声通話アプリも併用してみてね！",
+    "copySuccess": "URLをコピーしました",
+    "copyFailed": "URLのコピーに失敗しました"
+  },
+  "stageModal": {
+    "selecting": "選択中...",
+    "title": "開票演出",
+    "clashWarning": "重複指名が発生しました！",
+    "clashInstruction": "一覧画面で赤く表示されたドラフト結果から順番に編集してください。",
+    "clashBlock": "重複指名をすべて編集するまで次のラウンドに進めません。",
+    "clashNote": "※重複指名の編集順はランダムに決まります"
+  }
+}

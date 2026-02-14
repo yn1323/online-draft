@@ -9,55 +9,26 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { LuArrowRight, LuLink, LuPenLine, LuPlay } from 'react-icons/lu';
 
 import { Button } from '@/src/components/atoms/Button';
 
-const STEPS = [
-  {
-    number: 1,
-    icon: LuPenLine,
-    title: 'ルームを作成',
-    description: 'ルーム名を入力するだけ',
-  },
-  {
-    number: 2,
-    icon: LuLink,
-    title: 'URLをシェア',
-    description: 'LINEやDiscordで友達に共有',
-  },
-  {
-    number: 3,
-    icon: LuPlay,
-    title: 'ドラフト開始',
-    description: '全員揃ったらスタート！',
-  },
-] as const;
-
-const howToJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'みんなでドラフトの使い方',
-  step: STEPS.map((step) => ({
-    '@type': 'HowToStep',
-    name: step.title,
-    text: step.description,
-  })),
-};
+const STEP_ICONS = [LuPenLine, LuLink, LuPlay];
 
 type HowToUseSectionProps = {
   onCreateRoom: () => void;
 };
 
 export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
+  const t = useTranslations('top');
+  const steps = t.raw('howToUse.steps') as {
+    title: string;
+    description: string;
+  }[];
+
   return (
     <Box as="section" bg="white" py={[12, 16]}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify(howToJsonLd),
-        }}
-      />
       <Container maxW="4xl">
         <VStack gap={[8, 10]}>
           <Heading
@@ -66,7 +37,7 @@ export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
             color="gray.800"
             textAlign="center"
           >
-            かんたん3ステップ
+            {t('howToUse.heading')}
           </Heading>
 
           <Grid
@@ -75,8 +46,8 @@ export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
             w="full"
             alignItems="start"
           >
-            {STEPS.map((step, index) => (
-              <VStack key={step.number} gap={4} position="relative">
+            {steps.map((step, index) => (
+              <VStack key={step.title} gap={4} position="relative">
                 <Circle
                   size={[14, 16]}
                   bg="blue.500"
@@ -84,9 +55,13 @@ export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
                   fontWeight="bold"
                   fontSize={['xl', '2xl']}
                 >
-                  {step.number}
+                  {index + 1}
                 </Circle>
-                <Box as={step.icon} boxSize={[8, 10]} color="gray.600" />
+                <Box
+                  as={STEP_ICONS[index]}
+                  boxSize={[8, 10]}
+                  color="gray.600"
+                />
                 <VStack gap={1}>
                   <Text
                     fontSize={['md', 'lg']}
@@ -105,7 +80,7 @@ export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
                   </Text>
                 </VStack>
 
-                {index < STEPS.length - 1 && (
+                {index < steps.length - 1 && (
                   <Box
                     display={['none', 'flex']}
                     position="absolute"
@@ -121,7 +96,7 @@ export const HowToUseSection = ({ onCreateRoom }: HowToUseSectionProps) => {
           </Grid>
 
           <Button variant="primary" size="lg" onClick={onCreateRoom}>
-            今すぐ始める
+            {t('howToUse.cta')}
           </Button>
         </VStack>
       </Container>

@@ -2,23 +2,17 @@
 
 import { Box, SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { Avatar } from '@/src/components/atoms/Avatar';
 import { Input } from '@/src/components/atoms/Input';
 import { ResponsiveModal } from '@/src/components/ui/responsive-modal';
 
-// フォームのバリデーションスキーマ
-const avatarSelectionSchema = z.object({
-  userName: z
-    .string()
-    .min(1, '名前を入力してください')
-    .max(20, 'ユーザー名は20文字以内で入力してください')
-    .trim(),
-});
-
-type AvatarSelectionFormData = z.infer<typeof avatarSelectionSchema>;
+type AvatarSelectionFormData = {
+  userName: string;
+};
 
 type AvatarSelectionModalProps = {
   isOpen: boolean;
@@ -40,7 +34,20 @@ export const AvatarSelectionModal = ({
   onConfirm,
   usedAvatars = [],
 }: AvatarSelectionModalProps) => {
+  const t = useTranslations('lobby');
+  const commonT = useTranslations('common');
   const [selectedAvatar, setSelectedAvatar] = useState<string>('');
+  const avatarSelectionSchema = useMemo(
+    () =>
+      z.object({
+        userName: z
+          .string()
+          .min(1, t('avatarModal.validation.nameRequired'))
+          .max(20, t('avatarModal.validation.nameMaxLength'))
+          .trim(),
+      }),
+    [t],
+  );
 
   // react-hook-form設定
   const {
@@ -87,14 +94,14 @@ export const AvatarSelectionModal = ({
     <ResponsiveModal
       isOpen={isOpen}
       onClose={handleClose}
-      title="ドラフトに参加"
+      title={t('avatarModal.title')}
       actions={{
         cancel: {
-          text: 'キャンセル',
+          text: commonT('actions.cancel'),
           onClick: handleClose,
         },
         submit: {
-          text: '登録する',
+          text: t('avatarModal.submit'),
           disabled: !canConfirm,
           loading: isSubmitting,
           onClick: handleSubmit(onSubmit),
@@ -104,11 +111,11 @@ export const AvatarSelectionModal = ({
       {/* 名前入力 */}
       <VStack gap={2} align="start" w="full">
         <Text fontSize={['sm', 'md']} fontWeight="bold" color="gray.700">
-          あなたの名前
+          {t('avatarModal.nameLabel')}
         </Text>
         <Input
           {...register('userName')}
-          placeholder="名前を入力してください"
+          placeholder={t('avatarModal.namePlaceholder')}
           maxLength={20}
           size="lg"
           error={!!errors.userName}
@@ -123,7 +130,7 @@ export const AvatarSelectionModal = ({
       {/* アバター選択 */}
       <VStack gap={4} align="start" w="full">
         <Text fontSize={['sm', 'md']} fontWeight="bold" color="gray.700">
-          アバターを選択
+          {t('avatarModal.avatarLabel')}
         </Text>
 
         <SimpleGrid columns={[4, 6]} gap={3} w="full">
@@ -189,7 +196,7 @@ export const AvatarSelectionModal = ({
         </SimpleGrid>
 
         <Text fontSize="xs" color="gray.500">
-          ×マークは他の参加者が使用中のアバターです
+          {t('avatarModal.avatarNote')}
         </Text>
       </VStack>
     </ResponsiveModal>

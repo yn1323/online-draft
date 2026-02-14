@@ -8,28 +8,16 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { LuCheck } from 'react-icons/lu';
 
-const DIFFERENTIATION_POINTS = [
-  {
-    title: '何でもドラフトできる',
-    description: '野球、アニメ、音楽、食べ物...ジャンル自由',
-  },
-  {
-    title: '順番待ちなし！全員同時選択',
-    description: '一斉入力だから待ち時間ゼロ',
-  },
-  {
-    title: 'スロット演出で盛り上がる',
-    description: '開票時のドキドキ感がたまらない！',
-  },
-  {
-    title: '登録不要、URLだけで即参加',
-    description: 'アカウント作成の手間なし',
-  },
-] as const;
-
 export const DifferentiationSection = () => {
+  const t = useTranslations('top');
+  const points = t.raw('differentiation.points') as {
+    title: string;
+    description: string;
+  }[];
+
   return (
     <Box as="section" bg="blue.50" py={[12, 16]}>
       <Container maxW="3xl">
@@ -40,11 +28,11 @@ export const DifferentiationSection = () => {
             color="gray.800"
             textAlign="center"
           >
-            オンラインドラフト会議が選ばれる理由
+            {t('differentiation.heading')}
           </Heading>
 
           <VStack gap={[3, 4]} align="stretch" w="full">
-            {DIFFERENTIATION_POINTS.map((point) => (
+            {points.map((point) => (
               <Box
                 key={point.title}
                 bg="white"

@@ -10,6 +10,7 @@ import {
 } from '@/src/components/features/draft/states';
 import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/react';
 import { atom, useAtomValue } from 'jotai';
+import { useTranslations } from 'next-intl';
 import { LuCheck } from 'react-icons/lu';
 import type { ParticipantType } from '../mockData';
 
@@ -67,6 +68,7 @@ export const CurrentRoundStatus = ({
   onItemSelect,
   onOpenResult,
 }: CurrentRoundStatusProps) => {
+  const t = useTranslations('draft');
   // Atomからデータを取得
   const participants = useAtomValue(participantsUIAtom);
   const { round: currentRound } = useAtomValue(groupAtom);
@@ -143,10 +145,13 @@ export const CurrentRoundStatus = ({
           <VStack gap={1} w="full">
             <HStack w="full" justify="space-between">
               <Text fontSize="sm" fontWeight="bold" color="gray.800">
-                Round {currentRound}
+                {t('currentRound.round', { round: currentRound })}
               </Text>
               <Text fontSize="xs" color="gray.600">
-                {selectedCount}/{participants.length} 人選択完了
+                {t('currentRound.selectionCount', {
+                  selected: selectedCount,
+                  total: participants.length,
+                })}
               </Text>
             </HStack>
             <Box w="full" h="4px" bg="gray.200" borderRadius="full">
@@ -196,12 +201,14 @@ export const CurrentRoundStatus = ({
                           {participant.name}
                         </Text>
                         {isActive ? (
-                          <Box {...getStatusBadgeStyle(true)}>選択中</Box>
+                          <Box {...getStatusBadgeStyle(true)}>
+                            {t('currentRound.selecting')}
+                          </Box>
                         ) : (
                           <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
                             <HStack gap={1}>
                               <LuCheck size={10} />
-                              <Text>入力完了</Text>
+                              <Text>{t('currentRound.ready')}</Text>
                             </HStack>
                             {/* 自分の選択のみ表示、他人は秘匿 */}
                             {isCurrentUser && (
@@ -261,12 +268,14 @@ export const CurrentRoundStatus = ({
                           {participant.name}
                         </Text>
                         {isActive ? (
-                          <Box {...getStatusBadgeStyle(true)}>選択中</Box>
+                          <Box {...getStatusBadgeStyle(true)}>
+                            {t('currentRound.selecting')}
+                          </Box>
                         ) : (
                           <VStack gap={0.5} {...getStatusBadgeStyle(false)}>
                             <HStack gap={1}>
                               <LuCheck size={10} />
-                              <Text>入力完了</Text>
+                              <Text>{t('currentRound.ready')}</Text>
                             </HStack>
                             {/* 自分の選択のみ表示、他人は秘匿 */}
                             {isCurrentUser && (
@@ -305,7 +314,9 @@ export const CurrentRoundStatus = ({
                       width="full"
                       disabled={conflictResolution.isActive}
                     >
-                      {isSelfSelected ? '指名を変更する' : '指名する'}
+                      {isSelfSelected
+                        ? t('currentRound.changePick')
+                        : t('currentRound.makePick')}
                     </Button>
                   </Box>
                 )}
@@ -322,7 +333,7 @@ export const CurrentRoundStatus = ({
                         selectedCount < 1 || conflictResolution.isActive
                       }
                     >
-                      指名発表
+                      {t('currentRound.reveal')}
                     </Button>
                   </Box>
                 )}

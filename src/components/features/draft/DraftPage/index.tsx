@@ -2,6 +2,7 @@
 
 import { Button } from '@/src/components/atoms/Button';
 import { Loading } from '@/src/components/atoms/Loading';
+import { LanguageSwitcher } from '@/src/components/features/common/LanguageSwitcher';
 import { useInitialize } from '@/src/components/features/draft/DraftPage/useInitialize';
 import {
   currentUserIdAtom,
@@ -21,6 +22,7 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { useAtomValue } from 'jotai';
+import { useTranslations } from 'next-intl';
 import { useEffect, useRef, useState } from 'react';
 import { LuList, LuMessageSquare, LuShare2 } from 'react-icons/lu';
 import { ChatInputForm } from '../ChatInputForm';
@@ -37,6 +39,7 @@ import { PastDraftResults } from '../PastDraftResults';
  * UI描画と状態管理を担当、新しいhooks構造を使用
  */
 export const DraftPageInner = () => {
+  const t = useTranslations('draft');
   const currentUserId = useAtomValue(currentUserIdAtom);
   const groupId = useAtomValue(groupIdAtom);
   const { round: currentRound, groupName } = useAtomValue(groupAtom);
@@ -119,12 +122,15 @@ export const DraftPageInner = () => {
               {groupName}
             </Text>
             <Box flex={1} display="flex" justifyContent="flex-end">
-              <Button variant="ghost" size="sm" onClick={shareModal.open}>
-                <HStack gap={1} align="center">
-                  <LuShare2 size={14} />
-                  <Text>シェア</Text>
-                </HStack>
-              </Button>
+              <HStack gap={2}>
+                <LanguageSwitcher />
+                <Button variant="ghost" size="sm" onClick={shareModal.open}>
+                  <HStack gap={1} align="center">
+                    <LuShare2 size={14} />
+                    <Text>{t('page.share')}</Text>
+                  </HStack>
+                </Button>
+              </HStack>
             </Box>
           </HStack>
         </Box>
@@ -161,7 +167,7 @@ export const DraftPageInner = () => {
             >
               <HStack gap={2} justify="center" w="full">
                 <LuList size={18} />
-                <Text fontSize="sm">ドラフト</Text>
+                <Text fontSize="sm">{t('page.draft')}</Text>
               </HStack>
             </Tabs.Trigger>
             <Tabs.Trigger
@@ -180,7 +186,7 @@ export const DraftPageInner = () => {
             >
               <HStack gap={2} justify="center" w="full">
                 <LuMessageSquare size={18} />
-                <Text fontSize="sm">チャット/ログ</Text>
+                <Text fontSize="sm">{t('page.chatLog')}</Text>
               </HStack>
             </Tabs.Trigger>
           </Tabs.List>
@@ -269,12 +275,15 @@ export const DraftPageInner = () => {
             <Text fontSize="2xl" fontWeight="bold" color="gray.800">
               {groupName}
             </Text>
-            <Button variant="outline" size="md" onClick={shareModal.open}>
-              <HStack gap={1} align="center">
-                <LuShare2 size={16} />
-                <Text>シェア</Text>
-              </HStack>
-            </Button>
+            <HStack gap={3}>
+              <LanguageSwitcher />
+              <Button variant="outline" size="md" onClick={shareModal.open}>
+                <HStack gap={1} align="center">
+                  <LuShare2 size={16} />
+                  <Text>{t('page.share')}</Text>
+                </HStack>
+              </Button>
+            </HStack>
           </HStack>
         </Box>
 
@@ -308,7 +317,7 @@ export const DraftPageInner = () => {
               overflow="hidden"
             >
               <Text fontSize="lg" fontWeight="bold" mb={3} flexShrink={0}>
-                チャット
+                {t('page.chat')}
               </Text>
               {/* チャットメッセージエリア */}
               <Box flex="1" overflow="auto" mb={3} minH={0}>
@@ -357,13 +366,14 @@ export const DraftPageInner = () => {
  * モックデータの提供のみを担当
  */
 export const DraftPage = ({ groupId }: { groupId: string }) => {
+  const t = useTranslations('draft');
   const { isLoading } = useInitialize(groupId);
 
   if (isLoading) {
     return (
       <Box bg="gray.50" minH="100vh" py={[4, 8]}>
         <Container maxW="container.lg">
-          <Loading message="ローディング中..." />
+          <Loading message={t('page.loading')} />
         </Container>
       </Box>
     );

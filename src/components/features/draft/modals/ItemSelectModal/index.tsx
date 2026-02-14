@@ -5,7 +5,8 @@ import { useSelection } from '@/src/hooks/firebase/selection/useSelection';
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useAtomValue } from 'jotai';
-import { useId } from 'react';
+import { useId, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useModal } from '../../hooks/common/useModal';
@@ -47,11 +48,12 @@ const getItemSelectUIState = (
   round: number | null | undefined,
   selections: SelectionAtom[],
   users: UserAtom[],
+  labels: { title: string; editTitle: string },
 ) => {
   // userId/roundが未設定の場合はデフォルト状態
   if (!userId || round === null || round === undefined) {
     return {
-      modalTitle: 'ドラフト指名',
+      modalTitle: labels.title,
       defaultItem: '',
       defaultComment: '',
       isEditMode: false,
@@ -68,7 +70,7 @@ const getItemSelectUIState = (
   const isEditMode = !!existingSelection;
 
   return {
-    modalTitle: isEditMode ? 'ドラフト指名を編集' : 'ドラフト指名',
+    modalTitle: isEditMode ? labels.editTitle : labels.title,
     defaultItem: existingSelection?.item || '',
     defaultComment: existingSelection?.comment || '',
     isEditMode,
@@ -87,13 +89,20 @@ const getValidationSchema = (
   isEditMode: boolean,
   selections: SelectionAtom[],
   currentRound: number,
+  labels: {
+    itemRequired: string;
+    itemMaxLength: string;
+    categoryMaxLength: string;
+    commentMaxLength: string;
+    alreadySelected: string;
+  },
   originalItem?: string,
 ) =>
   z.object({
     item: z
       .string()
-      .min(1, 'アイテム名を入力してください')
-      .max(MAX_ITEM_LENGTH, `${MAX_ITEM_LENGTH}文字以内で入力してください`)
+      .min(1, labels.itemRequired)
+      .max(MAX_ITEM_LENGTH, labels.itemMaxLength)
       .refine((item) => {
         // 編集モードで元のアイテムと同じ場合はOK
         if (
@@ -111,14 +120,12 @@ const getValidationSchema = (
         );
 
         return !isDuplicate;
-      }, 'このアイテムは過去のラウンドで既に選択されています'),
+      }, labels.alreadySelected),
     comment: z
       .string()
       .max(
         isEditMode ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH,
-        isEditMode
-          ? `${MAX_CATEGORY_LENGTH}文字以内で入力してください`
-          : `${MAX_COMMENT_LENGTH}文字以内で入力してください`,
+        isEditMode ? labels.categoryMaxLength : labels.commentMaxLength,
       )
       .default(''),
   });
@@ -146,6 +153,8 @@ export const ItemSelectModal = ({
   userId,
   round,
 }: ItemSelectModalProps) => {
+  const t = useTranslations('draft');
+  const commonT = useTranslations('common');
   const formId = useId();
 
   // atomからデータを取得
@@ -159,10 +168,29 @@ export const ItemSelectModal = ({
   const myInfo = users.find(({ id }) => id === currentUserId);
 
   const { sendSystemMessage } = useChat();
+  const validationLabels = useMemo(
+    () => ({
+      itemRequired: t('itemSelectModal.validation.itemRequired'),
+      itemMaxLength: t('itemSelectModal.validation.itemMaxLength', {
+        max: MAX_ITEM_LENGTH,
+      }),
+      categoryMaxLength: t('itemSelectModal.validation.categoryMaxLength', {
+        max: MAX_CATEGORY_LENGTH,
+      }),
+      commentMaxLength: t('itemSelectModal.validation.commentMaxLength', {
+        max: MAX_COMMENT_LENGTH,
+      }),
+      alreadySelected: t('itemSelectModal.validation.alreadySelected'),
+    }),
+    [t],
+  );
 
   // propsとatomデータからUI状態を計算
   const { modalTitle, defaultItem, defaultComment, isEditMode, editContext } =
-    getItemSelectUIState(userId, round, selections, users);
+    getItemSelectUIState(userId, round, selections, users, {
+      title: t('itemSelectModal.title'),
+      editTitle: t('itemSelectModal.editTitle'),
+    });
 
   const { upsertSelection } = useSelection();
 
@@ -173,7 +201,13 @@ export const ItemSelectModal = ({
     reset,
   } = useForm({
     resolver: zodResolver(
-      getValidationSchema(isEditMode, selections, currentRound, defaultItem),
+      getValidationSchema(
+        isEditMode,
+        selections,
+        currentRound,
+        validationLabels,
+        defaultItem,
+      ),
     ),
     mode: 'onChange',
     defaultValues: {
@@ -203,7 +237,7 @@ export const ItemSelectModal = ({
       onClose();
       reset();
     } catch (error) {
-      console.error('指名エラー:', error);
+      console.error(t('itemSelectModal.toast.error'), error);
     }
   };
 
@@ -221,11 +255,11 @@ export const ItemSelectModal = ({
       title={modalTitle}
       actions={{
         cancel: {
-          text: 'キャンセル',
+          text: commonT('actions.cancel'),
           onClick: handleClose,
         },
         submit: {
-          text: '決定',
+          text: commonT('actions.confirm'),
           type: 'submit',
           form: formId,
           loading: isSubmitting,
@@ -245,7 +279,7 @@ export const ItemSelectModal = ({
             <VStack gap={2} align="start">
               <HStack>
                 <Text fontSize="xs" color="gray.600">
-                  ラウンド:
+                  {t('itemSelectModal.roundLabel')}
                 </Text>
                 <Text fontSize="sm" fontWeight="bold">
                   Round {editContext.round}
@@ -253,7 +287,7 @@ export const ItemSelectModal = ({
               </HStack>
               <HStack>
                 <Text fontSize="xs" color="gray.600">
-                  プレイヤー:
+                  {t('itemSelectModal.playerLabel')}
                 </Text>
                 <Text fontSize="sm" fontWeight="bold">
                   {editContext.playerName}
@@ -265,11 +299,11 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            ドラフト指名
+            {t('itemSelectModal.itemLabel')}
           </Text>
           <Input
             {...register('item')}
-            placeholder="指名を入力してください"
+            placeholder={t('itemSelectModal.itemPlaceholder')}
             maxLength={MAX_ITEM_LENGTH}
             size="lg"
             error={!!errors.item}
@@ -283,14 +317,14 @@ export const ItemSelectModal = ({
 
         <VStack gap={2} align="start" w="full">
           <Text fontSize="sm" fontWeight="bold" color="gray.700">
-            コメント（任意）
+            {t('itemSelectModal.commentLabel')}
           </Text>
           <Input
             {...register('comment')}
             placeholder={
               editContext
-                ? 'コメントを入力してください'
-                : 'この指名についてのコメント...'
+                ? t('itemSelectModal.categoryPlaceholder')
+                : t('itemSelectModal.commentPlaceholder')
             }
             maxLength={editContext ? MAX_CATEGORY_LENGTH : MAX_COMMENT_LENGTH}
             size="lg"

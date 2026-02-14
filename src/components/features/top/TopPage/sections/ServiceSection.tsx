@@ -9,42 +9,37 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import { LuTarget, LuUsers, LuZap } from 'react-icons/lu';
 
-const SERVICE_FEATURES = [
-  {
-    icon: LuTarget,
-    title: '一斉選択',
-    description: '順番待ちなし！全員同時に選んで開票',
-    color: 'blue.500',
-  },
-  {
-    icon: LuUsers,
-    title: '2-8人対応',
-    description: 'URLシェアで簡単参加、リアルタイム同期',
-    color: 'green.500',
-  },
-  {
-    icon: LuZap,
-    title: '10-15分',
-    description: 'サクッと楽しめる、音声通話しながらプレイ',
-    color: 'orange.500',
-  },
-] as const;
+const FEATURE_ICONS = [
+  { icon: LuTarget, color: 'blue.500' },
+  { icon: LuUsers, color: 'green.500' },
+  { icon: LuZap, color: 'orange.500' },
+];
 
 export const ServiceSection = () => {
+  const t = useTranslations('top');
+  const features = t.raw('service.features') as {
+    title: string;
+    description: string;
+  }[];
+
   return (
     <Box as="section" bg="white" py={[12, 16]}>
       <Container maxW="4xl">
         <VStack gap={[8, 10]}>
           <VStack gap={4} textAlign="center">
             <Heading as="h2" size={['xl', '2xl']} color="gray.800">
-              オンラインドラフト会議とは？
+              {t('service.heading')}
             </Heading>
-            <Text fontSize={['md', 'lg']} color="gray.600" maxW="2xl">
-              友達と一緒に「推し」を選び合う
-              <br />
-              リアルタイムドラフトゲームです。
+            <Text
+              fontSize={['md', 'lg']}
+              color="gray.600"
+              maxW="2xl"
+              whiteSpace="pre-line"
+            >
+              {t('service.description')}
             </Text>
           </VStack>
 
@@ -53,14 +48,14 @@ export const ServiceSection = () => {
             gap={[4, 6]}
             w="full"
           >
-            {SERVICE_FEATURES.map((feature) => (
+            {features.map((feature, index) => (
               <Card.Root key={feature.title} variant="elevated" size="md">
                 <Card.Body>
                   <VStack gap={3} py={4}>
                     <Box
-                      as={feature.icon}
+                      as={FEATURE_ICONS[index].icon}
                       boxSize={[10, 12]}
-                      color={feature.color}
+                      color={FEATURE_ICONS[index].color}
                     />
                     <Text
                       fontSize={['lg', 'xl']}

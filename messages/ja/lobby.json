@@ -1,0 +1,42 @@
+{
+  "page": {
+    "title": "ドラフトルーム",
+    "notFound": "ルームが見つかりません",
+    "notFoundDescription": "指定されたルームが存在しないか、削除されている可能性があります。",
+    "leaveRoom": "ルームを退出"
+  },
+  "roomInfo": {
+    "inviteMessage": "友達をこのルームに招待しよう！",
+    "copySuccess": "URLをコピーしました",
+    "copyFailed": "URLのコピーに失敗しました",
+    "copyButton": "招待URLをコピー",
+    "voiceChatNote": "音声通話アプリ（LINE、Discord等）を併用してお楽しみください"
+  },
+  "participants": {
+    "heading": "参加者 ({count}人)",
+    "inRoom": "参加中",
+    "register": "登録する",
+    "tapToStart": "参加者をタップしてドラフトを開始",
+    "joinGuide": "新規参加は「＋参加する」から・最小2人で開始可能"
+  },
+  "avatarModal": {
+    "title": "ドラフトに参加",
+    "nameLabel": "あなたの名前",
+    "namePlaceholder": "名前を入力してください",
+    "avatarLabel": "アバターを選択",
+    "avatarNote": "×マークは他の参加者が使用中のアバターです",
+    "submit": "登録する",
+    "validation": {
+      "nameRequired": "名前を入力してください",
+      "nameMaxLength": "ユーザー名は20文字以内で入力してください"
+    }
+  },
+  "toast": {
+    "authError": "認証エラー:",
+    "authFailed": "認証に失敗しました",
+    "joined": "ドラフトに参加しました！",
+    "joinError": "参加エラー:",
+    "joinFailed": "参加に失敗しました"
+  },
+  "loading": "ローディング中..."
+}

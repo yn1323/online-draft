@@ -9,6 +9,7 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import { useTranslations } from 'next-intl';
 import {
   LuCircleCheckBig,
   LuMessageCircle,
@@ -16,74 +17,31 @@ import {
   LuUsers,
 } from 'react-icons/lu';
 
-export const GUIDE_STEPS = [
-  {
-    step: 1,
-    title: '無料でドラフトルームを作成',
-    description:
-      'トップページの「ルームを作成する」ボタンをタップして、ドラフト会議のルーム名を入力するだけ！登録不要で、あっという間にルームが作成できます。専用のURLが発行されるので、友達にシェアして招待しよう！',
-    icon: LuSparkles,
-    color: 'blue',
-  },
-  {
-    step: 2,
-    title: '友達をオンラインドラフトに招待',
-    description:
-      'ルームのURLをLINE・Discord・SNSなどで友達にシェアするだけ！リンクを開くだけで参加できるので、アプリのインストールは不要です。2〜8人が揃ったらオンラインドラフト会議の準備完了！',
-    icon: LuUsers,
-    color: 'green',
-  },
-  {
-    step: 3,
-    title: 'ドラフト会議スタート！',
-    description:
-      '参加者が揃ったらドラフト会議スタート！各ラウンドで欲しいアイテムを指名して、全員の選択が揃ったら一斉に発表。同じアイテムを選んだ人がいたら「重複指名」が発生し、ランダム抽選で勝負！ドキドキの駆け引きを楽しもう！',
-    icon: LuCircleCheckBig,
-    color: 'purple',
-  },
+const STEP_ICONS = [
+  { icon: LuSparkles, color: 'blue' },
+  { icon: LuUsers, color: 'green' },
+  { icon: LuCircleCheckBig, color: 'purple' },
 ] as const;
 
-const RULES = [
-  {
-    title: 'ドラフト指名のやり方',
-    description:
-      '各ラウンドで「指名する」ボタンをタップして、欲しいアイテムの名前を入力するだけ！コメントも一緒に添えられるので、選んだ理由やアピールポイントを伝えよう！',
-  },
-  {
-    title: '重複指名（かぶり）が起きたときのルール',
-    description:
-      '同じアイテムを複数人が指名すると「重複指名（かぶり）」が発生！完全ランダムの抽選で勝者が1人決まり、外れた人は別のアイテムを再指名します。「かぶるかも...」という読み合いが、オンラインドラフト会議の醍醐味です！',
-  },
-  {
-    title: 'ラウンドの進行と終了のタイミング',
-    description:
-      '全員の指名が確定したら「指名発表」ボタンで一斉公開！重複指名の抽選を解決したら次のラウンドに進みます。ラウンド数に上限はなく、参加者同士で自由に決められます。好きなだけドラフト会議を楽しもう！',
-  },
-] as const;
-
-const FEATURES = [
-  {
-    title: 'リアルタイムチャット機能',
-    description:
-      'オンラインドラフト会議中にリアルタイムでチャットができる！指名の感想や駆け引きのやり取りをテキストで楽しめます。さらにLINE通話・Discord・Zoomなどの音声通話と併用すると盛り上がり度がアップ！',
-    icon: LuMessageCircle,
-  },
-  {
-    title: 'ドキドキの開票演出',
-    description:
-      '指名発表時に臨場感あふれる開票演出を搭載！「誰が何を指名したか」が順番に明かされ、重複指名（かぶり）が起きるたびに盛り上がること間違いなし。オンラインでも友達と一緒にドキドキの瞬間を共有できます。',
-    icon: LuSparkles,
-  },
-] as const;
-
-const TIPS = [
-  'ドラフト会議の前にお題（テーマ）を決めておくとスムーズにスタートできる！',
-  '参加人数が増えるほど重複指名（かぶり）が起きやすくなって盛り上がる！4〜6人がおすすめ！',
-  'LINE通話やDiscordの音声通話と併用するとオンラインドラフト会議が100倍楽しい！',
-  '途中参加も可能！遅れた友達もURLを開いてロビーから参加できるよ。',
-] as const;
+const FEATURE_ICONS = [LuMessageCircle, LuSparkles] as const;
 
 export const GuidePage = () => {
+  const t = useTranslations('guide');
+
+  const steps = t.raw('steps') as {
+    title: string;
+    description: string;
+  }[];
+  const rules = t.raw('rules') as {
+    title: string;
+    description: string;
+  }[];
+  const features = t.raw('features') as {
+    title: string;
+    description: string;
+  }[];
+  const tips = t.raw('tips') as string[];
+
   return (
     <Box py={[8, 12]}>
       <Container maxW="container.md">
@@ -91,10 +49,10 @@ export const GuidePage = () => {
           {/* ヘッダー */}
           <VStack gap={4} textAlign="center">
             <Heading as="h1" size={['2xl', '3xl']} color="gray.800">
-              オンラインドラフト会議の使い方ガイド
+              {t('pageTitle')}
             </Heading>
             <Text fontSize={['md', 'lg']} color="gray.600">
-              登録不要・完全無料！みんなでドラフトの遊び方を30秒でマスター！
+              {t('pageSubtitle')}
             </Text>
           </VStack>
 
@@ -108,84 +66,80 @@ export const GuidePage = () => {
           >
             <VStack gap={4} align="start">
               <Heading as="h2" size={['lg', 'xl']} color="blue.700">
-                みんなでドラフトとは？
+                {t('aboutHeading')}
               </Heading>
-              <Text fontSize={['sm', 'md']} color="gray.700" lineHeight="tall">
-                野球選手、サッカー選手、アニメキャラ、好きな曲、行きたい旅行先...どんなお題でもOK！
-                <br />
-                みんなでドラフトは、友達とリアルタイムでオンラインドラフト会議が楽しめる無料Webアプリです。
-                <br />
-                <br />
-                <strong>登録もアプリも不要</strong>
-                で、スマホでもPCでもブラウザからすぐに遊べます。
-                <br />
-                2〜8人で参加でき、同じアイテムを選んだら「重複指名（かぶり）」が発生してランダム抽選！
-                <br />
-                誰が何を狙っているか読み合う、ワクワクのドラフト体験をオンラインで楽しもう！
-              </Text>
+              <Text
+                fontSize={['sm', 'md']}
+                color="gray.700"
+                lineHeight="tall"
+                dangerouslySetInnerHTML={{ __html: t.raw('aboutContent') }}
+              />
             </VStack>
           </Box>
 
           {/* オンラインドラフト会議の始め方（3ステップ） */}
           <VStack gap={6} align="stretch">
             <Heading as="h2" size={['lg', 'xl']} color="gray.800">
-              オンラインドラフト会議の始め方（3ステップ）
+              {t('stepsHeading')}
             </Heading>
 
             <VStack gap={4}>
-              {GUIDE_STEPS.map((step) => (
-                <Box
-                  key={step.step}
-                  w="full"
-                  p={[5, 6]}
-                  bg="white"
-                  borderRadius="lg"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  boxShadow="sm"
-                >
-                  <HStack gap={4} align="start">
-                    <Box
-                      p={3}
-                      borderRadius="full"
-                      bg={`${step.color}.100`}
-                      color={`${step.color}.600`}
-                    >
-                      <Box as={step.icon} boxSize={6} />
-                    </Box>
-                    <VStack align="start" gap={2} flex={1}>
-                      <HStack>
-                        <Text
-                          fontSize="sm"
-                          fontWeight="bold"
-                          color={`${step.color}.600`}
-                        >
-                          STEP {step.step}
+              {steps.map((step, index) => {
+                const { icon, color } = STEP_ICONS[index];
+                return (
+                  <Box
+                    key={index}
+                    w="full"
+                    p={[5, 6]}
+                    bg="white"
+                    borderRadius="lg"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    boxShadow="sm"
+                  >
+                    <HStack gap={4} align="start">
+                      <Box
+                        p={3}
+                        borderRadius="full"
+                        bg={`${color}.100`}
+                        color={`${color}.600`}
+                      >
+                        <Box as={icon} boxSize={6} />
+                      </Box>
+                      <VStack align="start" gap={2} flex={1}>
+                        <HStack>
+                          <Text
+                            fontSize="sm"
+                            fontWeight="bold"
+                            color={`${color}.600`}
+                          >
+                            {t('stepLabel', { step: index + 1 })}
+                          </Text>
+                          <Heading as="h3" size="md" color="gray.800">
+                            {step.title}
+                          </Heading>
+                        </HStack>
+                        <Text fontSize={['sm', 'md']} color="gray.600">
+                          {step.description}
                         </Text>
-                        <Heading as="h3" size="md" color="gray.800">
-                          {step.title}
-                        </Heading>
-                      </HStack>
-                      <Text fontSize={['sm', 'md']} color="gray.600">
-                        {step.description}
-                      </Text>
-                    </VStack>
-                  </HStack>
-                </Box>
-              ))}
+                      </VStack>
+                    </HStack>
+                  </Box>
+                );
+              })}
             </VStack>
           </VStack>
 
           {/* ドラフトのルール */}
           <VStack gap={6} align="stretch">
             <Heading as="h2" size={['lg', 'xl']} color="gray.800">
-              ドラフトのルール
+              {t('rulesHeading')}
             </Heading>
 
             <VStack gap={3}>
-              {RULES.map((rule) => (
+              {rules.map((rule, index) => (
                 <Box
-                  key={rule.title}
+                  key={index}
                   w="full"
                   p={[4, 5]}
                   bg="gray.50"
@@ -209,13 +163,13 @@ export const GuidePage = () => {
           {/* みんなでドラフトの便利な機能 */}
           <VStack gap={6} align="stretch">
             <Heading as="h2" size={['lg', 'xl']} color="gray.800">
-              みんなでドラフトの便利な機能
+              {t('featuresHeading')}
             </Heading>
 
             <HStack gap={4} flexWrap="wrap">
-              {FEATURES.map((feature) => (
+              {features.map((feature, index) => (
                 <Box
-                  key={feature.title}
+                  key={index}
                   flex="1"
                   minW={['full', '280px']}
                   p={[4, 5]}
@@ -226,7 +180,7 @@ export const GuidePage = () => {
                 >
                   <HStack gap={3} align="start">
                     <Box color="purple.500">
-                      <Box as={feature.icon} boxSize={5} />
+                      <Box as={FEATURE_ICONS[index]} boxSize={5} />
                     </Box>
                     <VStack align="start" gap={1}>
                       <Heading as="h3" size="sm" color="purple.700">
@@ -252,12 +206,12 @@ export const GuidePage = () => {
           >
             <VStack gap={4} align="start">
               <Heading as="h2" size={['lg', 'xl']} color="green.700">
-                ドラフト会議を楽しむTips
+                {t('tipsHeading')}
               </Heading>
               <List.Root gap={2}>
-                {TIPS.map((tip) => (
+                {tips.map((tip, index) => (
                   <List.Item
-                    key={tip}
+                    key={index}
                     fontSize={['sm', 'md']}
                     color="gray.700"
                     display="flex"

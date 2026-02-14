@@ -8,6 +8,7 @@ import type { ChatMessageUIType } from '@/src/hooks/firebase/chat/useRealtimeCha
 import { Box, HStack, Text, VStack } from '@chakra-ui/react';
 import dayjs from 'dayjs';
 import { atom, useAtomValue } from 'jotai';
+import { useTranslations } from 'next-intl';
 
 /**
  * チャットメッセージをUI表示用に変換するAtom
@@ -28,12 +29,12 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
 
     return {
       id: `${chat.userId}-${Math.random()}`,
-      userName: isSystem ? '自動ログ' : (user?.name ?? ''),
+      userName: isSystem ? '' : (user?.name ?? ''),
       avatar: isSystem ? '99' : (user?.avatar ?? '1'),
       content: chat.message,
       timestamp: formatted,
       isCurrentUser,
-      isSystem: false,
+      isSystem,
     };
   });
 });
@@ -43,6 +44,7 @@ const chatMessageUIAtom = atom<ChatMessageUIType[]>((get) => {
  * 見やすいボックススタイルで統一
  */
 export const ChatMessageList = () => {
+  const t = useTranslations('draft');
   // Atomから派生したUIメッセージを取得（propsのmessagesよりも優先）
   const chatMessages = useAtomValue(chatMessageUIAtom);
 
@@ -52,6 +54,7 @@ export const ChatMessageList = () => {
         const content = message.content;
         const isCurrentUser = message.isCurrentUser || false;
         const isSystem = message.isSystem || false;
+        const displayName = isSystem ? t('chat.systemLog') : message.userName;
 
         // 常に[左要素, メッセージボックス, 右要素]の3要素構造
         return (
@@ -96,7 +99,7 @@ export const ChatMessageList = () => {
                   }
                   fontWeight="bold"
                 >
-                  {message.userName}
+                  {displayName}
                 </Text>
                 <Text fontSize="2xs" color="gray.700">
                   {message.timestamp}
