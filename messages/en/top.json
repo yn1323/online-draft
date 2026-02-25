@@ -15,7 +15,7 @@
     }
   },
   "service": {
-    "heading": "What is an Online Draft?",
+    "heading": "What is an Online Draft Game?",
     "description": "A real-time draft game where you pick\nyour favorites together with friends.",
     "features": [
       {
@@ -54,7 +54,7 @@
     ]
   },
   "howToUse": {
-    "heading": "Easy 3 Steps",
+    "heading": "Start Your Online Draft in 3 Easy Steps",
     "steps": [
       {
         "title": "Create a Room",
@@ -72,7 +72,7 @@
     "cta": "Start Now"
   },
   "useCases": {
-    "heading": "Popular Use Cases",
+    "heading": "Popular Ways to Play Online Draft Games",
     "cases": [
       {
         "emoji": "\u26be",

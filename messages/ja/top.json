@@ -2,7 +2,7 @@
   "hero": {
     "title": "みんなでドラフト",
     "subtitle": "推しを選んで、かぶったら勝負！",
-    "description": "野球・アニメ・音楽...何でもドラフト会議！",
+    "description": "野球・アニメ・音楽...何でもオンラインドラフト会議！",
     "createRoom": "ルームを作成する",
     "joinExisting": "既存のルームに参加",
     "roomPlaceholder": "ルームURLまたはID",
@@ -54,7 +54,7 @@
     ]
   },
   "howToUse": {
-    "heading": "かんたん3ステップ",
+    "heading": "オンラインドラフト会議のかんたん3ステップ",
     "steps": [
       {
         "title": "ルームを作成",
@@ -72,7 +72,7 @@
     "cta": "今すぐ始める"
   },
   "useCases": {
-    "heading": "こんな場面で使われています",
+    "heading": "オンラインドラフト会議はこんな場面で使われています",
     "cases": [
       {
         "emoji": "\u26be",
@@ -128,7 +128,7 @@
   "footerCta": {
     "heading": "さあ、ドラフトを始めよう！",
     "cta": "ルームを作成する",
-    "copyright": "© 2025 オンラインドラフト会議"
+    "copyright": "© 2025 みんなでドラフト"
   },
   "createRoomModal": {
     "title": "新しいルームを作成",

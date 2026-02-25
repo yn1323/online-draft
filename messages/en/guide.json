@@ -1,6 +1,6 @@
 {
   "pageTitle": "How to Use Draft Together",
-  "pageSubtitle": "No sign-up, completely free! Master the rules in 30 seconds!",
+  "pageSubtitle": "No sign-up, completely free! Master the online draft rules in 30 seconds!",
   "aboutHeading": "What is Draft Together?",
   "aboutContent": "Baseball players, soccer players, anime characters, favorite songs, dream travel spots... any topic goes!<br />Draft Together is a free web app where you can enjoy real-time online drafts with friends.<br /><br /><strong>No sign-up or app needed</strong> — play instantly from your browser on mobile or PC.<br />2-8 players can join, and when someone picks the same item, a \"clash\" triggers a random tiebreaker!<br />Read your opponents, outsmart your friends, and enjoy the thrill of drafting online!",
   "stepsHeading": "Getting Started (3 Steps)",
@@ -34,7 +34,7 @@
       "description": "Once everyone's picks are locked in, hit \"Reveal Picks\" to show them all at once! After resolving any clashes, move on to the next round. There's no limit on rounds — decide with your group how many to play. Draft as long as you want!"
     }
   ],
-  "featuresHeading": "Features",
+  "featuresHeading": "Draft Together Features",
   "features": [
     {
       "title": "Real-time Chat",
