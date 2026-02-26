@@ -1,7 +1,7 @@
 {
   "home": {
     "title": "Draft Together | Free Online Draft Game - No Sign-up Required",
-    "description": "Baseball, anime, music... Draft anything with friends! Free and no registration needed.",
+    "description": "Baseball, anime, music... Draft anything with friends! Free online draft tool for 2-8 players. No sign-up, no app needed — just open your browser and start drafting. Real-time multiplayer fun!",
     "ogTitle": "Draft Together",
     "ogDescription": "Baseball, anime, music... Draft anything with friends! Free and no registration needed."
   },
@@ -20,8 +20,8 @@
   },
   "jsonLd": {
     "appName": "Draft Together",
-    "appDescription": "Draft anything with friends online! Free, no sign-up required.",
-    "featureList": ["2-8 players", "No sign-up required", "Completely free", "Real-time sync", "Mobile-friendly"],
+    "appDescription": "Draft anything with friends online! Free multiplayer draft tool — no sign-up, no app required.",
+    "featureList": ["2-8 players", "No sign-up required", "Completely free", "Real-time sync", "Mobile-friendly", "No app needed — browser only", "Great for parties and groups"],
     "navGuide": "How-to Guide",
     "navFaq": "FAQ",
     "howToName": "How to use Draft Together",
