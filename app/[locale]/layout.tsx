@@ -14,7 +14,7 @@ import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
-const BASE_URL = 'https://online-draft.vercel.app';
+const BASE_URL = 'https://online-draft.pages.dev';
 
 type LocaleLayoutProps = {
   children: ReactNode;
