@@ -54,7 +54,7 @@ export const generateMetadata = async ({
       images: ['/img/logo/og.png'],
     },
     verification: {
-      google: 'kim5OjtqLfHuU1ooLDnfh8y0KwuGkC9-FK3mb1DLHtQ',
+      google: 'vnorqJ2uzGDmdhpJ_NZPc48aNSo7fKSzWlhFkI5oTZU',
     },
   };
 };
