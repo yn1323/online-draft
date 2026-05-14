@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next';
 import { locales, defaultLocale } from '@/src/i18n/config';
 
-const BASE_URL = 'https://online-draft.vercel.app';
+const BASE_URL = 'https://online-draft.pages.dev';
 
 const getLocalePath = (locale: string, path: string) => {
   const prefix = locale === defaultLocale ? '' : `/${locale}`;
