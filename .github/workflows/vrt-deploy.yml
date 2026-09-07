@@ -31,13 +31,13 @@ jobs:
           ref: main
 
       - name: Download Storybook artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.storybook_artifact }}
           path: "./online-draft/storybook/${{ inputs.pr_number }}"
 
       - name: Download VRT report artifact
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.report_artifact }}
           path: "./online-draft/vrt/${{ inputs.pr_number }}"
