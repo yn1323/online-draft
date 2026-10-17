@@ -39,25 +39,25 @@ jobs:
           mkdir -p .reg/expected
           
       - name: Download expected screenshots (shard 1)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.expected_prefix }}-screenshots-1
           path: .reg/expected
           
       - name: Download expected screenshots (shard 2)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.expected_prefix }}-screenshots-2
           path: .reg/expected
           
       - name: Download actual screenshots (shard 1)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.actual_prefix }}-screenshots-1
           path: __screenshots__
           
       - name: Download actual screenshots (shard 2)
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: ${{ inputs.actual_prefix }}-screenshots-2
           path: __screenshots__
@@ -69,7 +69,7 @@ jobs:
         run: mv .reg report
         
       - name: Upload VRT Report
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: vrt-report
           path: report/
